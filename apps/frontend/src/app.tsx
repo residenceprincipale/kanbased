@@ -8,6 +8,7 @@ import Home from "~/routes";
 import Login from "~/routes/auth/login";
 import HomeRouteLayout from "~/components/home-layout";
 import Board from "~/routes/boards/[boardId]";
+import { QueryClientProvider } from "@tanstack/solid-query";
 
 export const myAppUrl = {
   login: "/auth/login",
@@ -17,9 +18,10 @@ export const myAppUrl = {
 
 export default function App() {
   return (
-    <PersistQueryClientProvider
+    <QueryClientProvider
       client={queryClient}
-      persistOptions={{ persister }}
+      // TODO: Figure out the solution for offline support later
+      // persistOptions={{ persister }}
     >
       <Router>
         <Route path={myAppUrl.home} component={HomeRouteLayout}>
@@ -29,6 +31,6 @@ export default function App() {
         <Route path={myAppUrl.login} component={Login} />
       </Router>
       <SolidQueryDevtools />
-    </PersistQueryClientProvider>
+    </QueryClientProvider>
   );
 }

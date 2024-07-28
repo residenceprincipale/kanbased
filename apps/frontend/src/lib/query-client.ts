@@ -6,6 +6,7 @@ export const queryClient = new QueryClient({
     queries: {
       refetchOnWindowFocus: false,
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
+      retry: 0,
     },
     mutations: {
       meta: {

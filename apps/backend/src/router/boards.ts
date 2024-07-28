@@ -32,10 +32,11 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {
   const user = c.get("user");
+
   const res = await db
     .select()
     .from(boardTable)
-    .where(eq(userTable.id, user.id));
+    .where(eq(boardTable.userId, user.id));
 
   return c.json(res, 200);
 });
