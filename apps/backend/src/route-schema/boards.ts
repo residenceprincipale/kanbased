@@ -1,49 +1,53 @@
 import { z } from "@hono/zod-openapi";
 import { createRoute } from "@hono/zod-openapi";
-import { validationErrorSchema } from "./errors.js";
+import { errorMessages, genericErrorSchema } from "./errors.js";
 
-const ParamsSchema = z.object({
-  id: z
-    .string()
-    .min(3)
-    .openapi({
-      param: {
-        name: "id",
-        in: "path",
-      },
-      example: "1212121",
-    }),
+const createBoardParamsSchema = z.object({
+  name: z.string().min(1),
+  color: z.string().nullable().optional(),
 });
 
-const UserSchema = z
-  .object({
-    id: z.string().openapi({
-      example: "123",
-    }),
-    name: z.string().openapi({
-      example: "John Doe",
-    }),
-    age: z.number().openapi({
-      example: 42,
-    }),
-  })
-  .openapi("User");
+const createBoardResponse = createBoardParamsSchema.extend({
+  id: z.number(),
+});
 
-export const boardsRoute = createRoute({
-  method: "get",
-  path: "/users/{id}",
+export const createBoardRoute = createRoute({
+  method: "post",
+  path: "/boards",
   request: {
-    params: ParamsSchema,
+    body: {
+      content: {
+        "application/json": {
+          schema: createBoardParamsSchema,
+        },
+      },
+    },
   },
   responses: {
     200: {
       content: {
         "application/json": {
-          schema: UserSchema,
+          schema: createBoardResponse,
         },
       },
       description: "Retrieve the user",
     },
-    422: validationErrorSchema,
+    ...errorMessages,
+  },
+});
+
+export const getBoardsRoute = createRoute({
+  method: "get",
+  path: "/boards",
+  responses: {
+    200: {
+      content: {
+        "application/json": {
+          schema: z.array(createBoardResponse),
+        },
+      },
+      description: "",
+    },
+    ...errorMessages,
   },
 });

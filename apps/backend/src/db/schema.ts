@@ -5,6 +5,8 @@ import {
   varchar,
   boolean,
   pgEnum,
+  serial,
+  unique,
 } from "drizzle-orm/pg-core";
 
 export const accountTypeEnum = pgEnum("account_type", [
@@ -32,3 +34,20 @@ export const sessionTable = pgTable("session", {
     mode: "date",
   }).notNull(),
 });
+
+export const boardTable = pgTable(
+  "board",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 20 }).notNull(),
+    color: varchar("color", { length: 255 }),
+    userId: text("user_id")
+      .references(() => userTable.id)
+      .notNull(),
+  },
+  (table) => {
+    return {
+      uniqueBoardNamePerUser: unique().on(table.name, table.userId),
+    };
+  }
+);

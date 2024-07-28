@@ -6,7 +6,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "dev:backend": "turbo dev --filter=kanbased-backend",
+    "dev:frontend": "turbo dev --filter=kanbased-frontend"
   },
   "devDependencies": {
     "prettier": "^3.2.5",

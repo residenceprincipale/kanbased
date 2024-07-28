@@ -1,6 +1,6 @@
 import { z } from "@hono/zod-openapi";
 import { createRoute } from "@hono/zod-openapi";
-import { badRequestErrorSchema, validationErrorSchema } from "./errors.js";
+import { errorMessages, genericErrorSchema } from "./errors.js";
 
 const createUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
@@ -42,8 +42,7 @@ export const registerUserRoute = createRoute({
       },
       description: "No content",
     },
-    422: validationErrorSchema,
-    400: badRequestErrorSchema,
+    ...errorMessages,
   },
 });
 
@@ -68,8 +67,7 @@ export const loginUserRoute = createRoute({
       },
       description: "No content",
     },
-    422: validationErrorSchema,
-    400: badRequestErrorSchema,
+    ...errorMessages,
   },
 });
 
@@ -80,7 +78,6 @@ export const logoutRoute = createRoute({
     200: {
       description: "No content",
     },
-    422: validationErrorSchema,
-    400: badRequestErrorSchema,
+    ...errorMessages,
   },
 });
