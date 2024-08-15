@@ -45,12 +45,12 @@ app.use(
   "/*",
   cors({
     // TODO: Change origin later
-    origin: "http://localhost:5173",
+    origin: "http://localhost:3000",
     credentials: true,
   })
 );
 
-app.use(csrf({ origin: "http://localhost:5173" }));
+app.use(csrf({ origin: "http://localhost:3000" }));
 
 app.use(logger());
 
@@ -95,7 +95,7 @@ app.use("*", authenticatedMiddleware);
 app.route("/", boardsRouter);
 // ====== End of protected routes ======
 
-const port = 3000;
+const port = 5000;
 
 serve(
   {

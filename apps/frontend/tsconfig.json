@@ -19,7 +19,8 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "verbatimModuleSyntax": true // This option forces you to use import type and export type, leading to more predictable behavior and fewer unnecessary imports. With module: NodeNext, it also enforces you're using the correct import syntax for ESM or CJS.
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
