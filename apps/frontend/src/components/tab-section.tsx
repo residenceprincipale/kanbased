@@ -11,15 +11,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu";
+import { useAppContext } from "~/context/app-context";
 import { getBoardsQuery } from "~/lib/query-options-factory";
 
 export function TabSection() {
   const boardsQuery = createQuery(getBoardsQuery);
+  const { pinnedBoards } = useAppContext();
 
   return (
     <div class="flex gap-4 items-center">
       <ul class="flex gap-3">
-        <For each={boardsQuery.data}>
+        <For each={pinnedBoards()}>
           {(item) => (
             <li>
               <A

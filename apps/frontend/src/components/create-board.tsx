@@ -18,7 +18,7 @@ import { Loader } from "~/components/ui/loader";
 import { queryClient } from "~/lib/query-client";
 import { getBoardsQuery } from "~/lib/query-options-factory";
 
-export function CreateBoard(props: { Trigger?: Element }) {
+export function CreateBoard(props: { Trigger?: Element | null }) {
   const [open, setOpen] = createSignal(false);
   const createBoardMutation = usePostMutation("/boards");
 

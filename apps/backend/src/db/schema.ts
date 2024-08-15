@@ -7,6 +7,7 @@ import {
   pgEnum,
   serial,
   unique,
+  integer,
 } from "drizzle-orm/pg-core";
 
 export const accountTypeEnum = pgEnum("account_type", [
@@ -44,6 +45,7 @@ export const boardTable = pgTable(
     userId: text("user_id")
       .references(() => userTable.id)
       .notNull(),
+    isPinned: boolean("is_pinned").default(false),
   },
   (table) => {
     return {

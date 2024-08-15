@@ -32,7 +32,7 @@ export default function Home() {
               <For each={boardsQuery.data || []}>
                 {(board) => (
                   <li>
-                    <A href={`/boards/${board.name}`}>
+                    <A href={`/boards/${board.id}`}>
                       <Card class="flex items-center gap-2 w-44 h-36 justify-center hover:bg-muted hover:text-bg-muted-foreground">
                         <div class="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
                         <div class="">{board.name}</div>
