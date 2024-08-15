@@ -5,7 +5,7 @@ import {
   registerUserRoute,
 } from "../route-schema/auth.js";
 import { db } from "../db/index.js";
-import { userTable } from "../db/schema.js";
+import { userTable } from "../db/schema/index.js";
 import { and, eq, or } from "drizzle-orm";
 import { attachAuthCookie, hashPassword, verifyPassword } from "../utils.js";
 import { generateId } from "lucia";

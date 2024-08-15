@@ -9,9 +9,9 @@ export const fetchClient = createClient<paths>({
 
 const authMiddleware: Middleware = {
   async onResponse({ response }) {
-    if (response.status === 401) {
-      window.location.href = myAppUrl.login;
-    }
+    // if (response.status === 401) {
+    //   window.location.href = myAppUrl.login;
+    // }
 
     if (!response.ok) {
       const isBodyJSON = response.headers.get("content-type")?.includes("json");

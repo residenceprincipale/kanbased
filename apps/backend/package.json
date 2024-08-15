@@ -4,6 +4,9 @@
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "npx tsc",
     "start": "node --env-file=.env ./dist/src",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "DB_MIGRATING=true tsx --env-file=.env src/db/migrate.ts",
+    "db:seed": "DB_SEEDING=true tsx --env-file=.env src/db/seed.ts",
     "db:push": "npx drizzle-kit push",
     "db:studio": "npx drizzle-kit studio"
   },
@@ -16,7 +19,7 @@
     "drizzle-orm": "^0.32.0",
     "hono": "^4.4.13",
     "lucia": "^3.2.0",
-    "pg": "^8.12.0",
+    "postgres": "^3.4.4",
     "zod": "^3.23.8"
   },
   "devDependencies": {

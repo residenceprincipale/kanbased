@@ -3,7 +3,7 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { logger } from "hono/logger";
 import boardsRouter from "./router/boards.js";
-import { client } from "./db/index.js";
+import { connection } from "./db/index.js";
 import authRouter from "./router/auth.js";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
@@ -97,11 +97,12 @@ app.route("/", boardsRouter);
 
 const port = 3000;
 
-client.connect().then(() => {
-  console.log("Database Connected.");
-  serve({
+serve(
+  {
     fetch: app.fetch,
     port,
-  });
-  console.log(`Server is running on port ${port}`);
-});
+  },
+  (info) => {
+    console.log(`Server is running on port ${info.port}`);
+  }
+);

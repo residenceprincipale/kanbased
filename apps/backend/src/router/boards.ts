@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { createBoardRoute, getBoardsRoute } from "../route-schema/boards.js";
 import { db } from "../db/index.js";
-import { boardTable, userTable } from "../db/schema.js";
+import { boardTable, userTable } from "../db/schema/index.js";
 import type { AppInstanceType } from "../index.js";
 import { eq } from "drizzle-orm";
 
