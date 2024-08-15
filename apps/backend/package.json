@@ -1,5 +1,5 @@
 {
-  "name": "kanbased-backend",
+  "name": "backend",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "npx tsc",

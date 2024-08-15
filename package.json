@@ -2,18 +2,17 @@
   "name": "kanbased",
   "private": true,
   "scripts": {
-    "build": "turbo build",
-    "dev": "turbo dev",
-    "lint": "turbo lint",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "dev": "turbo run dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "typecheck": "turbo typecheck",
-    "dev:backend": "turbo dev --filter=kanbased-backend",
-    "dev:frontend": "turbo dev --filter=kanbased-frontend"
+    "lint": "turbo run lint",
+    "dev:backend": "turbo dev --filter=backend",
+    "dev:frontend": "turbo dev --filter=frontend"
   },
   "devDependencies": {
     "prettier": "^3.2.5",
-    "turbo": "^2.0.9",
-    "typescript": "^5.4.5"
+    "turbo": "^2.0.9"
   },
   "packageManager": "pnpm@9.0.0",
   "engines": {
