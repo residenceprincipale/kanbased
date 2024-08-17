@@ -8,7 +8,8 @@
     "db:migrate": "DB_MIGRATING=true tsx --env-file=.env src/db/migrate.ts",
     "db:seed": "DB_SEEDING=true tsx --env-file=.env src/db/seed.ts",
     "db:push": "npx drizzle-kit push",
-    "db:studio": "npx drizzle-kit studio"
+    "db:studio": "npx drizzle-kit studio",
+    "dev:db": "docker compose -f docker-compose.dev.yml up"
   },
   "type": "module",
   "dependencies": {

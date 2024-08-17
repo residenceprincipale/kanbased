@@ -59,10 +59,7 @@ authRouter.openapi(loginUserRoute, async (c) => {
     .select()
     .from(userTable)
     .where(
-      and(
-        or(eq(userTable.name, body.name), eq(userTable.email, body.email)),
-        eq(userTable.accountType, "email")
-      )
+      and(eq(userTable.email, body.email), eq(userTable.accountType, "email"))
     );
 
   if (!user) {

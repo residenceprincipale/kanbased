@@ -8,16 +8,10 @@ const createUserRequestSchema = z.object({
   email: z.string().email(),
 });
 
-const loginUserRequestSchema = z
-  .object({
-    name: z.string().min(1).optional(),
-    password: z.string().min(8),
-    email: z.string().email().optional(),
-  })
-  .refine((data) => data.email || data.name, {
-    message: "Either name or email must be provided",
-    path: ["name", "email"],
-  });
+const loginUserRequestSchema = z.object({
+  email: z.string().email().optional(),
+  password: z.string().min(8),
+});
 
 const registerUserResponse = createUserRequestSchema.omit({ password: true });
 
