@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 import { Button } from "@/components/ui/button";
@@ -11,10 +12,42 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routeMap } from "@/lib/constants";
+import { useState, type FormEventHandler } from "react";
+import { useRouter } from "next/navigation";
+import { fetchClient } from "@/lib/fetch-client";
+import { toast } from "sonner";
+import { Loader } from "lucide-react";
 
 export default function LoginForm() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit: FormEventHandler = async (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    const email = fd.get("email") as string;
+    const password = fd.get("password") as string;
+
+    setIsSubmitting(true);
+    const { error } = await fetchClient.POST("/auth/login/email", {
+      body: {
+        email,
+        password,
+      },
+    });
+    setIsSubmitting(false);
+
+    if (error) {
+      toast(error.message);
+    } else {
+      router.push(routeMap.home);
+    }
+  };
   return (
-    <div className="h-screen flex justify-center items-center">
+    <form
+      onSubmit={handleSubmit}
+      className="h-screen flex justify-center items-center"
+    >
       <Card className="max-w-sm">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
@@ -29,6 +62,7 @@ export default function LoginForm() {
               <Input
                 id="email"
                 type="email"
+                name="email"
                 placeholder="m@example.com"
                 required
               />
@@ -43,10 +77,17 @@ export default function LoginForm() {
                   Forgot your password?
                 </Link> */}
               </div>
-              <Input id="password" type="password" required />
+              <Input name="password" id="password" type="password" required />
             </div>
-            <Button type="submit" className="w-full">
-              Login
+            <Button type="submit" className="w-full gap-2">
+              {isSubmitting ? (
+                <>
+                  <Loader className="animate-spin w-4 h-4" />
+                  Logging in...
+                </>
+              ) : (
+                "Login"
+              )}
             </Button>
             {/* <Button variant="outline" className="w-full">
               Login with Google
@@ -60,6 +101,6 @@ export default function LoginForm() {
           </div>
         </CardContent>
       </Card>
-    </div>
+    </form>
   );
 }

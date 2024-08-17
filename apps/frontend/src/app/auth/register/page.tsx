@@ -11,19 +11,41 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routeMap } from "@/lib/constants";
-import { type FormEventHandler } from "react";
+import { useState, type FormEventHandler } from "react";
 import { Loader } from "lucide-react";
+import { fetchClient } from "@/lib/fetch-client";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
-  const handleSubmit: FormEventHandler = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const name = (fd.get("name") ?? null) as string | null;
     const email = fd.get("email") as string;
     const password = fd.get("password") as string;
+
+    setIsSubmitting(true);
+    const { error } = await fetchClient.POST("/auth/register/email", {
+      body: {
+        name,
+        email,
+        password,
+      },
+    });
+    setIsSubmitting(false);
+
+    if (error) {
+      toast(error.message);
+    } else {
+      router.push(routeMap.home);
+    }
   };
-  //localhost:3000
-  http: return (
+
+  return (
     <form
       onSubmit={handleSubmit}
       className="h-screen flex justify-center items-center"
@@ -57,7 +79,7 @@ export default function RegisterForm() {
               <Input id="password" type="password" name="password" required />
             </div>
             <Button type="submit" className="w-full gap-2">
-              {false ? (
+              {isSubmitting ? (
                 <>
                   <Loader className="animate-spin w-4 h-4" />
                   Creating...
