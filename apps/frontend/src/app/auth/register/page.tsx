@@ -12,20 +12,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routeMap } from "@/lib/constants";
 import { type FormEventHandler } from "react";
-import { usePostMutation } from "@/hooks/use-post-mutation";
 import { Loader } from "lucide-react";
 
 export default function RegisterForm() {
-  const registerMutation = usePostMutation("/auth/register/email");
-
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const name = (fd.get("name") ?? null) as string | null;
     const email = fd.get("email") as string;
     const password = fd.get("password") as string;
-
-    registerMutation.mutate({ body: { name, email, password } });
   };
   //localhost:3000
   http: return (
@@ -62,7 +57,7 @@ export default function RegisterForm() {
               <Input id="password" type="password" name="password" required />
             </div>
             <Button type="submit" className="w-full gap-2">
-              {registerMutation.isPending ? (
+              {false ? (
                 <>
                   <Loader className="animate-spin w-4 h-4" />
                   Creating...
