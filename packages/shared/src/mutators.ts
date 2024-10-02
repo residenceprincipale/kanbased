@@ -19,6 +19,17 @@ export type TabState = {
   boardColor: Board["color"];
 };
 
+export type Column = {
+  id: string;
+  name: string;
+  createdAt: string;
+};
+
+export type Card = {
+  name: string;
+  createdAt: string;
+};
+
 export const mutators = {
   createBoard: async (
     tx: WriteTransaction,
@@ -40,9 +51,22 @@ export const mutators = {
     tx: WriteTransaction,
     { boardColor, boardName }: TabState
   ) => {
+    const id = nanoid();
     await tx.set(`tabsState/${boardName}`, {
+      id,
       boardName,
       boardColor,
+    });
+  },
+  createColumn: async (
+    tx: WriteTransaction,
+    { name }: Pick<Column, "name">
+  ) => {
+    const id = nanoid();
+    await tx.set(`columns/${id}`, {
+      id,
+      name,
+      createdAt: new Date().toISOString(),
     });
   },
   deleteTab: async (
