@@ -19,7 +19,6 @@ export function CreateBoard() {
     const fd = new FormData(e.target as HTMLFormElement);
     const boardName = fd.get("board-name");
     console.log(boardName);
-    alert(boardName);
   };
 
   return (

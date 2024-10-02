@@ -8,7 +8,6 @@ export default function Home() {
         <Link href={routeMap.boards}>Boards</Link>
         <Link href={routeMap.login}>Login</Link>
         <Link href={routeMap.register}>Register</Link>
-        <Link href={routeMap.register}>Register</Link>
       </div>
     </main>
   );
