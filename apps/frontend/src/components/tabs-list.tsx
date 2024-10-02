@@ -12,16 +12,18 @@ import { listBoards, listTabs } from "@/lib/queries";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSubscribe } from "replicache-react";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 export function TabsList() {
   const rep = useRepContext();
   const tabs = useSubscribe(rep, listTabs, { default: [] });
   const router = useRouter();
   const boards = useSubscribe(rep, listBoards, { default: [] });
+  const [parent] = useAutoAnimate();
 
   return (
     <div className="flex gap-4 items-center">
-      <ul className="flex gap-3">
+      <ul className="flex gap-3" ref={parent}>
         {tabs.map((tab) => {
           return (
             <li
