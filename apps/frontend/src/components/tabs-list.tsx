@@ -13,38 +13,48 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSubscribe } from "replicache-react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
+import { cn, useBetterParams } from "@/lib/utils";
 
 export function TabsList() {
   const rep = useRepContext();
   const tabs = useSubscribe(rep, listTabs, { default: [] });
   const router = useRouter();
   const boards = useSubscribe(rep, listBoards, { default: [] });
-  const [parent] = useAutoAnimate();
+  const [parent] = useAutoAnimate({ duration: 200 });
+  const { boardName } = useBetterParams<{ boardName: string }>();
 
   return (
     <div className="flex gap-4 items-center">
       <ul className="flex gap-3" ref={parent}>
         {tabs.map((tab) => {
+          const isActiveBoard = tab.boardName === boardName;
           return (
             <li
               key={tab.boardName}
-              className="px-3 py-2 w-32 flex items-center justify-between gap-2 rounded-lg border"
+              className={cn(
+                "px-2.5 py-2 w-32 flex items-center justify-between gap-0.5 rounded-lg border group",
+                isActiveBoard && "bg-secondary text-secondary-foreground"
+              )}
             >
               <Link
                 className="flex items-center gap-1.5 w-full flex-1 min-w-0"
                 href={routeMap.board(tab.boardName)}
-                // activeClass="bg-secondary text-secondary-foreground"
               >
                 <div className="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
-                <div className="capitalize truncate">{tab.boardName}</div>
+                <div className="capitalize truncate text-sm">
+                  {tab.boardName}
+                </div>
               </Link>
               <button
                 type="button"
-                onClick={(e) => {
+                onClick={() => {
                   rep.mutate.deleteTab({ boardName: tab.boardName });
                   router.replace(routeMap.boards);
                 }}
-                className="shrink-0 rounded-full p-0.5 hover:bg-secondary hover:text-secondary-foreground"
+                className={cn(
+                  "shrink-0 rounded-full p-0.5 hover:bg-secondary hover:text-secondary-foreground",
+                  isActiveBoard ? "visible" : "invisible group-hover:visible"
+                )}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
