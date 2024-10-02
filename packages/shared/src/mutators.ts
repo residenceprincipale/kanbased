@@ -14,6 +14,11 @@ export type Board = {
   isPinned: boolean;
 };
 
+export type TabState = {
+  boardName: Board["name"];
+  boardColor: Board["color"];
+};
+
 export const mutators = {
   createBoard: async (
     tx: WriteTransaction,
@@ -30,6 +35,21 @@ export const mutators = {
       isPinned: !!isPinned,
       color,
     });
+  },
+  createTab: async (
+    tx: WriteTransaction,
+    { boardColor, boardName }: TabState
+  ) => {
+    await tx.set(`tabsState/${boardName}`, {
+      boardName,
+      boardColor,
+    });
+  },
+  deleteTab: async (
+    tx: WriteTransaction,
+    { boardName }: Pick<TabState, "boardName">
+  ) => {
+    await tx.del(`tabsState/${boardName}`);
   },
 
   updateTodoText: async (

@@ -8,6 +8,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { routeMap } from "@/lib/constants";
 import Link from "next/link";
 
 export function TopSection() {
@@ -15,7 +16,7 @@ export function TopSection() {
     <div className="flex items-center justify-between gap-2 py-1.5 px-4">
       <div className="flex gap-6 items-center flex-1">
         <Link
-          href="/"
+          href={routeMap.boards}
           className={buttonVariants({
             size: "icon",
             variant: "outline",

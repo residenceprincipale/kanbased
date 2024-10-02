@@ -14,7 +14,7 @@ export default function BoardsPage() {
   return (
     <main className="px-10">
       <div className="flex items-center gap-4 justify-between my-4 mt-6">
-        <h1 className="text-xl font-semibold">Boards (0)</h1>
+        <h1 className="text-xl font-semibold">Boards ({boards.length})</h1>
         <CreateBoard />
       </div>
 
