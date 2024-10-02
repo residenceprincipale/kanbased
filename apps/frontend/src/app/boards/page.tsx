@@ -1,15 +1,15 @@
 "use client";
 import { CreateBoard } from "@/components/create-board";
+import { useRepContext } from "@/components/replicache-provider";
 import { Card } from "@/components/ui/card";
 import { routeMap } from "@/lib/constants";
+import { listBoards } from "@/lib/queries";
 import Link from "next/link";
+import { useSubscribe } from "replicache-react";
 
 export default function BoardsPage() {
-  const boards = [
-    { name: "first board", id: 1 },
-    { name: "second board", id: 2 },
-    { name: "third board", id: 3 },
-  ];
+  const rep = useRepContext();
+  const boards = useSubscribe(rep, listBoards, { default: [] });
 
   return (
     <main className="px-10">

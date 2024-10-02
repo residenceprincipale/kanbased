@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Replicache } from "replicache";
 import { nanoid } from "nanoid";
+import { mutators, type Mutators } from "@kanbased/shared/src/mutators";
 
 // @ts-expect-error
-const ReplicacheContext = createContext<Replicache<any>>();
+const ReplicacheContext = createContext<Replicache<Mutators>>();
 
 export function ReplicacheProvider(props: React.PropsWithChildren) {
-  const [rep, setRep] = useState<Replicache<any> | null>(null);
+  const [rep, setRep] = useState<Replicache<Mutators> | null>(null);
 
   useEffect(() => {
     let userId = localStorage.getItem("userId");
@@ -19,8 +20,8 @@ export function ReplicacheProvider(props: React.PropsWithChildren) {
       // See https://doc.replicache.dev/licensing for how to get a license key.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       licenseKey: process.env.NEXT_PUBLIC_REPLICACHE_LICENSE_KEY!,
-      pushURL: `/api/replicache/push`,
-      pullURL: `/api/replicache/pull`,
+      // pushURL: `/api/replicache/push`,
+      // pullURL: `/api/replicache/pull`,
       name: userId,
       mutators,
     });

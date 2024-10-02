@@ -1,4 +1,5 @@
 "use client";
+import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -11,18 +12,21 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import type { FormEventHandler } from "react";
+import { useState, type FormEventHandler } from "react";
 
 export function CreateBoard() {
+  const [isOpen, setIsOpen] = useState(false);
+  const rep = useRepContext();
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
-    const boardName = fd.get("board-name");
-    console.log(boardName);
+    const boardName = fd.get("board-name") as string;
+    rep.mutate.createBoard({ name: boardName });
+    setIsOpen(false);
   };
 
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button>Create board</Button>
       </DialogTrigger>
