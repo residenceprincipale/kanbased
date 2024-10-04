@@ -3,8 +3,10 @@ import type React from "react";
 
 export default function BoardsLayout(props: React.PropsWithChildren) {
   return (
-    <div>
-      <TopSection />
+    <div className="h-screen flex flex-col">
+      <header className="shrink-0">
+        <TopSection />
+      </header>
       {props.children}
     </div>
   );

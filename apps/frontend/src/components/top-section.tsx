@@ -1,7 +1,8 @@
 "use client";
+import { useRepContext } from "@/components/replicache-provider";
 import { TabsList } from "@/components/tabs-list";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,6 +13,7 @@ import { routeMap } from "@/lib/constants";
 import Link from "next/link";
 
 export function TopSection() {
+  const rep = useRepContext();
   return (
     <div className="flex items-center justify-between gap-2 py-1.5 px-4">
       <div className="flex gap-6 items-center flex-1">
@@ -51,6 +53,15 @@ export function TopSection() {
             <DropdownMenuItem>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        <Button
+          type="button"
+          onClick={() => {
+            indexedDB.deleteDatabase(rep.idbName);
+          }}
+        >
+          Clear
+        </Button>
       </div>
     </div>
   );

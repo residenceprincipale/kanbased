@@ -1,4 +1,5 @@
 "use client";
+import React, { useState, type FormEventHandler } from "react";
 import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,16 +13,20 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState, type FormEventHandler } from "react";
 
-export function CreateColumn(props: React.PropsWithChildren) {
+export function CreateColumn(props: {
+  trigger: React.ReactNode;
+  boardId: string;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const rep = useRepContext();
+
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const columnName = fd.get("column-name") as string;
-    rep.mutate.createColumn({ name: columnName });
+
+    rep.mutate.createColumn({ name: columnName, boardId: "", order: 0 });
     setIsOpen(false);
   };
 

@@ -6,6 +6,8 @@ import { mutators, type Mutators } from "@kanbased/shared/src/mutators";
 // @ts-expect-error
 const ReplicacheContext = createContext<Replicache<Mutators>>();
 
+export type Rep = Replicache<Mutators>;
+
 export function ReplicacheProvider(props: React.PropsWithChildren) {
   const [rep, setRep] = useState<Replicache<Mutators> | null>(null);
 

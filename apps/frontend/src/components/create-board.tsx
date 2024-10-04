@@ -21,7 +21,7 @@ export function CreateBoard() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const boardName = fd.get("board-name") as string;
-    rep.mutate.createBoard({ name: boardName });
+    rep.mutate.createBoard({ name: boardName, color: "" });
     setIsOpen(false);
   };
 

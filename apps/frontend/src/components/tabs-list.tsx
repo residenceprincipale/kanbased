@@ -8,29 +8,34 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { routeMap } from "@/lib/constants";
-import { listBoards, listTabs } from "@/lib/queries";
+import { listTabs } from "@/lib/queries";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useSubscribe } from "replicache-react";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { cn, useBetterParams } from "@/lib/utils";
+import { useSubscribe } from "@/hooks/useSubscribe";
+import { useDataStore } from "@/hooks/query-hooks";
 
 export function TabsList() {
-  const rep = useRepContext();
-  const tabs = useSubscribe(rep, listTabs, { default: [] });
-  const router = useRouter();
-  const boards = useSubscribe(rep, listBoards, { default: [] });
   const [parent] = useAutoAnimate({ duration: 200 });
+  const router = useRouter();
+  const rep = useRepContext();
+  const tabs = useSubscribe(
+    listTabs,
+    (state) => state.tabs,
+    (state) => state.updateBoards
+  );
+  const boards = useDataStore((state) => state.boards);
   const { boardName } = useBetterParams<{ boardName: string }>();
 
   return (
     <div className="flex gap-4 items-center">
       <ul className="flex gap-3" ref={parent}>
         {tabs.map((tab) => {
-          const isActiveBoard = tab.boardName === boardName;
+          const isActiveBoard = tab.name === boardName;
           return (
             <li
-              key={tab.boardName}
+              key={tab.id}
               className={cn(
                 "px-2.5 py-2 w-32 flex items-center justify-between gap-0.5 rounded-lg border group",
                 isActiveBoard && "bg-secondary text-secondary-foreground"
@@ -38,17 +43,15 @@ export function TabsList() {
             >
               <Link
                 className="flex items-center gap-1.5 w-full flex-1 min-w-0"
-                href={routeMap.board(tab.boardName)}
+                href={routeMap.board(tab.name)}
               >
                 <div className="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
-                <div className="capitalize truncate text-sm">
-                  {tab.boardName}
-                </div>
+                <div className="capitalize truncate text-sm">{tab.name}</div>
               </Link>
               <button
                 type="button"
                 onClick={() => {
-                  rep.mutate.deleteTab({ boardName: tab.boardName });
+                  rep.mutate.deleteTab({ id: tab.id });
                   router.replace(routeMap.boards);
                 }}
                 className={cn(
@@ -102,9 +105,7 @@ export function TabsList() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64 !p-3">
           {boards
-            .filter(
-              (board) => !tabs.some((tab) => tab.boardName === board.name)
-            )
+            .filter((board) => !tabs.some((tab) => tab.name === board.name))
             .map((board) => (
               <DropdownMenuItem key={board.name} asChild>
                 <Link href={routeMap.board(board.name)}>{board.name}</Link>

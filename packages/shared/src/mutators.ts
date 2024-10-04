@@ -10,72 +10,70 @@ export type Todo = {
 export type Board = {
   id: string;
   name: string;
-  color?: string;
-  isPinned: boolean;
+  color: string;
+  createdAt: string;
 };
 
-export type TabState = {
-  boardName: Board["name"];
-  boardColor: Board["color"];
+export type Tab = {
+  id: string;
+  name: Board["name"];
+  color: Board["color"];
+  order: number;
 };
 
 export type Column = {
   id: string;
   name: string;
-  createdAt: string;
+  boardId: string;
+  order: number;
 };
 
 export type Card = {
   name: string;
-  createdAt: string;
+  order: number;
+  columnId: string;
 };
 
 export const mutators = {
   createBoard: async (
     tx: WriteTransaction,
-    {
-      name,
-      isPinned,
-      color,
-    }: Pick<Board, "name"> & Partial<Pick<Board, "isPinned" | "color">>
+    { name, color }: Omit<Board, "id" | "createdAt">
   ) => {
     const id = nanoid();
     await tx.set(`boards/${id}`, {
       id,
       name,
-      isPinned: !!isPinned,
       color,
-    });
-  },
-  createTab: async (
-    tx: WriteTransaction,
-    { boardColor, boardName }: TabState
-  ) => {
-    const id = nanoid();
-    await tx.set(`tabsState/${boardName}`, {
-      id,
-      boardName,
-      boardColor,
+      createdAt: new Date().toISOString(),
     });
   },
   createColumn: async (
     tx: WriteTransaction,
-    { name }: Pick<Column, "name">
+    { name, boardId, order }: Omit<Column, "id">
   ) => {
     const id = nanoid();
     await tx.set(`columns/${id}`, {
       id,
       name,
-      createdAt: new Date().toISOString(),
+      boardId,
+      order,
     });
   },
-  deleteTab: async (
+  createTab: async (
     tx: WriteTransaction,
-    { boardName }: Pick<TabState, "boardName">
+    { color, name, order }: Omit<Tab, "id">
   ) => {
-    await tx.del(`tabsState/${boardName}`);
+    const id = nanoid();
+    await tx.set(`tabs/${id}`, {
+      id,
+      name,
+      color,
+      order,
+    });
   },
-
+  deleteTab: async (tx: WriteTransaction, { id }: Pick<Tab, "id">) => {
+    await tx.del(`tabs/${id}`);
+  },
   updateTodoText: async (
     tx: WriteTransaction,
     { id, text }: { id: string; text: string }

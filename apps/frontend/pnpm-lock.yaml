@@ -59,15 +59,15 @@ importers:
       replicache:
         specifier: ^15.0.1
         version: 15.0.1
-      replicache-react:
-        specifier: ^5.0.1
-        version: 5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.10)
+      zustand:
+        specifier: 5.0.0-rc.2
+        version: 5.0.0-rc.2(@types/react@18.3.3)(react@18.3.1)
     devDependencies:
       '@tanstack/eslint-plugin-query':
         specifier: ^5.51.15
@@ -1832,12 +1832,6 @@ packages:
     resolution: {integrity: sha512-NcDiDkTLuPR+++OCKB0nWafEmhg/Da8aUPLPMQbK+bxKKCm1/S5he+AqYa4PlMCVBalb4/yxIRub6qkEx5yJbw==}
     engines: {node: '>= 0.4'}
 
-  replicache-react@5.0.1:
-    resolution: {integrity: sha512-xwiVdoANIX9oagqK8sT/txx9ltfEmkKgbJivdVvyz13bj5PAT+b8o9xuMtY4X1bJgu+9mn04muWPKtPv9MV/ZA==}
-    peerDependencies:
-      react: '>=16.0 <19.0'
-      react-dom: '>=16.0 <19.0'
-
   replicache@15.0.1:
     resolution: {integrity: sha512-I7HK6h2eT2QNxO4mwQFDqbuxhvCQgSlU4QuwfN9dqA6EKnO73VYiKB676r36N3q5W7L+htLgAcrSsrX+JPsRlQ==}
     engines: {node: '>=14.8.0'}
@@ -2186,6 +2180,24 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zustand@5.0.0-rc.2:
+    resolution: {integrity: sha512-o2Nwuvnk8vQBX7CcHL8WfFkZNJdxB/VKeWw0tNglw8p4cypsZ3tRT7rTRTDNeUPFS0qaMBRSKe+fVwL5xpcE3A==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=18.0.0'
+      immer: '>=9.0.6'
+      react: '>=18.0.0'
+      use-sync-external-store: '>=1.2.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+      use-sync-external-store:
+        optional: true
 
 snapshots:
 
@@ -3197,7 +3209,7 @@ snapshots:
       eslint: 8.57.0
       eslint-import-resolver-node: 0.3.9
       eslint-import-resolver-typescript: 3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       eslint-plugin-jsx-a11y: 6.9.0(eslint@8.57.0)
       eslint-plugin-react: 7.35.0(eslint@8.57.0)
       eslint-plugin-react-hooks: 4.6.2(eslint@8.57.0)
@@ -3221,7 +3233,7 @@ snapshots:
       enhanced-resolve: 5.17.1
       eslint: 8.57.0
       eslint-module-utils: 2.8.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
-      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0)
+      eslint-plugin-import: 2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0)
       fast-glob: 3.3.2
       get-tsconfig: 4.7.6
       is-core-module: 2.15.0
@@ -3243,7 +3255,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-node@0.3.9)(eslint-plugin-import@2.29.1(eslint@8.57.0))(eslint@8.57.0))(eslint@8.57.0):
+  eslint-plugin-import@2.29.1(@typescript-eslint/parser@7.2.0(eslint@8.57.0)(typescript@5.5.4))(eslint-import-resolver-typescript@3.6.1)(eslint@8.57.0):
     dependencies:
       array-includes: 3.1.8
       array.prototype.findlastindex: 1.2.5
@@ -4101,11 +4113,6 @@ snapshots:
       es-errors: 1.3.0
       set-function-name: 2.0.2
 
-  replicache-react@5.0.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
-    dependencies:
-      react: 18.3.1
-      react-dom: 18.3.1(react@18.3.1)
-
   replicache@15.0.1:
     dependencies:
       '@badrap/valita': 0.3.9
@@ -4511,3 +4518,8 @@ snapshots:
   yargs-parser@21.1.1: {}
 
   yocto-queue@0.1.0: {}
+
+  zustand@5.0.0-rc.2(@types/react@18.3.3)(react@18.3.1):
+    optionalDependencies:
+      '@types/react': 18.3.3
+      react: 18.3.1

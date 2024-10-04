@@ -1,4 +1,4 @@
-import type { Board, Column, TabState } from "@kanbased/shared/src/mutators";
+import type { Board, Column, Tab } from "@kanbased/shared/src/mutators";
 import type { ReadTransaction } from "replicache";
 
 export function listBoards(tx: ReadTransaction) {
@@ -6,7 +6,7 @@ export function listBoards(tx: ReadTransaction) {
 }
 
 export function listTabs(tx: ReadTransaction) {
-  return tx.scan<TabState>({ prefix: "tabsState/" }).values().toArray();
+  return tx.scan<Tab>({ prefix: "tabs/" }).values().toArray();
 }
 
 export function listColumns(tx: ReadTransaction) {
