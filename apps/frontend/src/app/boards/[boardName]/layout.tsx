@@ -1,9 +1,9 @@
 "use client";
 import type React from "react";
 import { useSubscribe } from "@/hooks/use-subcribe";
-import { listBoards } from "@/lib/queries";
+import { listColumns } from "@/lib/queries";
 
-export default function BoardsLayout(props: React.PropsWithChildren) {
-  useSubscribe(listBoards, "columns");
+export default function Layout(props: React.PropsWithChildren) {
+  useSubscribe(listColumns, "columns");
   return props.children;
 }

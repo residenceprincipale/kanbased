@@ -24,7 +24,6 @@ export function useSubscribe<QueryRet, TStoreKey extends StoreKeys>(
   storeKey: TStoreKey
 ) {
   const r = useRepContext();
-  const state = useDataStore((state) => state[storeKey]);
   const updateStore = useDataStore((state) => state.updateStore);
 
   useEffect(() => {
@@ -48,6 +47,4 @@ export function useSubscribe<QueryRet, TStoreKey extends StoreKeys>(
       updateStore(storeKey, () => undefined);
     };
   }, [r]);
-
-  return state;
 }

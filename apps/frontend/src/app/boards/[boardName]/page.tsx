@@ -3,35 +3,39 @@ import { CreateColumn } from "@/components/create-column";
 import { KanbanColumns } from "@/components/kanban-card";
 import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
-import { useDataStore } from "@/hooks/use-data-store";
+import { useGetStoreData } from "@/hooks/use-data-store";
 import { routeMap } from "@/lib/constants";
 import { useRouter } from "next/navigation";
 import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
-import { useMemo } from "react";
+import { useEffect, useRef } from "react";
 
 export default function BoardPage() {
   const { boardName } = useBetterParams<{ boardName: string }>();
   const rep = useRepContext();
   const router = useRouter();
+  const boards = useGetStoreData("boards");
+  const tabs = useGetStoreData("tabs");
+  const hasRanEffect = useRef(false);
 
-  useMemo(() => {
-    const { boards, tabs } = useDataStore.getState();
-    const isBoardExist = boards.some((board) => board.name === boardName);
-
+  useEffect(() => {
+    if (hasRanEffect.current) return;
+    const isBoardExist = boards?.some((board) => board.name === boardName);
     if (!isBoardExist) {
       router.replace(routeMap.boards);
       return;
     }
+    const isTabExist = tabs?.some((tab) => tab.name === boardName);
 
-    const hasCurrentBoard = tabs.some((tab) => tab.name === boardName);
-    if (hasCurrentBoard) return;
+    if (!isTabExist) {
+      rep.mutate.createTab({
+        name: boardName,
+        color: "",
+        order: tabs?.length ?? 0,
+      });
+    }
 
-    rep.mutate.createTab({
-      name: boardName,
-      color: "",
-      order: tabs.length,
-    });
+    hasRanEffect.current = true;
   }, []);
 
   return (
