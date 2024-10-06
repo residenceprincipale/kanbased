@@ -3,11 +3,11 @@ import { CreateColumn } from "@/components/create-column";
 import { KanbanColumns } from "@/components/kanban-card";
 import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
-import { useDataStore } from "@/hooks/query-hooks";
+import { useDataStore } from "@/hooks/use-data-store";
 import { routeMap } from "@/lib/constants";
+import { useRouter } from "next/navigation";
 import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 export default function BoardPage() {

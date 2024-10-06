@@ -1,5 +1,6 @@
 import { useRepContext } from "@/components/replicache-provider";
-import { useDataStore, type DataStore } from "@/hooks/query-hooks";
+import { useDataStore } from "@/hooks/use-data-store";
+import type { StoreKeys } from "@/hooks/use-data-store";
 import { useEffect } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import type { ReadTransaction } from "replicache";
@@ -18,15 +19,13 @@ function doCallback() {
   });
 }
 
-export function useSubscribe<QueryRet, DataSelector>(
+export function useSubscribe<QueryRet, TStoreKey extends StoreKeys>(
   query: (tx: ReadTransaction) => Promise<QueryRet>,
-  dataSelector: (state: DataStore) => DataSelector,
-  updatorSelector: (state: DataStore) => (data: any) => void,
-  options?: { clearOnUnmount: boolean }
+  storeKey: TStoreKey
 ) {
   const r = useRepContext();
-  const state = useDataStore(dataSelector);
-  const updator = useDataStore(updatorSelector);
+  const state = useDataStore((state) => state[storeKey]);
+  const updateStore = useDataStore((state) => state.updateStore);
 
   useEffect(() => {
     if (!r) {
@@ -36,7 +35,8 @@ export function useSubscribe<QueryRet, DataSelector>(
       onData: (data) => {
         // This is safe because we know that subscribe in fact can only return
         // `R` (the return type of query or def).
-        callbacks.push(() => updator(data));
+        // @ts-expect-error
+        callbacks.push(() => updateStore(storeKey, () => data));
         if (!hasPendingCallback) {
           void Promise.resolve().then(doCallback);
           hasPendingCallback = true;
@@ -45,7 +45,7 @@ export function useSubscribe<QueryRet, DataSelector>(
     });
     return () => {
       unsubscribe();
-      options?.clearOnUnmount && updator(undefined);
+      updateStore(storeKey, () => undefined);
     };
   }, [r]);
 

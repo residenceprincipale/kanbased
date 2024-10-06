@@ -1,18 +1,13 @@
 import { Button } from "@/components/ui/button";
-import { useSubscribe } from "@/hooks/useSubscribe";
-import { listColumns } from "@/lib/queries";
+import { useGetStoreData } from "@/hooks/use-data-store";
 
 export function KanbanColumns() {
-  const columns = useSubscribe(
-    listColumns,
-    (state) => state.boards,
-    (state) => state.updateBoards
-  );
+  const columns = useGetStoreData("columns");
 
   return (
     <div className="pb-8 overflow-x-auto">
       <ul className="flex gap-4">
-        {columns.map((column) => (
+        {columns?.map((column) => (
           <li
             className="w-80 p-2 bg-muted rounded-md space-y-3 shrink-0 border"
             key={column.id}

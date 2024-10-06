@@ -8,30 +8,24 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { routeMap } from "@/lib/constants";
-import { listTabs } from "@/lib/queries";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { cn, useBetterParams } from "@/lib/utils";
-import { useSubscribe } from "@/hooks/useSubscribe";
-import { useDataStore } from "@/hooks/query-hooks";
+import { useGetStoreData } from "@/hooks/use-data-store";
 
 export function TabsList() {
   const [parent] = useAutoAnimate({ duration: 200 });
   const router = useRouter();
   const rep = useRepContext();
-  const tabs = useSubscribe(
-    listTabs,
-    (state) => state.tabs,
-    (state) => state.updateBoards
-  );
-  const boards = useDataStore((state) => state.boards);
+  const tabs = useGetStoreData("tabs");
+  const boards = useGetStoreData("boards");
   const { boardName } = useBetterParams<{ boardName: string }>();
 
   return (
     <div className="flex gap-4 items-center">
       <ul className="flex gap-3" ref={parent}>
-        {tabs.map((tab) => {
+        {tabs?.map((tab) => {
           const isActiveBoard = tab.name === boardName;
           return (
             <li
@@ -105,7 +99,7 @@ export function TabsList() {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64 !p-3">
           {boards
-            .filter((board) => !tabs.some((tab) => tab.name === board.name))
+            ?.filter((board) => !tabs?.some((tab) => tab.name === board.name))
             .map((board) => (
               <DropdownMenuItem key={board.name} asChild>
                 <Link href={routeMap.board(board.name)}>{board.name}</Link>
