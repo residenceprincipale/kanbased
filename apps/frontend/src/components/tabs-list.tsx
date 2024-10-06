@@ -10,13 +10,11 @@ import {
 import { routeMap } from "@/lib/constants";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { cn, useBetterParams } from "@/lib/utils";
 import { useGetStoreData } from "@/hooks/use-data-store";
 import { memo } from "react";
 
 export const TabsList = memo(function TabsList() {
-  const [parent] = useAutoAnimate({ duration: 200 });
   const router = useRouter();
   const rep = useRepContext();
   const tabs = useGetStoreData("tabs");
@@ -25,7 +23,7 @@ export const TabsList = memo(function TabsList() {
 
   return (
     <div className="flex gap-4 items-center">
-      <ul className="flex gap-3" ref={parent}>
+      <ul className="flex gap-3">
         {tabs
           ?.slice()
           .sort((a, b) => a.order - b.order)

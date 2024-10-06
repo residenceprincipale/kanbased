@@ -17,10 +17,11 @@ export default function BoardPage() {
   const boards = useGetStoreData("boards");
   const tabs = useGetStoreData("tabs");
   const hasRanEffect = useRef(false);
+  const ref = useRef(0);
 
   useEffect(() => {
-    if (hasRanEffect.current) return;
-    const isBoardExist = boards?.some((board) => board.name === boardName);
+    if (hasRanEffect.current || !boards?.length) return;
+    const isBoardExist = boards.some((board) => board.name === boardName);
     if (!isBoardExist) {
       router.replace(routeMap.boards);
       return;
@@ -36,10 +37,13 @@ export default function BoardPage() {
     }
 
     hasRanEffect.current = true;
-  }, []);
+    return () => {
+      ref.current = 0;
+    };
+  }, [boards, tabs]);
 
   return (
-    <main className="px-8 py-4 flex-1 h-full flex flex-col gap-8">
+    <main className="px-8 pt-4 flex-1 h-full flex flex-col gap-8">
       <div className="flex justify-between gap-4 items-center shrink-0">
         <h1 className="text-2xl capitalize font-bold">{boardName}</h1>
         <CreateColumn

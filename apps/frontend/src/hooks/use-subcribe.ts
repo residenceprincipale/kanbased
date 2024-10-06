@@ -1,7 +1,7 @@
 import { useRepContext } from "@/components/replicache-provider";
 import { useDataStore } from "@/hooks/use-data-store";
 import type { StoreKeys } from "@/hooks/use-data-store";
-import { useEffect } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { unstable_batchedUpdates } from "react-dom";
 import type { ReadTransaction } from "replicache";
 // We wrap all the callbacks in a `unstable_batchedUpdates` call to ensure that
@@ -19,21 +19,18 @@ function doCallback() {
   });
 }
 
+const arr: any[] = [];
 export function useSubscribe<QueryRet, TStoreKey extends StoreKeys>(
   query: (tx: ReadTransaction) => Promise<QueryRet>,
-  storeKey: TStoreKey
+  storeKey: TStoreKey,
+  deps: any[] = arr
 ) {
   const r = useRepContext();
   const updateStore = useDataStore((state) => state.updateStore);
 
-  useEffect(() => {
-    if (!r) {
-      return;
-    }
-    const unsubscribe = r.subscribe(query, {
+  const subscribe = useCallback(() => {
+    const unSubscribe = r.subscribe(query, {
       onData: (data) => {
-        // This is safe because we know that subscribe in fact can only return
-        // `R` (the return type of query or def).
         // @ts-expect-error
         callbacks.push(() => updateStore(storeKey, () => data));
         if (!hasPendingCallback) {
@@ -42,9 +39,14 @@ export function useSubscribe<QueryRet, TStoreKey extends StoreKeys>(
         }
       },
     });
+
     return () => {
-      unsubscribe();
+      unSubscribe();
       updateStore(storeKey, () => undefined);
     };
-  }, [r]);
+  }, deps);
+
+  // Using this hook so we can subscribe immediately
+  // instead of waiting for `useEffect` run on mount.
+  useSyncExternalStore(subscribe, () => undefined);
 }

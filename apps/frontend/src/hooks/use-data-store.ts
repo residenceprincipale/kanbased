@@ -1,10 +1,11 @@
-import type { Board, Column, Tab } from "@kanbased/shared/src/mutators";
+import type { Board, Card, Column, Tab } from "@kanbased/shared/src/mutators";
 import { create } from "zustand";
 
 type Data = {
   boards: Board[] | undefined;
   tabs: Tab[] | undefined;
   columns: Column[] | undefined;
+  cards: Card[] | undefined;
 };
 
 export type DataStore = Data & {
@@ -20,6 +21,7 @@ export const useDataStore = create<DataStore>((set) => ({
   boards: [],
   tabs: [],
   columns: [],
+  cards: [],
   updateStore: <T extends StoreKeys>(
     key: T,
     updator: (data: Data[T]) => Data[T]

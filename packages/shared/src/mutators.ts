@@ -29,6 +29,7 @@ export type Column = {
 };
 
 export type Card = {
+  id: string;
   name: string;
   order: number;
   columnId: string;
@@ -69,6 +70,18 @@ export const mutators = {
       name,
       color,
       order,
+    });
+  },
+  createCard: async (
+    tx: WriteTransaction,
+    { name, order, columnId }: Omit<Card, "id">
+  ) => {
+    const id = nanoid();
+    await tx.set(`cards/${columnId}/${id}`, {
+      id,
+      name,
+      order,
+      columnId,
     });
   },
   deleteTab: async (tx: WriteTransaction, { id }: Pick<Tab, "id">) => {

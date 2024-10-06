@@ -15,6 +15,6 @@ export default function Layout(props: LayoutProps) {
     (board) => board.name === boardName
   )?.id!;
 
-  useSubscribe((tx) => listColumns(tx, boardId), "columns");
+  useSubscribe((tx) => listColumns(tx, boardId), "columns", [boardId]);
   return props.children;
 }

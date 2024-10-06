@@ -7,6 +7,7 @@ import { listBoards, listTabs } from "@/lib/queries";
 export default function BoardsLayout(props: React.PropsWithChildren) {
   useSubscribe(listBoards, "boards");
   useSubscribe(listTabs, "tabs");
+
   return (
     <div className="h-screen flex flex-col">
       <header className="shrink-0">

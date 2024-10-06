@@ -35,6 +35,7 @@ export function ReplicacheProvider(props: React.PropsWithChildren) {
     };
   }, []);
 
+  // Always do this Or else bad things happen.
   if (!rep) {
     return null;
   }

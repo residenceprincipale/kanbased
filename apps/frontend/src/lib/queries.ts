@@ -15,3 +15,10 @@ export function listColumns(tx: ReadTransaction, boardId: string) {
     .values()
     .toArray();
 }
+
+export function listCard(tx: ReadTransaction, columnId: string) {
+  return tx
+    .scan<Column>({ prefix: `columns/${columnId}/` })
+    .values()
+    .toArray();
+}
