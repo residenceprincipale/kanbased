@@ -9,6 +9,9 @@ export function listTabs(tx: ReadTransaction) {
   return tx.scan<Tab>({ prefix: "tabs/" }).values().toArray();
 }
 
-export function listColumns(tx: ReadTransaction) {
-  return tx.scan<Column>({ prefix: "columns/" }).values().toArray();
+export function listColumns(tx: ReadTransaction, boardId: string) {
+  return tx
+    .scan<Column>({ prefix: `columns/${boardId}/` })
+    .values()
+    .toArray();
 }

@@ -39,27 +39,21 @@ export default function BoardPage() {
   }, []);
 
   return (
-    <main className="px-8 py-4 flex-1 h-full flex flex-col">
-      <h1 className="text-2xl capitalize font-bold mb-4">{boardName}</h1>
+    <main className="px-8 py-4 flex-1 h-full flex flex-col gap-8">
+      <div className="flex justify-between gap-4 items-center shrink-0">
+        <h1 className="text-2xl capitalize font-bold">{boardName}</h1>
+        <CreateColumn
+          boardId={boardName}
+          trigger={
+            <Button type="button" size="icon">
+              <PlusIcon />
+            </Button>
+          }
+        />
+      </div>
 
-      <div className="flex gap-4 flex-1">
+      <div className="flex-1 h-full">
         <KanbanColumns />
-
-        <div className="shrink-0">
-          <CreateColumn
-            boardId={boardName}
-            trigger={
-              <Button
-                type="button"
-                size="icon"
-                className="w-12 h-12"
-                variant="secondary"
-              >
-                <PlusIcon className="w-8 h-8" />
-              </Button>
-            }
-          />
-        </div>
       </div>
     </main>
   );

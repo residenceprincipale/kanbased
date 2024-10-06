@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useBetterParams } from "@/lib/utils";
+import { useDataStore } from "@/hooks/use-data-store";
 
 export function CreateColumn(props: {
   trigger: React.ReactNode;
@@ -20,19 +22,24 @@ export function CreateColumn(props: {
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const rep = useRepContext();
+  const { boardName } = useBetterParams<{ boardName: string }>();
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
-    const columnName = fd.get("column-name") as string;
+    const name = fd.get("column-name") as string;
+    const boardId = useDataStore
+      .getState()
+      .boards?.find((board) => board.name === boardName)?.id!;
+    const order = useDataStore.getState().columns?.length ?? 0;
 
-    rep.mutate.createColumn({ name: columnName, boardId: "", order: 0 });
+    rep.mutate.createColumn({ name: name, boardId, order });
     setIsOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{props.children}</DialogTrigger>
+      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <DialogHeader>

@@ -52,7 +52,7 @@ export const mutators = {
     { name, boardId, order }: Omit<Column, "id">
   ) => {
     const id = nanoid();
-    await tx.set(`columns/${id}`, {
+    await tx.set(`columns/${boardId}/${id}`, {
       id,
       name,
       boardId,

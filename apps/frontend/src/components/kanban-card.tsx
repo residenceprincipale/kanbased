@@ -5,7 +5,7 @@ export function KanbanColumns() {
   const columns = useGetStoreData("columns");
 
   return (
-    <div className="pb-8 overflow-x-auto">
+    <div className="pb-8 overflow-x-auto h-full">
       <ul className="flex gap-4">
         {columns?.map((column) => (
           <li
