@@ -1,10 +1,11 @@
-import type { Board, Card, Column, Tab } from "@kanbased/shared/src/mutators";
+import type { ColumnWithCard } from "@/lib/queries";
+import type { Board, Card, Tab } from "@kanbased/shared/src/mutators";
 import { create } from "zustand";
 
 type Data = {
   boards: Board[] | undefined;
   tabs: Tab[] | undefined;
-  columns: Column[] | undefined;
+  columns: ColumnWithCard[] | undefined;
   cards: Card[] | undefined;
 };
 

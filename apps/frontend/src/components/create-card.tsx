@@ -6,6 +6,7 @@ import { useRef, type FormEvent } from "react";
 
 export function CreateCard(props: {
   columnId: string;
+  boardId: string;
   nextOrder: number;
   onComplete: () => void;
   onAddCard: () => void;
@@ -22,7 +23,9 @@ export function CreateCard(props: {
       name,
       columnId: props.columnId,
       order: props.nextOrder,
+      boardId: props.boardId,
     });
+    textAreaRef.current!.value = "";
     props.onAddCard();
   };
 

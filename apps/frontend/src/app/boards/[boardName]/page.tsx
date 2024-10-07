@@ -1,6 +1,6 @@
 "use client";
 import { CreateColumn } from "@/components/create-column";
-import { KanbanColumns } from "@/components/kanban-card";
+import { Columns } from "@/components/columns";
 import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
 import { useGetStoreData } from "@/hooks/use-data-store";
@@ -57,7 +57,7 @@ export default function BoardPage() {
       </div>
 
       <div className="flex-1 h-full">
-        <KanbanColumns />
+        <Columns />
       </div>
     </main>
   );
