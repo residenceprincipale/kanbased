@@ -17,7 +17,6 @@ export default function BoardPage() {
   const boards = useGetStoreData("boards");
   const tabs = useGetStoreData("tabs");
   const hasRanEffect = useRef(false);
-  const ref = useRef(0);
 
   useEffect(() => {
     if (hasRanEffect.current || !boards?.length) return;
@@ -37,13 +36,10 @@ export default function BoardPage() {
     }
 
     hasRanEffect.current = true;
-    return () => {
-      ref.current = 0;
-    };
   }, [boards, tabs]);
 
   return (
-    <main className="px-8 pt-4 flex-1 h-full flex flex-col gap-8">
+    <main className="px-8 pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
       <div className="flex justify-between gap-4 items-center shrink-0">
         <h1 className="text-2xl capitalize font-bold">{boardName}</h1>
         <CreateColumn
@@ -56,7 +52,7 @@ export default function BoardPage() {
         />
       </div>
 
-      <div className="flex-1 h-full">
+      <div className="flex-1 h-full min-h-0">
         <Columns />
       </div>
     </main>
