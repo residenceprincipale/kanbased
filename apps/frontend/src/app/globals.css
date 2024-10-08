@@ -67,4 +67,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  button {
+    @apply active:scale-95 scale-100 transition-transform disabled:active:scale-100
+  }
 }

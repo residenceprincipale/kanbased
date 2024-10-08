@@ -19,34 +19,35 @@ export type ColumnWithCard = Column & {
   cards: Card[];
 };
 
-export async function listColumns(tx: ReadTransaction, boardId: string) {
-  const columnsAndCards = await tx
-    .scan<Column & Card>({ prefix: prefixMap.columns(boardId) })
+export async function listColumns(
+  tx: ReadTransaction,
+  boardId: string
+): Promise<ColumnWithCard[]> {
+  const columns = await tx
+    .scan<Column>({ prefix: prefixMap.columns(boardId) })
     .values()
     .toArray();
 
-  const map = new Map<string, ColumnWithCard>();
-  for (let columnAndCard of columnsAndCards) {
-    const isCard = !!columnAndCard.columnId;
+  columns.sort((a, b) => a.order - b.order);
 
-    if (!isCard) {
-      const column = map.get(columnAndCard.id);
-      map.set(columnAndCard.id, {
-        ...columnAndCard,
-        cards: column?.cards || [],
-      });
-      continue;
-    }
+  // Get all cards in one operation
+  const cards = await tx
+    .scan<Card>({ prefix: prefixMap.cards(boardId) })
+    .values()
+    .toArray();
 
-    const column = map.get(columnAndCard.columnId);
-    if (column) {
-      column.cards.push(columnAndCard);
-    } else {
-      // @ts-expect-error
-      map.set(columnAndCard.columnId, { cards: [columnAndCard] });
-    }
+  // Group cards by column
+  const cardsByColumn = new Map<string, Card[]>();
+  for (const card of cards) {
+    const columnCards = cardsByColumn.get(card.columnId) || [];
+    columnCards.push(card);
+    cardsByColumn.set(card.columnId, columnCards);
   }
 
-  const result = [...map.values()];
-  return result;
+  // Combine columns with their cards
+  return columns.map((column) => ({
+    ...column,
+    cards:
+      cardsByColumn.get(column.id)?.sort((a, b) => a.order - b.order) || [],
+  }));
 }

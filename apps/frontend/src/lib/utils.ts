@@ -14,3 +14,9 @@ export function useBetterParams<TParams extends Record<string, any>>() {
   }
   return paramsCopy;
 }
+
+export async function promiseTimeout(delayInMs: number) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, delayInMs);
+  });
+}

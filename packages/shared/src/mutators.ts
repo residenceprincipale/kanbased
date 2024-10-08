@@ -11,16 +11,16 @@ export const prefixMap = {
     return `${this.tabs}${tabId}/`;
   },
   columns(boardId: string) {
-    return `${this.board(boardId)}columns/`;
+    return `${boardId}/columns/`;
   },
   column(boardId: string, columnId: string) {
     return `${this.columns(boardId)}${columnId}/`;
   },
-  cards(boardId: string, columnId: string) {
-    return `${this.column(boardId, columnId)}cards/`;
+  cards(boardId: string) {
+    return `${boardId}/cards/`;
   },
-  card(boardId: string, columnId: string, cardId: string) {
-    return `${this.cards(boardId, columnId)}${cardId}/`;
+  card(boardId: string, cardId: string) {
+    return `${this.cards(boardId)}${cardId}/`;
   },
 } as const;
 
@@ -100,7 +100,7 @@ export const mutators = {
     { name, order, columnId, boardId }: Omit<Card, "id"> & { boardId: string }
   ) => {
     const id = nanoid();
-    await tx.set(prefixMap.card(boardId, columnId, id), {
+    await tx.set(prefixMap.card(boardId, id), {
       id,
       name,
       order,

@@ -15,11 +15,11 @@ export function CreateCard(props: {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget as HTMLFormElement);
     const name = fd.get(props.columnId) as string;
-    rep.mutate.createCard({
+    await rep.mutate.createCard({
       name,
       columnId: props.columnId,
       order: props.nextOrder,
@@ -31,10 +31,19 @@ export function CreateCard(props: {
 
   return (
     <Card className="p-2">
-      <form onSubmit={handleSubmit} className="space-y-3">
+      <form
+        onSubmit={handleSubmit}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            props.onComplete();
+          }
+        }}
+        className="space-y-3"
+      >
         <Textarea
           name={props.columnId}
           ref={textAreaRef}
+          required
           onChange={(e) => {
             let el = e.currentTarget;
             el.style.height = `${el.scrollHeight}px`;
@@ -45,11 +54,6 @@ export function CreateCard(props: {
               buttonRef.current!.click();
             }
             if (event.key === "Escape") {
-              props.onComplete?.();
-            }
-          }}
-          onBlur={(event) => {
-            if (!event.currentTarget.contains(event.relatedTarget)) {
               props.onComplete();
             }
           }}
