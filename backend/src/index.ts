@@ -3,7 +3,6 @@ import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { logger } from "hono/logger";
 import boardsRouter from "./router/boards.js";
-import { connection } from "./db/index.js";
 import authRouter from "./router/auth.js";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";

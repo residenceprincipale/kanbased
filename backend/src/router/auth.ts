@@ -7,10 +7,10 @@ import {
 import { db } from "../db/index.js";
 import { userTable } from "../db/schema/index.js";
 import { and, eq, or } from "drizzle-orm";
-import { attachAuthCookie, hashPassword, verifyPassword } from "../utils.js";
-import { generateId } from "lucia";
+import { hashPassword, verifyPassword } from "../utils.js";
 import type { AppInstanceType } from "../index.js";
-import { lucia } from "../lib/lucia.js";
+import { deleteSessionTokenCookie, setSession } from "../lib/session.js";
+import { invalidateSession } from "../lib/auth.js";
 
 const authRouter = new OpenAPIHono<AppInstanceType>();
 
@@ -32,7 +32,6 @@ authRouter.openapi(registerUserRoute, async (c) => {
   }
 
   const hash = await hashPassword(body.password);
-  const id = generateId(15);
 
   const result = await db
     .insert(userTable)
@@ -40,14 +39,12 @@ authRouter.openapi(registerUserRoute, async (c) => {
       email: body.email,
       password: hash,
       name: body.name,
-      id,
       accountType: "email",
     })
     .returning();
 
   const { password, ...rest } = result[0]!;
-
-  await attachAuthCookie(rest!.id, c);
+  await setSession(c, rest!.id);
 
   return c.json(rest, 200);
 });
@@ -75,7 +72,7 @@ authRouter.openapi(loginUserRoute, async (c) => {
     return c.json({ message: "Invalid credentials" }, 400);
   }
 
-  await attachAuthCookie(user.id, c);
+  await setSession(c, user!.id);
 
   return c.json({ email: user.email, name: user.name }, 200);
 });
@@ -87,8 +84,8 @@ authRouter.openapi(logoutRoute, async (c) => {
     return c.json({ message: "Un authorized" }, 401);
   }
 
-  await lucia.invalidateSession(session.id);
-  c.header("Set-Cookie", lucia.createBlankSessionCookie().serialize());
+  await invalidateSession(session.id);
+  deleteSessionTokenCookie(c);
 
   return c.json({}, 200);
 });

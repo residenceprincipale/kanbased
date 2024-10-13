@@ -1,9 +1,10 @@
-import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-import { lucia } from "../lib/lucia.js";
+import { deleteSessionTokenCookie, getSessionToken } from "../lib/session.js";
+import { validateRequest } from "../lib/auth.js";
 
 export const verifySessionMiddleware = createMiddleware(async (c, next) => {
-  const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;
+  // const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;
+  const sessionId = getSessionToken();
 
   if (!sessionId) {
     c.set("user", null);
@@ -11,17 +12,10 @@ export const verifySessionMiddleware = createMiddleware(async (c, next) => {
     return next();
   }
 
-  const { session, user } = await lucia.validateSession(sessionId);
-  if (session && session.fresh) {
-    // use `header()` instead of `setCookie()` to avoid TS errors
-    c.header("Set-Cookie", lucia.createSessionCookie(session.id).serialize(), {
-      append: true,
-    });
-  }
+  const { session, user } = await validateRequest();
+
   if (!session) {
-    c.header("Set-Cookie", lucia.createBlankSessionCookie().serialize(), {
-      append: true,
-    });
+    deleteSessionTokenCookie(c);
   }
 
   c.set("user", user);
