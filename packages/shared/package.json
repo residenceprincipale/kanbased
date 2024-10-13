@@ -1,7 +1,0 @@
-{
-  "name": "@kanbased/shared",
-  "peerDependencies": {
-    "replicache": "*",
-    "nanoid": "*"
-  }
-}

@@ -1,5 +1,5 @@
 import type { ColumnWithCard } from "@/lib/queries";
-import type { Board, Card, Tab } from "@kanbased/shared/src/mutators";
+import type { Board, Card, Tab } from "@/lib/mutators";
 import { create } from "zustand";
 
 type Data = {

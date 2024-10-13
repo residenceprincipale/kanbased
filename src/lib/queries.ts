@@ -4,7 +4,7 @@ import {
   type Card,
   type Column,
   type Tab,
-} from "@kanbased/shared/src/mutators";
+} from "@/lib/mutators";
 import type { ReadTransaction } from "replicache";
 
 export function listBoards(tx: ReadTransaction) {

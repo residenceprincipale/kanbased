@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Replicache } from "replicache";
 import { nanoid } from "nanoid";
-import { mutators, type Mutators } from "@kanbased/shared/src/mutators";
+import { mutators, type Mutators } from "@/lib/mutators";
 
 // @ts-expect-error
 const ReplicacheContext = createContext<Replicache<Mutators>>();

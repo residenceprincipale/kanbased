@@ -2,7 +2,6 @@ import { CreateCard } from "@/components/create-card";
 import { Button } from "@/components/ui/button";
 import type { ColumnWithCard } from "@/lib/queries";
 import { promiseTimeout } from "@/lib/utils";
-import type { Column } from "@kanbased/shared/src/mutators";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
