@@ -1,25 +1,27 @@
+import type { Context } from "hono";
+
 import { serve } from "@hono/node-server";
 import { swaggerUI } from "@hono/swagger-ui";
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { logger } from "hono/logger";
-import boardsRouter from "./router/boards.js";
-import authRouter from "./router/auth.js";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
-import type { Context } from "hono";
+import { logger } from "hono/logger";
+
 import {
   authenticatedMiddleware,
   verifySessionMiddleware,
 } from "./middlewares/auth.js";
+import authRouter from "./router/auth.js";
+import boardsRouter from "./router/boards.js";
 
-type Variables = {
+interface Variables {
   user: any;
   session: any;
-};
+}
 
-export type AppInstanceType = {
+export interface AppInstanceType {
   Variables: Variables;
-};
+}
 
 export type AppContext = Context<AppInstanceType>;
 
@@ -33,7 +35,7 @@ export const app = new OpenAPIHono<{ Variables: Variables }>({
       {
         message: result.error.format(),
       },
-      422
+      422,
     );
   },
 });
@@ -46,7 +48,7 @@ app.use(
     // TODO: Change origin later
     origin: "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 
 app.use(csrf({ origin: "http://localhost:3000" }));
@@ -73,7 +75,7 @@ app.get(
   "/api-docs",
   swaggerUI({
     url: "/doc",
-  })
+  }),
 );
 
 // ====== end of public routes ======
@@ -103,5 +105,5 @@ serve(
   },
   (info) => {
     console.log(`Server is running on port ${info.port}`);
-  }
+  },
 );

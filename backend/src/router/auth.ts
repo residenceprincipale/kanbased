@@ -1,16 +1,18 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
+import { and, eq, or } from "drizzle-orm";
+
+import type { AppInstanceType } from "../index.js";
+
+import { db } from "../db/index.js";
+import { userTable } from "../db/schema/index.js";
+import { invalidateSession } from "../lib/auth.js";
+import { deleteSessionTokenCookie, setSession } from "../lib/session.js";
 import {
   loginUserRoute,
   logoutRoute,
   registerUserRoute,
 } from "../route-schema/auth.js";
-import { db } from "../db/index.js";
-import { userTable } from "../db/schema/index.js";
-import { and, eq, or } from "drizzle-orm";
 import { hashPassword, verifyPassword } from "../utils.js";
-import type { AppInstanceType } from "../index.js";
-import { deleteSessionTokenCookie, setSession } from "../lib/session.js";
-import { invalidateSession } from "../lib/auth.js";
 
 const authRouter = new OpenAPIHono<AppInstanceType>();
 
@@ -27,7 +29,7 @@ authRouter.openapi(registerUserRoute, async (c) => {
       {
         message: `A user with this email already exist. Please login`,
       },
-      400
+      400,
     );
   }
 
@@ -58,8 +60,8 @@ authRouter.openapi(loginUserRoute, async (c) => {
     .where(
       and(
         or(eq(userTable.name, body.name), eq(userTable.email, body.email)),
-        eq(userTable.accountType, "email")
-      )
+        eq(userTable.accountType, "email"),
+      ),
     );
 
   if (!user) {

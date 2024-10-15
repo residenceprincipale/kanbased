@@ -1,14 +1,13 @@
 import {
-  text,
-  pgTable,
-  timestamp,
-  varchar,
   boolean,
-  pgEnum,
-  serial,
-  unique,
-  integer,
   index,
+  pgEnum,
+  pgTable,
+  serial,
+  text,
+  timestamp,
+  unique,
+  varchar,
 } from "drizzle-orm/pg-core";
 
 export const accountTypeEnum = pgEnum("account_type", [
@@ -39,13 +38,14 @@ export const accounts = pgTable(
     password: text("password"),
     salt: text("salt"),
   },
-  (table) => ({
+  table => ({
     userIdAccountTypeIdx: index("user_id_account_type_idx").on(
       table.userId,
-      table.accountType
+      table.accountType,
     ),
-  })
+  }),
 );
+
 export const boardTable = pgTable(
   "board",
   {
@@ -61,7 +61,7 @@ export const boardTable = pgTable(
     return {
       uniqueBoardNamePerUser: unique().on(table.name, table.userId),
     };
-  }
+  },
 );
 export const sessionTable = pgTable(
   "session",
@@ -75,9 +75,9 @@ export const sessionTable = pgTable(
       mode: "date",
     }).notNull(),
   },
-  (table) => ({
+  table => ({
     userIdIdx: index("sessions_user_id_idx").on(table.userId),
-  })
+  }),
 );
 
 export type Session = typeof sessionTable.$inferSelect;

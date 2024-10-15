@@ -1,31 +1,32 @@
-import { GitHub, Google } from "arctic";
+import { sha256 } from "@oslojs/crypto/sha2";
 import {
   encodeBase32LowerCaseNoPadding,
   encodeHexLowerCase,
 } from "@oslojs/encoding";
+import { GitHub, Google } from "arctic";
+import { eq } from "drizzle-orm";
+
+import { db } from "../db/index.js";
 import {
   type Session,
   sessionTable,
   type User,
   userTable,
 } from "../db/schema/index.js";
-import { eq } from "drizzle-orm";
-import { sha256 } from "@oslojs/crypto/sha2";
 import { getSessionToken } from "./session.js";
-import { db } from "../db/index.js";
 
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;
 
 export const github = new GitHub(
   process.env.GITHUB_CLIENT_ID!,
-  process.env.GITHUB_CLIENT_SECRET!
+  process.env.GITHUB_CLIENT_SECRET!,
 );
 
 export const googleAuth = new Google(
   process.env.GOOGLE_CLIENT_ID!,
   process.env.GOOGLE_CLIENT_SECRET!,
-  `${process.env.HOST_NAME}/api/login/google/callback`
+  `${process.env.HOST_NAME}/api/login/google/callback`,
 );
 
 export function generateSessionToken(): string {
@@ -37,7 +38,7 @@ export function generateSessionToken(): string {
 
 export async function createSession(
   token: string,
-  userId: number
+  userId: number,
 ): Promise<Session> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const session: Session = {
@@ -58,7 +59,7 @@ export async function validateRequest(): Promise<SessionValidationResult> {
 }
 
 export async function validateSessionToken(
-  token: string
+  token: string,
 ): Promise<SessionValidationResult> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const sessionInDb = await db.query.sessionTable.findFirst({
@@ -81,8 +82,8 @@ export async function validateSessionToken(
   }
 
   if (
-    Date.now() >=
-    sessionInDb.expiresAt.getTime() - SESSION_REFRESH_INTERVAL_MS
+    Date.now()
+    >= sessionInDb.expiresAt.getTime() - SESSION_REFRESH_INTERVAL_MS
   ) {
     sessionInDb.expiresAt = new Date(Date.now() + SESSION_MAX_DURATION_MS);
     await db

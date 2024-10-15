@@ -1,6 +1,7 @@
 import { createMiddleware } from "hono/factory";
-import { deleteSessionTokenCookie, getSessionToken } from "../lib/session.js";
+
 import { validateRequest } from "../lib/auth.js";
+import { deleteSessionTokenCookie, getSessionToken } from "../lib/session.js";
 
 export const verifySessionMiddleware = createMiddleware(async (c, next) => {
   // const sessionId = getCookie(c, lucia.sessionCookieName) ?? null;

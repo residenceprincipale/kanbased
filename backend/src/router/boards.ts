@@ -1,9 +1,11 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createBoardRoute, getBoardsRoute } from "../route-schema/boards.js";
-import { db } from "../db/index.js";
-import { boardTable, userTable } from "../db/schema/index.js";
-import type { AppInstanceType } from "../index.js";
 import { eq } from "drizzle-orm";
+
+import type { AppInstanceType } from "../index.js";
+
+import { db } from "../db/index.js";
+import { boardTable } from "../db/schema/index.js";
+import { createBoardRoute, getBoardsRoute } from "../route-schema/boards.js";
 
 const boardsRouter = new OpenAPIHono<AppInstanceType>();
 
@@ -18,9 +20,10 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
       .returning();
 
     return c.json(board!, 200);
-  } catch (err) {
-    const isUniqueConstraintError =
-      err && typeof err === "object" && "code" in err && err.code === "23505";
+  }
+  catch (err) {
+    const isUniqueConstraintError
+      = err && typeof err === "object" && "code" in err && err.code === "23505";
 
     if (isUniqueConstraintError) {
       return c.json({ message: "Board name must be unique" }, 400);

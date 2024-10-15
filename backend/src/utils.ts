@@ -1,5 +1,5 @@
-import { promisify } from "node:util";
 import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
+import { promisify } from "node:util";
 
 const scryptPromise = promisify(scrypt);
 

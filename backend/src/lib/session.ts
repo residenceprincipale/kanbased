@@ -1,17 +1,19 @@
 import { setCookie } from "hono/cookie";
+
+import type { AppContext } from "../index.js";
+
 import {
   createSession,
   generateSessionToken,
   validateRequest,
 } from "./auth.js";
-import type { AppContext } from "../index.js";
 
 const SESSION_COOKIE_NAME = "session";
 
 export function setSessionTokenCookie(
   c: AppContext,
   token: string,
-  expiresAt: Date
+  expiresAt: Date,
 ): void {
   setCookie(c, SESSION_COOKIE_NAME, token, {
     httpOnly: true,
@@ -37,19 +39,19 @@ export function getSessionToken(): string | undefined {
   return undefined;
 }
 
-export const getCurrentUser = async () => {
+export async function getCurrentUser() {
   const { user } = await validateRequest();
   return user ?? undefined;
-};
+}
 
-export const assertAuthenticated = async () => {
+export async function assertAuthenticated() {
   const user = await getCurrentUser();
   if (!user) {
     // TODO
     throw new Error("auth error");
   }
   return user;
-};
+}
 
 export async function setSession(c: AppContext, userId: number) {
   const token = generateSessionToken();

@@ -1,6 +1,6 @@
-import { z } from "@hono/zod-openapi";
-import { createRoute } from "@hono/zod-openapi";
-import { errorMessages, genericErrorSchema } from "./errors.js";
+import { createRoute, z } from "@hono/zod-openapi";
+
+import { errorMessages } from "./errors.js";
 
 const createUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
@@ -14,7 +14,7 @@ const loginUserRequestSchema = z
     password: z.string().min(8),
     email: z.string().email().optional(),
   })
-  .refine((data) => data.email || data.name, {
+  .refine(data => data.email || data.name, {
     message: "Either name or email must be provided",
     path: ["name", "email"],
   });

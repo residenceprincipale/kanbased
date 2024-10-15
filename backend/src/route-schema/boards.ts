@@ -1,6 +1,6 @@
-import { z } from "@hono/zod-openapi";
-import { createRoute } from "@hono/zod-openapi";
-import { errorMessages, genericErrorSchema } from "./errors.js";
+import { createRoute, z } from "@hono/zod-openapi";
+
+import { errorMessages } from "./errors.js";
 
 const createBoardParamsSchema = z.object({
   name: z.string().min(1),

@@ -1,5 +1,6 @@
 {
   "name": "backend",
+  "type": "module",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "npx tsc",
@@ -8,9 +9,10 @@
     "db:migrate": "DB_MIGRATING=true tsx --env-file=.env src/db/migrate.ts",
     "db:seed": "DB_SEEDING=true tsx --env-file=.env src/db/seed.ts",
     "db:push": "npx drizzle-kit push",
-    "db:studio": "npx drizzle-kit studio"
+    "db:studio": "npx drizzle-kit studio",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
-  "type": "module",
   "dependencies": {
     "@hono/node-server": "^1.12.0",
     "@hono/swagger-ui": "^0.4.0",
@@ -24,9 +26,12 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^3.7.3",
     "@types/node": "^20.11.17",
     "@types/pg": "^8.11.6",
     "drizzle-kit": "^0.23.0",
+    "eslint": "^9.11.1",
+    "eslint-plugin-format": "^0.1.2",
     "tsx": "^4.7.1",
     "typescript": "^5.5.3"
   }
