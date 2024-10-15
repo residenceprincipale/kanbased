@@ -1,6 +1,7 @@
 {
   "name": "backend",
   "type": "module",
+  "version": "0.0.1",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
     "build": "npx tsc",
@@ -19,6 +20,7 @@
     "@hono/zod-openapi": "^0.14.9",
     "@oslojs/crypto": "^1.0.1",
     "@oslojs/encoding": "^1.1.0",
+    "@scalar/hono-api-reference": "^0.5.154",
     "arctic": "^1.9.2",
     "drizzle-orm": "^0.32.0",
     "hono": "^4.4.13",

@@ -15,8 +15,7 @@ export const genericErrorSchema = {
   description: "Gives you errors",
 };
 
-export const errorMessages = {
-  422: genericErrorSchema,
+export const errorSchemas = {
   400: genericErrorSchema,
   401: genericErrorSchema,
   500: genericErrorSchema,
