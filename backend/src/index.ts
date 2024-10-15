@@ -104,6 +104,7 @@ serve(
     port,
   },
   (info) => {
+    // eslint-disable-next-line no-console
     console.log(`Server is running on port ${info.port}`);
   },
 );

@@ -2,10 +2,11 @@ import type { Table } from "drizzle-orm";
 
 import { getTableName, sql } from "drizzle-orm";
 
+import { env } from "../env.js";
 import { connection, db, type Db } from "./index.js";
 import * as schema from "./schema/index.js";
 
-if (!process.env.DB_SEEDING) {
+if (!env.DB_SEEDING) {
   throw new Error("You must set DB_SEEDING to \"true\" when running seeds");
 }
 

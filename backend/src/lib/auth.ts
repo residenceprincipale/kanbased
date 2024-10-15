@@ -13,20 +13,21 @@ import {
   type User,
   userTable,
 } from "../db/schema/index.js";
+import { env } from "../env.js";
 import { getSessionToken } from "./session.js";
 
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;
 
 export const github = new GitHub(
-  process.env.GITHUB_CLIENT_ID!,
-  process.env.GITHUB_CLIENT_SECRET!,
+  env.GITHUB_CLIENT_ID!,
+  env.GITHUB_CLIENT_SECRET!,
 );
 
 export const googleAuth = new Google(
-  process.env.GOOGLE_CLIENT_ID!,
-  process.env.GOOGLE_CLIENT_SECRET!,
-  `${process.env.HOST_NAME}/api/login/google/callback`,
+  env.GOOGLE_CLIENT_ID!,
+  env.GOOGLE_CLIENT_SECRET!,
+  `${env.HOST_NAME}/api/login/google/callback`,
 );
 
 export function generateSessionToken(): string {

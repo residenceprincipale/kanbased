@@ -15,9 +15,9 @@
     "noUncheckedIndexedAccess": true,
     "outDir": "dist",
     "esModuleInterop": true,
-    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true, // Include JSON modules
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules"]
 }
