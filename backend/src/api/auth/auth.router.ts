@@ -1,22 +1,17 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
+import { generateCodeVerifier, generateState } from "arctic";
 import { and, eq, or } from "drizzle-orm";
+import { setCookie } from "hono/cookie";
 
-import type { AppInstanceType } from "../index.js";
+import { db } from "../../db/index.js";
+import { userTable } from "../../db/schema/index.js";
+import { env } from "../../env.js";
+import { createRouter } from "../../lib/create-app.js";
+import * as authRoutes from "./auth.routes.js";
+import { deleteSessionTokenCookie, google, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
 
-import { db } from "../db/index.js";
-import { userTable } from "../db/schema/index.js";
-import { invalidateSession } from "../lib/auth.js";
-import { deleteSessionTokenCookie, setSession } from "../lib/session.js";
-import { hashPassword, verifyPassword } from "../lib/utils.js";
-import {
-  loginUserRoute,
-  logoutRoute,
-  registerUserRoute,
-} from "../route-schema/auth.js";
+const authRouter = createRouter();
 
-const authRouter = new OpenAPIHono<AppInstanceType>();
-
-authRouter.openapi(registerUserRoute, async (c) => {
+authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
   const body = await c.req.json();
 
   const existingUser = await db
@@ -51,7 +46,7 @@ authRouter.openapi(registerUserRoute, async (c) => {
   return c.json(rest, 200);
 });
 
-authRouter.openapi(loginUserRoute, async (c) => {
+authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
   const body = await c.req.json();
 
   const [user] = await db
@@ -79,7 +74,7 @@ authRouter.openapi(loginUserRoute, async (c) => {
   return c.json({ email: user.email, name: user.name }, 200);
 });
 
-authRouter.openapi(logoutRoute, async (c) => {
+authRouter.openapi(authRoutes.logoutRoute, async (c) => {
   const session = c.get("session");
 
   if (!session) {
@@ -90,6 +85,34 @@ authRouter.openapi(logoutRoute, async (c) => {
   deleteSessionTokenCookie(c);
 
   return c.json({}, 200);
+});
+
+authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
+  const state = generateState();
+  const codeVerifier = generateCodeVerifier();
+  const url = google.createAuthorizationURL(state, codeVerifier, {
+    scopes: ["openid", "profile"],
+  });
+
+  setCookie(c, "google_oauth_state", state, {
+    path: "/",
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    maxAge: 60 * 10, // 10 minutes
+    sameSite: "lax",
+  });
+
+  setCookie(c, "google_code_verifier", codeVerifier, {
+    path: "/",
+    httpOnly: true,
+    secure: env.NODE_ENV === "production",
+    maxAge: 60 * 10, // 10 minutes
+    sameSite: "lax",
+  });
+
+  return c.newResponse(null, 302, {
+    Location: url.toString(),
+  });
 });
 
 export default authRouter;

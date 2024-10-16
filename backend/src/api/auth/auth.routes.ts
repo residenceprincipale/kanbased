@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
 
-import { errorMessages } from "./errors.js";
+import { errorSchemas } from "../../lib/error-schema.js";
 
 const createUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
@@ -42,7 +42,7 @@ export const registerUserRoute = createRoute({
       },
       description: "No content",
     },
-    ...errorMessages,
+    ...errorSchemas,
   },
 });
 
@@ -67,7 +67,17 @@ export const loginUserRoute = createRoute({
       },
       description: "No content",
     },
-    ...errorMessages,
+    ...errorSchemas,
+  },
+});
+
+export const loginGoogleRoute = createRoute({
+  method: "get",
+  path: "/auth/login/google",
+  responses: {
+    302: {
+      description: "",
+    },
   },
 });
 
@@ -78,6 +88,6 @@ export const logoutRoute = createRoute({
     200: {
       description: "No content",
     },
-    ...errorMessages,
+    ...errorSchemas,
   },
 });

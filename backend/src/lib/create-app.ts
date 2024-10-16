@@ -1,3 +1,5 @@
+import type { Context as HonoContext } from "hono";
+
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 import { cors } from "hono/cors";
@@ -6,25 +8,28 @@ import { logger } from "hono/logger";
 
 import packageJSON from "../../package.json" with { type: "json" };
 
-interface Variables {
-  user: any;
-  session: any;
-}
+export interface AppBindings {
+  Variables: {
+    user: any;
+    session: any;
+  };
+};
+
+export type Context = HonoContext<AppBindings>;
 
 export function createRouter() {
-  return new OpenAPIHono<{ Variables: Variables }>({
+  return new OpenAPIHono<AppBindings>({
     strict: false,
     defaultHook: (result, c) => {
-      if (result.success) {
-        return;
+      if (!result.success) {
+        return c.json(
+          {
+            success: result.success,
+            error: result.error,
+          },
+          422,
+        );
       }
-
-      return c.json(
-        {
-          message: result.error.format(),
-        },
-        422,
-      );
     },
   });
 }
