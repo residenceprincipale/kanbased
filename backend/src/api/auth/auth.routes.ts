@@ -81,6 +81,16 @@ export const loginGoogleRoute = createRoute({
   },
 });
 
+export const googleCallbackRoute = createRoute({
+  method: "get",
+  path: "/auth/login/google/callback",
+  responses: {
+    302: {
+      description: "",
+    },
+  },
+});
+
 export const logoutRoute = createRoute({
   method: "post",
   path: "/auth/logout",

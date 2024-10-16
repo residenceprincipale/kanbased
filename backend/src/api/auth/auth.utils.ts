@@ -33,7 +33,7 @@ export const github = new GitHub(
 export const google = new Google(
   env.GOOGLE_CLIENT_ID!,
   env.GOOGLE_CLIENT_SECRET!,
-  `${env.HOST_NAME}/api/login/google/callback`,
+  `${env.HOST_NAME}/auth/login/google/callback`,
 );
 
 export function generateSessionToken(): string {

@@ -1,13 +1,15 @@
-import { generateCodeVerifier, generateState } from "arctic";
+import type { GoogleTokens } from "arctic";
+
+import { generateCodeVerifier, generateState, OAuth2RequestError } from "arctic";
 import { and, eq, or } from "drizzle-orm";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 
 import { db } from "../../db/index.js";
-import { userTable } from "../../db/schema/index.js";
+import { accountTable, userTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
-import { deleteSessionTokenCookie, google, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
+import { createSession, deleteSessionTokenCookie, generateSessionToken, google, hashPassword, invalidateSession, setSession, setSessionTokenCookie, verifyPassword } from "./auth.utils.js";
 
 const authRouter = createRouter();
 
@@ -110,9 +112,96 @@ authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
     sameSite: "lax",
   });
 
-  return c.newResponse(null, 302, {
-    Location: url.toString(),
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: url.toString(),
+    },
   });
 });
 
+authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
+  const url = new URL(c.req.url);
+  const code = url.searchParams.get("code");
+  const state = url.searchParams.get("state");
+  const storedState = getCookie(c, "google_oauth_state") ?? null;
+  const codeVerifier = getCookie(c, "google_code_verifier") ?? null;
+
+  if (code === null || state === null || storedState === null || codeVerifier === null) {
+    return new Response(null, {
+      status: 400,
+    });
+  }
+  if (state !== storedState) {
+    return new Response(null, {
+      status: 400,
+    });
+  }
+
+  let tokens: GoogleTokens;
+  try {
+    tokens = await google.validateAuthorizationCode(code, codeVerifier);
+  }
+  catch (err) {
+    if (err instanceof OAuth2RequestError) {
+    // Invalid code or client credentials
+      return new Response(null, {
+        status: 400,
+      });
+    }
+
+    return new Response(null, { status: 500 });
+  }
+
+  const response = await fetch(
+    "https://openidconnect.googleapis.com/v1/userinfo",
+    {
+      headers: {
+        Authorization: `Bearer ${tokens.accessToken}`,
+      },
+    },
+  );
+
+  const googleUser = await response.json() as GoogleUser;
+
+  const existingUser = await db.query.accountTable.findFirst({
+    where: eq(accountTable.googleId, googleUser.sub),
+  });
+
+  if (existingUser != null) {
+    const sessionToken = generateSessionToken();
+    const session = await createSession(sessionToken, existingUser.id);
+    setSessionTokenCookie(c, sessionToken, session.expiresAt);
+    return new Response(null, {
+      status: 302,
+      headers: {
+        Location: "/",
+      },
+    });
+  }
+
+  // TODO: Replace this with your own DB query.
+  const user = await createUser(googleUserId, username);
+
+  const sessionToken = generateSessionToken();
+  const session = await createSession(sessionToken, user.id);
+  setSessionTokenCookie(c, sessionToken, session.expiresAt);
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: "/",
+    },
+  });
+});
 export default authRouter;
+
+export interface GoogleUser {
+  sub: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+  email: string;
+  email_verified: boolean;
+  locale: string;
+}

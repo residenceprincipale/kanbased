@@ -25,7 +25,7 @@ export const userTable = pgTable("user", {
   accountType: accountTypeEnum("account_type").notNull(),
 });
 
-export const accounts = pgTable(
+export const accountTable = pgTable(
   "account",
   {
     id: serial("id").primaryKey(),
