@@ -18,11 +18,8 @@ export const accountTypeEnum = pgEnum("account_type", [
 
 export const userTable = pgTable("user", {
   id: serial("id").primaryKey(),
-  name: varchar("name", { length: 256 }),
   email: varchar("email", { length: 256 }).unique().notNull(),
-  password: text("password").notNull(),
-  verified: boolean("verified").default(false),
-  accountType: accountTypeEnum("account_type").notNull(),
+  emailVerified: timestamp("emailVerified", { mode: "date" }),
 });
 
 export const accountTable = pgTable(
@@ -45,6 +42,17 @@ export const accountTable = pgTable(
     ),
   }),
 );
+
+export const profileTable = pgTable("profile", {
+  id: serial("id").primaryKey(),
+  userId: serial("userId")
+    .notNull()
+    .references(() => userTable.id, { onDelete: "cascade" })
+    .unique(),
+  displayName: text("displayName"),
+  imageId: text("imageId"),
+  image: text("image"),
+});
 
 export const boardTable = pgTable(
   "board",

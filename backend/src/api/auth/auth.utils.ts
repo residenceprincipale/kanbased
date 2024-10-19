@@ -11,9 +11,12 @@ import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 
 import type { Context } from "../../lib/create-app.js";
+import type { GoogleUser } from "./auth.router.js";
 
 import { db } from "../../db/index.js";
 import {
+  accountTable,
+  profileTable,
   type Session,
   sessionTable,
   type User,
@@ -164,4 +167,61 @@ export async function setSession(c: Context, userId: number) {
   const token = generateSessionToken();
   const session = await createSession(token, userId);
   setSessionTokenCookie(c, token, session.expiresAt);
+}
+
+export async function createGoogleAccount(googleUser: GoogleUser) {
+  let existingUser = await getUserByEmail(googleUser.email);
+
+  if (!existingUser) {
+    existingUser = await createUser(googleUser.email);
+  }
+
+  await db
+    .insert(accountTable)
+    .values({
+      userId: existingUser.id,
+      accountType: "google",
+      googleId: googleUser.sub,
+    })
+    .onConflictDoNothing()
+    .returning();
+
+  await createProfile(existingUser.id, googleUser.name, googleUser.picture);
+
+  return existingUser.id;
+}
+
+export async function createUser(email: string) {
+  const [user] = await db
+    .insert(userTable)
+    .values({
+      email,
+    })
+    .returning();
+  return user!;
+}
+
+export async function createProfile(
+  userId: number,
+  displayName: string,
+  image?: string,
+) {
+  const [profile] = await db
+    .insert(profileTable)
+    .values({
+      userId,
+      image,
+      displayName,
+    })
+    .onConflictDoNothing()
+    .returning();
+  return profile;
+}
+
+export async function getUserByEmail(email: string) {
+  const user = await db.query.userTable.findFirst({
+    where: eq(userTable.email, email),
+  });
+
+  return user;
 }

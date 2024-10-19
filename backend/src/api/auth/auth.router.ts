@@ -9,19 +9,19 @@ import { accountTable, userTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
-import { createSession, deleteSessionTokenCookie, generateSessionToken, google, hashPassword, invalidateSession, setSession, setSessionTokenCookie, verifyPassword } from "./auth.utils.js";
+import { createGoogleAccount, createSession, deleteSessionTokenCookie, generateSessionToken, google, hashPassword, invalidateSession, setSession, setSessionTokenCookie, verifyPassword } from "./auth.utils.js";
 
 const authRouter = createRouter();
 
 authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
   const body = await c.req.json();
 
-  const existingUser = await db
+  const existingAccount = await db
     .select()
     .from(userTable)
     .where(or(eq(userTable.email, body.email), eq(userTable.name, body.name)));
 
-  if (existingUser.length) {
+  if (existingAccount.length) {
     return c.json(
       {
         message: `A user with this email already exist. Please login`,
@@ -144,13 +144,15 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   }
   catch (err) {
     if (err instanceof OAuth2RequestError) {
-    // Invalid code or client credentials
+      // Invalid code or client credentials
       return new Response(null, {
         status: 400,
       });
     }
 
-    return new Response(null, { status: 500 });
+    return new Response(null, {
+      status: 500,
+    });
   }
 
   const response = await fetch(
@@ -164,14 +166,12 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
 
   const googleUser = await response.json() as GoogleUser;
 
-  const existingUser = await db.query.accountTable.findFirst({
+  const existingAccount = await db.query.accountTable.findFirst({
     where: eq(accountTable.googleId, googleUser.sub),
   });
 
-  if (existingUser != null) {
-    const sessionToken = generateSessionToken();
-    const session = await createSession(sessionToken, existingUser.id);
-    setSessionTokenCookie(c, sessionToken, session.expiresAt);
+  if (existingAccount) {
+    await setSession(c, existingAccount.userId);
     return new Response(null, {
       status: 302,
       headers: {
@@ -180,12 +180,9 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
     });
   }
 
-  // TODO: Replace this with your own DB query.
-  const user = await createUser(googleUserId, username);
+  const userId = await createGoogleAccount(googleUser);
+  await setSession(c, userId);
 
-  const sessionToken = generateSessionToken();
-  const session = await createSession(sessionToken, user.id);
-  setSessionTokenCookie(c, sessionToken, session.expiresAt);
   return new Response(null, {
     status: 302,
     headers: {
@@ -193,6 +190,7 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
     },
   });
 });
+
 export default authRouter;
 
 export interface GoogleUser {
