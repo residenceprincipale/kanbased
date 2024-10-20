@@ -5,7 +5,7 @@ import {
 } from "@oslojs/encoding";
 import { GitHub, Google } from "arctic";
 import { eq } from "drizzle-orm";
-import { setCookie } from "hono/cookie";
+import { getCookie, setCookie } from "hono/cookie";
 import { Buffer } from "node:buffer";
 import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
@@ -60,8 +60,8 @@ export async function createSession(
   return session;
 }
 
-export async function validateRequest(): Promise<SessionValidationResult> {
-  const sessionToken = getSessionToken();
+export async function validateRequest(c: Context): Promise<SessionValidationResult> {
+  const sessionToken = getSessionToken(c);
   if (!sessionToken) {
     return { session: null, user: null };
   }
@@ -153,15 +153,9 @@ export function deleteSessionTokenCookie(c: Context): void {
   });
 }
 
-export function getSessionToken(): string | undefined {
-  // return cookies().get(SESSION_COOKIE_NAME)?.value;
-  return undefined;
+export function getSessionToken(c: Context): string | undefined {
+  return getCookie(c, SESSION_COOKIE_NAME);
 }
-
-export async function getCurrentUser() {
-  const { user } = await validateRequest();
-  return user ?? undefined;
-};
 
 export async function setSession(c: Context, userId: number) {
   const token = generateSessionToken();

@@ -9,7 +9,7 @@ import { accountTable, userTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
-import { createGoogleAccount, createSession, deleteSessionTokenCookie, generateSessionToken, google, hashPassword, invalidateSession, setSession, setSessionTokenCookie, verifyPassword } from "./auth.utils.js";
+import { createGoogleAccount, deleteSessionTokenCookie, google, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
 
 const authRouter = createRouter();
 

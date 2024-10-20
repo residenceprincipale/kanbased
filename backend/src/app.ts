@@ -1,3 +1,4 @@
+import { authenticatedMiddleware, verifySessionMiddleware } from "./api/auth/auth.middleware.js";
 import authRouter from "./api/auth/auth.router.js";
 import boardsRouter from "./api/boards/boards.router.js";
 import createApp from "./lib/create-app.js";
@@ -10,14 +11,15 @@ app.get("/", (c) => {
 });
 // ====== end of public routes ======
 
-// Verify if the user is logged in, if yes, adds the `user` object to the context.
-// app.use("*", verifySessionMiddleware);
-// ====== Logged in and non-logged in user routes ======
+// Verify if the user is logged in, if yes, adds the `user` and `session` object to the context.
+app.use("*", verifySessionMiddleware);
+
+// ====== Logged in / Logged out both routes goes here ======
 app.route("/", authRouter);
-// ====== End of logged in and non-logged in user routes ======
+// ====== End of both Logged in / Logged out routes ======
 
 // Checks for `user` object in the context, if it is not available returns 401.
-// app.use("*", authenticatedMiddleware);
+app.use("*", authenticatedMiddleware);
 
 // ====== Protected routes goes here ======
 app.route("/", boardsRouter);
