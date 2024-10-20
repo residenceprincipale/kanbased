@@ -1,13 +1,11 @@
-import { OpenAPIHono } from "@hono/zod-openapi";
 import { eq } from "drizzle-orm";
 
-import type { AppInstanceType } from "../index.js";
+import { db } from "../../db/index.js";
+import { boardTable } from "../../db/schema/index.js";
+import { createRouter } from "../../lib/create-app.js";
+import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
 
-import { db } from "../db/index.js";
-import { boardTable } from "../db/schema/index.js";
-import { createBoardRoute, getBoardsRoute } from "../route-schema/boards.js";
-
-const boardsRouter = new OpenAPIHono<AppInstanceType>();
+const boardsRouter = createRouter();
 
 boardsRouter.openapi(createBoardRoute, async (c) => {
   const body = await c.req.json();
