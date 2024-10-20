@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -17,6 +17,10 @@ import { useRouter } from "next/navigation";
 import { fetchClient } from "@/lib/fetch-client";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { paths } from "@/types/api-schema";
+
+const googleLoginUrl: `${string}${keyof paths}` = `${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`;
 
 export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -89,9 +93,18 @@ export default function LoginForm() {
                 "Login"
               )}
             </Button>
-            {/* <Button variant="outline" className="w-full">
-              Login with Google
-            </Button> */}
+
+            <Link
+              href={googleLoginUrl}
+              className={cn(
+                buttonVariants({
+                  variant: "secondary",
+                }),
+                "w-full"
+              )}
+            >
+              Sign in with Google
+            </Link>
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}

@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen:api": "npx openapi-typescript http://localhost:5000/doc -o ./src/types/api-schema.d.ts"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.0",
