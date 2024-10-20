@@ -11,7 +11,6 @@ import { randomBytes, scrypt, timingSafeEqual } from "node:crypto";
 import { promisify } from "node:util";
 
 import type { Context } from "../../lib/create-app.js";
-import type { GoogleUser } from "./auth.router.js";
 
 import { db } from "../../db/index.js";
 import {
@@ -23,6 +22,7 @@ import {
   userTable,
 } from "../../db/schema/index.js";
 import { env } from "../../env.js";
+import { z } from "zod";
 
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;
@@ -36,7 +36,7 @@ export const github = new GitHub(
 export const google = new Google(
   env.GOOGLE_CLIENT_ID!,
   env.GOOGLE_CLIENT_SECRET!,
-  `${env.HOST_NAME}/auth/login/google/callback`,
+  `${env.BE_ORIGIN}/auth/login/google/callback`,
 );
 
 export function generateSessionToken(): string {
@@ -180,7 +180,7 @@ export async function createGoogleAccount(googleUser: GoogleUser) {
     .onConflictDoNothing()
     .returning();
 
-  await createProfile(existingUser.id, googleUser.name, googleUser.picture);
+  await createProfile(existingUser.id, googleUser.name ?? googleUser.email, googleUser.picture);
 
   return existingUser.id;
 }
@@ -198,7 +198,7 @@ export async function createUser(email: string) {
 export async function createProfile(
   userId: number,
   displayName: string,
-  image?: string,
+  image: string | null,
 ) {
   const [profile] = await db
     .insert(profileTable)
@@ -219,3 +219,13 @@ export async function getUserByEmail(email: string) {
 
   return user;
 }
+
+
+export const googleUserSchema = z.object({
+  name: z.string().nullable(),
+  picture: z.string().nullable().default(null),
+  email: z.string(),
+  sub: z.string()
+});
+
+export type GoogleUser = z.infer<typeof googleUserSchema>;

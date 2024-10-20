@@ -2,10 +2,10 @@ import { eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardTable } from "../../db/schema/index.js";
-import { createRouter } from "../../lib/create-app.js";
+import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
 
-const boardsRouter = createRouter();
+const boardsRouter = createAuthenticatedRouter();
 
 boardsRouter.openapi(createBoardRoute, async (c) => {
   const body = await c.req.json();

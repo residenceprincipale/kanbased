@@ -9,7 +9,7 @@ import { accountTable, userTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
-import { createGoogleAccount, deleteSessionTokenCookie, google, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
+import { createGoogleAccount, deleteSessionTokenCookie, google, googleUserSchema, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
 
 const authRouter = createRouter();
 
@@ -92,8 +92,8 @@ authRouter.openapi(authRoutes.logoutRoute, async (c) => {
 authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
   const state = generateState();
   const codeVerifier = generateCodeVerifier();
-  const url = google.createAuthorizationURL(state, codeVerifier, {
-    scopes: ["openid", "profile"],
+  const url = await google.createAuthorizationURL(state, codeVerifier, {
+    scopes: ["openid", "profile", "email"],
   });
 
   setCookie(c, "google_oauth_state", state, {
@@ -101,7 +101,7 @@ authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     maxAge: 60 * 10, // 10 minutes
-    sameSite: "lax",
+    sameSite: "Lax",
   });
 
   setCookie(c, "google_code_verifier", codeVerifier, {
@@ -109,15 +109,10 @@ authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
     httpOnly: true,
     secure: env.NODE_ENV === "production",
     maxAge: 60 * 10, // 10 minutes
-    sameSite: "lax",
+    sameSite: "Lax",
   });
 
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: url.toString(),
-    },
-  });
+  return c.redirect(url.toString());
 });
 
 authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
@@ -128,14 +123,10 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   const codeVerifier = getCookie(c, "google_code_verifier") ?? null;
 
   if (code === null || state === null || storedState === null || codeVerifier === null) {
-    return new Response(null, {
-      status: 400,
-    });
+    return c.body(null, 400);
   }
   if (state !== storedState) {
-    return new Response(null, {
-      status: 400,
-    });
+    return c.body(null, 400);
   }
 
   let tokens: GoogleTokens;
@@ -145,15 +136,12 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   catch (err) {
     if (err instanceof OAuth2RequestError) {
       // Invalid code or client credentials
-      return new Response(null, {
-        status: 400,
-      });
+      return c.body(null, 400);
     }
 
-    return new Response(null, {
-      status: 500,
-    });
+    return c.body(null, 500);
   }
+
 
   const response = await fetch(
     "https://openidconnect.googleapis.com/v1/userinfo",
@@ -163,8 +151,8 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
       },
     },
   );
-
-  const googleUser = await response.json() as GoogleUser;
+  const data = await response.json();
+  const googleUser = googleUserSchema.parse(data);
 
   const existingAccount = await db.query.accountTable.findFirst({
     where: eq(accountTable.googleId, googleUser.sub),
@@ -172,34 +160,13 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
 
   if (existingAccount) {
     await setSession(c, existingAccount.userId);
-    return new Response(null, {
-      status: 302,
-      headers: {
-        Location: "/",
-      },
-    });
+    return c.redirect(env.FE_ORIGIN);
   }
 
   const userId = await createGoogleAccount(googleUser);
   await setSession(c, userId);
 
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: "/",
-    },
-  });
+  return c.redirect(env.FE_ORIGIN);
 });
 
 export default authRouter;
-
-export interface GoogleUser {
-  sub: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
-  email: string;
-  email_verified: boolean;
-  locale: string;
-}

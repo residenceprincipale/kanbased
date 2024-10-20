@@ -50,7 +50,6 @@ export const profileTable = pgTable("profile", {
     .references(() => userTable.id, { onDelete: "cascade" })
     .unique(),
   displayName: text("displayName"),
-  imageId: text("imageId"),
   image: text("image"),
 });
 

@@ -1,12 +1,11 @@
 import { defineConfig } from "drizzle-kit";
 
-import { env } from "./src/env.js";
-
 export default defineConfig({
   schema: "./src/db/schema/index.ts",
   dialect: "postgresql",
   out: "./src/db/migrations",
   dbCredentials: {
-    url: env.DATABASE_URL,
+    // eslint-disable-next-line node/no-process-env
+    url: process.env.DATABASE_URL,
   },
 });

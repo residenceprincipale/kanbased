@@ -7,6 +7,7 @@ import { csrf } from "hono/csrf";
 import { logger } from "hono/logger";
 
 import packageJSON from "../../package.json" with { type: "json" };
+import { authenticatedMiddleware, verifySessionMiddleware } from "../api/auth/auth.middleware.js";
 
 export interface AppBindings {
   Variables: {
@@ -34,13 +35,19 @@ export function createRouter() {
   });
 }
 
+export function createAuthenticatedRouter() {
+  const router = createRouter();
+  router.use(verifySessionMiddleware, authenticatedMiddleware);
+  return router;
+}
+
 export default function createApp() {
   const app = createRouter();
 
   app.use(
     "/*",
     cors({
-    // TODO: Change origin later
+      // TODO: Change origin later
       origin: "http://localhost:3000",
       credentials: true,
     }),
