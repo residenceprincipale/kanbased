@@ -12,7 +12,8 @@
     "db:push": "npx drizzle-kit push",
     "db:studio": "npx drizzle-kit studio",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "dev:pg": "docker-compose -f docker-compose.dev.yml up -d"
   },
   "dependencies": {
     "@hono/node-server": "^1.12.0",
