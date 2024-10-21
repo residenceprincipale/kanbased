@@ -10,6 +10,9 @@ import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
+export const dynamicParams = false;
+export const dynamic = "force-static";
+
 export default function BoardPage() {
   const { boardName } = useBetterParams<{ boardName: string }>();
   const rep = useRepContext();

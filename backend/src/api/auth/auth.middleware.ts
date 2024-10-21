@@ -17,7 +17,7 @@ export const authenticatedMiddleware = createMiddleware(async (c, next) => {
   const user = c.get("user");
 
   if (!user) {
-    return c.json({ message: "irshath" }, 401);
+    return c.json({ message: "Un-authorized access" }, 401);
   }
 
   return next();
