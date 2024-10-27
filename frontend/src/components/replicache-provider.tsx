@@ -2,11 +2,15 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Replicache } from "replicache";
 import { nanoid } from "nanoid";
 import { mutators, type Mutators } from "@/lib/mutators";
+import type { paths } from "@/types/api-schema";
 
 // @ts-expect-error
 const ReplicacheContext = createContext<Replicache<Mutators>>();
 
 export type Rep = Replicache<Mutators>;
+
+const pushUrl: `${string}${keyof paths}` = `${process.env.NEXT_PUBLIC_API_URL}/push`;
+// const PULL_URL:keyof paths = ''
 
 export function ReplicacheProvider(props: React.PropsWithChildren) {
   const [rep, setRep] = useState<Replicache<Mutators> | null>(null);
@@ -26,6 +30,7 @@ export function ReplicacheProvider(props: React.PropsWithChildren) {
       // pullURL: `/api/replicache/pull`,
       name: userId,
       mutators,
+      pushURL: pushUrl,
     });
 
     setRep(r);

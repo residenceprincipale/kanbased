@@ -646,6 +646,116 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/push": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        id: number;
+                        schemaVersion: string;
+                        profileID: string;
+                        clientGroupID: string;
+                        mutations: {
+                            id: number;
+                            name: string;
+                            args?: unknown;
+                            timestamp: number;
+                            clientID: string;
+                        }[];
+                        /** @enum {number} */
+                        pushVersion: 1;
+                    };
+                };
+            };
+            responses: {
+                /** @description No content */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": unknown;
+                    };
+                };
+                /** @description Gives you errors */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                            /**
+                             * @default usual
+                             * @enum {string}
+                             */
+                            errorType: "field" | "usual";
+                            fieldError?: {
+                                [key: string]: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Gives you errors */
+                401: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                            /**
+                             * @default usual
+                             * @enum {string}
+                             */
+                            errorType: "field" | "usual";
+                            fieldError?: {
+                                [key: string]: string;
+                            };
+                        };
+                    };
+                };
+                /** @description Gives you errors */
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                            /**
+                             * @default usual
+                             * @enum {string}
+                             */
+                            errorType: "field" | "usual";
+                            fieldError?: {
+                                [key: string]: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
