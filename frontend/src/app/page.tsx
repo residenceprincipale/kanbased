@@ -7,6 +7,7 @@ import { useEffect } from "react";
 export default function Home() {
   useEffect(() => {
     fetchClient.GET("/current-user").then((res) => console.log(res.data));
+    fetchClient.GET("/boards").then((res) => console.log(res.data));
   }, []);
   return (
     <main className="px-10">

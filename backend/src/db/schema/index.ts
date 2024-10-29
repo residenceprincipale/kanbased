@@ -1,6 +1,7 @@
 import {
   boolean,
   index,
+  integer,
   pgEnum,
   pgTable,
   serial,
@@ -10,7 +11,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-export const accountTypeEnum = pgEnum("account_type", [
+export const accountTypeEnum = pgEnum("accountType", [
   "email",
   "github",
   "google",
@@ -59,10 +60,10 @@ export const boardTable = pgTable(
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 20 }).notNull(),
     color: varchar("color", { length: 255 }),
-    userId: serial("user_id")
+    userId: serial("userId")
       .references(() => userTable.id)
       .notNull(),
-    isPinned: boolean("is_pinned").default(false),
+    version: integer("version").notNull(),
   },
   (table) => {
     return {
@@ -77,15 +78,31 @@ export const sessionTable = pgTable(
     userId: serial("userId")
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
-    expiresAt: timestamp("expires_at", {
+    expiresAt: timestamp("expiresAt", {
       withTimezone: true,
       mode: "date",
     }).notNull(),
   },
   table => ({
-    userIdIdx: index("sessions_user_id_idx").on(table.userId),
+    userIdIdx: index("sessionsUserIdIdx").on(table.userId),
   }),
 );
 
+
+
+export const replicacheClientTable = pgTable('replicacheClient', {
+  id: text("id").primaryKey().notNull(),
+  clientGroupID: text('clientGroupId'),
+  version: integer('version').notNull(),
+  lastMutationID: integer('lastMutationId').notNull(),
+  createdAt: timestamp('createdAt').defaultNow(),
+});
+
+export const replicacheServerVersionTable = pgTable('replicacheServer', {
+  id: integer("id").notNull().primaryKey(),
+  version: integer('version').notNull(),
+});
+
 export type Session = typeof sessionTable.$inferSelect;
 export type User = typeof userTable.$inferSelect;
+

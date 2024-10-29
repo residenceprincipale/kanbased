@@ -10,9 +10,6 @@ import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
 
-export const dynamicParams = false;
-export const dynamic = "force-static";
-
 export default function BoardPage() {
   const { boardName } = useBetterParams<{ boardName: string }>();
   const rep = useRepContext();
@@ -31,11 +28,11 @@ export default function BoardPage() {
     const isTabExist = tabs?.some((tab) => tab.name === boardName);
 
     if (!isTabExist) {
-      rep.mutate.createTab({
-        name: boardName,
-        color: "",
-        order: tabs?.length ?? 0,
-      });
+      // rep.mutate.createTab({
+      //   name: boardName,
+      //   color: "",
+      //   order: tabs?.length ?? 0,
+      // });
     }
 
     hasRanEffect.current = true;

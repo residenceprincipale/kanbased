@@ -18,7 +18,7 @@ export function TopSection() {
     <div className="flex items-center justify-between gap-2 py-1.5 px-4">
       <div className="flex gap-6 items-center flex-1">
         <Link
-          href={routeMap.boards}
+          href={routeMap.home}
           className={buttonVariants({
             size: "icon",
             variant: "outline",

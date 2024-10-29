@@ -12,12 +12,16 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
   const user = c.get("user");
 
   try {
-    const [board] = await db
-      .insert(boardTable)
-      .values({ name: body.name, color: body.color, userId: user.id })
-      .returning();
+    const result = await db.select().from(boardTable).where(eq(boardTable.name, "board name")).limit(1);
+    console.log("result", result);
 
-    return c.json(board!, 200);
+    // const [board] = await db
+    //   .insert(boardTable)
+    //   .values({ name: body.name, color: body.color, userId: user.id })
+    //   .returning();
+
+    return c.json({ message: 'internal server error' }, 500)
+    // return c.json(board!, 200);
   }
   catch (err) {
     const isUniqueConstraintError
@@ -33,13 +37,18 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {
   const user = c.get("user");
+  const result = await db.select().from(boardTable);
+  const result2 = await db.query.boardTable.findFirst({ where: eq(boardTable.name, "first board") }).toSQL();
+  // console.log("result", result);
+  // console.log("result2", result2);
 
-  const res = await db
-    .select()
-    .from(boardTable)
-    .where(eq(boardTable.userId, user.id));
+  // const res = await db
+  //   .select()
+  //   .from(boardTable)
+  //   .where(eq(boardTable.userId, user.id));
 
-  return c.json(res, 200);
+  // return c.json(res, 200);
+  return c.json({ message: 'error' }, 500);
 });
 
 export default boardsRouter;

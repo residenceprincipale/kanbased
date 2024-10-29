@@ -10,7 +10,7 @@ const ReplicacheContext = createContext<Replicache<Mutators>>();
 export type Rep = Replicache<Mutators>;
 
 const pushUrl: `${string}${keyof paths}` = `${process.env.NEXT_PUBLIC_API_URL}/push`;
-// const PULL_URL:keyof paths = ''
+const pullUrl: `${string}${keyof paths}` = `${process.env.NEXT_PUBLIC_API_URL}/pull`;
 
 export function ReplicacheProvider(props: React.PropsWithChildren) {
   const [rep, setRep] = useState<Replicache<Mutators> | null>(null);
@@ -26,11 +26,10 @@ export function ReplicacheProvider(props: React.PropsWithChildren) {
       // See https://doc.replicache.dev/licensing for how to get a license key.
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       licenseKey: process.env.NEXT_PUBLIC_REPLICACHE_LICENSE_KEY!,
-      // pushURL: `/api/replicache/push`,
-      // pullURL: `/api/replicache/pull`,
       name: userId,
       mutators,
       pushURL: pushUrl,
+      pullURL: pullUrl,
     });
 
     setRep(r);
@@ -40,7 +39,7 @@ export function ReplicacheProvider(props: React.PropsWithChildren) {
     };
   }, []);
 
-  // Always do this Or else bad things happen.
+  // Always do this Or else bad things will happen.
   if (!rep) {
     return null;
   }
