@@ -1,28 +1,25 @@
 "use client";
 import { CreateColumn } from "@/components/create-column";
 import { Columns } from "@/components/columns";
-import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
-import { useGetStoreData } from "@/hooks/use-data-store";
 import { routeMap } from "@/lib/constants";
-import { useRouter } from "next/navigation";
 import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
+import { useNavigate } from "@remix-run/react";
 
 export default function BoardPage() {
   const { boardName } = useBetterParams<{ boardName: string }>();
-  const rep = useRepContext();
-  const router = useRouter();
-  const boards = useGetStoreData("boards");
-  const tabs = useGetStoreData("tabs");
+  const navigate = useNavigate();
+  const boards: any[] = [];
+  const tabs: any[] = [];
   const hasRanEffect = useRef(false);
 
   useEffect(() => {
     if (hasRanEffect.current || !boards?.length) return;
     const isBoardExist = boards.some((board) => board.name === boardName);
     if (!isBoardExist) {
-      router.replace(routeMap.boards);
+      navigate(routeMap.boards, { replace: true });
       return;
     }
     const isTabExist = tabs?.some((tab) => tab.name === boardName);

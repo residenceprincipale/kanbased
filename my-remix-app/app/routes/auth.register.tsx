@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,12 +13,12 @@ import { routeMap } from "@/lib/constants";
 import { useState, type FormEventHandler } from "react";
 import { Loader } from "lucide-react";
 import { fetchClient } from "@/lib/fetch-client";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Link, useNavigate } from "@remix-run/react";
 
 export default function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -41,7 +40,7 @@ export default function RegisterForm() {
     if (error) {
       toast(error.message);
     } else {
-      router.push(routeMap.home);
+      navigate(routeMap.home);
     }
   };
 
@@ -94,7 +93,7 @@ export default function RegisterForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Already have an account?{" "}
-            <Link href={routeMap.login} className="underline">
+            <Link to={routeMap.login} className="underline">
               Sign in
             </Link>
           </div>

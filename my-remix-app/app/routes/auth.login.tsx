@@ -1,6 +1,3 @@
-"use client";
-import Link from "next/link";
-
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
@@ -12,19 +9,19 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { routeMap } from "@/lib/constants";
-import React, { useState, type FormEventHandler } from "react";
-import { useRouter } from "next/navigation";
+import { useState, type FormEventHandler } from "react";
 import { fetchClient } from "@/lib/fetch-client";
 import { toast } from "sonner";
 import { Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { paths } from "@/types/api-schema";
+import { Link, useNavigate } from "@remix-run/react";
 
 const googleLoginUrl: `${string}${keyof paths}` = `${process.env.NEXT_PUBLIC_API_URL}/auth/login/google`;
 
 export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
 
   const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
@@ -44,7 +41,7 @@ export default function LoginForm() {
     if (error) {
       toast(error.message);
     } else {
-      router.push(routeMap.home);
+      navigate(routeMap.home);
     }
   };
 
@@ -52,7 +49,7 @@ export default function LoginForm() {
     // TODO: For now just use google auth.
     return (
       <div className="h-screen flex justify-center items-center">
-        <Link href={googleLoginUrl} className={cn(buttonVariants(), "gap-2")}>
+        <Link to={googleLoginUrl} className={cn(buttonVariants(), "gap-2")}>
           {/* <GoogleIcon /> */}
           <GoogleIcon />
           Sign in with Google
@@ -88,10 +85,7 @@ export default function LoginForm() {
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                <Link
-                  href="#"
-                  className="ml-auto inline-block text-sm underline"
-                >
+                <Link to="#" className="ml-auto inline-block text-sm underline">
                   Forgot your password?
                 </Link>
               </div>
@@ -110,7 +104,7 @@ export default function LoginForm() {
           </div>
           <div className="mt-4 text-center text-sm">
             Don&apos;t have an account?{" "}
-            <Link href={routeMap.register} className="underline">
+            <Link to={routeMap.register} className="underline">
               Sign up
             </Link>
           </div>
