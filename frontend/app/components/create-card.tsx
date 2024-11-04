@@ -1,4 +1,3 @@
-import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,7 +10,6 @@ export function CreateCard(props: {
   onComplete: () => void;
   onAddCard: () => void;
 }) {
-  const rep = useRepContext();
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -19,12 +17,12 @@ export function CreateCard(props: {
     e.preventDefault();
     const fd = new FormData(e.currentTarget as HTMLFormElement);
     const name = fd.get(props.columnId) as string;
-    await rep.mutate.createCard({
-      name,
-      columnId: props.columnId,
-      order: props.nextOrder,
-      boardId: props.boardId,
-    });
+    // await rep.mutate.createCard({
+    //   name,
+    //   columnId: props.columnId,
+    //   order: props.nextOrder,
+    //   boardId: props.boardId,
+    // });
     textAreaRef.current!.value = "";
     props.onAddCard();
   };

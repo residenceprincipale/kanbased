@@ -1,5 +1,4 @@
 "use client";
-import { useRepContext } from "@/components/replicache-provider";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -8,17 +7,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { routeMap } from "@/lib/constants";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { cn, useBetterParams } from "@/lib/utils";
-import { useGetStoreData } from "@/hooks/use-data-store";
+import { Link, useNavigate } from "@remix-run/react";
 import { memo } from "react";
 
 export const TabsList = memo(function TabsList() {
-  const router = useRouter();
-  const rep = useRepContext();
-  const tabs = useGetStoreData("tabs");
-  const boards = useGetStoreData("boards");
+  const navigate = useNavigate();
+  const tabs: any[] = [];
+  const boards: any[] = [];
   const { boardName } = useBetterParams<{ boardName: string }>();
 
   return (
@@ -39,7 +35,7 @@ export const TabsList = memo(function TabsList() {
               >
                 <Link
                   className="flex items-center gap-1.5 w-full flex-1 min-w-0"
-                  href={routeMap.board(tab.name)}
+                  to={routeMap.board(tab.name)}
                 >
                   <div className="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
                   <div className="capitalize truncate text-sm">{tab.name}</div>
@@ -47,8 +43,8 @@ export const TabsList = memo(function TabsList() {
                 <button
                   type="button"
                   onClick={() => {
-                    rep.mutate.deleteTab({ id: tab.id });
-                    router.replace(routeMap.boards);
+                    // rep.mutate.deleteTab({ id: tab.id });
+                    navigate(routeMap.boards, { replace: true });
                   }}
                   className={cn(
                     "shrink-0 rounded-full p-0.5 hover:bg-secondary hover:text-secondary-foreground",
@@ -104,7 +100,7 @@ export const TabsList = memo(function TabsList() {
             ?.filter((board) => !tabs?.some((tab) => tab.name === board.name))
             .map((board) => (
               <DropdownMenuItem key={board.name} asChild>
-                <Link href={routeMap.board(board.name)}>{board.name}</Link>
+                <Link to={routeMap.board(board.name)}>{board.name}</Link>
               </DropdownMenuItem>
             ))}
         </DropdownMenuContent>

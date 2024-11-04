@@ -1,6 +1,3 @@
-"use client";
-import React, { useState, type FormEventHandler } from "react";
-import { useRepContext } from "@/components/replicache-provider";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,49 +10,39 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useBetterParams } from "@/lib/utils";
-import { useDataStore } from "@/hooks/use-data-store";
+import { useState, type FormEventHandler } from "react";
 
-export function CreateColumn(props: {
-  trigger: React.ReactNode;
-  boardId: string;
-}) {
+export function CreateBoard() {
   const [isOpen, setIsOpen] = useState(false);
-  const rep = useRepContext();
-  const { boardName } = useBetterParams<{ boardName: string }>();
-
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
-    const name = fd.get("column-name") as string;
-    const boardId = useDataStore
-      .getState()
-      .boards?.find((board) => board.name === boardName)?.id!;
-    const order = useDataStore.getState().columns?.length ?? 0;
-
-    rep.mutate.createColumn({ name: name, boardId, order });
+    const boardName = fd.get("board-name") as string;
+    // rep.mutate.createBoard({ name: boardName, color: "" });
     setIsOpen(false);
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
+      <DialogTrigger asChild>
+        <Button>Create board</Button>
+      </DialogTrigger>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create Column</DialogTitle>
+            <DialogTitle>Create board</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-2 mt-4 mb-2">
-            <Label htmlFor="column-name">Column Name</Label>
+            <Label htmlFor="board-name">Board Name</Label>
             <Input
-              id="column-name"
-              name="column-name"
-              placeholder="eg: work column"
+              id="board-name"
+              name="board-name"
+              placeholder="eg: work board"
               required
             />
             <DialogDescription className="!text-xs">
-              Enter a unique name that reflects the purpose of this column.
+              Enter a unique name that reflects the purpose of this board.
             </DialogDescription>
           </div>
 
