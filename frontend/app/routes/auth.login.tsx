@@ -16,10 +16,11 @@ import { Loader } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { paths } from "@/types/api-schema";
 import { Link, useNavigate } from "@remix-run/react";
-import { MY_API_BASE_URL } from "@/root";
 
 type ApiRouteUrls<TPaths extends keyof paths> = `${string}${TPaths}`;
-const googleLoginUrl: ApiRouteUrls<"/auth/login/google"> = `${MY_API_BASE_URL}/auth/login/google`;
+const googleLoginUrl: ApiRouteUrls<"/auth/login/google"> = `${
+  import.meta.env.CLIENT_MY_API_BASE_URL
+}/auth/login/google`;
 
 export default function LoginForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
