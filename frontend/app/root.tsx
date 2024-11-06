@@ -23,7 +23,6 @@ export const links: LinksFunction = () => [
 ];
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  console.log(import.meta.env);
   return (
     <html lang="en">
       <head>

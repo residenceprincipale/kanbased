@@ -22,5 +22,8 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
-  envPrefix: 'CLIENT_'
+  envPrefix: 'CLIENT_',
+  server: {
+    port: 3000
+  }
 });
