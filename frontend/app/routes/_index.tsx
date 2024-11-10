@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { api } from "@/lib/openapi-react-query";
 import type { MetaFunction } from "@remix-run/node";
 
 export const meta: MetaFunction = () => {
