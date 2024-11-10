@@ -21,6 +21,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
     return c.json(board!, 200);
   }
   catch (err) {
+    console.log("err", err);
     const isUniqueConstraintError
       = err && typeof err === "object" && "code" in err && err.code === "23505";
 

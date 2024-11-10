@@ -1,3 +1,4 @@
+import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
 import type { MetaFunction } from "@remix-run/node";
 import { Link } from "@remix-run/react";
@@ -10,12 +11,15 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
+  const { user } = useUser();
   return (
     <div className="flex h-screen items-center justify-center">
       <div className="flex flex-col items-center gap-16">
         <header className="flex flex-col items-center">
           <h1 className="text-4xl font-bold mb-2">Kanbased</h1>
           <p className="text-xl">Fast, Minimalistic, personal kanban app.</p>
+
+          <p>Welcome {user.displayName?.split(" ")[0]}!</p>
         </header>
         <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
           <h2>Quick links</h2>

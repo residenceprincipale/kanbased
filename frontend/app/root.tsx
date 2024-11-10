@@ -45,6 +45,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export async function clientLoader() {
   await queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
+
   return null;
 }
 

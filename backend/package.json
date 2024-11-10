@@ -13,7 +13,8 @@
     "db:studio": "npx drizzle-kit studio",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "dev:pg": "docker-compose -f docker-compose.dev.yml up"
+    "dev:start-db": "docker-compose -f docker-compose.dev.yml up",
+    "dev:delete-db": "docker-compose -f docker-compose.dev.yml down -v"
   },
   "dependencies": {
     "@hono/node-server": "^1.12.0",

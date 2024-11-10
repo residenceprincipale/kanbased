@@ -10,9 +10,11 @@ export const fetchClient = createClient<paths>({
 const authMiddleware: Middleware = {
   async onResponse({ response, }) {
     if (response.status === 401) {
-      if (typeof window === 'undefined') return;
+      if (typeof window === 'undefined' || window.location.pathname.includes(routeMap.login)) return;
       window.location.href = routeMap.login;
     }
+
+
   },
 };
 
