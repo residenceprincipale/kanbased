@@ -3,10 +3,17 @@ import { CreateBoard } from "@/components/create-board";
 import { TopSection } from "@/components/top-section";
 import { Card } from "@/components/ui/card";
 import { routeMap } from "@/lib/constants";
+import { api } from "@/lib/openapi-react-query";
+import { queryClient } from "@/lib/query-client";
 import { Link } from "@remix-run/react";
 
+export async function clientLoader() {
+  await queryClient.prefetchQuery(api.queryOptions("get", "/boards"));
+  return null;
+}
+
 export default function BoardsPage() {
-  const boards: any[] = [];
+  const { data: boards } = api.useQuery("get", "/boards");
 
   return (
     <div className="h-screen flex flex-col">

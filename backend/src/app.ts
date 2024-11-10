@@ -1,6 +1,6 @@
-import authRouter from "./api/auth/auth.router.js";
-import boardsRouter from "./api/boards/boards.router.js";
-import usersRouter from "./api/users/users.router.js";
+import authRouter from "./api/auth/auth.index.js";
+import boardsRouter from "./api/boards/boards.index.js";
+import usersRouter from "./api/users/users.index.js";
 import createApp from "./lib/create-app.js";
 
 export const app = createApp();

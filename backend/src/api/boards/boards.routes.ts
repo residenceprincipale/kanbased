@@ -1,26 +1,24 @@
 import { createRoute, z } from "@hono/zod-openapi";
 
-import { jsonContent, zodErrorContent } from "../../lib/schema-helpers.js";
+import { createMessageContent, genericMessageContent, jsonContent, jsonContentRequired, zodErrorContent } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { boardTable } from "../../db/schema/index.js";
 
-const createBoardParamsSchema = z.object({
-  name: z.string().min(1),
-  color: z.string().nullable().optional(),
-});
-
-const createBoardResponse = createBoardParamsSchema.extend({
-  id: z.number(),
-});
+const createBoardParamsSchema = createInsertSchema(boardTable).omit({ userId: true });
+const createBoardResponse = createSelectSchema(boardTable).omit({ userId: true });
 
 export const createBoardRoute = createRoute({
   method: "post",
   path: "/boards",
   request: {
-    body: jsonContent(createBoardParamsSchema),
+    body: jsonContentRequired(createBoardParamsSchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse, "Retrieve the user"),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent
+    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
+    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
+    [HTTP_STATUS_CODES.BAD_REQUEST]: createMessageContent("Usually the error will be. 'Board name cannot be duplicate'"),
+    [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: genericMessageContent,
   },
 });
 

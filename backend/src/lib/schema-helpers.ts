@@ -45,4 +45,5 @@ const ZodErrorSchema = z.object({
 });
 
 export const zodErrorContent = jsonContent(ZodErrorSchema);
-export const genericMessageContent = jsonContent(z.object({ message: z.string() }));
+export const createMessageContent = (description: string = '') => jsonContent(z.object({ message: z.string() }), description);
+export const genericMessageContent = createMessageContent();

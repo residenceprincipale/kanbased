@@ -62,7 +62,6 @@ export const boardTable = pgTable(
     userId: serial("userId")
       .references(() => userTable.id)
       .notNull(),
-    version: integer("version").notNull(),
   },
   (table) => {
     return {
