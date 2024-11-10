@@ -57,7 +57,7 @@ export const boardTable = pgTable(
   "board",
   {
     id: serial("id").primaryKey(),
-    name: varchar("name", { length: 20 }).notNull(),
+    name: varchar("name", { length: 50 }).notNull(),
     color: varchar("color", { length: 255 }),
     userId: serial("userId")
       .references(() => userTable.id)

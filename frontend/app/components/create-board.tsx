@@ -11,6 +11,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { api } from "@/lib/openapi-react-query";
+import { queryClient } from "@/lib/query-client";
+import { Loader } from "lucide-react";
 import { useState, type FormEventHandler } from "react";
 
 export function CreateBoard() {
@@ -20,11 +22,18 @@ export function CreateBoard() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const boardName = fd.get("board-name") as string;
-    mutate({
-      body: {
-        name: boardName,
+    mutate(
+      {
+        body: {
+          name: boardName,
+        },
       },
-    });
+      {
+        onSuccess() {
+          queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+        },
+      }
+    );
     setIsOpen(false);
   };
 
@@ -53,7 +62,9 @@ export function CreateBoard() {
           </div>
 
           <DialogFooter>
-            <Button type="submit">Create</Button>
+            <Button disabled={isPending} type="submit" className="w-[72px]">
+              {isPending ? <Loader className="animate-spin" /> : "Create"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
