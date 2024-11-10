@@ -8,13 +8,13 @@ import {
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      gcTime: Infinity
+      gcTime: Infinity,
+      staleTime: Infinity
     },
   },
 })
+
 export const idbPersister = createIDBPersister();
-
-
 
 export function createIDBPersister() {
   const idbValidKey = 'reactQuery'

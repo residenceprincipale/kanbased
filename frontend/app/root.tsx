@@ -8,12 +8,9 @@ import {
 import type { LinksFunction } from "@remix-run/node";
 
 import "./tailwind.css";
-import {
-  createIDBPersister,
-  idbPersister,
-  queryClient,
-} from "@/lib/query-client";
+import { idbPersister, queryClient } from "@/lib/query-client";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import { api } from "@/lib/openapi-react-query";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -40,17 +37,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <body>
         {children}
         <ScrollRestoration />
-        {/* <script
-          dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(
-              data.ENV
-            )}`,
-          }}
-        /> */}
         <Scripts />
       </body>
     </html>
   );
+}
+
+export async function clientLoader() {
+  await queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
+  return "success";
 }
 
 export default function App() {
