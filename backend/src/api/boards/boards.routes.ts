@@ -1,6 +1,7 @@
 import { createRoute, z } from "@hono/zod-openapi";
 
-import { errorSchemas } from "../../lib/error-schema.js";
+import { jsonContent, zodErrorContent } from "../../lib/schema-helpers.js";
+import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const createBoardParamsSchema = z.object({
   name: z.string().min(1),
@@ -15,24 +16,11 @@ export const createBoardRoute = createRoute({
   method: "post",
   path: "/boards",
   request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: createBoardParamsSchema,
-        },
-      },
-    },
+    body: jsonContent(createBoardParamsSchema),
   },
   responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: createBoardResponse,
-        },
-      },
-      description: "Retrieve the user",
-    },
-    ...errorSchemas,
+    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse, "Retrieve the user"),
+    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent
   },
 });
 
@@ -40,14 +28,7 @@ export const getBoardsRoute = createRoute({
   method: "get",
   path: "/boards",
   responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: z.array(createBoardResponse),
-        },
-      },
-      description: "",
-    },
-    ...errorSchemas,
+    [HTTP_STATUS_CODES.OK]: jsonContent(z.array(createBoardResponse)),
+    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent
   },
 });

@@ -1,7 +1,8 @@
 import { createRoute } from "@hono/zod-openapi";
-import { errorSchemas } from "../../lib/error-schema.js";
 import { createSelectSchema } from "drizzle-zod";
 import { profileTable } from "../../db/schema/index.js";
+import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { jsonContent } from "../../lib/schema-helpers.js";
 
 
 const selectUsersSchema = createSelectSchema(profileTable);
@@ -11,14 +12,6 @@ export const getCurrentUser = createRoute({
   method: "get",
   path: "/current-user",
   responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: selectUsersSchema.omit({ userId: true }),
-        },
-      },
-      description: "No content",
-    },
-    ...errorSchemas,
-  },
+    [HTTP_STATUS_CODES.OK]: jsonContent(selectUsersSchema.omit({ userId: true }))
+  }
 });

@@ -1,5 +1,4 @@
 import {
-  boolean,
   index,
   integer,
   pgEnum,
@@ -8,7 +7,7 @@ import {
   text,
   timestamp,
   unique,
-  varchar,
+  varchar
 } from "drizzle-orm/pg-core";
 
 export const accountTypeEnum = pgEnum("accountType", [
@@ -71,6 +70,7 @@ export const boardTable = pgTable(
     };
   },
 );
+
 export const sessionTable = pgTable(
   "session",
   {
@@ -87,21 +87,6 @@ export const sessionTable = pgTable(
     userIdIdx: index("sessionsUserIdIdx").on(table.userId),
   }),
 );
-
-
-
-export const replicacheClientTable = pgTable('replicacheClient', {
-  id: text("id").primaryKey().notNull(),
-  clientGroupID: text('clientGroupId'),
-  version: integer('version').notNull(),
-  lastMutationID: integer('lastMutationId').notNull(),
-  createdAt: timestamp('createdAt').defaultNow(),
-});
-
-export const replicacheServerVersionTable = pgTable('replicacheServer', {
-  id: integer("id").notNull().primaryKey(),
-  version: integer('version').notNull(),
-});
 
 export type Session = typeof sessionTable.$inferSelect;
 export type User = typeof userTable.$inferSelect;

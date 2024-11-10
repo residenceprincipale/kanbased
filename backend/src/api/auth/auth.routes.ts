@@ -1,6 +1,6 @@
 import { createRoute, z } from "@hono/zod-openapi";
-
-import { errorSchemas } from "../../lib/error-schema.js";
+import { genericMessageContent, jsonContent, jsonContentRequired, zodErrorContent } from "../../lib/schema-helpers.js";
+import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const createUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
@@ -25,24 +25,11 @@ export const registerUserRoute = createRoute({
   method: "post",
   path: "/auth/register/email",
   request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: createUserRequestSchema,
-        },
-      },
-    },
+    body: jsonContentRequired(createUserRequestSchema),
   },
   responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: registerUserResponse,
-        },
-      },
-      description: "No content",
-    },
-    ...errorSchemas,
+    [HTTP_STATUS_CODES.OK]: jsonContent(registerUserResponse),
+    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
   },
 });
 
@@ -67,7 +54,6 @@ export const loginUserRoute = createRoute({
       },
       description: "No content",
     },
-    ...errorSchemas,
   },
 });
 
@@ -75,7 +61,7 @@ export const loginGoogleRoute = createRoute({
   method: "get",
   path: "/auth/login/google",
   responses: {
-    302: {
+    [HTTP_STATUS_CODES.MOVED_TEMPORARILY]: {
       description: "",
     },
   },
@@ -85,7 +71,7 @@ export const googleCallbackRoute = createRoute({
   method: "get",
   path: "/auth/login/google/callback",
   responses: {
-    302: {
+    [HTTP_STATUS_CODES.MOVED_TEMPORARILY]: {
       description: "",
     },
   },
@@ -95,9 +81,6 @@ export const logoutRoute = createRoute({
   method: "post",
   path: "/auth/logout",
   responses: {
-    200: {
-      description: "No content",
-    },
-    ...errorSchemas,
+    [HTTP_STATUS_CODES.OK]: genericMessageContent,
   },
 });
