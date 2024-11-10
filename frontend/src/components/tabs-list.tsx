@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { routeMap } from "@/lib/constants";
 import { cn, useBetterParams } from "@/lib/utils";
-import { Link, useNavigate } from "@remix-run/react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { memo } from "react";
 
 export const TabsList = memo(function TabsList() {

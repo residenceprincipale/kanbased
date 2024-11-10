@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { routeMap } from "@/lib/constants";
 import { api } from "@/lib/openapi-react-query";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
 
 export function TopSection() {
   const { data: user } = api.useQuery("get", "/current-user");

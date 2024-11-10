@@ -6,9 +6,16 @@ import { routeMap } from "@/lib/constants";
 import { useBetterParams } from "@/lib/utils";
 import { PlusIcon } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { useNavigate } from "@remix-run/react";
+import { useNavigate } from "@tanstack/react-router";
 
-export default function BoardPage() {
+
+import { createFileRoute, Link } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/boards/$boardId')({
+  component: BoardPage,
+})
+
+function BoardPage() {
   const { boardName } = useBetterParams<{ boardName: string }>();
   const navigate = useNavigate();
   const boards: any[] = [];

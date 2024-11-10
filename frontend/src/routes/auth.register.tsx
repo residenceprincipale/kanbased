@@ -14,9 +14,16 @@ import { useState, type FormEventHandler } from "react";
 import { Loader } from "lucide-react";
 import { fetchClient } from "@/lib/fetch-client";
 import { toast } from "sonner";
-import { Link, useNavigate } from "@remix-run/react";
+import { Link, useNavigate } from "@tanstack/react-router";
 
-export default function RegisterForm() {
+
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/auth/register')({
+  component: RegisterForm,
+})
+
+function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 

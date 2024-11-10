@@ -1,16 +1,13 @@
 import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
-import type { MetaFunction } from "@remix-run/node";
-import { Link } from "@remix-run/react";
+import { Link } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
-  ];
-};
+export const Route = createFileRoute('/')({
+  component: HomeComponent,
+})
 
-export default function Index() {
+function HomeComponent() {
   const { user } = useUser();
   return (
     <div className="flex h-screen items-center justify-center">
