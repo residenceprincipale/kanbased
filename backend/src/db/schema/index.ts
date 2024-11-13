@@ -26,9 +26,9 @@ export const accountTable = pgTable(
   "account",
   {
     id: serial("id").primaryKey(),
-    userId: serial("userId")
+    userId: integer("userId")
       .notNull()
-      .references(() => userTable.id, { onDelete: "cascade" }),
+      .references(() => userTable.id, { onDelete: "cascade", }),
     accountType: accountTypeEnum("accountType").notNull(),
     githubId: text("githubId").unique(),
     googleId: text("googleId").unique(),
@@ -45,7 +45,7 @@ export const accountTable = pgTable(
 
 export const profileTable = pgTable("profile", {
   id: serial("id").primaryKey(),
-  userId: serial("userId")
+  userId: integer("userId")
     .notNull()
     .references(() => userTable.id, { onDelete: "cascade" })
     .unique(),
@@ -59,9 +59,11 @@ export const boardTable = pgTable(
     id: serial("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
     color: varchar("color", { length: 255 }),
-    userId: serial("userId")
-      .references(() => userTable.id)
+    userId: integer("userId")
+      .references(() => userTable.id, { onDelete: 'cascade' })
       .notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull(),
   },
   (table) => {
     return {
@@ -70,11 +72,49 @@ export const boardTable = pgTable(
   },
 );
 
+export const columnTable = pgTable(
+  "column",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 100 }).notNull(),
+    boardId: integer("boardId")
+      .references(() => boardTable.id, { onDelete: 'cascade' })
+      .notNull(),
+    position: integer("order").notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull(),
+  },
+  (table) => {
+    return {
+      boardIdIdx: index("columnBoardIdx").on(table.boardId),
+    };
+  },
+)
+
+export const taskTable = pgTable(
+  "task",
+  {
+    id: serial("id").primaryKey(),
+    name: varchar("name", { length: 100 }).notNull(),
+    columnId: integer("columnId")
+      .references(() => columnTable.id, { onDelete: 'cascade' })
+      .notNull(),
+    position: integer("order").notNull(),
+    createdAt: timestamp("createdAt").defaultNow(),
+    updatedAt: timestamp("updatedAt").notNull(),
+  },
+  (table) => {
+    return {
+      columnIdIdx: index("columnTaskIdx").on(table.columnId),
+    };
+  },
+)
+
 export const sessionTable = pgTable(
   "session",
   {
     id: text("id").primaryKey(),
-    userId: serial("userId")
+    userId: integer("userId")
       .notNull()
       .references(() => userTable.id, { onDelete: "cascade" }),
     expiresAt: timestamp("expiresAt", {

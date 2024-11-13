@@ -11,17 +11,17 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as BoardsImport } from './routes/boards'
+import { Route as BlayoutImport } from './routes/_blayout'
 import { Route as IndexImport } from './routes/index'
-import { Route as BoardsBoardIdImport } from './routes/boards.$boardId'
 import { Route as AuthRegisterImport } from './routes/auth.register'
 import { Route as AuthLoginImport } from './routes/auth.login'
+import { Route as BlayoutBoardsIndexImport } from './routes/_blayout.boards.index'
+import { Route as BlayoutBoardsBoardNameImport } from './routes/_blayout.boards.$boardName'
 
 // Create/Update Routes
 
-const BoardsRoute = BoardsImport.update({
-  id: '/boards',
-  path: '/boards',
+const BlayoutRoute = BlayoutImport.update({
+  id: '/_blayout',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -29,12 +29,6 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any)
-
-const BoardsBoardIdRoute = BoardsBoardIdImport.update({
-  id: '/$boardId',
-  path: '/$boardId',
-  getParentRoute: () => BoardsRoute,
 } as any)
 
 const AuthRegisterRoute = AuthRegisterImport.update({
@@ -49,6 +43,18 @@ const AuthLoginRoute = AuthLoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const BlayoutBoardsIndexRoute = BlayoutBoardsIndexImport.update({
+  id: '/boards/',
+  path: '/boards/',
+  getParentRoute: () => BlayoutRoute,
+} as any)
+
+const BlayoutBoardsBoardNameRoute = BlayoutBoardsBoardNameImport.update({
+  id: '/boards/$boardName',
+  path: '/boards/$boardName',
+  getParentRoute: () => BlayoutRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -60,11 +66,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/boards': {
-      id: '/boards'
-      path: '/boards'
-      fullPath: '/boards'
-      preLoaderRoute: typeof BoardsImport
+    '/_blayout': {
+      id: '/_blayout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof BlayoutImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -81,84 +87,104 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterImport
       parentRoute: typeof rootRoute
     }
-    '/boards/$boardId': {
-      id: '/boards/$boardId'
-      path: '/$boardId'
-      fullPath: '/boards/$boardId'
-      preLoaderRoute: typeof BoardsBoardIdImport
-      parentRoute: typeof BoardsImport
+    '/_blayout/boards/$boardName': {
+      id: '/_blayout/boards/$boardName'
+      path: '/boards/$boardName'
+      fullPath: '/boards/$boardName'
+      preLoaderRoute: typeof BlayoutBoardsBoardNameImport
+      parentRoute: typeof BlayoutImport
+    }
+    '/_blayout/boards/': {
+      id: '/_blayout/boards/'
+      path: '/boards'
+      fullPath: '/boards'
+      preLoaderRoute: typeof BlayoutBoardsIndexImport
+      parentRoute: typeof BlayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface BoardsRouteChildren {
-  BoardsBoardIdRoute: typeof BoardsBoardIdRoute
+interface BlayoutRouteChildren {
+  BlayoutBoardsBoardNameRoute: typeof BlayoutBoardsBoardNameRoute
+  BlayoutBoardsIndexRoute: typeof BlayoutBoardsIndexRoute
 }
 
-const BoardsRouteChildren: BoardsRouteChildren = {
-  BoardsBoardIdRoute: BoardsBoardIdRoute,
+const BlayoutRouteChildren: BlayoutRouteChildren = {
+  BlayoutBoardsBoardNameRoute: BlayoutBoardsBoardNameRoute,
+  BlayoutBoardsIndexRoute: BlayoutBoardsIndexRoute,
 }
 
-const BoardsRouteWithChildren =
-  BoardsRoute._addFileChildren(BoardsRouteChildren)
+const BlayoutRouteWithChildren =
+  BlayoutRoute._addFileChildren(BlayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/boards': typeof BoardsRouteWithChildren
+  '': typeof BlayoutRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/boards/$boardId': typeof BoardsBoardIdRoute
+  '/boards/$boardName': typeof BlayoutBoardsBoardNameRoute
+  '/boards': typeof BlayoutBoardsIndexRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/boards': typeof BoardsRouteWithChildren
+  '': typeof BlayoutRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/boards/$boardId': typeof BoardsBoardIdRoute
+  '/boards/$boardName': typeof BlayoutBoardsBoardNameRoute
+  '/boards': typeof BlayoutBoardsIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/boards': typeof BoardsRouteWithChildren
+  '/_blayout': typeof BlayoutRouteWithChildren
   '/auth/login': typeof AuthLoginRoute
   '/auth/register': typeof AuthRegisterRoute
-  '/boards/$boardId': typeof BoardsBoardIdRoute
+  '/_blayout/boards/$boardName': typeof BlayoutBoardsBoardNameRoute
+  '/_blayout/boards/': typeof BlayoutBoardsIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/boards'
+    | ''
     | '/auth/login'
     | '/auth/register'
-    | '/boards/$boardId'
+    | '/boards/$boardName'
+    | '/boards'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/boards' | '/auth/login' | '/auth/register' | '/boards/$boardId'
+  to:
+    | '/'
+    | ''
+    | '/auth/login'
+    | '/auth/register'
+    | '/boards/$boardName'
+    | '/boards'
   id:
     | '__root__'
     | '/'
-    | '/boards'
+    | '/_blayout'
     | '/auth/login'
     | '/auth/register'
-    | '/boards/$boardId'
+    | '/_blayout/boards/$boardName'
+    | '/_blayout/boards/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BoardsRoute: typeof BoardsRouteWithChildren
+  BlayoutRoute: typeof BlayoutRouteWithChildren
   AuthLoginRoute: typeof AuthLoginRoute
   AuthRegisterRoute: typeof AuthRegisterRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BoardsRoute: BoardsRouteWithChildren,
+  BlayoutRoute: BlayoutRouteWithChildren,
   AuthLoginRoute: AuthLoginRoute,
   AuthRegisterRoute: AuthRegisterRoute,
 }
@@ -174,7 +200,7 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/boards",
+        "/_blayout",
         "/auth/login",
         "/auth/register"
       ]
@@ -182,10 +208,11 @@ export const routeTree = rootRoute
     "/": {
       "filePath": "index.tsx"
     },
-    "/boards": {
-      "filePath": "boards.tsx",
+    "/_blayout": {
+      "filePath": "_blayout.tsx",
       "children": [
-        "/boards/$boardId"
+        "/_blayout/boards/$boardName",
+        "/_blayout/boards/"
       ]
     },
     "/auth/login": {
@@ -194,9 +221,13 @@ export const routeTree = rootRoute
     "/auth/register": {
       "filePath": "auth.register.tsx"
     },
-    "/boards/$boardId": {
-      "filePath": "boards.$boardId.tsx",
-      "parent": "/boards"
+    "/_blayout/boards/$boardName": {
+      "filePath": "_blayout.boards.$boardName.tsx",
+      "parent": "/_blayout"
+    },
+    "/_blayout/boards/": {
+      "filePath": "_blayout.boards.index.tsx",
+      "parent": "/_blayout"
     }
   }
 }

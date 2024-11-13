@@ -31,10 +31,10 @@ export function CreateBoard() {
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+          setIsOpen(false);
         },
       }
     );
-    setIsOpen(false);
   };
 
   return (

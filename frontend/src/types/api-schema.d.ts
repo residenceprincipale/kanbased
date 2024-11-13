@@ -20,7 +20,7 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         name: string | null;
@@ -31,7 +31,6 @@ export interface paths {
                 };
             };
             responses: {
-                /** @description No content */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -44,59 +43,21 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Gives you errors */
-                400: {
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
                             };
                         };
                     };
@@ -149,63 +110,6 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Gives you errors */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
             };
         };
         delete?: never;
@@ -232,67 +136,13 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description No content */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
-                };
-                /** @description Gives you errors */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
                     content: {
                         "application/json": {
                             message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
                         };
                     };
                 };
@@ -390,65 +240,29 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            name: string;
-                            color?: string | null;
                             id: number;
+                            name: string;
+                            color: string | null;
+                            createdAt: string | null;
+                            updatedAt: string;
                         }[];
                     };
                 };
-                /** @description Gives you errors */
-                400: {
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
                             };
                         };
                     };
@@ -463,29 +277,32 @@ export interface paths {
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
+                        id?: number;
                         name: string;
                         color?: string | null;
+                        createdAt?: string | null;
                     };
                 };
             };
             responses: {
-                /** @description Retrieve the user */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            name: string;
-                            color?: string | null;
                             id: number;
+                            name: string;
+                            color: string | null;
+                            createdAt: string | null;
+                            updatedAt: string;
                         };
                     };
                 };
-                /** @description Gives you errors */
+                /** @description Usually the error will be. 'Board name cannot be duplicate' */
                 400: {
                     headers: {
                         [name: string]: unknown;
@@ -493,37 +310,28 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
                         };
                     };
                 };
-                /** @description Gives you errors */
-                401: {
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
                             };
                         };
                     };
                 };
-                /** @description Gives you errors */
                 500: {
                     headers: {
                         [name: string]: unknown;
@@ -531,14 +339,6 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
                         };
                     };
                 };
@@ -566,7 +366,6 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description No content */
                 200: {
                     headers: {
                         [name: string]: unknown;
@@ -579,63 +378,6 @@ export interface paths {
                         };
                     };
                 };
-                /** @description Gives you errors */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
             };
         };
         put?: never;
@@ -646,116 +388,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/push": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        schemaVersion: string;
-                        profileID: string;
-                        clientGroupID: string;
-                        mutations: {
-                            id: number;
-                            name: string;
-                            args?: unknown;
-                            timestamp: number;
-                            clientID: string;
-                        }[];
-                        /** @enum {number} */
-                        pushVersion: 1;
-                    };
-                };
-            };
-            responses: {
-                /** @description No content */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": unknown;
-                    };
-                };
-                /** @description Gives you errors */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/pull": {
+    "/columns": {
         parameters: {
             query?: never;
             header?: never;
@@ -766,73 +399,54 @@ export interface paths {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    boardName: string;
+                };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description No content */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": unknown;
+                        "application/json": {
+                            id: number;
+                            name: string;
+                            boardId: number;
+                            position: number;
+                            createdAt: string | null;
+                            updatedAt: string;
+                        }[];
                     };
                 };
-                /** @description Gives you errors */
-                400: {
+                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
+                404: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
                             message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
                         };
                     };
                 };
-                /** @description Gives you errors */
-                401: {
+                422: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
-                            };
-                        };
-                    };
-                };
-                /** @description Gives you errors */
-                500: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            /**
-                             * @default usual
-                             * @enum {string}
-                             */
-                            errorType: "field" | "usual";
-                            fieldError?: {
-                                [key: string]: string;
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
                             };
                         };
                     };
@@ -840,7 +454,72 @@ export interface paths {
             };
         };
         put?: never;
-        post?: never;
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        id?: number;
+                        name: string;
+                        position: number;
+                        createdAt?: string | null;
+                        boardName: string;
+                    };
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            id: number;
+                            name: string;
+                            boardId: number;
+                            position: number;
+                            createdAt: string | null;
+                            updatedAt: string;
+                        };
+                    };
+                };
+                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
         delete?: never;
         options?: never;
         head?: never;

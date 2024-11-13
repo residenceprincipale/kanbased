@@ -15,13 +15,12 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
   try {
     const [board] = await db
       .insert(boardTable)
-      .values({ name: body.name, color: body.color, userId: user.id })
+      .values({ name: body.name, color: body.color, userId: user.id, updatedAt: new Date() })
       .returning();
 
     return c.json(board!, 200);
   }
   catch (err) {
-    console.log("err", err);
     const isUniqueConstraintError
       = err && typeof err === "object" && "code" in err && err.code === "23505";
 

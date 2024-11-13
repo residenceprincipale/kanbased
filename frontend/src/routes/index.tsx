@@ -1,11 +1,11 @@
 import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
 import { Link } from "@tanstack/react-router";
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/')({
+export const Route = createFileRoute("/")({
   component: HomeComponent,
-})
+});
 
 function HomeComponent() {
   const { user } = useUser();
@@ -15,26 +15,33 @@ function HomeComponent() {
         <header className="flex flex-col items-center">
           <h1 className="text-4xl font-bold mb-2">Kanbased</h1>
           <p className="text-xl">Fast, Minimalistic, personal kanban app.</p>
-
-          <p>Welcome {user.displayName?.split(" ")[0]}!</p>
         </header>
-        <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
-          <h2>Quick links</h2>
-          <ul>
-            {resources.map(({ href, text, icon }) => (
-              <li key={href}>
-                <Link
-                  className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
-                  to={href}
-                  rel="noreferrer"
-                >
-                  {icon}
-                  {text}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
+
+        <div>
+          <h2 className="mb-4">
+            Welcome{" "}
+            <span className="font-medium">
+              {user.displayName?.split(" ")[0]}!
+            </span>{" "}
+          </h2>
+          <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
+            <h2>Quick links</h2>
+            <ul>
+              {resources.map(({ href, text, icon }) => (
+                <li key={href}>
+                  <Link
+                    className="group flex items-center gap-3 self-stretch p-3 leading-normal text-blue-700 hover:underline dark:text-blue-500"
+                    to={href}
+                    rel="noreferrer"
+                  >
+                    {icon}
+                    {text}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   );

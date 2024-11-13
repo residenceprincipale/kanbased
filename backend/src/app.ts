@@ -1,5 +1,6 @@
 import authRouter from "./api/auth/auth.index.js";
 import boardsRouter from "./api/boards/boards.index.js";
+import columnsRouter from "./api/columns/columns.index.js";
 import usersRouter from "./api/users/users.index.js";
 import createApp from "./lib/create-app.js";
 
@@ -9,7 +10,7 @@ app.get("/", (c) => {
   return c.json("hello hono");
 });
 
-const routes = [authRouter, boardsRouter, usersRouter];
+const routes = [authRouter, boardsRouter, usersRouter, columnsRouter];
 
 routes.forEach((route) => {
   app.route("/", route);

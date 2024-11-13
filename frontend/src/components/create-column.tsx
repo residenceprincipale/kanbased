@@ -12,26 +12,29 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useBetterParams } from "@/lib/utils";
+import { api } from "@/lib/openapi-react-query";
+import { Loader } from "lucide-react";
 
 export function CreateColumn(props: {
   trigger: React.ReactNode;
-  boardId: string;
+  boardName: string;
 }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { boardName } = useBetterParams<{ boardName: string }>();
+  const { mutate, isPending } = api.useMutation("post", "/columns");
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const name = fd.get("column-name") as string;
-    // const boardId = useDataStore
-    //   .getState()
-    //   .boards?.find((board) => board.name === boardName)?.id!;
-    // const order = useDataStore.getState().columns?.length ?? 0;
 
-    // rep.mutate.createColumn({ name: name, boardId, order });
-    setIsOpen(false);
+    mutate(
+      { body: { boardName: props.boardName, name, position: 0 } },
+      {
+        onSuccess() {
+          setIsOpen(false);
+        },
+      }
+    );
   };
 
   return (
@@ -57,7 +60,9 @@ export function CreateColumn(props: {
           </div>
 
           <DialogFooter>
-            <Button type="submit">Create</Button>
+            <Button type="submit">
+              {isPending ? <Loader className="animate-spin" /> : "Create"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>
