@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { Loader } from "lucide-react";
@@ -63,7 +64,7 @@ export function CreateBoard() {
 
           <DialogFooter>
             <Button disabled={isPending} type="submit" className="w-[72px]">
-              {isPending ? <Loader className="animate-spin" /> : "Create"}
+              {isPending ? <Spinner /> : "Create"}
             </Button>
           </DialogFooter>
         </form>
