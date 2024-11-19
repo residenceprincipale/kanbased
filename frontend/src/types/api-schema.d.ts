@@ -397,11 +397,11 @@ export interface paths {
         };
         get: {
             parameters: {
-                query?: never;
-                header?: never;
-                path: {
+                query: {
                     boardName: string;
                 };
+                header?: never;
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
@@ -416,8 +416,12 @@ export interface paths {
                             name: string;
                             boardId: number;
                             position: number;
-                            createdAt: string | null;
-                            updatedAt: string;
+                            tasks: {
+                                id: number;
+                                name: string;
+                                columnId: number;
+                                position: number;
+                            }[];
                         }[];
                     };
                 };
@@ -483,8 +487,12 @@ export interface paths {
                             name: string;
                             boardId: number;
                             position: number;
-                            createdAt: string | null;
-                            updatedAt: string;
+                            tasks: {
+                                id: number;
+                                name: string;
+                                columnId: number;
+                                position: number;
+                            }[];
                         };
                     };
                 };

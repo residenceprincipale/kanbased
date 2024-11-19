@@ -13,7 +13,6 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { Loader } from "lucide-react";
 import { useState, type FormEventHandler } from "react";
 
 export function CreateBoard() {

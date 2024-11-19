@@ -7,12 +7,13 @@ import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client
 import "./tailwind.css";
 
 // Set up a Router instance
-const router = createRouter({
+export const router = createRouter({
   routeTree,
   defaultPreload: "intent",
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
+  defaultPendingMinMs: 0,
   context: {
     auth: undefined!, // We'll inject this when we render
     queryClient,

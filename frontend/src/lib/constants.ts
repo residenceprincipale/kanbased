@@ -5,3 +5,9 @@ export const routeMap = {
   login: "/auth/login",
   register: "/auth/register",
 } as const;
+
+
+
+export enum QueryParamState {
+  CreateColumn = "create-column"
+}

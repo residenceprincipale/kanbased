@@ -9,7 +9,7 @@ export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: Infinity,
-      staleTime: Infinity
+      // staleTime: Infinity
     },
   },
 })

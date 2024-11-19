@@ -4,8 +4,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRef, type FormEvent } from "react";
 
 export function CreateCard(props: {
-  columnId: string;
-  boardId: string;
+  columnId: number;
+  boardId: number;
   nextOrder: number;
   onComplete: () => void;
   onAddCard: () => void;

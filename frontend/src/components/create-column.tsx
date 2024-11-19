@@ -1,24 +1,12 @@
 "use client";
-import React, { useState, type FormEventHandler } from "react";
+import { useState, type FormEventHandler } from "react";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { api } from "@/lib/openapi-react-query";
-import { Loader } from "lucide-react";
+import { PlusIcon } from "lucide-react";
+import { ColumnWrapper } from "@/components/ui/column";
 
-export function CreateColumn(props: {
-  trigger: React.ReactNode;
-  boardName: string;
-}) {
+export function CreateColumn(props: { boardName: string }) {
   const [isOpen, setIsOpen] = useState(false);
   const { mutate, isPending } = api.useMutation("post", "/columns");
 
@@ -38,34 +26,28 @@ export function CreateColumn(props: {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{props.trigger}</DialogTrigger>
-      <DialogContent className="!gap-0 sm:max-w-[425px]">
-        <form className="grid gap-4" onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle>Create Column</DialogTitle>
-          </DialogHeader>
-
-          <div className="grid gap-2 mt-4 mb-2">
-            <Label htmlFor="column-name">Column Name</Label>
+    <>
+      <Button
+        type="button"
+        size="icon"
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
+      >
+        <PlusIcon />
+      </Button>
+      {isOpen && (
+        <ColumnWrapper>
+          <form onSubmit={handleSubmit}>
             <Input
               id="column-name"
               name="column-name"
               placeholder="eg: work column"
               required
             />
-            <DialogDescription className="!text-xs">
-              Enter a unique name that reflects the purpose of this column.
-            </DialogDescription>
-          </div>
-
-          <DialogFooter>
-            <Button type="submit">
-              {isPending ? <Loader className="animate-spin" /> : "Create"}
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          </form>
+        </ColumnWrapper>
+      )}
+    </>
   );
 }
