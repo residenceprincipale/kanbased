@@ -1,13 +1,13 @@
 "use client";
-import { CreateColumn } from "@/components/create-column";
 import { Columns } from "@/components/columns";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
 import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { router } from "@/main";
 import { QueryParamState } from "@/lib/constants";
+import { buttonVariants } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
@@ -46,14 +46,20 @@ function BoardPage() {
   const { boardName } = Route.useParams();
 
   return (
-    <main className="px-8 pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
-      <div className="flex justify-between gap-4 items-center shrink-0">
+    <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
+      <div className="flex justify-between gap-4 items-center shrink-0 px-8">
         <h1 className="text-2xl capitalize font-bold">{boardName}</h1>
+        <Link
+          to="."
+          search={{ open: QueryParamState.CreateColumn }}
+          className={buttonVariants()}
+        >
+          Create column
+        </Link>
       </div>
 
-      <div className="flex-1 h-full min-h-0 flex">
+      <div className="flex-1 h-full min-h-0">
         <Columns boardName={boardName} />
-        <CreateColumn boardName={boardName} />
       </div>
     </main>
   );

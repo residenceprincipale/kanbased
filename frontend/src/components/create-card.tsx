@@ -16,7 +16,7 @@ export function CreateCard(props: {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget as HTMLFormElement);
-    const name = fd.get(props.columnId) as string;
+    const name = fd.get(props.columnId.toString()) as string;
     // await rep.mutate.createCard({
     //   name,
     //   columnId: props.columnId,
@@ -39,7 +39,7 @@ export function CreateCard(props: {
         className="space-y-3"
       >
         <Textarea
-          name={props.columnId}
+          name={props.columnId.toString()}
           ref={textAreaRef}
           required
           onChange={(e) => {
