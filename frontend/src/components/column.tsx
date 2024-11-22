@@ -19,56 +19,54 @@ export function Column({
   };
 
   return (
-    <li key={column.id}>
-      <ColumnWrapper>
-        <h1 className="text-center px-2 text-xl font-semibold capitalize shrink-0">
-          {column.name}
-        </h1>
+    <ColumnWrapper>
+      <h1 className="text-center px-2 text-xl font-semibold capitalize shrink-0">
+        {column.name}
+      </h1>
 
-        <ul
-          ref={listRef}
-          className="space-y-3 flex-grow overflow-y-auto px-2 min-h-0"
-        >
-          {column.tasks.map((task) => {
-            return (
-              <li
-                key={task.id}
-                className="bg-background text-foreground p-2 rounded-md h-16"
-              >
-                {task.name}
-              </li>
-            );
-          })}
-        </ul>
-
-        <div className="shrink-0 mx-2">
-          {showAddCard ? (
-            <CreateCard
-              columnId={column.id}
-              boardId={column.boardId}
-              nextOrder={column.tasks.length}
-              onAddCard={() => scrollList()}
-              onComplete={() => {
-                setShowAddCard(false);
-              }}
-            />
-          ) : (
-            <Button
-              onClick={() => {
-                flushSync(() => {
-                  setShowAddCard(true);
-                });
-                scrollList();
-              }}
-              className="w-full hover:!bg-primary-foreground"
-              type="button"
-              variant="secondary"
+      <ul
+        ref={listRef}
+        className="space-y-3 flex-grow overflow-y-auto px-2 min-h-0"
+      >
+        {column.tasks.map((task) => {
+          return (
+            <li
+              key={task.id}
+              className="bg-background text-foreground p-2 rounded-md h-16"
             >
-              + Add a task
-            </Button>
-          )}
-        </div>
-      </ColumnWrapper>
-    </li>
+              {task.name}
+            </li>
+          );
+        })}
+      </ul>
+
+      <div className="shrink-0 mx-2">
+        {showAddCard ? (
+          <CreateCard
+            columnId={column.id}
+            boardId={column.boardId}
+            nextOrder={column.tasks.length}
+            onAddCard={() => scrollList()}
+            onComplete={() => {
+              setShowAddCard(false);
+            }}
+          />
+        ) : (
+          <Button
+            onClick={() => {
+              flushSync(() => {
+                setShowAddCard(true);
+              });
+              scrollList();
+            }}
+            className="w-full hover:!bg-primary-foreground"
+            type="button"
+            variant="secondary"
+          >
+            + Add a task
+          </Button>
+        )}
+      </div>
+    </ColumnWrapper>
   );
 }
