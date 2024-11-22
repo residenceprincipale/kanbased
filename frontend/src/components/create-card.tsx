@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { api } from "@/lib/openapi-react-query";
 import { useRef, type FormEvent } from "react";
 
 export function CreateCard(props: {
@@ -12,6 +13,7 @@ export function CreateCard(props: {
 }) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  // const createCardMutation = api.useMutation('post', '')
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -23,6 +25,7 @@ export function CreateCard(props: {
     //   order: props.nextOrder,
     //   boardId: props.boardId,
     // });
+
     textAreaRef.current!.value = "";
     props.onAddCard();
   };
