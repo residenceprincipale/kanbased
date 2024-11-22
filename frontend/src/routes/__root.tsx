@@ -10,13 +10,15 @@ export const Route = createRootRoute({
     return null;
   },
   pendingComponent: () => <div>Loading...</div>,
+  shouldReload: false,
+  loaderDeps: (opt) => ({}),
 });
 
 function RootComponent() {
   return (
     <>
       <Outlet />
-      <TanStackRouterDevtools position="bottom-right" />
+      {/* <TanStackRouterDevtools position="bottom-right" /> */}
     </>
   );
 }

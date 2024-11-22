@@ -9,11 +9,12 @@ import "./tailwind.css";
 // Set up a Router instance
 export const router = createRouter({
   routeTree,
-  defaultPreload: "intent",
+  defaultPreload: false,
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
   defaultPendingMinMs: 0,
+  defaultPendingMs: 0,
   context: {
     auth: undefined!, // We'll inject this when we render
     queryClient,

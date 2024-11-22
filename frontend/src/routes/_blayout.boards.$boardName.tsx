@@ -27,6 +27,8 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
       <Spinner size="lg" />
     </div>
   ),
+  shouldReload: false,
+  loaderDeps: (opt) => false,
 });
 
 export function useGetIsCreateColumnOpen() {
