@@ -8,6 +8,7 @@ import {
   useGetIsCreateColumnOpen,
 } from "@/routes/_blayout.boards.$boardName";
 import { createOptimisticUpdate } from "@/lib/rq-helpers";
+import { Button } from "@/components/ui/button";
 export function Columns(props: { boardName: string }) {
   const columnsQueryOptions = api.queryOptions("get", "/columns", {
     params: { query: { boardName: props.boardName } },
@@ -41,6 +42,10 @@ export function Columns(props: { boardName: string }) {
     containerRef.current?.scrollTo({
       left: containerRef.current!.scrollWidth,
     });
+  };
+
+  const closeCreateColumn = () => {
+    setIsCreateColumnOpen(undefined);
   };
 
   const handleSubmit: FormEventHandler = (e) => {
@@ -89,15 +94,30 @@ export function Columns(props: { boardName: string }) {
               autoFocus
               onKeyDown={(event) => {
                 if (event.key === "Escape") {
-                  setIsCreateColumnOpen(false);
+                  closeCreateColumn();
                 }
               }}
-              onBlur={(event) => {
-                if (!event.currentTarget.contains(event.relatedTarget)) {
-                  setIsCreateColumnOpen(false);
-                }
-              }}
+              // onBlur={(event) => {
+              //   if (!event.currentTarget.contains(event.relatedTarget)) {
+              //     closeCreateColumn();
+              //   }
+              // }}
             />
+
+            <div className="flex gap-4 w-fit ml-auto mt-4">
+              <Button
+                onClick={closeCreateColumn}
+                type="button"
+                variant="ghost"
+                size="sm"
+              >
+                Cancel
+              </Button>
+
+              <Button type="submit" size="sm">
+                Save
+              </Button>
+            </div>
           </form>
         </ColumnWrapper>
       )}

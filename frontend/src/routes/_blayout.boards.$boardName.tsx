@@ -36,10 +36,15 @@ export function useGetIsCreateColumnOpen() {
   return open === QueryParamState.CreateColumn;
 }
 
-export function setIsCreateColumnOpen(updatedOpen: boolean) {
+export function setIsCreateColumnOpen(
+  updatedOpen: QueryParamState | undefined
+) {
   router.navigate({
     from: Route.fullPath,
-    search: (prev) => ({ ...prev, open: updatedOpen }),
+    search: (prev) => ({
+      ...prev,
+      open: updatedOpen,
+    }),
     replace: true,
   });
 }
