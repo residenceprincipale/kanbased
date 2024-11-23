@@ -1,14 +1,13 @@
 import { Column } from "@/components/column";
-import { useEffect, useRef, type FormEventHandler } from "react";
-import { Input } from "@/components/ui/input";
+import { useEffect, useRef } from "react";
 import { api } from "@/lib/openapi-react-query";
-import { ColumnWrapper } from "@/components/ui/column";
 import {
   setIsCreateColumnOpen,
   useGetIsCreateColumnOpen,
 } from "@/routes/_blayout.boards.$boardName";
-import { createOptimisticUpdate } from "@/lib/rq-helpers";
-import { Button } from "@/components/ui/button";
+import { getOptimisticQueryHelpers } from "@/lib/rq-helpers";
+import { CreateColumn } from "@/components/create-column";
+
 export function Columns(props: { boardName: string }) {
   const columnsQueryOptions = api.queryOptions("get", "/columns", {
     params: { query: { boardName: props.boardName } },
@@ -20,48 +19,44 @@ export function Columns(props: { boardName: string }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const isCreateColOpen = useGetIsCreateColumnOpen();
 
-  const createColumnMutation = api.useMutation(
-    "post",
-    "/columns",
-    createOptimisticUpdate({
-      queryKey: columnsQueryOptions.queryKey,
-      optimisticUpdate: (old, mutationVariables: any) => [
-        ...old,
-        {
-          boardId: columns?.[0]?.boardId ?? 0,
-          id: crypto.randomUUID() as any,
-          name: mutationVariables.body.name,
-          position: columns?.length ?? 0 + 1,
-          tasks: [],
-        },
-      ],
-    })
-  );
-
   const scrollToRight = () => {
     containerRef.current?.scrollTo({
       left: containerRef.current!.scrollWidth,
     });
   };
 
+  const optimisticHelpers = getOptimisticQueryHelpers(
+    columnsQueryOptions.queryKey
+  );
+
+  const createColumnMutation = api.useMutation("post", "/columns", {
+    onMutate: (variables) =>
+      optimisticHelpers.onMutate((oldData: NonNullable<typeof columns>) => [
+        ...oldData,
+        {
+          boardId: columns?.[0]?.boardId ?? 0,
+          id: crypto.randomUUID() as any,
+          name: variables.body.name,
+          position: columns?.length ?? 0 + 1,
+          tasks: [],
+        },
+      ]),
+    onError: optimisticHelpers.onError,
+    onSettled: optimisticHelpers.onSettled,
+  });
+
   const closeCreateColumn = () => {
     setIsCreateColumnOpen(undefined);
   };
 
-  const handleSubmit: FormEventHandler = (e) => {
-    e.preventDefault();
-    const formEl = e.target as HTMLFormElement;
-    const fd = new FormData(formEl);
-    const name = fd.get("column-name") as string;
-
+  const handleAddColumn = (newColumnName: string) => {
     createColumnMutation.mutate({
       body: {
         boardName: props.boardName,
-        name,
+        name: newColumnName,
         position: columns?.length ?? 0,
       },
     });
-    formEl.reset();
   };
 
   useEffect(() => {
@@ -84,42 +79,10 @@ export function Columns(props: { boardName: string }) {
       </ul>
 
       {isCreateColOpen && (
-        <ColumnWrapper className="!h-[110px]">
-          <form onSubmit={handleSubmit} className="px-2 pt-0.5">
-            <Input
-              id="column-name"
-              name="column-name"
-              placeholder="eg: work column"
-              required
-              autoFocus
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  closeCreateColumn();
-                }
-              }}
-              // onBlur={(event) => {
-              //   if (!event.currentTarget.contains(event.relatedTarget)) {
-              //     closeCreateColumn();
-              //   }
-              // }}
-            />
-
-            <div className="flex gap-4 w-fit ml-auto mt-4">
-              <Button
-                onClick={closeCreateColumn}
-                type="button"
-                variant="ghost"
-                size="sm"
-              >
-                Cancel
-              </Button>
-
-              <Button type="submit" size="sm">
-                Save
-              </Button>
-            </div>
-          </form>
-        </ColumnWrapper>
+        <CreateColumn
+          onCreateCancel={closeCreateColumn}
+          onColumnAdd={handleAddColumn}
+        />
       )}
     </div>
   );

@@ -44,7 +44,6 @@ export function Column({
         {showAddCard ? (
           <CreateCard
             columnId={column.id}
-            boardId={column.boardId}
             nextOrder={column.tasks.length}
             onAddCard={() => scrollList()}
             onComplete={() => {

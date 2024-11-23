@@ -6,25 +6,21 @@ import { useRef, type FormEvent } from "react";
 
 export function CreateCard(props: {
   columnId: number;
-  boardId: number;
   nextOrder: number;
   onComplete: () => void;
   onAddCard: () => void;
 }) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  // const createCardMutation = api.useMutation('post', '')
+  const createTaskMutation = api.useMutation("post", "/tasks");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget as HTMLFormElement);
-    const name = fd.get(props.columnId.toString()) as string;
-    // await rep.mutate.createCard({
-    //   name,
-    //   columnId: props.columnId,
-    //   order: props.nextOrder,
-    //   boardId: props.boardId,
-    // });
+    const name = textAreaRef.current!.value;
+
+    createTaskMutation.mutate({
+      body: { columnId: props.columnId, name, position: props.nextOrder },
+    });
 
     textAreaRef.current!.value = "";
     props.onAddCard();
@@ -32,17 +28,9 @@ export function CreateCard(props: {
 
   return (
     <Card className="p-2">
-      <form
-        onSubmit={handleSubmit}
-        onBlur={(event) => {
-          if (!event.currentTarget.contains(event.relatedTarget)) {
-            props.onComplete();
-          }
-        }}
-        className="space-y-3"
-      >
+      <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
-          name={props.columnId.toString()}
+          name="task"
           ref={textAreaRef}
           required
           onChange={(e) => {
