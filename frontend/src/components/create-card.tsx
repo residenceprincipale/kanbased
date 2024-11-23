@@ -1,29 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/lib/openapi-react-query";
 import { useRef, type FormEvent } from "react";
 
-export function CreateCard(props: {
-  columnId: number;
-  nextOrder: number;
+export type CreateCardProps = {
   onComplete: () => void;
-  onAddCard: () => void;
-}) {
+  onAddCard: (data: { name: string }) => void;
+};
+
+export function CreateCard(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const createTaskMutation = api.useMutation("post", "/tasks");
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const name = textAreaRef.current!.value;
 
-    createTaskMutation.mutate({
-      body: { columnId: props.columnId, name, position: props.nextOrder },
-    });
-
+    props.onAddCard({ name });
     textAreaRef.current!.value = "";
-    props.onAddCard();
   };
 
   return (

@@ -73,7 +73,10 @@ export function Columns(props: { boardName: string }) {
       <ul className="flex gap-4 h-full">
         {columns!.map((column) => (
           <li key={column.id}>
-            <Column column={column} />
+            <Column
+              column={column}
+              columnsQueryKey={columnsQueryOptions.queryKey}
+            />
           </li>
         ))}
       </ul>
