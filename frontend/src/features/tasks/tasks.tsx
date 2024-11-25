@@ -14,13 +14,18 @@ export function Tasks(props: {
   const [showAddTask, setShowAddTask] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
 
-  const taskRef = useCallback((node: HTMLElement | null) => {
-    node?.scrollIntoView();
-  }, []);
-
   function scrollList() {
-    listRef.current!.scrollTop = listRef.current!.scrollHeight;
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
   }
+
+  const lastTaskRef = useCallback((node: HTMLElement | null) => {
+    if (!node) return;
+    /**
+     * How is this not running on app mount?
+     *  - Well it runs on app mount but `listRef` will be null because it a parent so does nothing.
+     */
+    scrollList();
+  }, []);
 
   return (
     <div className="min-h-0 flex-grow flex flex-col">
@@ -30,11 +35,11 @@ export function Tasks(props: {
       >
         {[...props.tasks]
           .sort((a, b) => a.position - b.position)
-          .map((task) => {
+          .map((task, i, arr) => {
             return (
               <li
                 key={task.id}
-                ref={taskRef}
+                ref={arr.length - 1 === i ? lastTaskRef : undefined}
                 className="bg-background text-foreground p-2 rounded-md h-16"
               >
                 {task.name}
