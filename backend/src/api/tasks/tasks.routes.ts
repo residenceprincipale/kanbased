@@ -5,7 +5,7 @@ import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { taskTable } from "../../db/schema/index.js";
 
-const createTaskBodySchema = createInsertSchema(taskTable).omit({ updatedAt: true, createdAt: true, id: true, });
+const createTaskBodySchema = createInsertSchema(taskTable)
 const tasksResponseSchema = createSelectSchema(taskTable).omit({ createdAt: true, updatedAt: true });
 
 export const createTaskRoute = createRoute({

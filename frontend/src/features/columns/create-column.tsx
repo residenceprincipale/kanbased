@@ -7,6 +7,7 @@ import {
   setIsCreateColumnOpen,
   useGetIsCreateColumnOpen,
 } from "@/routes/_blayout.boards.$boardName";
+import { getId } from "@/lib/utils";
 
 export function CreateColumn(props: {
   boardName: string;
@@ -28,16 +29,19 @@ export function CreateColumn(props: {
     const formEl = e.target as HTMLFormElement;
     const fd = new FormData(formEl);
     const name = fd.get("column-name") as string;
+    const currentDate = new Date().toISOString();
+    formEl.reset();
 
     createColumnMutation.mutate({
       body: {
+        id: getId(),
         boardName: props.boardName,
         name,
         position: props.nextPosition,
-        id: crypto.randomUUID() as any,
+        createdAt: currentDate,
+        updatedAt: currentDate,
       },
     });
-    formEl.reset();
   };
 
   return (

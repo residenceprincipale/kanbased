@@ -63,8 +63,8 @@ export const boardTable = pgTable(
     userId: integer("userId")
       .references(() => userTable.id, { onDelete: 'cascade' })
       .notNull(),
-    createdAt: timestamp("createdAt").defaultNow(),
-    updatedAt: timestamp("updatedAt").notNull(),
+    createdAt: timestamp("createdAt", { mode: 'string' }),
+    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
   },
   (table) => {
     return {
@@ -82,8 +82,8 @@ export const columnTable = pgTable(
       .references(() => boardTable.id, { onDelete: 'cascade' })
       .notNull(),
     position: integer("order").notNull(),
-    createdAt: timestamp("createdAt").defaultNow(),
-    updatedAt: timestamp("updatedAt").notNull(),
+    createdAt: timestamp("createdAt", { mode: 'string' }),
+    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
   },
   (table) => {
     return {
@@ -101,8 +101,8 @@ export const taskTable = pgTable(
       .references(() => columnTable.id, { onDelete: 'cascade' })
       .notNull(),
     position: integer("order").notNull(),
-    createdAt: timestamp("createdAt").defaultNow(),
-    updatedAt: timestamp("updatedAt").notNull(),
+    createdAt: timestamp("createdAt", { mode: 'string' }),
+    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
   },
   (table) => {
     return {

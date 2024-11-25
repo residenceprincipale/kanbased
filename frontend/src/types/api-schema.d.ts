@@ -240,11 +240,10 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
+                            /** Format: uuid */
+                            id: string;
                             name: string;
                             color: string | null;
-                            createdAt: string | null;
-                            updatedAt: string;
                         }[];
                     };
                 };
@@ -280,10 +279,12 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        id?: number;
+                        /** Format: uuid */
+                        id: string;
                         name: string;
                         color?: string | null;
                         createdAt?: string | null;
+                        updatedAt: string;
                     };
                 };
             };
@@ -294,11 +295,10 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
+                            /** Format: uuid */
+                            id: string;
                             name: string;
                             color: string | null;
-                            createdAt: string | null;
-                            updatedAt: string;
                         };
                     };
                 };
@@ -412,18 +412,22 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            boardId: number;
+                            boardId: string;
                             boardName: string;
                             columns: {
-                                id: number;
+                                /** Format: uuid */
+                                id: string;
                                 name: string;
-                                boardId: number;
+                                /** Format: uuid */
+                                boardId: string;
                                 position: number;
                             }[];
                             tasks: {
-                                id: number;
+                                /** Format: uuid */
+                                id: string;
                                 name: string;
-                                columnId: number;
+                                /** Format: uuid */
+                                columnId: string;
                                 position: number;
                             }[];
                         };
@@ -472,10 +476,12 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        id?: number;
+                        /** Format: uuid */
+                        id: string;
                         name: string;
                         position: number;
                         createdAt?: string | null;
+                        updatedAt: string;
                         boardName: string;
                     };
                 };
@@ -487,9 +493,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
+                            /** Format: uuid */
+                            id: string;
                             name: string;
-                            boardId: number;
+                            /** Format: uuid */
+                            boardId: string;
                             position: number;
                         };
                     };
@@ -551,9 +559,14 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        /** Format: uuid */
+                        id: string;
                         name: string;
-                        columnId: number;
+                        /** Format: uuid */
+                        columnId: string;
                         position: number;
+                        createdAt?: string | null;
+                        updatedAt: string;
                     };
                 };
             };
@@ -564,9 +577,11 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
+                            /** Format: uuid */
+                            id: string;
                             name: string;
-                            columnId: number;
+                            /** Format: uuid */
+                            columnId: string;
                             position: number;
                         };
                     };

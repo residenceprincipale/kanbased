@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
+import { getId } from "@/lib/utils";
 import { useState, type FormEventHandler } from "react";
 
 export function CreateBoard() {
@@ -22,10 +23,14 @@ export function CreateBoard() {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const boardName = fd.get("board-name") as string;
+    const currentDate = new Date().toISOString();
     mutate(
       {
         body: {
+          id: getId(),
           name: boardName,
+          updatedAt: currentDate,
+          createdAt: currentDate,
         },
       },
       {

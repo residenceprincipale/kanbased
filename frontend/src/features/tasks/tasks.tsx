@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { CreateCard } from "@/features/tasks/create-card";
+import { CreateCard } from "@/features/tasks/create-task";
 import { Button } from "@/components/ui/button";
 import { ColumnsQueryData } from "@/features/columns/queries";
 
@@ -8,11 +8,15 @@ export type Tasks = ColumnsQueryData["columns"][number]["tasks"];
 
 export function Tasks(props: {
   tasks: Tasks;
-  columnId: number;
+  columnId: string;
   boardName: string;
 }) {
   const [showAddTask, setShowAddTask] = useState(false);
   const listRef = useRef<HTMLUListElement>(null);
+
+  const taskRef = useCallback((node: HTMLElement | null) => {
+    node?.scrollIntoView();
+  }, []);
 
   function scrollList() {
     listRef.current!.scrollTop = listRef.current!.scrollHeight;
@@ -30,6 +34,7 @@ export function Tasks(props: {
             return (
               <li
                 key={task.id}
+                ref={taskRef}
                 className="bg-background text-foreground p-2 rounded-md h-16"
               >
                 {task.name}

@@ -9,10 +9,6 @@ export function Columns(props: { boardName: string }) {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  console.log(
-    "columns",
-    [...columns].sort((a, b) => a.position - b.position)
-  );
   const columnRef = useCallback((node: HTMLDivElement | null) => {
     if (!node) return;
     containerRef.current?.scrollTo({

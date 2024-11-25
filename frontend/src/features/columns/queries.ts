@@ -1,6 +1,7 @@
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getColumnsQuery } from "@/lib/query-options-factory";
+import { getId } from "@/lib/utils";
 import { Api200Response } from "@/types/type-helpers";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -15,7 +16,7 @@ export function useColumnsSuspenseQuery(boardName: string) {
 
 export function transformColumnsQuery(data: ColumnsQueryResponse) {
   type ColumnWithTasks = typeof data.columns[number] & { tasks: typeof data.tasks };
-  const columnWithTasksMap = new Map<number, ColumnWithTasks>();
+  const columnWithTasksMap = new Map<string, ColumnWithTasks>();
 
   for (let column of data.columns) {
     columnWithTasksMap.set(column.id, Object.assign(column, { tasks: [] }));
@@ -87,7 +88,7 @@ export function useCreateTaskMutation(boardName: string) {
           ...oldData,
           tasks: [...oldData.tasks, {
             columnId: variables.body.columnId,
-            id: crypto.randomUUID() as any,
+            id: getId(),
             name: variables.body.name,
             position: variables.body.position
           }]

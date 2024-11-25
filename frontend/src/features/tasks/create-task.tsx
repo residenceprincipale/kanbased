@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateTaskMutation } from "@/features/columns/queries";
+import { getId } from "@/lib/utils";
 import { useRef, type FormEvent } from "react";
 
 export type CreateCardProps = {
   boardName: string;
-  columnId: number;
+  columnId: string;
   nextPosition: number;
   onComplete: () => void;
 };
@@ -19,12 +20,16 @@ export function CreateCard(props: CreateCardProps) {
     e.preventDefault();
     const name = textAreaRef.current!.value;
     textAreaRef.current!.value = "";
+    const currentDate = new Date().toISOString();
 
     createTaskMutation.mutate({
       body: {
+        id: getId(),
         columnId: props.columnId,
         name,
         position: props.nextPosition,
+        createdAt: currentDate,
+        updatedAt: currentDate,
       },
     });
   };

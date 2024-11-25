@@ -12,7 +12,7 @@ tasksRouter.openapi(createTaskRoute, async (c) => {
 
   const [task] = await db
     .insert(taskTable)
-    .values({ name: body.name, updatedAt: new Date(), columnId: body.columnId, position: body.position })
+    .values(body)
     .returning();
 
   return c.json(task, HTTP_STATUS_CODES.OK);
