@@ -16,13 +16,14 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
   if (!boards.length) {
     return c.json({ message: `Cannot find board with name ${body.boardName}` }, HTTP_STATUS_CODES.NOT_FOUND);
   }
+  const boardId = boards[0]!.boardId!;
 
   const [column] = await db
     .insert(columnTable)
-    .values({ name: body.name, updatedAt: new Date(), boardId: boards[0]!.boardId, position: body.position, })
+    .values(Object.assign(body, { boardId }))
     .returning();
 
-  return c.json(Object.assign(column!, { tasks: [] }), HTTP_STATUS_CODES.OK);
+  return c.json(column, HTTP_STATUS_CODES.OK);
 });
 
 
@@ -47,7 +48,7 @@ columnsRouter.openapi(getColumnsRoute, async (c) => {
     tasks: []
   }
 
-  const columnMap = new Map<number, GetColumnsResponse['columns'][number]>();
+  const columnMap = new Map<string, GetColumnsResponse['columns'][number]>();
 
   for (let item of result) {
     if (!columnMap.has(item.column.id)) {

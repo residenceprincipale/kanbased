@@ -15,7 +15,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
   try {
     const [board] = await db
       .insert(boardTable)
-      .values({ name: body.name, color: body.color, userId: user.id, updatedAt: new Date() })
+      .values({ name: body.name, color: body.color, userId: user.id, createdAt: body.createdAt, updatedAt: body.updatedAt, id: body.id })
       .returning();
 
     return c.json(board!, 200);

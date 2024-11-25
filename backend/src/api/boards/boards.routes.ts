@@ -5,8 +5,8 @@ import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { boardTable } from "../../db/schema/index.js";
 
-const createBoardParamsSchema = createInsertSchema(boardTable).omit({ userId: true, updatedAt: true });
-const createBoardResponse = createSelectSchema(boardTable).omit({ userId: true });
+const createBoardParamsSchema = createInsertSchema(boardTable).omit({ userId: true });
+const createBoardResponse = createSelectSchema(boardTable).omit({ userId: true, createdAt: true, updatedAt: true });
 
 export const createBoardRoute = createRoute({
   method: "post",

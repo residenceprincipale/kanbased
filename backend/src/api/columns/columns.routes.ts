@@ -6,15 +6,15 @@ import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { columnTable, taskTable } from "../../db/schema/index.js";
 import z from 'zod';
 
-const createColumnBodySchema = createInsertSchema(columnTable).omit({ updatedAt: true, boardId: true }).extend({
+const createColumnBodySchema = createInsertSchema(columnTable).omit({ boardId: true, }).extend({
   boardName: z.string()
 });
 
-const tasksResponseSchema = createSelectSchema(taskTable).omit({ createdAt: true, updatedAt: true, });
-const columnResponseSchema = createSelectSchema(columnTable).omit({ createdAt: true, updatedAt: true, });
+const tasksResponseSchema = createSelectSchema(taskTable).omit({ createdAt: true, updatedAt: true });
+const columnResponseSchema = createSelectSchema(columnTable).omit({ createdAt: true, updatedAt: true });
 
 const getColumnsResponseSchema = z.object({
-  boardId: z.number(),
+  boardId: z.string(),
   boardName: z.string(),
   columns: z.array(columnResponseSchema),
   tasks: z.array(tasksResponseSchema)
