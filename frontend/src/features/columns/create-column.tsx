@@ -1,18 +1,42 @@
 import { Button } from "@/components/ui/button";
-import { ColumnWrapper } from "@/components/ui/column";
+import { ColumnWrapper } from "@/components/column";
 import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
+import { useCreateColumnMutation } from "@/features/columns/queries";
+import {
+  setIsCreateColumnOpen,
+  useGetIsCreateColumnOpen,
+} from "@/routes/_blayout.boards.$boardName";
 
 export function CreateColumn(props: {
-  onColumnAdd: (newColumnName: string) => void;
-  onCreateCancel: () => void;
+  boardName: string;
+  nextPosition: number;
 }) {
+  const isCreateColOpen = useGetIsCreateColumnOpen();
+  const createColumnMutation = useCreateColumnMutation(props.boardName);
+
+  if (!isCreateColOpen) {
+    return null;
+  }
+
+  const onClose = () => {
+    setIsCreateColumnOpen(undefined);
+  };
+
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const formEl = e.target as HTMLFormElement;
     const fd = new FormData(formEl);
     const name = fd.get("column-name") as string;
-    props.onColumnAdd(name);
+
+    createColumnMutation.mutate({
+      body: {
+        boardName: props.boardName,
+        name,
+        position: props.nextPosition,
+        id: crypto.randomUUID() as any,
+      },
+    });
     formEl.reset();
   };
 
@@ -27,18 +51,13 @@ export function CreateColumn(props: {
           autoFocus
           onKeyDown={(event) => {
             if (event.key === "Escape") {
-              props.onCreateCancel();
+              onClose();
             }
           }}
         />
 
         <div className="flex gap-4 w-fit ml-auto mt-4">
-          <Button
-            onClick={props.onCreateCancel}
-            type="button"
-            variant="ghost"
-            size="sm"
-          >
+          <Button onClick={onClose} type="button" variant="ghost" size="sm">
             Cancel
           </Button>
 

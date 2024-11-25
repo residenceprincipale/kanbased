@@ -7,6 +7,7 @@ import {
   text,
   timestamp,
   unique,
+  uuid,
   varchar
 } from "drizzle-orm/pg-core";
 
@@ -56,7 +57,7 @@ export const profileTable = pgTable("profile", {
 export const boardTable = pgTable(
   "board",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").primaryKey(),
     name: varchar("name", { length: 50 }).notNull(),
     color: varchar("color", { length: 255 }),
     userId: integer("userId")
@@ -75,9 +76,9 @@ export const boardTable = pgTable(
 export const columnTable = pgTable(
   "column",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").primaryKey(),
     name: varchar("name", { length: 100 }).notNull(),
-    boardId: integer("boardId")
+    boardId: uuid("boardId")
       .references(() => boardTable.id, { onDelete: 'cascade' })
       .notNull(),
     position: integer("order").notNull(),
@@ -94,9 +95,9 @@ export const columnTable = pgTable(
 export const taskTable = pgTable(
   "task",
   {
-    id: serial("id").primaryKey(),
+    id: uuid("id").primaryKey(),
     name: varchar("name", { length: 100 }).notNull(),
-    columnId: integer("columnId")
+    columnId: uuid("columnId")
       .references(() => columnTable.id, { onDelete: 'cascade' })
       .notNull(),
     position: integer("order").notNull(),

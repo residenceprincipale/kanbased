@@ -1,5 +1,5 @@
 "use client";
-import { CreateBoard } from "@/components/create-board";
+import { CreateBoard } from "@/features/boards/create-board";
 import { Card } from "@/components/ui/card";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
@@ -28,7 +28,11 @@ function BoardsPage() {
         <ul className="w-full flex flex-wrap gap-4 my-8">
           {boards?.map((board) => (
             <li key={board.id}>
-              <Link to="/boards/$boardName" params={{ boardName: board.name }}>
+              <Link
+                to="/boards/$boardName"
+                search={{ open: undefined }}
+                params={{ boardName: board.name }}
+              >
                 <Card className="flex items-center gap-2 w-44 h-36 justify-center hover:bg-muted hover:text-bg-muted-foreground">
                   <div className="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
                   <div className="">{board.name}</div>

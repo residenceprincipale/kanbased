@@ -16,12 +16,11 @@ import { fetchClient } from "@/lib/fetch-client";
 import { toast } from "sonner";
 import { Link, useNavigate } from "@tanstack/react-router";
 
+import { createFileRoute } from "@tanstack/react-router";
 
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/auth/register')({
+export const Route = createFileRoute("/auth/register")({
   component: RegisterForm,
-})
+});
 
 function RegisterForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,7 +46,7 @@ function RegisterForm() {
     if (error) {
       toast(error.message);
     } else {
-      navigate(routeMap.home);
+      navigate({ to: routeMap.home });
     }
   };
 

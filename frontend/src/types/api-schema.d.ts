@@ -412,17 +412,21 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
-                            name: string;
                             boardId: number;
-                            position: number;
+                            boardName: string;
+                            columns: {
+                                id: number;
+                                name: string;
+                                boardId: number;
+                                position: number;
+                            }[];
                             tasks: {
                                 id: number;
                                 name: string;
                                 columnId: number;
                                 position: number;
                             }[];
-                        }[];
+                        };
                     };
                 };
                 /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
@@ -487,12 +491,6 @@ export interface paths {
                             name: string;
                             boardId: number;
                             position: number;
-                            tasks: {
-                                id: number;
-                                name: string;
-                                columnId: number;
-                                position: number;
-                            }[];
                         };
                     };
                 };

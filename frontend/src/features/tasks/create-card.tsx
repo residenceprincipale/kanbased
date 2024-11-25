@@ -1,28 +1,45 @@
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
+import { useCreateTaskMutation } from "@/features/columns/queries";
 import { useRef, type FormEvent } from "react";
 
 export type CreateCardProps = {
+  boardName: string;
+  columnId: number;
+  nextPosition: number;
   onComplete: () => void;
-  onAddCard: (data: { name: string }) => void;
 };
 
 export function CreateCard(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const createTaskMutation = useCreateTaskMutation(props.boardName);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const name = textAreaRef.current!.value;
-
-    props.onAddCard({ name });
     textAreaRef.current!.value = "";
+
+    createTaskMutation.mutate({
+      body: {
+        columnId: props.columnId,
+        name,
+        position: props.nextPosition,
+      },
+    });
   };
 
   return (
-    <Card className="p-2">
-      <form onSubmit={handleSubmit} className="space-y-3">
+    <div>
+      <form
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            props.onComplete();
+          }
+        }}
+        onSubmit={handleSubmit}
+        className="space-y-3"
+      >
         <Textarea
           name="task"
           ref={textAreaRef}
@@ -41,7 +58,7 @@ export function CreateCard(props: CreateCardProps) {
             }
           }}
           autoFocus
-          className="!min-h-16 !px-2 resize-none overflow-hidden"
+          className="!min-h-16 !px-2 resize-none overflow-hidden !ring-transparent"
         />
 
         <div className="flex gap-4 w-fit ml-auto">
@@ -59,6 +76,6 @@ export function CreateCard(props: CreateCardProps) {
           </Button>
         </div>
       </form>
-    </Card>
+    </div>
   );
 }

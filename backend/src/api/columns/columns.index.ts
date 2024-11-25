@@ -3,7 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { boardTable, columnTable, taskTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import { createColumnRoute, getColumnsRoute, type ColumnWithTasks } from "./columns.routes.js";
+import { createColumnRoute, getColumnsRoute, type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const columnsRouter = createAuthenticatedRouter();
@@ -39,19 +39,29 @@ columnsRouter.openapi(getColumnsRoute, async (c) => {
 
   const result = await db.select().from(columnTable).where(eq(columnTable.boardId, boardId)).leftJoin(taskTable, eq(taskTable.columnId, columnTable.id));
 
-  const columnMap: Map<number, ColumnWithTasks> = result.reduce((columnMap: Map<number, ColumnWithTasks>, item) => {
-    if (item.task && columnMap.has(item.task.columnId)) {
-      const col = columnMap.get(item.task.columnId)!;
-      col.tasks.push(item.task);
-    } else {
-      const data: ColumnWithTasks = Object.assign(item.column, { tasks: item.task ? [item.task] : [] });
-      columnMap.set(item.column.id, data);
+
+  const response: GetColumnsResponse = {
+    boardId,
+    boardName: params.boardName,
+    columns: [],
+    tasks: []
+  }
+
+  const columnMap = new Map<number, GetColumnsResponse['columns'][number]>();
+
+  for (let item of result) {
+    if (!columnMap.has(item.column.id)) {
+      columnMap.set(item.column.id, item.column);
     }
 
-    return columnMap;
-  }, new Map())
+    if (item.task) {
+      response.tasks.push(item.task);
+    }
 
-  const response = Array.from(columnMap.values()).sort((a, b) => a.position - b.position);
+  }
+
+  response.columns = Array.from(columnMap.values());
+
   return c.json(response, HTTP_STATUS_CODES.OK);
 });
 

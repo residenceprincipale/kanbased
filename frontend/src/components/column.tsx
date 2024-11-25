@@ -1,25 +1,19 @@
-import { Tasks } from "@/components/tasks";
-import { ColumnWrapper } from "@/components/ui/column";
-import { Api200Response } from "@/types/type-helpers";
-import { QueryKey } from "@tanstack/react-query";
+import { cn } from "@/lib/utils";
+import { forwardRef, PropsWithChildren } from "react";
 
-export function Column({
-  column,
-  columnsQueryKey,
-}: {
-  column: Api200Response<"/columns", "get">[number];
-  columnsQueryKey: QueryKey;
-}) {
+export const ColumnWrapper = forwardRef<
+  HTMLDivElement,
+  PropsWithChildren<{ className?: string }>
+>((props, ref) => {
   return (
-    <ColumnWrapper>
-      <h1 className="text-center px-2 text-xl font-semibold capitalize shrink-0">
-        {column.name}
-      </h1>
-      <Tasks
-        tasks={column.tasks}
-        columnId={column.id}
-        columnsQueryKey={columnsQueryKey}
-      />
-    </ColumnWrapper>
+    <div
+      className={cn(
+        "w-80 py-2 bg-muted rounded-md space-y-3 shrink-0 border max-h-full flex flex-col h-fit",
+        props.className
+      )}
+      ref={ref}
+    >
+      {props.children}
+    </div>
   );
-}
+});

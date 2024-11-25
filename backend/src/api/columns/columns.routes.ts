@@ -11,13 +11,16 @@ const createColumnBodySchema = createInsertSchema(columnTable).omit({ updatedAt:
 });
 
 const tasksResponseSchema = createSelectSchema(taskTable).omit({ createdAt: true, updatedAt: true, });
-const columnWithTasksSchema = createSelectSchema(columnTable).omit({ createdAt: true, updatedAt: true, }).extend({
+const columnResponseSchema = createSelectSchema(columnTable).omit({ createdAt: true, updatedAt: true, });
+
+const getColumnsResponseSchema = z.object({
+  boardId: z.number(),
+  boardName: z.string(),
+  columns: z.array(columnResponseSchema),
   tasks: z.array(tasksResponseSchema)
 })
 
-const getColumnsResponseSchema = z.array(columnWithTasksSchema);
-
-export type ColumnWithTasks = z.infer<typeof columnWithTasksSchema>;
+export type GetColumnsResponse = z.infer<typeof getColumnsResponseSchema>;
 
 export const createColumnRoute = createRoute({
   method: "post",
@@ -26,7 +29,7 @@ export const createColumnRoute = createRoute({
     body: jsonContentRequired(createColumnBodySchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(columnWithTasksSchema),
+    [HTTP_STATUS_CODES.OK]: jsonContent(columnResponseSchema),
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
     [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent("if you provide a board name which is not found in the boards table. You will receive this error code")
   },

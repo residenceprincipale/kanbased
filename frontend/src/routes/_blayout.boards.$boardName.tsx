@@ -1,22 +1,18 @@
 "use client";
-import { Columns } from "@/components/columns";
+import { Columns } from "@/features/columns/columns";
 
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
-import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { router } from "@/main";
 import { QueryParamState } from "@/lib/constants";
 import { buttonVariants } from "@/components/ui/button";
+import { getColumnsQuery } from "@/lib/query-options-factory";
 
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
   loader: async (ctx) => {
-    await queryClient.prefetchQuery(
-      api.queryOptions("get", "/columns", {
-        params: { query: { boardName: ctx.params.boardName } },
-      })
-    );
+    await queryClient.prefetchQuery(getColumnsQuery(ctx.params.boardName));
     return null;
   },
   validateSearch: (result) => {
