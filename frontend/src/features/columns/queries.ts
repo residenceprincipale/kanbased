@@ -1,7 +1,6 @@
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getColumnsQuery } from "@/lib/query-options-factory";
-import { getId } from "@/lib/utils";
 import { Api200Response } from "@/types/type-helpers";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -38,6 +37,7 @@ export type ColumnsQueryData = ReturnType<typeof transformColumnsQuery>;
 
 export function useCreateColumnMutation(boardName: string) {
   const queryKey = getColumnsQuery(boardName).queryKey;
+  const mutationKey = ["post", "/columns"];
 
   return api.useMutation("post", "/columns", {
     onMutate: async (variables) => {
@@ -66,7 +66,12 @@ export function useCreateColumnMutation(boardName: string) {
         queryClient.setQueryData(queryKey, context.previousData);
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey })
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        return queryClient.invalidateQueries({ queryKey });
+      }
+    }
 
   });
 }
@@ -75,6 +80,7 @@ export function useCreateColumnMutation(boardName: string) {
 
 export function useCreateTaskMutation(boardName: string) {
   const queryKey = getColumnsQuery(boardName).queryKey;
+  const mutationKey = ["post", "/tasks"];
 
   return api.useMutation("post", "/tasks", {
     onMutate: async (variables) => {
@@ -88,7 +94,7 @@ export function useCreateTaskMutation(boardName: string) {
           ...oldData,
           tasks: [...oldData.tasks, {
             columnId: variables.body.columnId,
-            id: getId(),
+            id: variables.body.id,
             name: variables.body.name,
             position: variables.body.position
           }]
@@ -103,7 +109,12 @@ export function useCreateTaskMutation(boardName: string) {
         queryClient.setQueryData(queryKey, context.previousData);
       }
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey })
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        return queryClient.invalidateQueries({ queryKey });
+      }
+    }
 
   });
 }
