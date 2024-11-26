@@ -6,11 +6,10 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 export const Route = createRootRoute({
   component: RootComponent,
-  loader: async () => {
-    await queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
+  loader: () => {
+    queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
     return null;
   },
-  pendingComponent: () => <div>Loading...</div>,
   shouldReload: false,
   loaderDeps: (opt) => ({}),
 });

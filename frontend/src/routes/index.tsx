@@ -21,7 +21,7 @@ function HomeComponent() {
           <h2 className="mb-4">
             Welcome{" "}
             <span className="font-medium">
-              {user.displayName?.split(" ")[0]}!
+              {user?.displayName?.split(" ")[0]}!
             </span>{" "}
           </h2>
           <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
