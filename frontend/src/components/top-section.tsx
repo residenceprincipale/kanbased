@@ -1,20 +1,19 @@
 "use client";
-import { TabsList } from "@/components/tabs-list";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
-import { api } from "@/lib/openapi-react-query";
 import { Link } from "@tanstack/react-router";
 import { House } from "lucide-react";
 
 export function TopSection() {
-  const { data: user } = api.useQuery("get", "/current-user");
+  const { user } = useUser();
 
   return (
     <div className="flex items-center justify-between gap-2 py-1.5 px-4">
