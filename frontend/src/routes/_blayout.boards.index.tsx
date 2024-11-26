@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_blayout/boards/")({
 });
 
 function BoardsPage() {
-  const { data: boards } = api.useQuery("get", "/boards");
+  const { data: boards } = api.useSuspenseQuery("get", "/boards");
 
   return (
     <main className="px-10">

@@ -1,24 +1,34 @@
 import ReactDOM from "react-dom/client";
-import { RouterProvider, createRouter } from "@tanstack/react-router";
+import {
+  ErrorComponent,
+  RouterProvider,
+  createRouter,
+} from "@tanstack/react-router";
 import { routeTree } from "./routeTree.gen";
 import { idbPersister, queryClient } from "@/lib/query-client";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 import "./tailwind.css";
+import { Spinner } from "@/components/ui/spinner";
 
 // Set up a Router instance
 export const router = createRouter({
   routeTree,
-  defaultPreload: false,
+  defaultPreload: "intent",
   // Since we're using React Query, we don't want loader calls to ever be stale
   // This will ensure that the loader is always called when the route is preloaded or visited
   defaultPreloadStaleTime: 0,
   defaultPendingMinMs: 0,
   defaultPendingMs: 0,
   context: {
-    auth: undefined!, // We'll inject this when we render
     queryClient,
   },
+  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
+  defaultPendingComponent: () => (
+    <div className="grid place-content-center w-full mt-8">
+      <Spinner size="lg" />
+    </div>
+  ),
 });
 
 // Register things for typesafety

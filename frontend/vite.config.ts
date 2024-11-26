@@ -5,7 +5,7 @@ import { TanStackRouterVite } from '@tanstack/router-plugin/vite'
 
 
 export default defineConfig({
-  plugins: [TanStackRouterVite({}), react(), tsconfigPaths()],
+  plugins: [TanStackRouterVite({ autoCodeSplitting: true }), react(), tsconfigPaths()],
   envPrefix: 'CLIENT_',
   server: {
     port: 3000

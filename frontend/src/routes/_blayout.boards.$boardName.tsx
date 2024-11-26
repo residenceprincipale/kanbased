@@ -18,11 +18,6 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
   validateSearch: (result) => {
     return { open: result.open };
   },
-  pendingComponent: () => (
-    <div className="grid place-content-center w-full mt-8">
-      <Spinner size="lg" />
-    </div>
-  ),
   shouldReload: false,
   loaderDeps: (opt) => false,
 });
