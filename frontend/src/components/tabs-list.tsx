@@ -38,7 +38,7 @@ export const TabsList = memo(function TabsList() {
                   to={routeMap.board(tab.name)}
                 >
                   <div className="w-[1.125rem] h-[1.125rem] bg-indigo-600 rounded-full shrink-0" />
-                  <div className="capitalize truncate text-sm">{tab.name}</div>
+                  <div className="truncate text-sm">{tab.name}</div>
                 </Link>
                 <button
                   type="button"

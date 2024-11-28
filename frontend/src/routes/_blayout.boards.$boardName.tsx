@@ -57,7 +57,7 @@ function BoardPage() {
   return (
     <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
       <div className="flex justify-between gap-4 items-center shrink-0 px-8">
-        <h1 className="text-2xl capitalize font-bold">{boardName}</h1>
+        <h1 className="text-2xl font-bold">{boardName}</h1>
         <Link
           to="."
           search={{ open: QueryParamState.CreateColumn }}

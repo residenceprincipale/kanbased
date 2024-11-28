@@ -12,7 +12,7 @@ export const Column = forwardRef<
 >(({ column, boardName }, ref) => {
   return (
     <ColumnWrapper ref={ref}>
-      <h1 className="text-center px-2 text-xl font-semibold capitalize shrink-0">
+      <h1 className="text-center px-2 text-xl font-semibold shrink-0">
         {column.name}
       </h1>
       <Tasks boardName={boardName} tasks={column.tasks} columnId={column.id} />
