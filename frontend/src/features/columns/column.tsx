@@ -1,7 +1,7 @@
 import { Tasks } from "@/features/tasks/tasks";
 import { ColumnWrapper } from "@/components/column";
 import { ColumnsQueryData } from "@/features/columns/queries";
-import { Draggable } from "@hello-pangea/dnd";
+import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { GripVertical } from "lucide-react";
 import { useCallback } from "react";
 
@@ -31,7 +31,7 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
               </h1>
 
               <button
-                className="cursor-grab text-muted-foreground px-4 py-2  hover:text-foreground"
+                className="cursor-grab text-muted-foreground w-10 grid place-content-center h-7 hover:text-foreground"
                 {...provided.dragHandleProps}
               >
                 <GripVertical size={20} />
