@@ -12,6 +12,7 @@
     "gen:api": "npx openapi-typescript http://localhost:5000/doc -o ./src/types/api-schema.d.ts"
   },
   "dependencies": {
+    "@hello-pangea/dnd": "^17.0.0",
     "@radix-ui/react-avatar": "^1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",

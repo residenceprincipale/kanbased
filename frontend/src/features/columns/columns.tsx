@@ -2,6 +2,7 @@ import { Column } from "@/features/columns/column";
 import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import { useColumnsSuspenseQuery } from "@/features/columns/queries";
+import { DragDropContext, Droppable } from "@hello-pangea/dnd";
 
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
@@ -9,7 +10,7 @@ export function Columns(props: { boardName: string }) {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const lastColumnRef = useCallback((node: HTMLDivElement | null) => {
+  const lastColumnRef = useCallback((node: HTMLElement | null) => {
     /*
      * This callback is used to scroll to the end of the container whenever a new column is added.
      *
@@ -27,28 +28,43 @@ export function Columns(props: { boardName: string }) {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      className="pb-8 overflow-x-auto h-full flex gap-4 px-8"
-    >
-      <ul className="flex gap-4 h-full">
-        {[...columns]
-          .sort((a, b) => a.position - b.position)
-          .map((column, i, arr) => (
-            <li key={column.id}>
-              <Column
-                boardName={props.boardName}
-                column={column}
-                ref={arr.length - 1 === i ? lastColumnRef : undefined}
-              />
-            </li>
-          ))}
-      </ul>
+    <DragDropContext onDragEnd={() => {}}>
+      <div
+        ref={containerRef}
+        className="pb-8 overflow-x-auto h-full flex gap-4 px-8"
+      >
+        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
+          {(provided) => {
+            return (
+              <ul
+                className="flex gap-4 h-full"
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {[...columns]
+                  .sort((a, b) => a.position - b.position)
+                  .map((column, i, arr) => (
+                    <Column
+                      boardName={props.boardName}
+                      column={column}
+                      columnRef={
+                        arr.length - 1 === i ? lastColumnRef : undefined
+                      }
+                      index={i}
+                      key={column.id}
+                    />
+                  ))}
+                {provided.placeholder}
+              </ul>
+            );
+          }}
+        </Droppable>
 
-      <CreateColumn
-        boardName={props.boardName}
-        nextPosition={columns?.length ?? 0}
-      />
-    </div>
+        <CreateColumn
+          boardName={props.boardName}
+          nextPosition={columns?.length ?? 0}
+        />
+      </div>
+    </DragDropContext>
   );
 }
