@@ -25,13 +25,16 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
             }, [])}
             {...provided.draggableProps}
           >
-            <div className="flex items-center gap-2 justify-between px-3">
-              <h1 className="text-center text-xl font-semibold shrink-0">
+            <div className="flex items-center gap-2 justify-between">
+              <h1 className="text-center text-xl font-semibold shrink-0 pl-3">
                 {column.name}
               </h1>
 
-              <button {...provided.dragHandleProps}>
-                <GripVertical />
+              <button
+                className="cursor-grab text-muted-foreground px-4 py-2  hover:text-foreground"
+                {...provided.dragHandleProps}
+              >
+                <GripVertical size={20} />
               </button>
             </div>
             <Tasks
