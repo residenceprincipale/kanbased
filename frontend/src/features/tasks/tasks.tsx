@@ -16,7 +16,7 @@ type TasksProps = {
 
 function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
   return (
-    <div className="space-y-3 px-2">
+    <>
       {props.tasks.map((task, i, arr) => {
         const isLastEl = arr.length - 1 === i;
         return (
@@ -35,7 +35,7 @@ function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
           />
         );
       })}
-    </div>
+    </>
   );
 }
 
@@ -81,11 +81,14 @@ export function Tasks(props: TasksProps) {
         {(droppableProvided, droppableSnapshot) => {
           return (
             <div
-              className="overflow-x-hidden overflow-y-auto flex-grow min-h-0 max-h-full"
+              className="overflow-x-hidden overflow-y-auto flex-grow min-h-0"
               {...droppableProvided.droppableProps}
               ref={containerRef}
             >
-              <div ref={droppableProvided.innerRef}>
+              <div
+                ref={droppableProvided.innerRef}
+                className="min-h-8 px-2 space-y-3"
+              >
                 <MemoizedTaskList
                   boardName={props.boardName}
                   columnId={props.columnId}
