@@ -18,20 +18,20 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
       {(provided, snapshot) => {
         return (
           <ColumnWrapper
-            as="li"
             ref={useCallback((node: HTMLElement | null) => {
               provided.innerRef(node);
               columnRef?.(node);
             }, [])}
             {...provided.draggableProps}
+            id={`col-${column.id}`}
           >
-            <div className="flex items-center gap-2 justify-between">
-              <h1 className="text-center text-xl font-semibold shrink-0 pl-3">
+            <div className="flex items-center gap-2 justify-between shrink-0">
+              <h1 className="text-xl font-semibold flex-1 pl-3">
                 {column.name}
               </h1>
 
               <button
-                className="cursor-grab text-muted-foreground w-10 grid place-content-center h-7 hover:text-foreground"
+                className="cursor-grab text-muted-foreground w-10 grid place-content-center h-7 hover:text-foreground shrink-0"
                 {...provided.dragHandleProps}
               >
                 <GripVertical size={20} />

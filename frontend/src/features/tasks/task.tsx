@@ -1,8 +1,8 @@
 import { Tasks } from "@/features/tasks/tasks";
 import { Draggable } from "@hello-pangea/dnd";
-import { forwardRef, useCallback } from "react";
+import { forwardRef, memo, useCallback } from "react";
 
-type TaskProps = {
+export type TaskProps = {
   task: Tasks[number];
   boardName: string;
   previousPosition: number;
@@ -11,28 +11,28 @@ type TaskProps = {
   taskRef?: (node: HTMLElement | null) => void;
 };
 
-export function Task(props: TaskProps) {
+function TaskComp(props: TaskProps) {
   const { task } = props;
 
   return (
     <Draggable draggableId={task.id} index={props.index}>
       {(provided, snapshot) => (
-        <li
-          ref={useCallback((node: HTMLLIElement | null) => {
+        <div
+          ref={useCallback((node: HTMLDivElement | null) => {
             provided.innerRef(node);
             props.taskRef?.(node);
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          data-is-dragging={snapshot.isDragging}
-          data-testid={task.id}
-          data-index={props.index}
+          className="select-none"
         >
-          <div className="bg-background text-foreground p-2 rounded-md h-16">
+          <div className="bg-background text-foreground p-2 rounded-md min-h-16">
             {task.name}
           </div>
-        </li>
+        </div>
       )}
     </Draggable>
   );
 }
+
+export const Task = memo<TaskProps>(TaskComp);

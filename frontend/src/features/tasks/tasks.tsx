@@ -1,68 +1,102 @@
-import { useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { CreateCard } from "@/features/tasks/create-task";
 import { Button } from "@/components/ui/button";
 import { ColumnsQueryData } from "@/features/columns/queries";
-import { Task } from "@/features/tasks/task";
+import { Task, TaskProps } from "@/features/tasks/task";
 import { Droppable } from "@hello-pangea/dnd";
 
 export type Tasks = ColumnsQueryData["columns"][number]["tasks"];
 
-export function Tasks(props: {
+type TasksProps = {
   tasks: Tasks;
   columnId: string;
   boardName: string;
-}) {
+};
+
+function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
+  return (
+    <div className="space-y-3 px-2">
+      {props.tasks.map((task, i, arr) => {
+        const isLastEl = arr.length - 1 === i;
+        return (
+          <Task
+            task={task}
+            key={task.id}
+            taskRef={isLastEl ? props.lastTaskRef : undefined}
+            boardName={props.boardName}
+            index={i}
+            previousPosition={
+              i == 0 ? arr[i]!.position - 1 : arr[i - 1]!.position
+            }
+            nextPosition={
+              isLastEl ? arr[i]!.position + 1 : arr[i + 1]!.position
+            }
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
+
+export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
-  const listRef = useRef<HTMLUListElement | null>(null);
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
 
   function scrollList() {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+    containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
   }
 
   const lastTaskRef = useCallback((node: HTMLElement | null) => {
     if (!node) return;
     /**
      * How is this not running on app mount?
-     *  - Well it runs on app mount but `listRef` will be null because it a parent so does nothing.
+     *  - Well it runs on app mount but `containerRef` will be null because it a parent so does nothing.
      */
     scrollList();
   }, []);
 
+  const updateParentCSSVariable = (isDragging: boolean) => {
+    const columnWrapperEl = document.getElementById(`col-${props.columnId}`);
+    if (!columnWrapperEl) return;
+
+    if (isDragging) {
+      columnWrapperEl.style.height = "100%";
+    } else {
+      columnWrapperEl.style.height = "fit-content";
+    }
+  };
+
   return (
-    <div className="min-h-0 flex-grow flex flex-col">
-      <Droppable droppableId={props.columnId} type="TASK">
-        {(droppableProvided, droppableSnapshot) => (
-          <ul
-            ref={useCallback((node: HTMLUListElement | null) => {
-              droppableProvided.innerRef(node);
-              listRef.current = node;
-            }, [])}
-            className="space-y-3 flex-grow overflow-y-auto px-2 min-h-0"
-            {...droppableProvided.droppableProps}
-          >
-            {sortedTasks.map((task, i, arr) => {
-              const isLastEl = arr.length - 1 === i;
-              return (
-                <Task
-                  task={task}
-                  key={task.id}
-                  taskRef={isLastEl ? lastTaskRef : undefined}
+    <div className="flex-1 flex flex-col min-h-0">
+      <Droppable
+        droppableId={props.columnId}
+        type="TASK"
+        ignoreContainerClipping={false}
+        isCombineEnabled={false}
+      >
+        {(droppableProvided, droppableSnapshot) => {
+          return (
+            <div
+              className="overflow-x-hidden overflow-y-auto flex-grow min-h-0 max-h-full"
+              {...droppableProvided.droppableProps}
+              ref={containerRef}
+            >
+              <div ref={droppableProvided.innerRef}>
+                <MemoizedTaskList
                   boardName={props.boardName}
-                  index={i}
-                  previousPosition={
-                    i == 0 ? arr[i]!.position - 1 : arr[i - 1]!.position
-                  }
-                  nextPosition={
-                    isLastEl ? arr[i]!.position + 1 : arr[i + 1]!.position
-                  }
+                  columnId={props.columnId}
+                  lastTaskRef={lastTaskRef}
+                  tasks={props.tasks}
                 />
-              );
-            })}
-            {droppableProvided.placeholder}
-          </ul>
-        )}
+                {droppableProvided.placeholder}
+              </div>
+            </div>
+          );
+        }}
       </Droppable>
 
       <div className="shrink-0 mx-2 mt-3">

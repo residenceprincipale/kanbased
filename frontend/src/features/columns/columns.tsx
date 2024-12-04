@@ -29,18 +29,21 @@ export function Columns(props: { boardName: string }) {
 
   return (
     <DragDropContext onDragEnd={() => {}}>
-      <div
-        ref={containerRef}
-        className="pb-8 overflow-x-auto h-full flex gap-4 px-8"
+      <Droppable
+        droppableId="board"
+        type="COLUMN"
+        direction="horizontal"
+        ignoreContainerClipping={false}
+        isCombineEnabled={false}
       >
-        <Droppable droppableId="board" type="COLUMN" direction="horizontal">
-          {(provided) => {
-            return (
-              <ul
-                className="flex gap-4 h-full"
-                ref={provided.innerRef}
-                {...provided.droppableProps}
-              >
+        {(provided) => {
+          return (
+            <div
+              ref={containerRef}
+              className="pb-8 h-full inline-flex gap-4 px-8"
+              {...provided.droppableProps}
+            >
+              <div className="flex gap-4 h-full" ref={provided.innerRef}>
                 {[...columns]
                   .sort((a, b) => a.position - b.position)
                   .map((column, i, arr) => (
@@ -55,16 +58,16 @@ export function Columns(props: { boardName: string }) {
                     />
                   ))}
                 {provided.placeholder}
-              </ul>
-            );
-          }}
-        </Droppable>
+              </div>
 
-        <CreateColumn
-          boardName={props.boardName}
-          nextPosition={columns?.length ?? 0}
-        />
-      </div>
+              <CreateColumn
+                boardName={props.boardName}
+                nextPosition={columns?.length ?? 0}
+              />
+            </div>
+          );
+        }}
+      </Droppable>
     </DragDropContext>
   );
 }
