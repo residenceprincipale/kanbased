@@ -9,7 +9,10 @@ import { and, eq } from "drizzle-orm";
 const tasksRouter = createAuthenticatedRouter();
 
 tasksRouter.openapi(createTaskRoute, async (c) => {
-  const body = await c.req.valid("json");
+  const userId = c.get("user").id;
+  const body = c.req.valid("json");
+
+  await db.select({ id: columnTable.id }).from(columnTable).where(eq(columnTable.id, body.columnId)).leftJoin(boardTable, eq(columnTable.boardId, boardTable.id))
 
 
   const [task] = await db
