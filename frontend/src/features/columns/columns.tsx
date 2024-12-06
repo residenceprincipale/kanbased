@@ -2,11 +2,16 @@ import { Column } from "@/features/columns/column";
 import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import { useColumnsSuspenseQuery } from "@/features/columns/queries";
-import { DragDropContext, Droppable } from "@hello-pangea/dnd";
+import {
+  DragDropContext,
+  Droppable,
+  OnDragEndResponder,
+} from "@hello-pangea/dnd";
 
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
   const columns = data.columns;
+  const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -27,8 +32,50 @@ export function Columns(props: { boardName: string }) {
     });
   }, []);
 
+  const handleDragEnd: OnDragEndResponder = (e) => {
+    if (!e.destination) {
+      return;
+    }
+
+    const { source, destination } = e;
+
+    // Did not move anywhere.
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      return;
+    }
+
+    console.log(e);
+
+    if (e.type === "COLUMN") {
+      // Col update logic here
+      const colCopy = [...sortedColumns];
+
+      const [removedEl] = colCopy.splice(e.source.index, 1);
+      colCopy.splice(e.destination.index, 0, removedEl!);
+
+      const updatedCols = colCopy.map((col, index) => ({
+        ...col,
+        position: index + 1,
+      }));
+
+      return;
+    }
+
+    if (e.type === "TASK") {
+      // task update logic here
+      return;
+    }
+  };
+
+  /**
+   *
+   */
+
   return (
-    <DragDropContext onDragEnd={() => {}}>
+    <DragDropContext onDragEnd={handleDragEnd}>
       <Droppable
         droppableId="board"
         type="COLUMN"
@@ -44,19 +91,15 @@ export function Columns(props: { boardName: string }) {
               {...provided.droppableProps}
             >
               <div className="flex gap-4 h-full" ref={provided.innerRef}>
-                {[...columns]
-                  .sort((a, b) => a.position - b.position)
-                  .map((column, i, arr) => (
-                    <Column
-                      boardName={props.boardName}
-                      column={column}
-                      columnRef={
-                        arr.length - 1 === i ? lastColumnRef : undefined
-                      }
-                      index={i}
-                      key={column.id}
-                    />
-                  ))}
+                {sortedColumns.map((column, i, arr) => (
+                  <Column
+                    boardName={props.boardName}
+                    column={column}
+                    columnRef={arr.length - 1 === i ? lastColumnRef : undefined}
+                    index={i}
+                    key={column.id}
+                  />
+                ))}
                 {provided.placeholder}
               </div>
 

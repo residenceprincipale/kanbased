@@ -35,6 +35,20 @@ export const createColumnRoute = createRoute({
   },
 });
 
+export const updateColumnsRoute = createRoute({
+  method: "put",
+  path: "/columns",
+  request: {
+    body: jsonContentRequired(z.array(columnResponseSchema).nonempty()),
+    query: z.object({ boardId: z.string() }),
+  },
+  responses: {
+    [HTTP_STATUS_CODES.OK]: jsonContent(columnResponseSchema),
+    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
+    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent("if you provide a board name which is not found in the boards table. You will receive this error code")
+  },
+});
+
 export const getColumnsRoute = createRoute({
   method: "get",
   path: "/columns",

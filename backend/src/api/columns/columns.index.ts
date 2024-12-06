@@ -1,15 +1,15 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardTable, columnTable, taskTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import { createColumnRoute, getColumnsRoute, type GetColumnsResponse } from "./columns.routes.js";
+import { createColumnRoute, getColumnsRoute, updateColumnsRoute, type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const columnsRouter = createAuthenticatedRouter();
 
 columnsRouter.openapi(createColumnRoute, async (c) => {
-  const body = await c.req.valid("json");
+  const body = c.req.valid("json");
 
   const boards = await db.select({ boardId: boardTable.id }).from(boardTable).where(eq(boardTable.name, body.boardName));
 
@@ -26,16 +26,28 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
   return c.json(column, HTTP_STATUS_CODES.OK);
 });
 
+columnsRouter.openapi(updateColumnsRoute, async (c) => {
+  const { boardId } = c.req.valid("query");
+  const columns = c.req.valid("json");
+
+
+
+
+
+})
+
 
 
 columnsRouter.openapi(getColumnsRoute, async (c) => {
+  const userId = c.get("user").id;
   const params = c.req.valid("query");
 
-  const boards = await db.select({ boardId: boardTable.id }).from(boardTable).where(eq(boardTable.name, params.boardName));
+  const boards = await db.select({ boardId: boardTable.id }).from(boardTable).where(and(eq(boardTable.name, params.boardName), eq(boardTable.userId, userId)));
 
   if (!boards.length) {
     return c.json({ message: `Cannot find board with name ${params.boardName}` }, HTTP_STATUS_CODES.NOT_FOUND);
   }
+
   const boardId = boards[0]!.boardId!;
 
   const result = await db.select().from(columnTable).where(eq(columnTable.boardId, boardId)).leftJoin(taskTable, eq(taskTable.columnId, columnTable.id));
