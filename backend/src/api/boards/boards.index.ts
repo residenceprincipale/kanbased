@@ -9,7 +9,7 @@ import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 const boardsRouter = createAuthenticatedRouter();
 
 boardsRouter.openapi(createBoardRoute, async (c) => {
-  const body = await c.req.valid("json");
+  const body = c.req.valid("json");
   const user = c.get("user");
 
   try {

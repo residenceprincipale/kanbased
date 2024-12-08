@@ -18,12 +18,15 @@ import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 const columnsRouter = createAuthenticatedRouter();
 
 columnsRouter.openapi(createColumnRoute, async (c) => {
+  const userId = c.get("user").id;
   const body = c.req.valid("json");
 
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
-    .where(eq(boardsTable.name, body.boardName));
+    .where(
+      and(eq(boardsTable.name, body.boardName), eq(boardsTable.userId, userId)),
+    );
 
   if (!boards.length) {
     return c.json(

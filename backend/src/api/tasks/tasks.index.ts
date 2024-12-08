@@ -7,7 +7,7 @@ import {
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createTaskRoute } from "./tasks.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
-import { and, eq } from "drizzle-orm";
+import { and, count, eq } from "drizzle-orm";
 
 const tasksRouter = createAuthenticatedRouter();
 
@@ -18,12 +18,14 @@ tasksRouter.openapi(createTaskRoute, async (c) => {
   const columns = await db
     .select({ id: columnsTable.id })
     .from(columnsTable)
-    .leftJoin(boardsTable, eq(columnsTable.boardId, boardsTable.id))
-    .where(
-      and(eq(columnsTable.id, body.columnId), eq(boardsTable.userId, userId)),
+    .where(eq(columnsTable.id, body.columnId))
+    .innerJoin(
+      boardsTable,
+      and(
+        eq(boardsTable.id, columnsTable.boardId),
+        eq(boardsTable.userId, userId),
+      ),
     );
-
-  // const columns = await db.select({ id: columnsTable.id }).from(columnsTable).leftJoin(boardsTable, eq(columnsTable.boardId, boardsTable.id)).where(and(eq(columnsTable.id, body.columnId), eq(boardsTable.userId, userId)));
 
   if (!columns.length) {
     return c.json(
