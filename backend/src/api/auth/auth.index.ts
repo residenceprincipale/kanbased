@@ -154,7 +154,7 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   const data = await response.json();
   const googleUser = googleUserSchema.parse(data);
 
-  const existingAccount = await db.query.accountTable.findFirst({
+  const existingAccount = await db.query.accountsTable.findFirst({
     where: eq(accountsTable.googleId, googleUser.sub),
   });
 

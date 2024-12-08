@@ -72,7 +72,7 @@ export async function validateSessionToken(
   token: string,
 ): Promise<SessionValidationResult> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-  const sessionInDb = await db.query.sessionTable.findFirst({
+  const sessionInDb = await db.query.sessionsTable.findFirst({
     where: eq(sessionsTable.id, sessionId),
   });
   if (!sessionInDb) {
@@ -82,7 +82,7 @@ export async function validateSessionToken(
     await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionInDb.id));
     return { session: null, user: null };
   }
-  const user = await db.query.userTable.findFirst({
+  const user = await db.query.usersTable.findFirst({
     where: eq(usersTable.id, sessionInDb.userId),
   });
 
@@ -213,7 +213,7 @@ export async function createProfile(
 }
 
 export async function getUserByEmail(email: string) {
-  const user = await db.query.userTable.findFirst({
+  const user = await db.query.usersTable.findFirst({
     where: eq(usersTable.email, email),
   });
 

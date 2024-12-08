@@ -10,7 +10,7 @@ const usersRouter = createAuthenticatedRouter();
 usersRouter.openapi(userRoutes.getCurrentUser, async (c) => {
   const user = c.get('user');
 
-  const data = await db.query.profileTable.findFirst({
+  const data = await db.query.profilesTable.findFirst({
     where: eq(profilesTable.userId, user.id)
   })
 
