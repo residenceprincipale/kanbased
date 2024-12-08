@@ -8,8 +8,23 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
+  staleTime: Infinity,
   loader: async () => {
-    await queryClient.prefetchQuery(api.queryOptions("get", "/boards"));
+    const queryOptions = api.queryOptions("get", "/boards");
+    const data = queryClient.getQueryData(queryOptions.queryKey);
+
+    /**
+     * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
+     * Prefetch won't call the API if there is cache stored in indexedDB.
+     * This gives user a good experience when reloading the page and seeing the data quickly.
+     * Still it is a good idea to fetch updated data from server.
+     */
+    if (data) {
+      queryClient.invalidateQueries(queryOptions);
+    } else {
+      await queryClient.prefetchQuery(queryOptions);
+    }
+
     return null;
   },
 });

@@ -14,7 +14,6 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
   loader: async (ctx) => {
     const queryOptions = getColumnsQuery(ctx.params.boardName);
     const data = queryClient.getQueryData(queryOptions.queryKey);
-    await queryClient.prefetchQuery(queryOptions);
     /**
      * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
      * Prefetch won't call the API if there is cache stored in indexedDB.
@@ -23,6 +22,8 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
      */
     if (data) {
       queryClient.invalidateQueries(queryOptions);
+    } else {
+      await queryClient.prefetchQuery(queryOptions);
     }
     return null;
   },
