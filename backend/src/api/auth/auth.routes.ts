@@ -1,5 +1,10 @@
 import { createRoute, z } from "@hono/zod-openapi";
-import { genericMessageContent, jsonContent, jsonContentRequired, zodErrorContent } from "../../lib/schema-helpers.js";
+import {
+  genericMessageContent,
+  jsonContent,
+  jsonContentRequired,
+  zodErrorContent,
+} from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const createUserRequestSchema = z.object({
@@ -14,7 +19,7 @@ const loginUserRequestSchema = z
     password: z.string().min(8),
     email: z.string().email().optional(),
   })
-  .refine(data => data.email || data.name, {
+  .refine((data) => data.email || data.name, {
     message: "Either name or email must be provided",
     path: ["name", "email"],
   });

@@ -7,7 +7,7 @@ import { db, type Db } from "./index.js";
 import * as schema from "./schema/index.js";
 
 if (!env.DB_SEEDING) {
-  throw new Error("You must set DB_SEEDING to \"true\" when running seeds");
+  throw new Error('You must set DB_SEEDING to "true" when running seeds');
 }
 
 async function resetTable(db: Db, table: Table) {

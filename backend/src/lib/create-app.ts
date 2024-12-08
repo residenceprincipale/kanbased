@@ -6,7 +6,10 @@ import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
 
 import packageJSON from "../../package.json" with { type: "json" };
-import { authenticatedMiddleware, verifySessionMiddleware } from "../api/auth/auth.middleware.js";
+import {
+  authenticatedMiddleware,
+  verifySessionMiddleware,
+} from "../api/auth/auth.middleware.js";
 import { env } from "../env.js";
 import { pinoLogger } from "./pino-logger.js";
 import type { PinoLogger } from "hono-pino";
@@ -21,7 +24,7 @@ export interface AppBindings {
     session: Session;
     logger: PinoLogger;
   };
-};
+}
 
 export type Context = HonoContext<AppBindings>;
 
@@ -87,40 +90,34 @@ export default function createApp() {
   );
 
   app.notFound((c) => {
-    return c.json({
-      message: `${HTTP_STATUS_PHRASES.NOT_FOUND} - ${c.req.path}`,
-    }, HTTP_STATUS_CODES.NOT_FOUND);
+    return c.json(
+      {
+        message: `${HTTP_STATUS_PHRASES.NOT_FOUND} - ${c.req.path}`,
+      },
+      HTTP_STATUS_CODES.NOT_FOUND,
+    );
   });
 
   app.onError((err, c) => {
-    const currentStatus = "status" in err
-      ? err.status
-      : c.newResponse(null).status;
+    const currentStatus =
+      "status" in err ? err.status : c.newResponse(null).status;
 
-    const statusCode = currentStatus !== HTTP_STATUS_CODES.OK
-      ? (currentStatus as StatusCode)
-      : HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+    const statusCode =
+      currentStatus !== HTTP_STATUS_CODES.OK
+        ? (currentStatus as StatusCode)
+        : HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
-    env.NODE_ENV !== 'production' && c.var.logger.error(err);
-
+    env.NODE_ENV !== "production" && c.var.logger.error(err);
 
     const data = {
       message: err.message,
-      stack: env.NODE_ENV === "production"
-        ? undefined
-        : err.stack,
-    }
-
+      stack: env.NODE_ENV === "production" ? undefined : err.stack,
+    };
 
     console.log(data);
 
-    return c.json(
-      data,
-      statusCode,
-    );
-
+    return c.json(data, statusCode);
   });
-
 
   return app;
 }

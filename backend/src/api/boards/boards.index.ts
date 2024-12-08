@@ -15,27 +15,38 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
   try {
     const [board] = await db
       .insert(boardsTable)
-      .values({ name: body.name, color: body.color, userId: user.id, createdAt: body.createdAt, updatedAt: body.updatedAt, id: body.id })
+      .values({
+        name: body.name,
+        color: body.color,
+        userId: user.id,
+        createdAt: body.createdAt,
+        updatedAt: body.updatedAt,
+        id: body.id,
+      })
       .returning();
 
     return c.json(board!, 200);
-  }
-  catch (err) {
-    const isUniqueConstraintError
-      = err && typeof err === "object" && "code" in err && err.code === "23505";
+  } catch (err) {
+    const isUniqueConstraintError =
+      err && typeof err === "object" && "code" in err && err.code === "23505";
 
     if (isUniqueConstraintError) {
-      return c.json({ message: "Board name must be unique" }, HTTP_STATUS_CODES.BAD_REQUEST);
+      return c.json(
+        { message: "Board name must be unique" },
+        HTTP_STATUS_CODES.BAD_REQUEST,
+      );
     }
 
     return c.json({ message: "" }, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
   }
-
 });
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {
   const user = c.get("user");
-  const boards = await db.select().from(boardsTable).where(eq(boardsTable.userId, user.id));
+  const boards = await db
+    .select()
+    .from(boardsTable)
+    .where(eq(boardsTable.userId, user.id));
   return c.json(boards, 200);
 });
 

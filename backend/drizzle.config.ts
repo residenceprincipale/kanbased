@@ -8,5 +8,5 @@ export default defineConfig({
     // eslint-disable-next-line node/no-process-env
     url: process.env.DATABASE_URL,
   },
-  casing: 'snake_case'
+  casing: "snake_case",
 });

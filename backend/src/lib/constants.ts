@@ -18,14 +18,14 @@ export const HTTP_STATUS_CODES = {
    */
   MOVED_TEMPORARILY: 302,
   /**
- * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.3.1
- *
- * The request has succeeded. The meaning of a success varies depending on the HTTP method:
- * GET: The resource has been fetched and is transmitted in the message body.
- * HEAD: The entity headers are in the message body.
- * POST: The resource describing the result of the action is transmitted in the message body.
- * TRACE: The message body contains the request message as received by the server
- */
+   * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.3.1
+   *
+   * The request has succeeded. The meaning of a success varies depending on the HTTP method:
+   * GET: The resource has been fetched and is transmitted in the message body.
+   * HEAD: The entity headers are in the message body.
+   * POST: The resource describing the result of the action is transmitted in the message body.
+   * TRACE: The message body contains the request message as received by the server
+   */
   OK: 200,
   /**
    * Official Documentation @ https://tools.ietf.org/html/rfc6585#section-4
@@ -48,7 +48,6 @@ export const HTTP_STATUS_CODES = {
    */
   UNPROCESSABLE_ENTITY: 422,
 
-
   /**
    * Official Documentation @ https://tools.ietf.org/html/rfc7231#section-6.5.4
    *
@@ -68,8 +67,8 @@ export const HTTP_STATUS_CODES = {
    *
    * The client does not have access rights to the content, i.e. they are unauthorized, so server is rejecting to give proper response. Unlike 401, the client's identity is known to the server.
    */
-  FORBIDDEN: 403
-} as const
+  FORBIDDEN: 403,
+} as const;
 
 export const HTTP_STATUS_PHRASES = {
   INTERNAL_SERVER_ERROR: "Internal Server Error",
@@ -81,5 +80,5 @@ export const HTTP_STATUS_PHRASES = {
   UNPROCESSABLE_ENTITY: "Unprocessable Entity",
   NOT_FOUND: "Not Found",
   NO_CONTENT: "No Content",
-  FORBIDDEN: "Forbidden"
+  FORBIDDEN: "Forbidden",
 } as const;

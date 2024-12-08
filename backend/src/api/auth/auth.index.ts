@@ -1,6 +1,10 @@
 import type { GoogleTokens } from "arctic";
 
-import { generateCodeVerifier, generateState, OAuth2RequestError } from "arctic";
+import {
+  generateCodeVerifier,
+  generateState,
+  OAuth2RequestError,
+} from "arctic";
 import { and, eq, or } from "drizzle-orm";
 import { getCookie, setCookie } from "hono/cookie";
 
@@ -9,7 +13,16 @@ import { accountsTable, usersTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
-import { createGoogleAccount, deleteSessionTokenCookie, google, googleUserSchema, hashPassword, invalidateSession, setSession, verifyPassword } from "./auth.utils.js";
+import {
+  createGoogleAccount,
+  deleteSessionTokenCookie,
+  google,
+  googleUserSchema,
+  hashPassword,
+  invalidateSession,
+  setSession,
+  verifyPassword,
+} from "./auth.utils.js";
 
 const authRouter = createRouter();
 
@@ -19,7 +32,9 @@ authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
   const existingAccount = await db
     .select()
     .from(usersTable)
-    .where(or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)));
+    .where(
+      or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)),
+    );
 
   if (existingAccount.length) {
     return c.json(
@@ -122,7 +137,12 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   const storedState = getCookie(c, "google_oauth_state") ?? null;
   const codeVerifier = getCookie(c, "google_code_verifier") ?? null;
 
-  if (code === null || state === null || storedState === null || codeVerifier === null) {
+  if (
+    code === null ||
+    state === null ||
+    storedState === null ||
+    codeVerifier === null
+  ) {
     return c.body(null, 400);
   }
   if (state !== storedState) {
@@ -132,8 +152,7 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   let tokens: GoogleTokens;
   try {
     tokens = await google.validateAuthorizationCode(code, codeVerifier);
-  }
-  catch (err) {
+  } catch (err) {
     if (err instanceof OAuth2RequestError) {
       // Invalid code or client credentials
       return c.body(null, 400);
@@ -141,7 +160,6 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
 
     return c.body(null, 500);
   }
-
 
   const response = await fetch(
     "https://openidconnect.googleapis.com/v1/userinfo",

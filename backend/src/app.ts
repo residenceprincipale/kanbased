@@ -11,7 +11,13 @@ app.get("/", (c) => {
   return c.json("hello hono");
 });
 
-const routes = [authRouter, boardsRouter, usersRouter, columnsRouter, tasksRouter];
+const routes = [
+  authRouter,
+  boardsRouter,
+  usersRouter,
+  columnsRouter,
+  tasksRouter,
+];
 
 routes.forEach((route) => {
   app.route("/", route);

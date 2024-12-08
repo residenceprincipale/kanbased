@@ -60,7 +60,9 @@ export async function createSession(
   return session;
 }
 
-export async function validateRequest(c: Context): Promise<SessionValidationResult> {
+export async function validateRequest(
+  c: Context,
+): Promise<SessionValidationResult> {
   const sessionToken = getSessionToken(c);
   if (!sessionToken) {
     return { session: null, user: null };
@@ -92,8 +94,8 @@ export async function validateSessionToken(
   }
 
   if (
-    Date.now()
-    >= sessionInDb.expiresAt.getTime() - SESSION_REFRESH_INTERVAL_MS
+    Date.now() >=
+    sessionInDb.expiresAt.getTime() - SESSION_REFRESH_INTERVAL_MS
   ) {
     sessionInDb.expiresAt = new Date(Date.now() + SESSION_MAX_DURATION_MS);
     await db
@@ -133,7 +135,11 @@ export async function verifyPassword(password: string, hashedPassword: string) {
   return timingSafeEqual(keyBuffer, derivedKey as Buffer);
 }
 
-export function setSessionTokenCookie(c: Context, token: string, expiresAt: Date): void {
+export function setSessionTokenCookie(
+  c: Context,
+  token: string,
+  expiresAt: Date,
+): void {
   setCookie(c, SESSION_COOKIE_NAME, token, {
     httpOnly: true,
     sameSite: "lax",
@@ -180,7 +186,11 @@ export async function createGoogleAccount(googleUser: GoogleUser) {
     .onConflictDoNothing()
     .returning();
 
-  await createProfile(existingUser.id, googleUser.name ?? googleUser.email, googleUser.picture);
+  await createProfile(
+    existingUser.id,
+    googleUser.name ?? googleUser.email,
+    googleUser.picture,
+  );
 
   return existingUser.id;
 }
@@ -220,12 +230,11 @@ export async function getUserByEmail(email: string) {
   return user;
 }
 
-
 export const googleUserSchema = z.object({
   name: z.string().nullable(),
   picture: z.string().nullable().default(null),
   email: z.string(),
-  sub: z.string()
+  sub: z.string(),
 });
 
 export type GoogleUser = z.infer<typeof googleUserSchema>;
