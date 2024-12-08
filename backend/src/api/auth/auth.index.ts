@@ -5,7 +5,7 @@ import { and, eq, or } from "drizzle-orm";
 import { getCookie, setCookie } from "hono/cookie";
 
 import { db } from "../../db/index.js";
-import { accountTable, userTable } from "../../db/schema/index.js";
+import { accountsTable, usersTable } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
@@ -18,8 +18,8 @@ authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
 
   const existingAccount = await db
     .select()
-    .from(userTable)
-    .where(or(eq(userTable.email, body.email), eq(userTable.name, body.name)));
+    .from(usersTable)
+    .where(or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)));
 
   if (existingAccount.length) {
     return c.json(
@@ -33,7 +33,7 @@ authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
   const hash = await hashPassword(body.password);
 
   const result = await db
-    .insert(userTable)
+    .insert(usersTable)
     .values({
       email: body.email,
       password: hash,
@@ -53,11 +53,11 @@ authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
 
   const [user] = await db
     .select()
-    .from(userTable)
+    .from(usersTable)
     .where(
       and(
-        or(eq(userTable.name, body.name), eq(userTable.email, body.email)),
-        eq(userTable.accountType, "email"),
+        or(eq(usersTable.name, body.name), eq(usersTable.email, body.email)),
+        eq(usersTable.accountType, "email"),
       ),
     );
 
@@ -155,7 +155,7 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   const googleUser = googleUserSchema.parse(data);
 
   const existingAccount = await db.query.accountTable.findFirst({
-    where: eq(accountTable.googleId, googleUser.sub),
+    where: eq(accountsTable.googleId, googleUser.sub),
   });
 
   if (existingAccount) {

@@ -1,133 +1,118 @@
-import {
-  index,
-  integer,
-  pgEnum,
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  unique,
-  uuid,
-  varchar
-} from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
+import * as t from "drizzle-orm/pg-core";
 
-export const accountTypeEnum = pgEnum("accountType", [
+export const accountTypeEnum = t.pgEnum("accountType", [
   "email",
   "github",
   "google",
 ]);
 
-export const userTable = pgTable("user", {
-  id: serial("id").primaryKey(),
-  email: varchar("email", { length: 256 }).unique().notNull(),
-  emailVerified: timestamp("emailVerified", { mode: "date" }),
+export const usersTable = pgTable("users", {
+  id: t.serial().primaryKey(),
+  email: t.varchar({ length: 256 }).unique().notNull(),
+  emailVerified: t.timestamp({ mode: "date" }),
 });
 
-export const accountTable = pgTable(
-  "account",
+export const accountsTable = pgTable(
+  "accounts",
   {
-    id: serial("id").primaryKey(),
-    userId: integer("userId")
+    id: t.serial().primaryKey(),
+    userId: t.integer()
       .notNull()
-      .references(() => userTable.id, { onDelete: "cascade", }),
-    accountType: accountTypeEnum("accountType").notNull(),
-    githubId: text("githubId").unique(),
-    googleId: text("googleId").unique(),
-    password: text("password"),
-    salt: text("salt"),
+      .references(() => usersTable.id, { onDelete: "cascade", }),
+    accountType: accountTypeEnum().notNull(),
+    githubId: t.text().unique(),
+    googleId: t.text().unique(),
+    password: t.text(),
+    salt: t.text(),
   },
-  table => ({
-    userIdAccountTypeIdx: index("user_id_account_type_idx").on(
+  table => ([
+    t.index("user_id_account_type_idx").on(
       table.userId,
       table.accountType,
     ),
-  }),
+  ]),
 );
 
-export const profileTable = pgTable("profile", {
-  id: serial("id").primaryKey(),
-  userId: integer("userId")
-    .notNull()
-    .references(() => userTable.id, { onDelete: "cascade" })
-    .unique(),
-  displayName: text("displayName"),
-  image: text("image"),
-});
 
-export const boardTable = pgTable(
-  "board",
+export const sessionsTable = pgTable(
+  "sessions",
   {
-    id: uuid("id").primaryKey(),
-    name: varchar("name", { length: 50 }).notNull(),
-    color: varchar("color", { length: 255 }),
-    userId: integer("userId")
-      .references(() => userTable.id, { onDelete: 'cascade' })
-      .notNull(),
-    createdAt: timestamp("createdAt", { mode: 'string' }),
-    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
-  },
-  (table) => {
-    return {
-      uniqueBoardNamePerUser: unique().on(table.name, table.userId),
-    };
-  },
-);
-
-export const columnTable = pgTable(
-  "column",
-  {
-    id: uuid("id").primaryKey(),
-    name: varchar("name", { length: 100 }).notNull(),
-    boardId: uuid("boardId")
-      .references(() => boardTable.id, { onDelete: 'cascade' })
-      .notNull(),
-    position: integer("order").notNull(),
-    createdAt: timestamp("createdAt", { mode: 'string' }),
-    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
-  },
-  (table) => {
-    return {
-      boardIdIdx: index("columnBoardIdx").on(table.boardId),
-    };
-  },
-)
-
-export const taskTable = pgTable(
-  "task",
-  {
-    id: uuid("id").primaryKey(),
-    name: varchar("name", { length: 100 }).notNull(),
-    columnId: uuid("columnId")
-      .references(() => columnTable.id, { onDelete: 'cascade' })
-      .notNull(),
-    position: integer("order").notNull(),
-    createdAt: timestamp("createdAt", { mode: 'string' }),
-    updatedAt: timestamp("updatedAt", { mode: 'string' }).notNull(),
-  },
-  (table) => {
-    return {
-      columnIdIdx: index("columnTaskIdx").on(table.columnId),
-    };
-  },
-)
-
-export const sessionTable = pgTable(
-  "session",
-  {
-    id: text("id").primaryKey(),
-    userId: integer("userId")
+    id: t.text().primaryKey(),
+    userId: t.integer()
       .notNull()
-      .references(() => userTable.id, { onDelete: "cascade" }),
-    expiresAt: timestamp("expiresAt", {
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    expiresAt: t.timestamp({
       withTimezone: true,
       mode: "date",
     }).notNull(),
   },
-  table => ({
-    userIdIdx: index("sessionsUserIdIdx").on(table.userId),
-  }),
+  table => ([
+    t.index("user_id_idx").on(table.userId),
+  ]),
 );
 
-export type Session = typeof sessionTable.$inferSelect;
-export type User = typeof userTable.$inferSelect;
+export const profilesTable = pgTable("profiles", {
+  id: t.serial().primaryKey(),
+  userId: t.integer()
+    .notNull()
+    .references(() => usersTable.id, { onDelete: "cascade" })
+    .unique(),
+  displayName: t.text(),
+  image: t.text(),
+});
+
+export const boardsTable = pgTable(
+  "boards",
+  {
+    id: t.uuid().primaryKey(),
+    name: t.varchar({ length: 50, }).notNull(),
+    color: t.varchar({ length: 255 }),
+    userId: t.integer()
+      .references(() => usersTable.id, { onDelete: 'cascade' })
+      .notNull(),
+    createdAt: t.timestamp({ mode: 'string' }),
+    updatedAt: t.timestamp({ mode: 'string' }).notNull(),
+  },
+  (table) => [
+    t.unique("unique_board_name_per_user").on(table.name, table.userId),
+  ]
+);
+
+export const columnsTable = pgTable(
+  "columns",
+  {
+    id: t.uuid().primaryKey(),
+    name: t.varchar({ length: 100 }).notNull(),
+    boardId: t.uuid()
+      .references(() => boardsTable.id, { onDelete: 'cascade' })
+      .notNull(),
+    position: t.integer().notNull(),
+    createdAt: t.timestamp({ mode: 'string' }),
+    updatedAt: t.timestamp({ mode: 'string' }).notNull(),
+  },
+  (table) => [
+    t.index("column_board_idx").on(table.boardId),
+  ]
+)
+
+export const tasksTable = pgTable(
+  "tasks",
+  {
+    id: t.uuid().primaryKey(),
+    name: t.varchar({ length: 100 }).notNull(),
+    columnId: t.uuid()
+      .references(() => columnsTable.id, { onDelete: 'cascade' })
+      .notNull(),
+    position: t.integer().notNull(),
+    createdAt: t.timestamp({ mode: 'string' }),
+    updatedAt: t.timestamp({ mode: 'string' }).notNull(),
+  },
+  (table) => [
+    t.index("column_id_idx").on(table.columnId),
+  ]
+)
+
+export type Session = typeof sessionsTable.$inferSelect;
+export type User = typeof usersTable.$inferSelect;
 

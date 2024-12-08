@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
-import { boardTable } from "../../db/schema/index.js";
+import { boardsTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
@@ -14,7 +14,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 
   try {
     const [board] = await db
-      .insert(boardTable)
+      .insert(boardsTable)
       .values({ name: body.name, color: body.color, userId: user.id, createdAt: body.createdAt, updatedAt: body.updatedAt, id: body.id })
       .returning();
 
@@ -35,7 +35,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {
   const user = c.get("user");
-  const boards = await db.select().from(boardTable).where(eq(boardTable.userId, user.id));
+  const boards = await db.select().from(boardsTable).where(eq(boardsTable.userId, user.id));
   return c.json(boards, 200);
 });
 

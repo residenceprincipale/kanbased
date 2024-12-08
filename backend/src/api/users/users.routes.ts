@@ -1,11 +1,11 @@
 import { createRoute } from "@hono/zod-openapi";
 import { createSelectSchema } from "drizzle-zod";
-import { profileTable } from "../../db/schema/index.js";
+import { profilesTable } from "../../db/schema/index.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { jsonContent } from "../../lib/schema-helpers.js";
 
 
-const selectUsersSchema = createSelectSchema(profileTable);
+const selectUsersSchema = createSelectSchema(profilesTable);
 
 
 export const getCurrentUser = createRoute({

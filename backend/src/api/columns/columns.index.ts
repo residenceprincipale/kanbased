@@ -1,7 +1,7 @@
 import { and, eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
-import { boardTable, columnTable, taskTable } from "../../db/schema/index.js";
+import { boardsTable, columnsTable, tasksTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createColumnRoute, getColumnsRoute, updateColumnsRoute, type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
@@ -11,7 +11,7 @@ const columnsRouter = createAuthenticatedRouter();
 columnsRouter.openapi(createColumnRoute, async (c) => {
   const body = c.req.valid("json");
 
-  const boards = await db.select({ boardId: boardTable.id }).from(boardTable).where(eq(boardTable.name, body.boardName));
+  const boards = await db.select({ boardId: boardsTable.id }).from(boardsTable).where(eq(boardsTable.name, body.boardName));
 
   if (!boards.length) {
     return c.json({ message: `Cannot find board with name ${body.boardName}` }, HTTP_STATUS_CODES.NOT_FOUND);
@@ -19,7 +19,7 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
   const boardId = boards[0]!.boardId!;
 
   const [column] = await db
-    .insert(columnTable)
+    .insert(columnsTable)
     .values(Object.assign(body, { boardId }))
     .returning();
 
@@ -42,7 +42,7 @@ columnsRouter.openapi(getColumnsRoute, async (c) => {
   const userId = c.get("user").id;
   const params = c.req.valid("query");
 
-  const boards = await db.select({ boardId: boardTable.id }).from(boardTable).where(and(eq(boardTable.name, params.boardName), eq(boardTable.userId, userId)));
+  const boards = await db.select({ boardId: boardsTable.id }).from(boardsTable).where(and(eq(boardsTable.name, params.boardName), eq(boardsTable.userId, userId)));
 
   if (!boards.length) {
     return c.json({ message: `Cannot find board with name ${params.boardName}` }, HTTP_STATUS_CODES.NOT_FOUND);
@@ -50,7 +50,7 @@ columnsRouter.openapi(getColumnsRoute, async (c) => {
 
   const boardId = boards[0]!.boardId!;
 
-  const result = await db.select().from(columnTable).where(eq(columnTable.boardId, boardId)).leftJoin(taskTable, eq(taskTable.columnId, columnTable.id));
+  const result = await db.select().from(columnsTable).where(eq(columnsTable.boardId, boardId)).leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id));
 
 
   const response: GetColumnsResponse = {

@@ -1,6 +1,6 @@
 
 import { db } from "../../db/index.js";
-import { boardTable, columnTable, taskTable } from "../../db/schema/index.js";
+import { boardsTable, columnsTable, tasksTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createTaskRoute } from "./tasks.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
@@ -12,11 +12,11 @@ tasksRouter.openapi(createTaskRoute, async (c) => {
   const userId = c.get("user").id;
   const body = c.req.valid("json");
 
-  await db.select({ id: columnTable.id }).from(columnTable).where(eq(columnTable.id, body.columnId)).leftJoin(boardTable, eq(columnTable.boardId, boardTable.id))
+  await db.select({ id: columnsTable.id }).from(columnsTable).where(eq(columnsTable.id, body.columnId)).leftJoin(boardsTable, eq(columnsTable.boardId, boardsTable.id));
 
 
   const [task] = await db
-    .insert(taskTable)
+    .insert(tasksTable)
     .values(body)
     .returning();
 

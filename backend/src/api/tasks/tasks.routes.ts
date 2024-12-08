@@ -3,10 +3,10 @@ import { createRoute } from "@hono/zod-openapi";
 import { createMessageContent, jsonContent, jsonContentRequired, zodErrorContent } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { taskTable } from "../../db/schema/index.js";
+import { tasksTable } from "../../db/schema/index.js";
 
-const createTaskBodySchema = createInsertSchema(taskTable)
-const tasksResponseSchema = createSelectSchema(taskTable).omit({ createdAt: true, updatedAt: true });
+const createTaskBodySchema = createInsertSchema(tasksTable)
+const tasksResponseSchema = createSelectSchema(tasksTable).omit({ createdAt: true, updatedAt: true });
 
 export const createTaskRoute = createRoute({
   method: "post",

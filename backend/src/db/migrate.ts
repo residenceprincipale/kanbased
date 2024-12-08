@@ -2,7 +2,7 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 
 import config from "../../drizzle.config.js";
 import { env } from "../env.js";
-import { connection, db } from "./index.js";
+import { db } from "./index.js";
 
 if (!env.DB_MIGRATING) {
   throw new Error(
@@ -13,4 +13,5 @@ if (!env.DB_MIGRATING) {
 // This will run migrations on the database, skipping the ones already applied
 await migrate(db, { migrationsFolder: config.out! });
 
-await connection.end();
+
+await db.$client.end();

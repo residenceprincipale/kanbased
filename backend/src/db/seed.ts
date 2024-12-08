@@ -3,7 +3,7 @@ import type { Table } from "drizzle-orm";
 import { getTableName, sql } from "drizzle-orm";
 
 import { env } from "../env.js";
-import { connection, db, type Db } from "./index.js";
+import { db, type Db } from "./index.js";
 import * as schema from "./schema/index.js";
 
 if (!env.DB_SEEDING) {
@@ -16,13 +16,13 @@ async function resetTable(db: Db, table: Table) {
   );
 }
 
-for (const table of [schema.boardTable, schema.sessionTable]) {
+for (const table of [schema.boardsTable, schema.sessionsTable]) {
   await resetTable(db, table);
 }
 
 // await db.delete(table); // clear tables without truncating / resetting ids
-await db.delete(schema.userTable);
+await db.delete(schema.usersTable);
 
 // TODO: Add seeds later
 
-await connection.end();
+await db.$client.end();

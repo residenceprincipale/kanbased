@@ -14,12 +14,12 @@ import type { Context } from "../../lib/create-app.js";
 
 import { db } from "../../db/index.js";
 import {
-  accountTable,
-  profileTable,
+  accountsTable,
+  profilesTable,
   type Session,
-  sessionTable,
+  sessionsTable,
   type User,
-  userTable,
+  usersTable,
 } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { z } from "zod";
@@ -56,7 +56,7 @@ export async function createSession(
     userId,
     expiresAt: new Date(Date.now() + SESSION_MAX_DURATION_MS),
   };
-  await db.insert(sessionTable).values(session);
+  await db.insert(sessionsTable).values(session);
   return session;
 }
 
@@ -73,21 +73,21 @@ export async function validateSessionToken(
 ): Promise<SessionValidationResult> {
   const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
   const sessionInDb = await db.query.sessionTable.findFirst({
-    where: eq(sessionTable.id, sessionId),
+    where: eq(sessionsTable.id, sessionId),
   });
   if (!sessionInDb) {
     return { session: null, user: null };
   }
   if (Date.now() >= sessionInDb.expiresAt.getTime()) {
-    await db.delete(sessionTable).where(eq(sessionTable.id, sessionInDb.id));
+    await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionInDb.id));
     return { session: null, user: null };
   }
   const user = await db.query.userTable.findFirst({
-    where: eq(userTable.id, sessionInDb.userId),
+    where: eq(usersTable.id, sessionInDb.userId),
   });
 
   if (!user) {
-    await db.delete(sessionTable).where(eq(sessionTable.id, sessionInDb.id));
+    await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionInDb.id));
     return { session: null, user: null };
   }
 
@@ -97,21 +97,21 @@ export async function validateSessionToken(
   ) {
     sessionInDb.expiresAt = new Date(Date.now() + SESSION_MAX_DURATION_MS);
     await db
-      .update(sessionTable)
+      .update(sessionsTable)
       .set({
         expiresAt: sessionInDb.expiresAt,
       })
-      .where(eq(sessionTable.id, sessionInDb.id));
+      .where(eq(sessionsTable.id, sessionInDb.id));
   }
   return { session: sessionInDb, user };
 }
 
 export async function invalidateSession(sessionId: string): Promise<void> {
-  await db.delete(sessionTable).where(eq(sessionTable.id, sessionId));
+  await db.delete(sessionsTable).where(eq(sessionsTable.id, sessionId));
 }
 
 export async function invalidateUserSessions(userId: number): Promise<void> {
-  await db.delete(sessionTable).where(eq(userTable.id, userId));
+  await db.delete(sessionsTable).where(eq(usersTable.id, userId));
 }
 
 export type SessionValidationResult =
@@ -171,7 +171,7 @@ export async function createGoogleAccount(googleUser: GoogleUser) {
   }
 
   await db
-    .insert(accountTable)
+    .insert(accountsTable)
     .values({
       userId: existingUser.id,
       accountType: "google",
@@ -187,7 +187,7 @@ export async function createGoogleAccount(googleUser: GoogleUser) {
 
 export async function createUser(email: string) {
   const [user] = await db
-    .insert(userTable)
+    .insert(usersTable)
     .values({
       email,
     })
@@ -201,7 +201,7 @@ export async function createProfile(
   image: string | null,
 ) {
   const [profile] = await db
-    .insert(profileTable)
+    .insert(profilesTable)
     .values({
       userId,
       image,
@@ -214,7 +214,7 @@ export async function createProfile(
 
 export async function getUserByEmail(email: string) {
   const user = await db.query.userTable.findFirst({
-    where: eq(userTable.email, email),
+    where: eq(usersTable.email, email),
   });
 
   return user;
