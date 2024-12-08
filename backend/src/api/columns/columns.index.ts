@@ -63,12 +63,12 @@ columnsRouter.openapi(getColumnsRoute, async (c) => {
   const columnMap = new Map<string, GetColumnsResponse['columns'][number]>();
 
   for (let item of result) {
-    if (!columnMap.has(item.column.id)) {
-      columnMap.set(item.column.id, item.column);
+    if (!columnMap.has(item.columns.id)) {
+      columnMap.set(item.columns.id, item.columns);
     }
 
-    if (item.task) {
-      response.tasks.push(item.task);
+    if (item.tasks) {
+      response.tasks.push(item.tasks);
     }
 
   }

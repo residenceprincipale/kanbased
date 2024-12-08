@@ -101,13 +101,21 @@ export default function createApp() {
       ? (currentStatus as StatusCode)
       : HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
+    env.NODE_ENV !== 'production' && c.var.logger.error(err);
+
+
+    const data = {
+      message: err.message,
+      stack: env.NODE_ENV === "production"
+        ? undefined
+        : err.stack,
+    }
+
+
+    console.log(data);
+
     return c.json(
-      {
-        message: err.message,
-        stack: env.NODE_ENV === "production"
-          ? undefined
-          : err.stack,
-      },
+      data,
       statusCode,
     );
 
