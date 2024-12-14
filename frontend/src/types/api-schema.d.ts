@@ -469,7 +469,6 @@ export interface paths {
             parameters: {
                 query: {
                     boardId: string;
-                    field: "position";
                 };
                 header?: never;
                 path?: never;
@@ -480,9 +479,6 @@ export interface paths {
                     "application/json": {
                         /** Format: uuid */
                         id: string;
-                        name: string;
-                        /** Format: uuid */
-                        boardId: string;
                         position: number;
                     }[];
                 };

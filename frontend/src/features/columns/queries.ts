@@ -86,7 +86,7 @@ export function useCreateColumnMutation(boardName: string) {
   });
 }
 
-export function useMoveColumnsMutation(boardName: string) {
+export function useMoveColumnsMutation(boardName: string, afterOptimisticUpdate?: () => void) {
   const queryKey = getColumnsQuery(boardName).queryKey;
   const mutationKey = ["put", "/columns"];
 
@@ -96,17 +96,22 @@ export function useMoveColumnsMutation(boardName: string) {
       await queryClient.cancelQueries({ queryKey });
 
       const previousData = queryClient.getQueryData(queryKey);
-      const updatedColumns = variables.body;
+      const updatedColPositions = variables.body;
 
-      // queryClient.setQueryData(
-      //   queryKey,
-      //   (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
-      //     return {
-      //       ...oldData,
-      //       columns: updatedColumns,
-      //     };
-      //   },
-      // );
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+          return {
+            ...oldData,
+            columns: oldData.columns.map(col => {
+              const updatedPosition = updatedColPositions.find(updatedCol => updatedCol.id === col.id)?.position;
+              return { ...col, position: updatedPosition ?? col.position }
+            }),
+          };
+        },
+      );
+
+      afterOptimisticUpdate?.();
 
       return { previousData };
     },

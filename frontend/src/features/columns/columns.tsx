@@ -2,7 +2,6 @@ import { Column } from "@/features/columns/column";
 import { useCallback, useRef, useState } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import {
-  ColumnsQueryResponse,
   useColumnsSuspenseQuery,
   useMoveColumnsMutation,
 } from "@/features/columns/queries";
@@ -12,12 +11,12 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import { flushSync } from "react-dom";
-import { queryClient } from "@/lib/query-client";
-import { getColumnsQuery } from "@/lib/query-options-factory";
 
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
-  const moveColumnsMutation = useMoveColumnsMutation(props.boardName);
+  const moveColumnsMutation = useMoveColumnsMutation(props.boardName, () => {
+    forceUpdate();
+  });
   const columns = data.columns;
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
   const [_, setForceRender] = useState(false);
@@ -63,34 +62,22 @@ export function Columns(props: { boardName: string }) {
     }
 
     if (e.type === "COLUMN") {
-      // Col update logic here
       const colCopy = [...sortedColumns];
 
       const [removedEl] = colCopy.splice(e.source.index, 1);
       colCopy.splice(e.destination.index, 0, removedEl!);
 
-      const updatedCols = colCopy.map((col, index) => ({
+      const updatedColPositions = colCopy.map((col, index) => ({
         ...col,
         position: index + 1,
       }));
 
-      const queryKey = getColumnsQuery(props.boardName).queryKey;
-
-      queryClient.setQueryData(
-        queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
-          return {
-            ...oldData,
-            columns: updatedCols,
-          };
-        }
-      );
-
-      forceUpdate();
-
-      await moveColumnsMutation.mutateAsync({
-        body: updatedCols,
-        params: { query: { boardId: data.boardId, field: "position" } },
+      moveColumnsMutation.mutate({
+        body: updatedColPositions.map((col) => ({
+          id: col.id,
+          position: col.position,
+        })),
+        params: { query: { boardId: data.boardId } },
       });
 
       return;

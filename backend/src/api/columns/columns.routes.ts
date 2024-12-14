@@ -33,6 +33,8 @@ const getColumnsResponseSchema = z.object({
   tasks: z.array(tasksResponseSchema),
 });
 
+const updateColumnsReqBodySchema = z.array(columnResponseSchema.pick({ id: true, position: true })).nonempty();
+
 export type GetColumnsResponse = z.infer<typeof getColumnsResponseSchema>;
 
 export const createColumnRoute = createRoute({
@@ -50,12 +52,13 @@ export const createColumnRoute = createRoute({
   },
 });
 
+
 export const updateColumnsRoute = createRoute({
   method: "put",
   path: "/columns",
   request: {
-    body: jsonContentRequired(z.array(columnResponseSchema).nonempty()),
-    query: z.object({ boardId: z.string(), field: z.enum(["position"]) }),
+    body: jsonContentRequired(updateColumnsReqBodySchema),
+    query: z.object({ boardId: z.string() }),
   },
   responses: {
     [HTTP_STATUS_CODES.OK]: jsonContent(z.object({})),

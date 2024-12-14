@@ -46,7 +46,7 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
 
 columnsRouter.openapi(updateColumnsRoute, async (c) => {
   const userId = c.get("user").id;
-  const { boardId, field } = c.req.valid("query");
+  const { boardId, } = c.req.valid("query");
   const columns = c.req.valid("json");
 
   const boards = await db
