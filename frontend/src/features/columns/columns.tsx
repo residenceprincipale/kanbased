@@ -1,15 +1,23 @@
 import { Column } from "@/features/columns/column";
 import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
-import { useColumnsSuspenseQuery } from "@/features/columns/queries";
+import {
+  ColumnsQueryResponse,
+  useColumnsSuspenseQuery,
+  useMoveColumnsMutation,
+} from "@/features/columns/queries";
 import {
   DragDropContext,
   Droppable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
+import { flushSync } from "react-dom";
+import { queryClient } from "@/lib/query-client";
+import { getColumnsQuery } from "@/lib/query-options-factory";
 
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
+  const moveColumnsMutation = useMoveColumnsMutation(props.boardName);
   const columns = data.columns;
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
 
@@ -32,7 +40,7 @@ export function Columns(props: { boardName: string }) {
     });
   }, []);
 
-  const handleDragEnd: OnDragEndResponder = (e) => {
+  const handleDragEnd: OnDragEndResponder = async (e) => {
     if (!e.destination) {
       return;
     }
@@ -47,8 +55,6 @@ export function Columns(props: { boardName: string }) {
       return;
     }
 
-    console.log(e);
-
     if (e.type === "COLUMN") {
       // Col update logic here
       const colCopy = [...sortedColumns];
@@ -60,6 +66,23 @@ export function Columns(props: { boardName: string }) {
         ...col,
         position: index + 1,
       }));
+
+      const queryKey = getColumnsQuery(props.boardName).queryKey;
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+          return {
+            ...oldData,
+            columns: updatedCols,
+          };
+        },
+      );
+
+      await moveColumnsMutation.mutateAsync({
+        body: updatedCols,
+        params: { query: { boardId: data.boardId, field: "position" } },
+      });
 
       return;
     }

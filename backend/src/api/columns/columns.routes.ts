@@ -55,13 +55,13 @@ export const updateColumnsRoute = createRoute({
   path: "/columns",
   request: {
     body: jsonContentRequired(z.array(columnResponseSchema).nonempty()),
-    query: z.object({ boardId: z.string() }),
+    query: z.object({ boardId: z.string(), field: z.enum(["position"]) }),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(columnResponseSchema),
+    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({})),
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
     [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board name which is not found in the boards table. You will receive this error code",
+      "if you provide a board id which is not found in the boards table. You will receive this error code",
     ),
   },
 });

@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, sql, SQL } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import {
@@ -45,8 +45,42 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
 });
 
 columnsRouter.openapi(updateColumnsRoute, async (c) => {
-  const { boardId } = c.req.valid("query");
+  const userId = c.get("user").id;
+  const { boardId, field } = c.req.valid("query");
   const columns = c.req.valid("json");
+
+  const boards = await db
+    .select({ id: boardsTable.id })
+    .from(boardsTable)
+    .where(and(eq(boardsTable.id, boardId), eq(boardsTable.userId, userId)));
+
+  if (!boards.length) {
+    return c.json(
+      { message: `Cannot find board with id ${boardId}` },
+      HTTP_STATUS_CODES.NOT_FOUND,
+    );
+  }
+
+  const sqlChunks: SQL[] = [];
+  const ids: string[] = [];
+  sqlChunks.push(sql`(case`);
+
+  for (const column of columns) {
+    sqlChunks.push(
+      sql`when ${columnsTable.id} = ${column.id} then ${sql.raw(`${column.position}::integer`)}`,
+    );
+    ids.push(column.id);
+  }
+  sqlChunks.push(sql`end)`);
+
+  const finalSql: SQL = sql.join(sqlChunks, sql.raw(" "));
+
+  await db
+    .update(columnsTable)
+    .set({ position: finalSql })
+    .where(inArray(columnsTable.id, ids));
+
+  return c.json({}, HTTP_STATUS_CODES.OK);
 });
 
 columnsRouter.openapi(getColumnsRoute, async (c) => {
