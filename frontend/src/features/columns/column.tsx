@@ -24,6 +24,7 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
             }, [])}
             {...provided.draggableProps}
             id={`col-${column.id}`}
+            className="mx-2"
           >
             <div className="flex items-center gap-2 justify-between shrink-0">
               <h1 className="text-xl font-semibold flex-1 pl-3">

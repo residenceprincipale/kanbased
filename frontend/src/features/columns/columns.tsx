@@ -1,5 +1,5 @@
 import { Column } from "@/features/columns/column";
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import {
   ColumnsQueryResponse,
@@ -20,6 +20,13 @@ export function Columns(props: { boardName: string }) {
   const moveColumnsMutation = useMoveColumnsMutation(props.boardName);
   const columns = data.columns;
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
+  const [_, setForceRender] = useState(false);
+
+  const forceUpdate = () => {
+    flushSync(() => {
+      setForceRender((prev) => !prev);
+    });
+  };
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -76,8 +83,10 @@ export function Columns(props: { boardName: string }) {
             ...oldData,
             columns: updatedCols,
           };
-        },
+        }
       );
+
+      forceUpdate();
 
       await moveColumnsMutation.mutateAsync({
         body: updatedCols,
@@ -110,10 +119,10 @@ export function Columns(props: { boardName: string }) {
           return (
             <div
               ref={containerRef}
-              className="pb-8 h-full inline-flex gap-4 px-8"
+              className="pb-8 h-full inline-flex px-8 space-x-4"
               {...provided.droppableProps}
             >
-              <div className="flex gap-4 h-full" ref={provided.innerRef}>
+              <div className="flex h-full" ref={provided.innerRef}>
                 {sortedColumns.map((column, i, arr) => (
                   <Column
                     boardName={props.boardName}
@@ -128,7 +137,9 @@ export function Columns(props: { boardName: string }) {
 
               <CreateColumn
                 boardName={props.boardName}
-                nextPosition={columns?.length ?? 0}
+                nextPosition={
+                  (sortedColumns[sortedColumns.length]?.position ?? 0) + 1
+                }
               />
             </div>
           );
