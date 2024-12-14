@@ -1,12 +1,10 @@
 import { Tasks } from "@/features/tasks/tasks";
 import { Draggable } from "@hello-pangea/dnd";
-import { forwardRef, memo, useCallback } from "react";
+import { memo, useCallback } from "react";
 
 export type TaskProps = {
   task: Tasks[number];
   boardName: string;
-  previousPosition: number;
-  nextPosition: number;
   index: number;
   taskRef?: (node: HTMLElement | null) => void;
 };
@@ -24,7 +22,7 @@ function TaskComp(props: TaskProps) {
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="select-none"
+          className="select-none mb-3"
         >
           <div className="bg-background text-foreground p-2 rounded-md min-h-16">
             {task.name}

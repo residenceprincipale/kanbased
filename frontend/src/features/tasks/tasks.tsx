@@ -17,24 +17,20 @@ type TasksProps = {
 function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
   return (
     <>
-      {props.tasks.map((task, i, arr) => {
-        const isLastEl = arr.length - 1 === i;
-        return (
-          <Task
-            task={task}
-            key={task.id}
-            taskRef={isLastEl ? props.lastTaskRef : undefined}
-            boardName={props.boardName}
-            index={i}
-            previousPosition={
-              i == 0 ? arr[i]!.position - 1 : arr[i - 1]!.position
-            }
-            nextPosition={
-              isLastEl ? arr[i]!.position + 1 : arr[i + 1]!.position
-            }
-          />
-        );
-      })}
+      {[...props.tasks]
+        .sort((a, b) => a.position - b.position)
+        .map((task, i, arr) => {
+          const isLastEl = arr.length - 1 === i;
+          return (
+            <Task
+              task={task}
+              key={task.id}
+              taskRef={isLastEl ? props.lastTaskRef : undefined}
+              boardName={props.boardName}
+              index={i}
+            />
+          );
+        })}
     </>
   );
 }
@@ -59,17 +55,6 @@ export function Tasks(props: TasksProps) {
     scrollList();
   }, []);
 
-  const updateParentCSSVariable = (isDragging: boolean) => {
-    const columnWrapperEl = document.getElementById(`col-${props.columnId}`);
-    if (!columnWrapperEl) return;
-
-    if (isDragging) {
-      columnWrapperEl.style.height = "100%";
-    } else {
-      columnWrapperEl.style.height = "fit-content";
-    }
-  };
-
   return (
     <div className="flex-1 flex flex-col min-h-0">
       <Droppable
@@ -85,10 +70,7 @@ export function Tasks(props: TasksProps) {
               {...droppableProvided.droppableProps}
               ref={containerRef}
             >
-              <div
-                ref={droppableProvided.innerRef}
-                className="min-h-8 px-2 space-y-3"
-              >
+              <div ref={droppableProvided.innerRef} className="min-h-8 px-2">
                 <MemoizedTaskList
                   boardName={props.boardName}
                   columnId={props.columnId}
@@ -110,7 +92,7 @@ export function Tasks(props: TasksProps) {
             nextPosition={
               sortedTasks.length
                 ? sortedTasks[sortedTasks.length - 1]!.position + 1
-                : 1
+                : 10
             }
             onComplete={() => {
               setShowAddTask(false);

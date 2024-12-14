@@ -4,6 +4,7 @@ import { CreateColumn } from "@/features/columns/create-column";
 import {
   useColumnsSuspenseQuery,
   useMoveColumnsMutation,
+  useMoveTasksMutation,
 } from "@/features/columns/queries";
 import {
   DragDropContext,
@@ -15,6 +16,9 @@ import { flushSync } from "react-dom";
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
   const moveColumnsMutation = useMoveColumnsMutation(props.boardName, () => {
+    forceUpdate();
+  });
+  const moveTasksMutation = useMoveTasksMutation(props.boardName, () => {
     forceUpdate();
   });
   const columns = data.columns;
@@ -45,6 +49,8 @@ export function Columns(props: { boardName: string }) {
       left: containerRef.current!.scrollWidth,
     });
   }, []);
+
+  console.log("columns", columns);
 
   const handleDragEnd: OnDragEndResponder = async (e) => {
     if (!e.destination) {
@@ -85,13 +91,45 @@ export function Columns(props: { boardName: string }) {
 
     if (e.type === "TASK") {
       // task update logic here
-      return;
+
+      // Find the destination column
+      const column = columns.find(
+        (col) => col.id === e.destination!.droppableId
+      )!;
+
+      // Sort tasks by position
+      let orderedTasks = [...column.tasks]
+        .sort((a, b) => a.position - b.position)
+        .map((task) => ({
+          id: task.id,
+          position: task.position,
+          columnId: task.columnId,
+        }));
+
+      const isDropOnSameColumn =
+        e.source.droppableId === e.destination.droppableId;
+
+      if (isDropOnSameColumn) {
+        const [removedTask] = orderedTasks.splice(e.source.index, 1);
+        orderedTasks.splice(e.destination.index, 0, removedTask!);
+      } else {
+        orderedTasks.splice(e.destination.index, 0, {
+          id: e.draggableId,
+          position: 0,
+          columnId: e.destination.droppableId,
+        });
+      }
+
+      orderedTasks = orderedTasks.map((task, i) => ({
+        ...task,
+        position: i + 1,
+      }));
+
+      moveTasksMutation.mutate({
+        body: orderedTasks,
+      });
     }
   };
-
-  /**
-   *
-   */
 
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
@@ -125,7 +163,7 @@ export function Columns(props: { boardName: string }) {
               <CreateColumn
                 boardName={props.boardName}
                 nextPosition={
-                  (sortedColumns[sortedColumns.length]?.position ?? 0) + 1
+                  (sortedColumns[sortedColumns.length - 1]?.position ?? 0) + 1
                 }
               />
             </div>

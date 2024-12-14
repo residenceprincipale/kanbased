@@ -104,8 +104,8 @@ export const tasksTable = pgTable(
       .uuid()
       .references(() => columnsTable.id, { onDelete: "cascade" })
       .notNull(),
-    position: t.integer().notNull(),
-    createdAt: t.timestamp({ mode: "string" }),
+    position: t.doublePrecision().notNull(),
+    createdAt: t.timestamp({ mode: "string" }).notNull(),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
   },
   (table) => [t.index("column_id_idx").on(table.columnId)],

@@ -175,3 +175,47 @@ export function useCreateTaskMutation(boardName: string) {
     },
   });
 }
+
+
+
+export function useMoveTasksMutation(boardName: string, afterOptimisticUpdate?: () => void) {
+  const queryKey = getColumnsQuery(boardName).queryKey;
+  const mutationKey = ["put", "/tasks/{id}"];
+
+  return api.useMutation("put", "/tasks", {
+    onMutate: async (variables) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData(queryKey);
+
+      const taskPositionMap = new Map<string, { columnId: string, position: number }>(variables.body.map(task => [task.id, { columnId: task.columnId, position: task.position }]));
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+          return {
+            ...oldData,
+            tasks: oldData.tasks.map(task => taskPositionMap.has(task.id) ? ({ ...task, ...taskPositionMap.get(task.id) }) : task),
+          };
+        },
+      );
+
+      afterOptimisticUpdate?.();
+
+      return { previousData };
+    },
+
+    onError: (err, variables, context: any) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData);
+      }
+    },
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        // return queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+}

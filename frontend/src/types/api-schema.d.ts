@@ -606,7 +606,75 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
-        put?: never;
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": {
+                        position: number;
+                        /** Format: uuid */
+                        columnId: string;
+                        /** Format: uuid */
+                        id: string;
+                    }[];
+                };
+            };
+            responses: {
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": Record<string, never>;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+            };
+        };
         post: {
             parameters: {
                 query?: never;
@@ -623,7 +691,7 @@ export interface paths {
                         /** Format: uuid */
                         columnId: string;
                         position: number;
-                        createdAt?: string | null;
+                        createdAt: string;
                         updatedAt: string;
                     };
                 };
@@ -634,14 +702,7 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            /** Format: uuid */
-                            columnId: string;
-                            position: number;
-                        };
+                        "application/json": Record<string, never>;
                     };
                 };
                 403: {

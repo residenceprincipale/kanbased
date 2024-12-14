@@ -49,17 +49,28 @@ columnsRouter.openapi(updateColumnsRoute, async (c) => {
   const { boardId, } = c.req.valid("query");
   const columns = c.req.valid("json");
 
-  const boards = await db
-    .select({ id: boardsTable.id })
-    .from(boardsTable)
-    .where(and(eq(boardsTable.id, boardId), eq(boardsTable.userId, userId)));
-
-  if (!boards.length) {
-    return c.json(
-      { message: `Cannot find board with id ${boardId}` },
-      HTTP_STATUS_CODES.NOT_FOUND,
+  const validColumns = await db
+    .select({ id: columnsTable.id })
+    .from(columnsTable)
+    .innerJoin(boardsTable, eq(columnsTable.boardId, boardsTable.id))
+    .where(
+      and(
+        eq(columnsTable.boardId, boardId),
+        eq(boardsTable.userId, userId)
+      )
     );
+
+  for (let column of columns) {
+    const isValidCol = validColumns.some(validCol => validCol.id === column.id);
+
+    if (!isValidCol) {
+      return c.json(
+        { message: `Cannot find column with id: ${column.id}` },
+        HTTP_STATUS_CODES.NOT_FOUND,
+      );
+    }
   }
+
 
   const sqlChunks: SQL[] = [];
   const ids: string[] = [];
