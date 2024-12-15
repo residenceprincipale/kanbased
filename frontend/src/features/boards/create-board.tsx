@@ -14,6 +14,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getId } from "@/lib/utils";
+import { CirclePlus } from "lucide-react";
 import { useState, type FormEventHandler } from "react";
 
 export function CreateBoard() {
@@ -45,7 +46,9 @@ export function CreateBoard() {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>Create board</Button>
+        <Button size={"icon"}>
+          <CirclePlus size={24} />
+        </Button>
       </DialogTrigger>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
