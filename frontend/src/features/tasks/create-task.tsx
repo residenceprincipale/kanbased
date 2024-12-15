@@ -63,7 +63,7 @@ export function CreateCard(props: CreateCardProps) {
             }
           }}
           autoFocus
-          className="!min-h-16 !px-2 resize-none overflow-hidden !ring-transparent"
+          className="!min-h-16 !px-2 resize-none overflow-hidden !ring-transparent text-base"
         />
 
         <div className="flex gap-4 w-fit ml-auto">

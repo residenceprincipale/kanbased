@@ -27,7 +27,7 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
             className="mx-2"
           >
             <div className="flex items-center gap-2 justify-between shrink-0">
-              <h1 className="text-xl font-semibold flex-1 pl-3">
+              <h1 className="text-lg font-semibold flex-1 pl-3">
                 {column.name}
               </h1>
 
