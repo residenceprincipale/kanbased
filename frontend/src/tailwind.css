@@ -115,3 +115,7 @@
     color-scheme: dark;
   }
 }
+
+html {
+  overflow-y: hidden;
+}
