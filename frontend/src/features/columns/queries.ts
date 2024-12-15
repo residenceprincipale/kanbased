@@ -214,7 +214,7 @@ export function useMoveTasksMutation(boardName: string, afterOptimisticUpdate?: 
     onSettled: () => {
       const isMutating = queryClient.isMutating({ mutationKey });
       if (isMutating <= 1) {
-        // return queryClient.invalidateQueries({ queryKey });
+        return queryClient.invalidateQueries({ queryKey });
       }
     },
   });

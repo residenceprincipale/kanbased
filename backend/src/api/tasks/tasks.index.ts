@@ -94,11 +94,11 @@ tasksRouter.openapi(updateTasksRoute, async (c) => {
 
   for (const task of tasks) {
     sqlChunksForPosition.push(
-      sql`when ${tasksTable.id} = ${task.id} then ${sql.raw(`${task.position}::integer`)}`
+      sql`when ${tasksTable.id} = ${task.id} then ${task.position}::integer`
     );
 
     sqlChunksForColumnId.push(
-      sql`when ${tasksTable.id} = ${task.id} then ${sql.raw(`${task.columnId}::uuid`)}`
+      sql`when ${tasksTable.id} = ${task.id} then ${task.columnId}::uuid`
     );
   }
   sqlChunksForPosition.push(sql`end)`);
