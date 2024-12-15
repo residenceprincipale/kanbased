@@ -3,17 +3,20 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
+import { useAppContext } from "@/state/app-state";
 import { Link } from "@tanstack/react-router";
 import { House } from "lucide-react";
 
 export function TopSection() {
   const { user } = useUser();
+  const { theme, updateTheme } = useAppContext();
 
   return (
     <div className="flex items-center justify-between gap-2 py-1.5 px-4">
@@ -33,9 +36,9 @@ export function TopSection() {
           <TabsList />
         </div> */}
       </div>
-      <div className="flex gap-4 shrink-0">
+      <div>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="focus:outline-none">
             <Avatar>
               {user?.image ? (
                 <AvatarImage src={user.image} alt={user.displayName!} />
@@ -44,7 +47,15 @@ export function TopSection() {
               )}
             </Avatar>
           </DropdownMenuTrigger>
-          <DropdownMenuContent>
+          <DropdownMenuContent className="w-56" align="end">
+            <DropdownMenuCheckboxItem
+              checked={theme === "dark"}
+              onCheckedChange={(checked) =>
+                updateTheme(checked ? "dark" : "light")
+              }
+            >
+              Dark mode
+            </DropdownMenuCheckboxItem>
             <DropdownMenuItem>Log out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
