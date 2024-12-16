@@ -17,8 +17,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true, // Include JSON modules
     "verbatimModuleSyntax": true,
-    "skipLibCheck": true,
-    "noEmitOnError": false
+    "skipLibCheck": true
   },
   "exclude": ["node_modules"]
 }

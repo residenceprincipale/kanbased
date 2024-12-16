@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "tsx watch --env-file=.env src/index.ts",
-    "build": "npx tsc",
+    "build": "tsc",
     "start": "node --env-file=.env ./dist/src",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "DB_MIGRATING=true tsx --env-file=.env src/db/migrate.ts",

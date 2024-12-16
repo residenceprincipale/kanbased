@@ -26,83 +26,83 @@ import {
 
 const authRouter = createRouter();
 
-authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
-  const body = await c.req.json();
+// authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
+//   const body = await c.req.json();
 
-  const existingAccount = await db
-    .select()
-    .from(usersTable)
-    .where(
-      or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)),
-    );
+//   const existingAccount = await db
+//     .select()
+//     .from(usersTable)
+//     .where(
+//       or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)),
+//     );
 
-  if (existingAccount.length) {
-    return c.json(
-      {
-        message: `A user with this email already exist. Please login`,
-      },
-      400,
-    );
-  }
+//   if (existingAccount.length) {
+//     return c.json(
+//       {
+//         message: `A user with this email already exist. Please login`,
+//       },
+//       400,
+//     );
+//   }
 
-  const hash = await hashPassword(body.password);
+//   const hash = await hashPassword(body.password);
 
-  const result = await db
-    .insert(usersTable)
-    .values({
-      email: body.email,
-      password: hash,
-      name: body.name,
-      accountType: "email",
-    })
-    .returning();
+//   const result = await db
+//     .insert(usersTable)
+//     .values({
+//       email: body.email,
+//       password: hash,
+//       name: body.name,
+//       accountType: "email",
+//     })
+//     .returning();
 
-  const { password, ...rest } = result[0]!;
-  await setSession(c, rest!.id);
+//   const { password, ...rest } = result[0]!;
+//   await setSession(c, rest!.id);
 
-  return c.json(rest, 200);
-});
+//   return c.json(rest, 200);
+// });
 
-authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
-  const body = await c.req.json();
+// authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
+//   const body = await c.req.json();
 
-  const [user] = await db
-    .select()
-    .from(usersTable)
-    .where(
-      and(
-        or(eq(usersTable.name, body.name), eq(usersTable.email, body.email)),
-        eq(usersTable.accountType, "email"),
-      ),
-    );
+//   const [user] = await db
+//     .select()
+//     .from(usersTable)
+//     .where(
+//       and(
+//         or(eq(usersTable.name, body.name), eq(usersTable.email, body.email)),
+//         eq(usersTable.accountType, "email"),
+//       ),
+//     );
 
-  if (!user) {
-    return c.json({ message: "User does not exist, Please sign up." }, 400);
-  }
+//   if (!user) {
+//     return c.json({ message: "User does not exist, Please sign up." }, 400);
+//   }
 
-  const isPasswordMatched = await verifyPassword(body.password, user.password);
+//   const isPasswordMatched = await verifyPassword(body.password, user.password);
 
-  if (!isPasswordMatched) {
-    return c.json({ message: "Invalid credentials" }, 400);
-  }
+//   if (!isPasswordMatched) {
+//     return c.json({ message: "Invalid credentials" }, 400);
+//   }
 
-  await setSession(c, user!.id);
+//   await setSession(c, user!.id);
 
-  return c.json({ email: user.email, name: user.name }, 200);
-});
+//   return c.json({ email: user.email, name: user.name }, 200);
+// });
 
-authRouter.openapi(authRoutes.logoutRoute, async (c) => {
-  const session = c.get("session");
+// authRouter.openapi(authRoutes.logoutRoute, async (c) => {
+//   const session = c.get("session");
 
-  if (!session) {
-    return c.json({ message: "Un authorized" }, 401);
-  }
+//   if (!session) {
+//     return c.json({ message: "Un authorized" }, 401);
+//   }
 
-  await invalidateSession(session.id);
-  deleteSessionTokenCookie(c);
+//   await invalidateSession(session.id);
+//   deleteSessionTokenCookie(c);
 
-  return c.json({}, 200);
-});
+//   return c.json({}, 200);
+// });
 
 authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
   const state = generateState();
