@@ -58,7 +58,7 @@ export default function createApp() {
     "/*",
     cors({
       // TODO: Change origin later
-      origin: "*",
+      origin: env.FE_ORIGIN,
       credentials: true,
     }),
   );
