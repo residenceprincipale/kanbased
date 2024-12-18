@@ -22,9 +22,9 @@ function TaskComp(props: TaskProps) {
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="select-none mb-3"
+          className="mb-3"
         >
-          <div className="bg-background text-foreground p-2 rounded-md min-h-16">
+          <div className="bg-background text-foreground p-2 rounded-md min-h-16 break-all">
             {task.name}
           </div>
         </div>
