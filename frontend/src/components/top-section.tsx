@@ -19,7 +19,7 @@ export function TopSection() {
   const { theme, updateTheme } = useAppContext();
 
   return (
-    <div className="flex items-center justify-between gap-2 py-1.5 px-4">
+    <div className="flex items-center justify-between gap-2 py-1.5 px-4 w-screen fixed top-0 left-0">
       <div className="flex gap-6 items-center flex-1">
         <Link
           to={routeMap.home}
