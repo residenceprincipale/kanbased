@@ -46,7 +46,15 @@ export function CreateColumn(props: {
 
   return (
     <ColumnWrapper className="!h-[110px]">
-      <form onSubmit={handleSubmit} className="px-2 pt-0.5">
+      <form
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget)) {
+            setIsCreateColumnOpen(undefined);
+          }
+        }}
+        onSubmit={handleSubmit}
+        className="px-2 pt-0.5"
+      >
         <Input
           id="column-name"
           name="column-name"
