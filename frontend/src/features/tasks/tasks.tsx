@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { ColumnsQueryData } from "@/features/columns/queries";
 import { Task, TaskProps } from "@/features/tasks/task";
 import { Droppable } from "@hello-pangea/dnd";
+import { cn } from "@/lib/utils";
+import { useOverflowDetector } from "react-detectable-overflow";
 
 export type Tasks = ColumnsQueryData["columns"][number]["tasks"];
 
@@ -41,10 +43,21 @@ export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
+  const { ref: overflowRef, overflow } = useOverflowDetector({
+    handleHeight: true,
+    handleWidth: false,
+  });
 
   function scrollList() {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
   }
+
+  const containerCbRef = useCallback((node: HTMLDivElement | null) => {
+    if (!node) return;
+    containerRef.current = node;
+    // @ts-ignore
+    overflowRef.current = node;
+  }, []);
 
   const lastTaskRef = useCallback((node: HTMLElement | null) => {
     if (!node) return;
@@ -66,9 +79,12 @@ export function Tasks(props: TasksProps) {
         {(droppableProvided, droppableSnapshot) => {
           return (
             <div
-              className="overflow-x-hidden overflow-y-auto custom-scrollbar flex-grow min-h-0"
+              className={cn(
+                "overflow-x-hidden custom-scrollbar flex-grow min-h-0",
+                overflow ? "overflow-y-auto" : "overflow-y-hidden"
+              )}
               {...droppableProvided.droppableProps}
-              ref={containerRef}
+              ref={containerCbRef}
             >
               <div ref={droppableProvided.innerRef} className="min-h-8 px-2">
                 <MemoizedTaskList
