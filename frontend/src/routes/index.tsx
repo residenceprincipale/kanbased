@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
 function HomeComponent() {
   const { user } = useUser();
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex height-screen items-center justify-center">
       <div className="flex flex-col items-center gap-16">
         <header className="flex flex-col items-center">
           <h1 className="text-4xl font-bold mb-2">Kanbased</h1>

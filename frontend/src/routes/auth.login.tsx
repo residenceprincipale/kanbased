@@ -56,7 +56,7 @@ function LoginForm() {
   if (true) {
     // TODO: For now just use google auth.
     return (
-      <div className="h-screen flex justify-center items-center">
+      <div className="height-screen flex justify-center items-center">
         <a href={googleLoginUrl} className={cn(buttonVariants(), "gap-2")}>
           {/* <GoogleIcon /> */}
           <GoogleIcon />
@@ -69,7 +69,7 @@ function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="h-screen flex justify-center items-center"
+      className="height-screen flex justify-center items-center"
     >
       <Card className="max-w-sm">
         <CardHeader>

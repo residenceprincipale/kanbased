@@ -53,7 +53,7 @@ function RegisterForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="h-screen flex justify-center items-center"
+      className="height-screen flex justify-center items-center"
     >
       <Card className="mx-auto max-w-sm">
         <CardHeader>

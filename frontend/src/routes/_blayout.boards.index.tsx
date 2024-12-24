@@ -34,13 +34,13 @@ function BoardsPage() {
   const { data: boards } = api.useSuspenseQuery("get", "/boards");
 
   return (
-    <main className="h-full flex flex-col pt-6 pb-20 min-h-0">
-      <div className="border py-4 rounded-lg w-fit mx-auto bg-gray-2 h-full flex flex-col flex-1">
+    <main className="h-full flex flex-col pt-10 pb-20 min-h-0 px-6 sm:px-0">
+      <div className="border py-4 rounded-lg w-full sm:mx-auto sm:w-fit bg-gray-2 h-full flex flex-col flex-1">
         <div className="flex items-center gap-4 justify-between mb-4 shrink-0 px-4">
           <h1 className="text-xl font-semibold">Boards ({boards?.length})</h1>
           <CreateBoard />
         </div>
-        <ul className="min-w-96 flex flex-col gap-2 h-full flex-1 overflow-y-auto px-3">
+        <ul className="sm:min-w-96 w-full flex flex-col gap-2 h-full flex-1 overflow-y-auto custom-scrollbar px-3">
           {boards?.map((board) => (
             <li key={board.id}>
               <Link

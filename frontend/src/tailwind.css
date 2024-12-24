@@ -138,6 +138,14 @@
       background: transparent;
     }
   }
+
+
+  .height-screen {
+    /* Fallback for browsers that don't support dvh */
+    height: 100vh;
+    /* For browsers that support dvh */
+    height: 100dvh;
+  }
 }
 
 

@@ -15,7 +15,7 @@ function RouteComponent() {
   }, []);
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="height-screen overflow-y-hidden flex flex-col">
       <header className="shrink-0">
         <TopSection />
         <div className="w-screen h-10" />
