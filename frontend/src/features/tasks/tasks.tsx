@@ -122,7 +122,7 @@ export function Tasks(props: TasksProps) {
               });
               scrollList();
             }}
-            className="w-full hover:!bg-primary-foreground"
+            className="w-full"
             type="button"
             variant="secondary"
           >
