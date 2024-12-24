@@ -24,7 +24,7 @@ function TaskComp(props: TaskProps) {
           {...provided.dragHandleProps}
           className="mb-3"
         >
-          <div className="bg-background text-foreground p-2 rounded-md min-h-16 break-all">
+          <div className="bg-background text-foreground p-2 rounded-md min-h-16 break-words">
             {task.name}
           </div>
         </div>
