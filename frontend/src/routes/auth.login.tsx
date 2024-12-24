@@ -46,8 +46,6 @@ function LoginForm() {
     });
     setIsSubmitting(false);
 
-    console.log("hello");
-
     if (error) {
       // toast(error.message);
     } else {

@@ -50,8 +50,6 @@ export function Columns(props: { boardName: string }) {
     });
   }, []);
 
-  console.log("columns", columns);
-
   const handleDragEnd: OnDragEndResponder = async (e) => {
     if (!e.destination) {
       return;

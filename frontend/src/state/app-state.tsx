@@ -9,7 +9,20 @@ type AppContextValues = {
 const AppContext = createContext<AppContextValues>({} as AppContextValues);
 
 export function AppContextProvider(props: React.PropsWithChildren) {
-  const [theme, setTheme] = useState<Theme>("light");
+  const [theme, setTheme] = useState<Theme>(() => {
+    let theme: Theme = "light";
+    const savedTheme = localStorage.getItem("theme") as Theme | undefined;
+
+    if (savedTheme) {
+      theme = savedTheme;
+    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      theme = "dark";
+    }
+
+    theme === "dark" && document.documentElement.classList.add("dark");
+
+    return theme;
+  });
 
   const updateTheme = (value: Theme) => {
     const htmlElement = document.documentElement;
@@ -20,6 +33,7 @@ export function AppContextProvider(props: React.PropsWithChildren) {
     }
 
     setTheme(value);
+    localStorage.setItem("theme", value);
   };
 
   return (

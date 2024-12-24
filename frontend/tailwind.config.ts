@@ -1,10 +1,10 @@
 import type { Config } from "tailwindcss";
 import tailwindAnimate from 'tailwindcss-animate';
 
-const createColorScale = (prefix: string) => {
+const createColorScale = (prefix: string, isAlpha: boolean = false) => {
 	return Object.fromEntries(Array.from({ length: 12 }, (_, i) => [
 		i + 1,
-		`var(--${prefix}-${i + 1})`
+		isAlpha ? `var(--${prefix}${i + 1})` : `var(--${prefix}-${i + 1})`
 	]))
 }
 
@@ -24,7 +24,8 @@ export default {
 			colors: {
 				background: 'var(--background)',
 				foreground: 'var(--foreground)',
-				gray: createColorScale("gray"),
+				gray: { ...createColorScale("gray") },
+				"gray-a": createColorScale("gray-a", true),
 				card: {
 					DEFAULT: 'var(--card)',
 					foreground: 'var(--card-foreground)'
