@@ -93,6 +93,7 @@ export function Tasks(props: TasksProps) {
                   lastTaskRef={lastTaskRef}
                   tasks={props.tasks}
                 />
+
                 {droppableProvided.placeholder}
               </div>
             </div>
