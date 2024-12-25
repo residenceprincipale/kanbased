@@ -7,8 +7,6 @@ export declare global {
       DB_NAME: string;
       DB_PORT: string;
       DATABASE_URL: string;
-      DB_MIGRATING: string;
-      DB_SEEDING: string;
       GOOGLE_CLIENT_ID: string;
       GOOGLE_CLIENT_SECRET: string;
       BE_ORIGIN: string;
