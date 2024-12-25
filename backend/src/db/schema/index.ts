@@ -143,3 +143,4 @@ export const boardPermissionsTable = pgTable(
 
 export type Session = typeof sessionsTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
+export type ResourcePermission = typeof permissionEnum.enumValues[number];

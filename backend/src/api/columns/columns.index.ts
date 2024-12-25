@@ -14,6 +14,7 @@ import {
   type GetColumnsResponse,
 } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
 const columnsRouter = createAuthenticatedRouter();
 
@@ -25,8 +26,8 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
     .where(
-      and(eq(boardsTable.name, body.boardName), eq(boardsTable.userId, userId)),
-    );
+      and(eq(boardsTable.name, body.boardName)),
+    )
 
   if (!boards.length) {
     return c.json(
@@ -34,7 +35,10 @@ columnsRouter.openapi(createColumnRoute, async (c) => {
       HTTP_STATUS_CODES.NOT_FOUND,
     );
   }
-  const boardId = boards[0]!.boardId!;
+
+  const boardId = boards[0]!.boardId;
+
+  await checkResourceAccess(userId, boardId, 'board', 'admin');
 
   const [column] = await db
     .insert(columnsTable)

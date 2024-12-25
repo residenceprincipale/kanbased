@@ -27,11 +27,10 @@ export const createBoardRoute = createRoute({
     body: jsonContentRequired(createBoardParamsSchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
+    [HTTP_STATUS_CODES.CREATED]: jsonContent(z.object({})),
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.BAD_REQUEST]: createMessageContent(
-      "Usually the error will be. 'Board name cannot be duplicate'",
-    ),
+    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
+    [HTTP_STATUS_CODES.BAD_REQUEST]: createMessageContent(),
     [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: genericMessageContent,
   },
 });

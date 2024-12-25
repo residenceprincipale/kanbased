@@ -17,6 +17,7 @@ import { HTTP_STATUS_CODES, HTTP_STATUS_PHRASES } from "./constants.js";
 import type { StatusCode } from "hono/utils/http-status";
 import type { User } from "../db/schema/index.js";
 import type { Session } from "inspector";
+import { ApiError } from "./utils.js";
 
 export interface AppBindings {
   Variables: {
@@ -38,7 +39,7 @@ export function createRouter() {
             success: result.success,
             error: result.error,
           },
-          422,
+          HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY
         );
       }
     },
@@ -60,7 +61,7 @@ export default function createApp() {
       // TODO: Change origin later
       origin: env.FE_ORIGIN,
       credentials: true,
-    }),
+    })
   );
 
   app.use(csrf({ origin: env.FE_ORIGIN }));
@@ -86,7 +87,7 @@ export default function createApp() {
       spec: {
         url: "/doc",
       },
-    }),
+    })
   );
 
   app.notFound((c) => {
@@ -94,27 +95,28 @@ export default function createApp() {
       {
         message: `${HTTP_STATUS_PHRASES.NOT_FOUND} - ${c.req.path}`,
       },
-      HTTP_STATUS_CODES.NOT_FOUND,
+      HTTP_STATUS_CODES.NOT_FOUND
     );
   });
 
   app.onError((err, c) => {
-    const currentStatus =
-      "status" in err ? err.status : c.newResponse(null).status;
-
+    const isDevelopment = env.NODE_ENV !== "production";
     const statusCode =
-      currentStatus !== HTTP_STATUS_CODES.OK
-        ? (currentStatus as StatusCode)
+      err instanceof ApiError
+        ? err.statusCode
         : HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
 
-    env.NODE_ENV !== "production" && c.var.logger.error(err);
-
     const data = {
-      message: err.message,
-      stack: env.NODE_ENV === "production" ? undefined : err.stack,
+      message:
+        err instanceof ApiError
+          ? err.message
+          : isDevelopment && err instanceof Error
+            ? err.message
+            : "An unexpected error occurred.",
+      stack: err instanceof Error && isDevelopment ? err.stack : undefined,
     };
 
-    console.log(data);
+    isDevelopment && c.var.logger.error(err);
 
     return c.json(data, statusCode);
   });

@@ -1,10 +1,11 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
-import { boardsTable } from "../../db/schema/index.js";
+import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { ApiError } from "../../lib/utils.js";
 
 const boardsRouter = createAuthenticatedRouter();
 
@@ -13,19 +14,32 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
   const user = c.get("user");
 
   try {
-    const [board] = await db
-      .insert(boardsTable)
-      .values({
-        name: body.name,
-        color: body.color,
-        userId: user.id,
-        createdAt: body.createdAt,
-        updatedAt: body.updatedAt,
-        id: body.id,
-      })
-      .returning();
+    await db.transaction(async (tx) => {
+      const [createdBoard] = await tx
+        .insert(boardsTable)
+        .values({
+          name: body.name,
+          color: body.color,
+          userId: user.id,
+          createdAt: body.createdAt,
+          updatedAt: body.updatedAt,
+          id: body.id,
+        })
+        .returning();
 
-    return c.json(board!, 200);
+      if (!createdBoard) {
+        return tx.rollback();
+      }
+
+      await tx.insert(boardPermissionsTable).values({
+        boardId: createdBoard.id,
+        permission: "owner",
+        userId: user.id,
+        createdAt: new Date().toISOString(),
+      });
+    });
+
+    return c.json({}, HTTP_STATUS_CODES.CREATED);
   } catch (err) {
     const isUniqueConstraintError =
       err && typeof err === "object" && "code" in err && err.code === "23505";
@@ -33,12 +47,13 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
     if (isUniqueConstraintError) {
       return c.json(
         { message: "Board name must be unique" },
-        HTTP_STATUS_CODES.BAD_REQUEST,
+        HTTP_STATUS_CODES.BAD_REQUEST
       );
     }
 
-    return c.json({ message: "" }, HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+    throw new ApiError("An expected error occurred", HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
   }
+
 });
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {

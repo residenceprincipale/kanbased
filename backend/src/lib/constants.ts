@@ -27,6 +27,7 @@ export const HTTP_STATUS_CODES = {
    * TRACE: The message body contains the request message as received by the server
    */
   OK: 200,
+  CREATED: 201,
   /**
    * Official Documentation @ https://tools.ietf.org/html/rfc6585#section-4
    *
