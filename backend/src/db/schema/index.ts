@@ -7,6 +7,13 @@ export const accountTypeEnum = t.pgEnum("accountType", [
   "google",
 ]);
 
+export const permissionEnum = t.pgEnum("permission", [
+  "owner",
+  "admin",
+  "editor",
+  "viewer",
+]);
+
 export const usersTable = pgTable("users", {
   id: t.serial().primaryKey(),
   email: t.varchar({ length: 256 }).unique().notNull(),
@@ -109,6 +116,29 @@ export const tasksTable = pgTable(
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
   },
   (table) => [t.index("column_id_idx").on(table.columnId)],
+);
+
+export const boardPermissionsTable = pgTable(
+  "board_permissions",
+  {
+    id: t.serial().primaryKey(),
+    boardId: t
+      .uuid()
+      .references(() => boardsTable.id, { onDelete: "cascade" })
+      .notNull(),
+    userId: t
+      .integer()
+      .references(() => usersTable.id, { onDelete: "cascade" })
+      .notNull(),
+    permission: permissionEnum().notNull(),
+    createdAt: t.timestamp({ mode: "string" }).notNull().defaultNow(),
+  },
+  (table) => [
+    // Ensure user can only have one role per board
+    t.unique("unique_board_member").on(table.boardId, table.userId),
+    t.index("board_members_user_idx").on(table.userId),
+    t.index("board_members_board_idx").on(table.boardId)
+  ]
 );
 
 export type Session = typeof sessionsTable.$inferSelect;
