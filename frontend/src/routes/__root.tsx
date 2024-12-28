@@ -6,6 +6,7 @@ import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
 
 const TanStackRouterDevtools =
+  // @ts-ignore
   process.env.NODE_ENV === "production"
     ? () => null // Render nothing in production
     : lazy(() =>

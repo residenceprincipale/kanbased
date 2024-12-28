@@ -19,72 +19,32 @@ import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 const columnsRouter = createAuthenticatedRouter();
 
 columnsRouter.openapi(createColumnRoute, async (c) => {
-  const userId = c.get("user").id;
+  const userId = c.var.user.id;
   const body = c.req.valid("json");
 
-  const boards = await db
-    .select({ boardId: boardsTable.id })
-    .from(boardsTable)
-    .where(
-      and(eq(boardsTable.name, body.boardName)),
-    )
+  await checkResourceAccess(userId, body.boardId, "board", "admin");
 
-  if (!boards.length) {
-    return c.json(
-      { message: `Cannot find board with name ${body.boardName}` },
-      HTTP_STATUS_CODES.NOT_FOUND,
-    );
-  }
-
-  const boardId = boards[0]!.boardId;
-
-  await checkResourceAccess(userId, boardId, 'board', 'admin');
-
-  const [column] = await db
+  await db
     .insert(columnsTable)
-    .values(Object.assign(body, { boardId }))
-    .returning();
+    .values(body)
 
-  return c.json(column, HTTP_STATUS_CODES.OK);
+  return c.json({}, HTTP_STATUS_CODES.CREATED);
 });
 
 columnsRouter.openapi(updateColumnsRoute, async (c) => {
-  const userId = c.get("user").id;
-  const { boardId, } = c.req.valid("query");
+  const userId = c.var.user.id;
   const columns = c.req.valid("json");
+  const columnIds = columns.map((col) => col.id);
 
-  const validColumns = await db
-    .select({ id: columnsTable.id })
-    .from(columnsTable)
-    .innerJoin(boardsTable, eq(columnsTable.boardId, boardsTable.id))
-    .where(
-      and(
-        eq(columnsTable.boardId, boardId),
-        eq(boardsTable.userId, userId)
-      )
-    );
-
-  for (let column of columns) {
-    const isValidCol = validColumns.some(validCol => validCol.id === column.id);
-
-    if (!isValidCol) {
-      return c.json(
-        { message: `Cannot find column with id: ${column.id}` },
-        HTTP_STATUS_CODES.NOT_FOUND,
-      );
-    }
-  }
-
+  await checkResourceAccess(userId, columnIds, "column", "editor");
 
   const sqlChunks: SQL[] = [];
-  const ids: string[] = [];
   sqlChunks.push(sql`(case`);
 
   for (const column of columns) {
     sqlChunks.push(
-      sql`when ${columnsTable.id} = ${column.id} then ${sql.raw(`${column.position}::integer`)}`,
+      sql`when ${columnsTable.id} = ${column.id} then ${sql.raw(`${column.position}::integer`)}`
     );
-    ids.push(column.id);
   }
   sqlChunks.push(sql`end)`);
 
@@ -93,33 +53,32 @@ columnsRouter.openapi(updateColumnsRoute, async (c) => {
   await db
     .update(columnsTable)
     .set({ position: finalSql })
-    .where(inArray(columnsTable.id, ids));
+    .where(inArray(columnsTable.id, columnIds));
 
   return c.json({}, HTTP_STATUS_CODES.OK);
 });
 
 columnsRouter.openapi(getColumnsRoute, async (c) => {
-  const userId = c.get("user").id;
+  const userId = c.var.user.id;
   const params = c.req.valid("query");
 
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
     .where(
-      and(
-        eq(boardsTable.name, params.boardName),
-        eq(boardsTable.userId, userId),
-      ),
+      eq(boardsTable.name, params.boardName),
     );
 
   if (!boards.length) {
     return c.json(
-      { message: `Cannot find board with name ${params.boardName}` },
-      HTTP_STATUS_CODES.NOT_FOUND,
+      { message: `You do not have access to this resource` },
+      HTTP_STATUS_CODES.FORBIDDEN
     );
   }
 
-  const boardId = boards[0]!.boardId!;
+  const boardId = boards[0]!.boardId;
+
+  await checkResourceAccess(userId, boardId, 'board', 'viewer');
 
   const result = await db
     .select()

@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import {
   boardPermissionsTable,
@@ -26,21 +26,25 @@ export type ResourceType = "board" | "column" | "task";
   I will re-write if If middlewares become typesafe in this package.
  */
 
-
 /**
  * Checks if the user has the required permission for a given resource.
  * Throws an ApiError with a FORBIDDEN status if the user does not have permission.
  */
 export async function checkResourceAccess(
   userId: number,
-  resourceId: string,
+  resourceId: string | string[],
   resourceType: ResourceType,
   requiredPermission: ResourcePermission
-) {
-
+): Promise<void> {
   let query = db
     .select({
       permission: boardPermissionsTable.permission,
+      resourceId:
+        resourceType === "board"
+          ? boardPermissionsTable.boardId
+          : resourceType === "column"
+            ? columnsTable.id
+            : tasksTable.id,
     })
     .from(boardPermissionsTable)
     .$dynamic();
@@ -50,7 +54,9 @@ export async function checkResourceAccess(
       query = query.where(
         and(
           eq(boardPermissionsTable.userId, userId),
-          eq(boardPermissionsTable.boardId, resourceId)
+          Array.isArray(resourceId)
+            ? inArray(boardPermissionsTable.boardId, resourceId)
+            : eq(boardPermissionsTable.boardId, resourceId)
         )
       );
       break;
@@ -64,7 +70,9 @@ export async function checkResourceAccess(
         .where(
           and(
             eq(boardPermissionsTable.userId, userId),
-            eq(columnsTable.id, resourceId)
+            Array.isArray(resourceId)
+              ? inArray(columnsTable.id, resourceId)
+              : eq(columnsTable.id, resourceId)
           )
         );
       break;
@@ -79,26 +87,46 @@ export async function checkResourceAccess(
         .where(
           and(
             eq(boardPermissionsTable.userId, userId),
-            eq(tasksTable.id, resourceId)
+            Array.isArray(resourceId)
+              ? inArray(tasksTable.id, resourceId)
+              : eq(tasksTable.id, resourceId)
           )
         );
       break;
   }
 
-  const result = await query.execute();
+  const results = await query;
 
-  if (!result?.length || result[0]?.permission == undefined) {
-    throw new ApiError("You do not have permission to perform this action.", HTTP_STATUS_CODES.FORBIDDEN);
+  if (Array.isArray(resourceId)) {
+    // Check if we found all requested resources
+    if (results.length !== resourceId.length) {
+      throwForbiddenErr();
+    }
+
+    for (let id of resourceId) {
+      const isResourceExist = results.some(result => result.resourceId === id);
+      if (!isResourceExist) {
+        throwForbiddenErr();
+      }
+    }
   }
 
-  const hasPermission =
-    permissionLevels[result[0].permission] >=
-    permissionLevels[requiredPermission]
+  for (let result of results) {
+    const hasPermission =
+      permissionLevels[result.permission] >=
+      permissionLevels[requiredPermission];
 
-
-  if (!hasPermission) {
-    throw new ApiError("You do not have permission to perform this action.", HTTP_STATUS_CODES.FORBIDDEN);
+    if (!hasPermission) {
+      throwForbiddenErr();
+    }
   }
 
-  return true;
+
+}
+
+function throwForbiddenErr() {
+  throw new ApiError(
+    "You do not have permission to perform this action.",
+    HTTP_STATUS_CODES.FORBIDDEN
+  );
 }

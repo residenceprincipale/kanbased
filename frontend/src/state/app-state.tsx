@@ -10,18 +10,8 @@ const AppContext = createContext<AppContextValues>({} as AppContextValues);
 
 export function AppContextProvider(props: React.PropsWithChildren) {
   const [theme, setTheme] = useState<Theme>(() => {
-    let theme: Theme = "light";
-    const savedTheme = localStorage.getItem("theme") as Theme | undefined;
-
-    if (savedTheme) {
-      theme = savedTheme;
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      theme = "dark";
-    }
-
-    theme === "dark" && document.documentElement.classList.add("dark");
-
-    return theme;
+    const isDark = document.documentElement.classList.contains("dark");
+    return isDark ? "dark" : "light";
   });
 
   const updateTheme = (value: Theme) => {

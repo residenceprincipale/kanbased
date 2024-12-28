@@ -8,32 +8,15 @@ import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createTaskRoute, updateTasksRoute } from "./tasks.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { and, count, eq, inArray, sql, SQL } from "drizzle-orm";
+import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
 const tasksRouter = createAuthenticatedRouter();
 
 tasksRouter.openapi(createTaskRoute, async (c) => {
-  const userId = c.get("user").id;
+  const userId = c.var.user.id;
   const body = c.req.valid("json");
 
-  // Validate that the column exists and belongs to the user's board
-  const columns = await db
-    .select({ id: columnsTable.id })
-    .from(columnsTable)
-    .where(eq(columnsTable.id, body.columnId))
-    .innerJoin(
-      boardsTable,
-      and(
-        eq(boardsTable.id, columnsTable.boardId),
-        eq(boardsTable.userId, userId) // Ensuring the board belongs to the user
-      )
-    );
-
-  if (!columns.length) {
-    return c.json(
-      { message: "You do not have permission to perform this action" },
-      HTTP_STATUS_CODES.FORBIDDEN
-    );
-  }
+  await checkResourceAccess(userId, body.columnId, 'column', 'admin');
 
   const [task] = await db.insert(tasksTable).values(body).returning();
 
@@ -41,50 +24,14 @@ tasksRouter.openapi(createTaskRoute, async (c) => {
 });
 
 tasksRouter.openapi(updateTasksRoute, async (c) => {
-  const userId = c.get("user").id;
+  const userId = c.var.user.id
   const tasks = c.req.valid("json");
   const taskIds = tasks.map((task) => task.id);
   const columnIds = [...new Set(tasks.map((task) => task.columnId))];
 
-  const validColumns = await db
-    .select({ id: columnsTable.id })
-    .from(columnsTable)
-    .where(inArray(columnsTable.id, columnIds))
-    .innerJoin(
-      boardsTable,
-      and(
-        eq(boardsTable.id, columnsTable.boardId),
-        eq(boardsTable.userId, userId)
-      )
-    );
+  await checkResourceAccess(userId, columnIds, 'column', 'editor');
+  await checkResourceAccess(userId, taskIds, 'task', 'editor');
 
-  // validates whether the columns belong to the logged in user or not.
-  if (validColumns.length !== columnIds.length) {
-    return c.json(
-      { message: "You are not authorized to perform this action" },
-      HTTP_STATUS_CODES.FORBIDDEN
-    );
-  }
-
-  const validTasks = await db
-    .select({ id: tasksTable.id })
-    .from(tasksTable)
-    .where(inArray(tasksTable.id, taskIds))
-    .innerJoin(columnsTable, eq(columnsTable.id, tasksTable.columnId))
-    .innerJoin(
-      boardsTable,
-      and(
-        eq(boardsTable.id, columnsTable.boardId),
-        eq(boardsTable.userId, userId)
-      )
-    );
-
-  if (validTasks.length !== taskIds.length) {
-    return c.json(
-      { message: "You are not authorized to perform this action" },
-      HTTP_STATUS_CODES.FORBIDDEN
-    );
-  }
 
   const sqlChunksForPosition: SQL[] = [];
   const sqlChunksForColumnId: SQL[] = [];
@@ -116,10 +63,3 @@ tasksRouter.openapi(updateTasksRoute, async (c) => {
 });
 
 export default tasksRouter;
-
-/*
-  const body = [{taskId: 'task 1', position: 1 }, {taskId: 'task 2', position: 2 }];
-
-
-
- */
