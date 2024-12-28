@@ -287,33 +287,13 @@ export interface paths {
                         };
                     };
                 };
-                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
-                404: {
+                403: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
                             message: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
                         };
                     };
                 };
@@ -344,36 +324,6 @@ export interface paths {
                         "application/json": Record<string, never>;
                     };
                 };
-                /** @description if you provide a board id which is not found in the boards table. You will receive this error code */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
-                    };
-                };
             };
         };
         post: {
@@ -389,57 +339,21 @@ export interface paths {
                         /** Format: uuid */
                         id: string;
                         name: string;
+                        /** Format: uuid */
+                        boardId: string;
                         position: number;
                         createdAt?: string | null;
                         updatedAt: string;
-                        boardName: string;
                     };
                 };
             };
             responses: {
-                200: {
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            /** Format: uuid */
-                            boardId: string;
-                            position: number;
-                        };
-                    };
-                };
-                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
+                        "application/json": Record<string, never>;
                     };
                 };
             };
@@ -495,36 +409,6 @@ export interface paths {
                         };
                     };
                 };
-                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
-                    };
-                };
             };
         };
         post: {
@@ -555,46 +439,6 @@ export interface paths {
                     };
                     content: {
                         "application/json": Record<string, never>;
-                    };
-                };
-                403: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                /** @description if you provide a board name which is not found in the boards table. You will receive this error code */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
                     };
                 };
             };

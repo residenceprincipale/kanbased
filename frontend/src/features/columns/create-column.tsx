@@ -10,6 +10,7 @@ import {
 import { getId } from "@/lib/utils";
 
 export function CreateColumn(props: {
+  boardId: string;
   boardName: string;
   nextPosition: number;
 }) {
@@ -35,7 +36,7 @@ export function CreateColumn(props: {
     createColumnMutation.mutate({
       body: {
         id: getId(),
-        boardName: props.boardName,
+        boardId: props.boardId,
         name,
         position: props.nextPosition,
         createdAt: currentDate,

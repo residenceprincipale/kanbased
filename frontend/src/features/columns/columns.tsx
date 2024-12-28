@@ -158,6 +158,7 @@ export function Columns(props: { boardName: string }) {
               </div>
 
               <CreateColumn
+                boardId={data.boardId}
                 boardName={props.boardName}
                 nextPosition={
                   (sortedColumns[sortedColumns.length - 1]?.position ?? 0) + 1
