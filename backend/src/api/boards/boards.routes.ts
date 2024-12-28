@@ -2,6 +2,7 @@ import { createRoute, z } from "@hono/zod-openapi";
 
 import {
   createMessageContent,
+  emptyResponse,
   genericMessageContent,
   jsonContent,
   jsonContentRequired,
@@ -27,7 +28,7 @@ export const createBoardRoute = createRoute({
     body: jsonContentRequired(createBoardParamsSchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.CREATED]: jsonContent(z.object({})),
+    [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse),
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
     [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
     [HTTP_STATUS_CODES.BAD_REQUEST]: createMessageContent(),

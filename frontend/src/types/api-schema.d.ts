@@ -4,156 +4,6 @@
  */
 
 export interface paths {
-    "/auth/register/email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": {
-                        name: string | null;
-                        password: string;
-                        /** Format: email */
-                        email: string;
-                    };
-                };
-            };
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            name: string | null;
-                            /** Format: email */
-                            email: string;
-                        };
-                    };
-                };
-                422: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            /** @example false */
-                            success: boolean;
-                            error: {
-                                issues: {
-                                    code: string;
-                                    path: (string | number)[];
-                                    message?: string;
-                                }[];
-                                name: string;
-                            };
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login/email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: {
-                content: {
-                    "application/json": {
-                        name?: string;
-                        password: string;
-                        /** Format: email */
-                        email?: string;
-                    };
-                };
-            };
-            responses: {
-                /** @description No content */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            name: string | null;
-                            /** Format: email */
-                            email: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/auth/login/google": {
         parameters: {
             query?: never;
@@ -289,21 +139,25 @@ export interface paths {
                 };
             };
             responses: {
-                200: {
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": Record<string, never>;
+                    };
+                };
+                400: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": {
-                            /** Format: uuid */
-                            id: string;
-                            name: string;
-                            color: string | null;
+                            message: string;
                         };
                     };
                 };
-                /** @description Usually the error will be. 'Board name cannot be duplicate' */
-                400: {
+                403: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -467,9 +321,7 @@ export interface paths {
         };
         put: {
             parameters: {
-                query: {
-                    boardId: string;
-                };
+                query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;

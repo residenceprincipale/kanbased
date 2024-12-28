@@ -1,10 +1,10 @@
 import { createRoute } from "@hono/zod-openapi";
 
 import {
-  createMessageContent,
+  emptyResponse,
+  genericMessageContent,
   jsonContent,
-  jsonContentRequired,
-  zodErrorContent,
+  jsonContentRequired
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -12,11 +12,6 @@ import { columnsTable, tasksTable } from "../../db/schema/index.js";
 import z from "zod";
 
 const createColumnBodySchema = createInsertSchema(columnsTable)
-  .omit({ boardId: true })
-  .extend({
-    boardName: z.string(),
-  });
-
 const tasksResponseSchema = createSelectSchema(tasksTable).omit({
   createdAt: true,
   updatedAt: true,
@@ -44,11 +39,7 @@ export const createColumnRoute = createRoute({
     body: jsonContentRequired(createColumnBodySchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(columnResponseSchema),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board name which is not found in the boards table. You will receive this error code",
-    ),
+    [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse)
   },
 });
 
@@ -58,14 +49,9 @@ export const updateColumnsRoute = createRoute({
   path: "/columns",
   request: {
     body: jsonContentRequired(updateColumnsReqBodySchema),
-    query: z.object({ boardId: z.string() }),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({})),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board id which is not found in the boards table. You will receive this error code",
-    ),
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
   },
 });
 
@@ -77,9 +63,6 @@ export const getColumnsRoute = createRoute({
   },
   responses: {
     [HTTP_STATUS_CODES.OK]: jsonContent(getColumnsResponseSchema),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board name which is not found in the boards table. You will receive this error code",
-    ),
+    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
   },
 });

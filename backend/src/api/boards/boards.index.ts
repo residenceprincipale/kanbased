@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
@@ -6,12 +6,13 @@ import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { ApiError } from "../../lib/utils.js";
+import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
 const boardsRouter = createAuthenticatedRouter();
 
 boardsRouter.openapi(createBoardRoute, async (c) => {
   const body = c.req.valid("json");
-  const user = c.get("user");
+  const userId = c.var.user.id;
 
   try {
     await db.transaction(async (tx) => {
@@ -20,7 +21,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
         .values({
           name: body.name,
           color: body.color,
-          userId: user.id,
+          userId,
           createdAt: body.createdAt,
           updatedAt: body.updatedAt,
           id: body.id,
@@ -34,7 +35,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
       await tx.insert(boardPermissionsTable).values({
         boardId: createdBoard.id,
         permission: "owner",
-        userId: user.id,
+        userId,
         createdAt: new Date().toISOString(),
       });
     });
@@ -57,12 +58,21 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 });
 
 boardsRouter.openapi(getBoardsRoute, async (c) => {
-  const user = c.get("user");
+  const userId = c.var.user.id;
+
   const boards = await db
-    .select()
-    .from(boardsTable)
-    .where(eq(boardsTable.userId, user.id));
-  return c.json(boards, 200);
+    .select({
+      id: boardsTable.id,
+      name: boardsTable.name,
+      color: boardsTable.color,
+    })
+    .from(boardPermissionsTable)
+    .innerJoin(boardsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
+    .where(eq(boardPermissionsTable.userId, userId))
+    .orderBy(desc(boardsTable.createdAt))
+
+
+  return c.json(boards, HTTP_STATUS_CODES.OK);
 });
 
 export default boardsRouter;

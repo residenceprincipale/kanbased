@@ -3,6 +3,7 @@ import { createRoute } from "@hono/zod-openapi";
 
 import {
   createMessageContent,
+  emptyResponse,
   genericMessageContent,
   jsonContent,
   jsonContentRequired,
@@ -23,12 +24,7 @@ export const createTaskRoute = createRoute({
     body: jsonContentRequired(createTaskBodySchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({})),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
-    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board name which is not found in the boards table. You will receive this error code",
-    ),
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
   },
 });
 
@@ -39,11 +35,7 @@ export const updateTasksRoute = createRoute({
     body: jsonContentRequired(updateTasksSchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({})),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
     [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
-    [HTTP_STATUS_CODES.NOT_FOUND]: createMessageContent(
-      "if you provide a board name which is not found in the boards table. You will receive this error code",
-    ),
   },
 });

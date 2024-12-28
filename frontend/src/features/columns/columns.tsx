@@ -81,7 +81,6 @@ export function Columns(props: { boardName: string }) {
           id: col.id,
           position: col.position,
         })),
-        params: { query: { boardId: data.boardId } },
       });
 
       return;
