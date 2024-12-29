@@ -23,4 +23,4 @@ jobs:
       # Deploy the application
       - name: Deploy with PM2
         run: |
-          ssh -T ${{ secrets.SSH_URL }} "cd $HOME/projects/kanbased/backend && git pull origin main && pnpm install && pnpm run build && pm2 reload ecosystem.config.js && pm2 save"
+          ssh -o StrictHostKeyChecking=no -T ${{ secrets.SSH_URL }} "cd $HOME/projects/kanbased/backend && git pull origin main && pnpm install && pnpm run build && pm2 reload ecosystem.config.js && pm2 save"
