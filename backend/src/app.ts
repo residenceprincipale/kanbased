@@ -8,7 +8,26 @@ import createApp from "./lib/create-app.js";
 export const app = createApp();
 
 app.get("/", (c) => {
-  return c.json("hello hono");
+  return c.html(`
+    <html>
+      <style>
+        * {
+        font-family: system-ui, sans-serif;
+      }
+      </style>
+      <head>
+        <title>Kanbased API</title>
+      </head>
+      <body>
+        <h1>Api for <a href="https://kanbased.com" target"_blank" rel="noopener noreferrer">Kanbased App</a></h1>
+        <h2>Documentation</h2>
+        <ul>
+          <li><a href="/reference">Scalar Documentation</a></li>
+          <li><a href="/doc">OpenAPI Documentation</a></li>
+        </ul>
+      </body>
+    </html>
+    `)
 });
 
 const routes = [
