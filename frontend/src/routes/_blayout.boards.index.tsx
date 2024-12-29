@@ -1,11 +1,10 @@
 "use client";
 import { CreateBoard } from "@/features/boards/create-board";
-import { Card } from "@/components/ui/card";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { SquareKanban } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { Board } from "@/features/boards/board";
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
@@ -41,20 +40,7 @@ function BoardsPage() {
           <CreateBoard />
         </div>
         <ul className="sm:min-w-96 w-full flex flex-col gap-2 h-full flex-1 overflow-y-auto custom-scrollbar px-3">
-          {boards?.map((board) => (
-            <li key={board.id}>
-              <Link
-                to="/boards/$boardName"
-                search={{ open: undefined }}
-                params={{ boardName: board.name }}
-              >
-                <Card className="flex items-center gap-2 hover:bg-muted hover:text-bg-muted-foreground p-4">
-                  <SquareKanban className="shrink-0" />
-                  <div className="">{board.name}</div>
-                </Card>
-              </Link>
-            </li>
-          ))}
+          {boards?.map((board) => <Board board={board} key={board.id} />)}
         </ul>
       </div>
     </main>

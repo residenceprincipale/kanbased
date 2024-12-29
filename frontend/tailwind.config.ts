@@ -26,6 +26,7 @@ export default {
 				foreground: 'var(--foreground)',
 				gray: { ...createColorScale("gray") },
 				"gray-a": createColorScale("gray-a", true),
+				red: createColorScale("red"),
 				card: {
 					DEFAULT: 'var(--card)',
 					foreground: 'var(--card-foreground)'
