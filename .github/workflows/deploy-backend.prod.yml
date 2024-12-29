@@ -18,22 +18,23 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to your app directory on the VPS
+            echo "Go to projects folder"
             cd $HOME/projects/kanbased/backend || exit
 
-            # Pull latest changes from Git
+            echo "Pull latest changes"
             git pull origin main || exit
 
-            # Install dependencies
+            echo "Installing dependencies"
             pnpm install || exit
 
+            echo "Removing old dist folder"
             rm -rf ./dist
 
-            # Build the app (optional, depending on your setup)
+            echo "Building the app"
             pnpm run build || exit
 
-            # Reload the app with PM2 (zero-downtime)
-            pm2 reload ecosystem.config.js || exit
+            echo "Reloading the app with PM2 (zero-downtime)"
+            pm2 reload ecosystem.config.cjs || exit
 
             # Save the PM2 process list for restarts
             pm2 save || exit
