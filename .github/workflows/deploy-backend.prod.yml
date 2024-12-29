@@ -27,6 +27,8 @@ jobs:
             # Install dependencies
             pnpm install || exit
 
+            rm -rf ./dist
+
             # Build the app (optional, depending on your setup)
             pnpm run build || exit
 
