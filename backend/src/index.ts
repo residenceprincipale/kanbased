@@ -14,3 +14,10 @@ serve(
     console.log(`Server is running on port ${info.port}`);
   },
 );
+
+process.on("SIGINT", () => {
+  // process reload ongoing
+  // close connections, clear cache, etc
+  // by default, you have 1600ms
+  process.exit(0);
+})
