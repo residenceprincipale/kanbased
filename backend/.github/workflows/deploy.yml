@@ -1,0 +1,44 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Install SSH key
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Deploy the application
+      - name: Deploy with PM2
+        run: |
+          ssh ${{ secrets.SSH_URL }} << 'EOF'
+            # Go to your app directory
+            cd $HOME/projects/kanbased/backend || exit
+            
+            # Pull latest changes from Git
+            git pull origin main || exit
+            
+            # Install dependencies
+            pnpm install   
+            
+            # Build your app (optional, depending on your setup)
+            pnpm run build 
+
+            # Restart/reload the app with PM2 (zero-downtime)
+            pm2 reload ecosystem.config.js || exit
+
+            # Optional: Save the PM2 process list for restarts
+            pm2 save || exit
+          EOF
