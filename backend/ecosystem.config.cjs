@@ -6,7 +6,6 @@ module.exports = {
       args: "start",
       instances: 2, // Number of instances (1 for a single instance)
       exec_mode: "cluster",
-      autorestart: true, // Automatically restart app on crash or changes
     },
   ],
 };

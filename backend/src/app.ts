@@ -13,6 +13,22 @@ app.get("/", (c) => {
       <style>
         * {
         font-family: system-ui, sans-serif;
+        body {
+          width: fit-content;
+          margin: 2rem auto;
+        }
+      @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #121212;
+        color: #ffffff;
+      }
+      a {
+      color: lightblue;
+      }
+      h2 {
+      margin-top: 4rem;
+      }
+      }
       }
       </style>
       <head>
