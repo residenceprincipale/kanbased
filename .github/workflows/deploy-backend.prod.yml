@@ -20,6 +20,9 @@ jobs:
       - name: Deploy with PM2
         run: |
           ssh -o StrictHostKeyChecking=no -T ${{ secrets.SSH_URL }} << 'EOF'
+             # Source the profile to load environment variables
+             source ~/.bashrc || source ~/.profile || exit
+
             # Navigate to your app directory on the VPS
             cd $HOME/projects/kanbased/backend || exit
 
