@@ -44,3 +44,14 @@ export const getBoardsRoute = createRoute({
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
   },
 });
+
+export const deleteBoardRoute = createRoute({
+  method: "delete",
+  path: "/boards/{boardId}",
+  request: {
+    params: z.object({ boardId: z.string() }),
+  },
+  responses: {
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+  },
+});

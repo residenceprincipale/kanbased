@@ -74,6 +74,7 @@ export const boardsTable = pgTable(
     id: t.uuid().primaryKey(),
     name: t.varchar({ length: 50 }).notNull(),
     color: t.varchar({ length: 255 }),
+    // TODO: I should remove this. Will do it later.
     userId: t
       .integer()
       .references(() => usersTable.id, { onDelete: "cascade" })

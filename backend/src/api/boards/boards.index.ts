@@ -3,14 +3,14 @@ import { desc, eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
 import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import { createBoardRoute, getBoardsRoute } from "./boards.routes.js";
+import * as routes from './boards.routes.js'
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { ApiError } from "../../lib/utils.js";
 import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
 const boardsRouter = createAuthenticatedRouter();
 
-boardsRouter.openapi(createBoardRoute, async (c) => {
+boardsRouter.openapi(routes.createBoardRoute, async (c) => {
   const body = c.req.valid("json");
   const userId = c.var.user.id;
 
@@ -57,7 +57,7 @@ boardsRouter.openapi(createBoardRoute, async (c) => {
 
 });
 
-boardsRouter.openapi(getBoardsRoute, async (c) => {
+boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
   const userId = c.var.user.id;
 
   const boards = await db
@@ -74,5 +74,16 @@ boardsRouter.openapi(getBoardsRoute, async (c) => {
 
   return c.json(boards, HTTP_STATUS_CODES.OK);
 });
+
+boardsRouter.openapi(routes.deleteBoardRoute, async (c) => {
+  const userId = c.var.user.id;
+  const { boardId } = c.req.valid("param");
+
+  await checkResourceAccess(userId, boardId, 'board', 'admin');
+
+  await db.delete(boardsTable).where(eq(boardsTable.id, boardId));
+
+  return c.json({}, HTTP_STATUS_CODES.OK)
+})
 
 export default boardsRouter;
