@@ -86,4 +86,18 @@ boardsRouter.openapi(routes.deleteBoardRoute, async (c) => {
   return c.json({}, HTTP_STATUS_CODES.OK)
 })
 
+boardsRouter.openapi(routes.editBoardRoute, async (c) => {
+  const userId = c.var.user.id
+  const { boardId } = c.req.valid("param");
+  const body = c.req.valid("json");
+
+  await checkResourceAccess(userId, boardId, 'board', 'editor');
+
+  await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
+
+  return c.json({}, HTTP_STATUS_CODES.OK);
+
+
+})
+
 export default boardsRouter;

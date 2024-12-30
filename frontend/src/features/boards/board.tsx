@@ -24,9 +24,11 @@ import { Link } from "@tanstack/react-router";
 import { EllipsisVertical, SquareKanban, Trash } from "lucide-react";
 import { useState } from "react";
 
-export function Board(props: {
+export type BoardProps = {
   board: Api200Response<"/boards", "get">[number];
-}) {
+};
+
+export function Board(props: BoardProps) {
   const { board } = props;
   const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
   const deleteBoardMutation = api.useMutation("delete", "/boards/{boardId}");

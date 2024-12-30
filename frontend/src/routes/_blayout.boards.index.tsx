@@ -6,6 +6,10 @@ import { queryClient } from "@/lib/query-client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
 
+export type SearchParams = {
+  edit: string | undefined;
+};
+
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
   staleTime: Infinity,
@@ -26,6 +30,11 @@ export const Route = createFileRoute("/_blayout/boards/")({
     }
 
     return null;
+  },
+  validateSearch: (result) => {
+    return {
+      edit: result.edit as string | undefined,
+    } satisfies SearchParams;
   },
 });
 

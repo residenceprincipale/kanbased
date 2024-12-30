@@ -14,6 +14,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+export type SearchParams = {
+  open: "create-column" | undefined;
+};
+
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
   staleTime: Infinity,
@@ -34,7 +38,9 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
     return null;
   },
   validateSearch: (result) => {
-    return { open: result.open };
+    return {
+      open: result.open === "create-column" ? result.open : undefined,
+    } satisfies SearchParams;
   },
   shouldReload: false,
   loaderDeps: (opt) => false,

@@ -55,3 +55,15 @@ export const deleteBoardRoute = createRoute({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
   },
 });
+
+export const editBoardRoute = createRoute({
+  method: "patch",
+  path: "/boards/{boardId}",
+  request: {
+    params: z.object({ boardId: z.string() }),
+    body: jsonContent(createBoardParamsSchema.omit({ id: true, createdAt: true, }))
+  },
+  responses: {
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+  },
+});
