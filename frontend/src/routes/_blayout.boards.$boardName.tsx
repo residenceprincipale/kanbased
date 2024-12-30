@@ -1,9 +1,8 @@
 "use client";
 import { Columns } from "@/features/columns/columns";
 
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
-import { router } from "@/main";
 import { QueryParamState } from "@/lib/constants";
 import { buttonVariants } from "@/components/ui/button";
 import { getColumnsQuery } from "@/lib/query-options-factory";
@@ -13,6 +12,7 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { UrlState } from "@/lib/url-state";
 
 export type SearchParams = {
   open: "create-column" | undefined;
@@ -46,23 +46,7 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
   loaderDeps: (opt) => false,
 });
 
-export function useGetIsCreateColumnOpen() {
-  const { open } = Route.useSearch();
-  return open === QueryParamState.CreateColumn;
-}
-
-export function setIsCreateColumnOpen(
-  updatedOpen: QueryParamState | undefined
-) {
-  router.navigate({
-    from: Route.fullPath,
-    search: (prev) => ({
-      ...prev,
-      open: updatedOpen,
-    }),
-    replace: true,
-  });
-}
+export const states = new UrlState(Route.id);
 
 function BoardPage() {
   const { boardName } = Route.useParams();
@@ -75,7 +59,7 @@ function BoardPage() {
           <TooltipTrigger asChild>
             <Link
               to="."
-              search={{ open: QueryParamState.CreateColumn }}
+              search={{ open: "create-column" }}
               className={buttonVariants({
                 size: "icon",
                 className: "w-10 h-9",

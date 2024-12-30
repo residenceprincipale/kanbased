@@ -1,3 +1,4 @@
+
 import { router } from "@/main";
 import { routeTree } from "@/routeTree.gen";
 import { getRouteApi, RouteIds } from "@tanstack/react-router";
@@ -11,7 +12,7 @@ type SearchParamResult<TPath> = UseSearchResult<
   unknown
 >;
 
-class URLState<TPath extends Constrain<string, RouteIds<typeof routeTree>>> {
+export class UrlState<TPath extends Constrain<string, RouteIds<typeof routeTree>>> {
   private route;
 
   constructor(path: TPath) {
@@ -20,11 +21,11 @@ class URLState<TPath extends Constrain<string, RouteIds<typeof routeTree>>> {
 
   use(key: keyof SearchParamResult<TPath>) {
     const search = this.route.useSearch();
-    const value = search[key];
+    const state = search[key];
 
     return {
-      value,
-      set: (updatedValue: typeof value, replace?: boolean) => {
+      state,
+      set: (updatedValue: typeof state, replace?: boolean) => {
         this.set(key, updatedValue, replace);
       },
       remove: (replace?: boolean) => {
@@ -62,5 +63,3 @@ class URLState<TPath extends Constrain<string, RouteIds<typeof routeTree>>> {
     });
   }
 }
-
-export const boardsState = new URLState("/_blayout/boards/");
