@@ -17,11 +17,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Spinner } from "@/components/ui/spinner";
+import { EditBoard } from "@/features/boards/edit-board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { Api200Response } from "@/types/type-helpers";
 import { Link } from "@tanstack/react-router";
-import { EllipsisVertical, SquareKanban, Trash } from "lucide-react";
+import { EllipsisVertical, Pencil, SquareKanban, Trash } from "lucide-react";
 import { useState } from "react";
 
 export type BoardProps = {
@@ -84,6 +85,13 @@ export function Board(props: BoardProps) {
                 <Trash />
                 Delete
               </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link preload={false} to="." search={{ editBoard: board.id }}>
+                  <Pencil />
+                  Edit
+                </Link>
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </Card>
@@ -107,6 +115,8 @@ export function Board(props: BoardProps) {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <EditBoard board={board} />
     </li>
   );
 }

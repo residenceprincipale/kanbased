@@ -5,9 +5,10 @@ import { queryClient } from "@/lib/query-client";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
+import { UrlState } from "@/lib/url-state";
 
 export type SearchParams = {
-  edit: string | undefined;
+  editBoard: string | undefined;
 };
 
 export const Route = createFileRoute("/_blayout/boards/")({
@@ -33,10 +34,13 @@ export const Route = createFileRoute("/_blayout/boards/")({
   },
   validateSearch: (result) => {
     return {
-      edit: result.edit as string | undefined,
+      editBoard:
+        typeof result.editBoard === "string" ? result.editBoard : undefined,
     } satisfies SearchParams;
   },
 });
+
+export const states = new UrlState(Route.id);
 
 function BoardsPage() {
   const { data: boards } = api.useSuspenseQuery("get", "/boards");

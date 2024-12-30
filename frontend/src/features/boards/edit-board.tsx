@@ -13,15 +13,19 @@ import { Spinner } from "@/components/ui/spinner";
 import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { useState, type FormEventHandler } from "react";
+import { states } from "@/routes/_blayout.boards.index";
+import { type FormEventHandler } from "react";
 
-export function EditBoard(props: {
-  board: BoardProps["board"];
-  isOpen: boolean;
-  onDone: () => void;
-}) {
+export function EditBoard(props: { board: BoardProps["board"] }) {
   const { board } = props;
+  const editBoardState = states.use("editBoard");
+  const showEditModal =
+    !!editBoardState.state && board.id === editBoardState.state;
   const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
+
+  if (!showEditModal) {
+    return null;
+  }
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -42,14 +46,18 @@ export function EditBoard(props: {
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
-          props.onDone();
+          editBoardState.remove();
         },
       }
     );
   };
 
+  const handleOpenChange = () => {
+    editBoardState.remove();
+  };
+
   return (
-    <Dialog open={props.isOpen} onOpenChange={props.onDone}>
+    <Dialog open={true} onOpenChange={handleOpenChange}>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <DialogHeader>
