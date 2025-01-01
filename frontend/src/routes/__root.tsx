@@ -4,6 +4,7 @@ import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
+import { Toaster } from "@/components/ui/sonner";
 
 const TanStackRouterDevtools =
   // @ts-ignore
@@ -32,6 +33,7 @@ function RootComponent() {
   return (
     <AppContextProvider>
       <Outlet />
+      <Toaster />
       <TanStackRouterDevtools position="bottom-left" />
       <ReactQueryDevtools position="bottom" />
     </AppContextProvider>

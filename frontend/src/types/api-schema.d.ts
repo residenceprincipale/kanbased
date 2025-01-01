@@ -97,6 +97,16 @@ export interface paths {
                         }[];
                     };
                 };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
                 422: {
                     headers: {
                         [name: string]: unknown;
@@ -113,6 +123,16 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
                         };
                     };
                 };
@@ -233,6 +253,45 @@ export interface paths {
                         "application/json": Record<string, never>;
                     };
                 };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
             };
         };
         options?: never;
@@ -264,6 +323,55 @@ export interface paths {
                         "application/json": Record<string, never>;
                     };
                 };
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
             };
         };
         trace?: never;
@@ -293,6 +401,45 @@ export interface paths {
                             id: number;
                             displayName: string | null;
                             image: string | null;
+                        };
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
                         };
                     };
                 };
@@ -361,6 +508,35 @@ export interface paths {
                         };
                     };
                 };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
             };
         };
         put: {
@@ -386,6 +562,45 @@ export interface paths {
                     };
                     content: {
                         "application/json": Record<string, never>;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
                     };
                 };
             };
@@ -418,6 +633,45 @@ export interface paths {
                     };
                     content: {
                         "application/json": Record<string, never>;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
                     };
                 };
             };
@@ -473,6 +727,35 @@ export interface paths {
                         };
                     };
                 };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
             };
         };
         post: {
@@ -503,6 +786,45 @@ export interface paths {
                     };
                     content: {
                         "application/json": Record<string, never>;
+                    };
+                };
+                403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
+                    };
+                };
+                422: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            /** @example false */
+                            success: boolean;
+                            error: {
+                                issues: {
+                                    code: string;
+                                    path: (string | number)[];
+                                    message?: string;
+                                }[];
+                                name: string;
+                            };
+                        };
+                    };
+                };
+                500: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                        };
                     };
                 };
             };

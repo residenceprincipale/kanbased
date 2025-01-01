@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -14,8 +14,10 @@ import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getId } from "@/lib/utils";
+import { Link } from "@tanstack/react-router";
 import { CirclePlus } from "lucide-react";
 import { useState, type FormEventHandler } from "react";
+import { toast } from "sonner";
 
 export function CreateBoard() {
   const [isOpen, setIsOpen] = useState(false);
@@ -37,6 +39,23 @@ export function CreateBoard() {
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+          toast.success(
+            <div className="flex items-center justify-between w-full">
+              <span>
+                <b>{boardName}</b> board created successfully
+              </span>
+              <Link
+                className={buttonVariants({
+                  size: "sm",
+                  className: "!h-8",
+                })}
+                to="/boards/$boardName"
+                params={{ boardName }}
+              >
+                View
+              </Link>
+            </div>
+          );
           setIsOpen(false);
         },
       }

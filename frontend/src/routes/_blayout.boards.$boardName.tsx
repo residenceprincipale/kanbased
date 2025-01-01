@@ -13,10 +13,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { UrlState } from "@/lib/url-state";
+import { z } from "zod";
 
-export type SearchParams = {
-  open: "create-column" | undefined;
-};
+export const searchParamsSchema = z.object({
+  open: z.union([z.literal("create-column"), z.undefined()]),
+});
 
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
@@ -37,11 +38,7 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
     }
     return null;
   },
-  validateSearch: (result) => {
-    return {
-      open: result.open === "create-column" ? result.open : undefined,
-    } satisfies SearchParams;
-  },
+  validateSearch: searchParamsSchema,
   shouldReload: false,
   loaderDeps: (opt) => false,
 });
