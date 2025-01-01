@@ -39,7 +39,8 @@
     "react-detectable-overflow": "^0.8.0",
     "react-dom": "^18.3.1",
     "sonner": "^1.7.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.79.0",

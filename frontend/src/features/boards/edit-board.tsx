@@ -18,9 +18,9 @@ import { type FormEventHandler } from "react";
 
 export function EditBoard(props: { board: BoardProps["board"] }) {
   const { board } = props;
-  const editBoardState = states.use("editBoard");
+  const state = states.use("open");
   const showEditModal =
-    !!editBoardState.state && board.id === editBoardState.state;
+    state.state?.type === "edit-board" && board.id === state.state.boardId;
   const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
 
   if (!showEditModal) {
@@ -46,14 +46,14 @@ export function EditBoard(props: { board: BoardProps["board"] }) {
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
-          editBoardState.remove();
+          state.remove();
         },
       }
     );
   };
 
   const handleOpenChange = () => {
-    editBoardState.remove();
+    state.remove();
   };
 
   return (

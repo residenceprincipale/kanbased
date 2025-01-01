@@ -6,10 +6,19 @@ import { queryClient } from "@/lib/query-client";
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
 import { UrlState } from "@/lib/url-state";
+import z from "zod";
+import { DeleteBoardModal } from "@/features/boards/delete-board";
 
-export type SearchParams = {
-  editBoard: string | undefined;
-};
+const paramsSchema = z.object({
+  open: z
+    .optional(
+      z.discriminatedUnion("type", [
+        z.object({ type: z.literal("delete-board"), boardId: z.string() }),
+        z.object({ type: z.literal("edit-board"), boardId: z.string() }),
+      ])
+    )
+    .catch(undefined),
+});
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
@@ -32,12 +41,7 @@ export const Route = createFileRoute("/_blayout/boards/")({
 
     return null;
   },
-  validateSearch: (result) => {
-    return {
-      editBoard:
-        typeof result.editBoard === "string" ? result.editBoard : undefined,
-    } satisfies SearchParams;
-  },
+  validateSearch: paramsSchema,
 });
 
 export const states = new UrlState(Route.id);
@@ -56,6 +60,7 @@ function BoardsPage() {
           {boards?.map((board) => <Board board={board} key={board.id} />)}
         </ul>
       </div>
+      <DeleteBoardModal />
     </main>
   );
 }
