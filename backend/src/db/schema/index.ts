@@ -36,7 +36,7 @@ export const accountsTable = pgTable(
   },
   (table) => [
     t.index("user_id_account_type_idx").on(table.userId, table.accountType),
-  ],
+  ]
 );
 
 export const sessionsTable = pgTable(
@@ -54,7 +54,7 @@ export const sessionsTable = pgTable(
       })
       .notNull(),
   },
-  (table) => [t.index("user_id_idx").on(table.userId)],
+  (table) => [t.index("user_id_idx").on(table.userId)]
 );
 
 export const profilesTable = pgTable("profiles", {
@@ -74,17 +74,17 @@ export const boardsTable = pgTable(
     id: t.uuid().primaryKey(),
     name: t.varchar({ length: 50 }).notNull(),
     color: t.varchar({ length: 255 }),
-    // TODO: I should remove this. Will do it later.
-    userId: t
+    creatorId: t
       .integer()
-      .references(() => usersTable.id, { onDelete: "cascade" })
+      .references(() => usersTable.id)
       .notNull(),
     createdAt: t.timestamp({ mode: "string" }),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
+    deletedAt: t.timestamp({ mode: "string" })
   },
   (table) => [
-    t.unique("unique_board_name_per_user").on(table.name, table.userId),
-  ],
+    t.unique("unique_board_name_per_user").on(table.name, table.creatorId),
+  ]
 );
 
 export const columnsTable = pgTable(
@@ -100,7 +100,7 @@ export const columnsTable = pgTable(
     createdAt: t.timestamp({ mode: "string" }),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
   },
-  (table) => [t.index("column_board_idx").on(table.boardId)],
+  (table) => [t.index("column_board_idx").on(table.boardId)]
 );
 
 export const tasksTable = pgTable(
@@ -116,7 +116,7 @@ export const tasksTable = pgTable(
     createdAt: t.timestamp({ mode: "string" }).notNull(),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
   },
-  (table) => [t.index("column_id_idx").on(table.columnId)],
+  (table) => [t.index("column_id_idx").on(table.columnId)]
 );
 
 export const boardPermissionsTable = pgTable(
@@ -138,10 +138,10 @@ export const boardPermissionsTable = pgTable(
     // Ensure user can only have one role per board
     t.unique("unique_board_member").on(table.boardId, table.userId),
     t.index("board_members_user_idx").on(table.userId),
-    t.index("board_members_board_idx").on(table.boardId)
+    t.index("board_members_board_idx").on(table.boardId),
   ]
 );
 
 export type Session = typeof sessionsTable.$inferSelect;
 export type User = typeof usersTable.$inferSelect;
-export type ResourcePermission = typeof permissionEnum.enumValues[number];
+export type ResourcePermission = (typeof permissionEnum.enumValues)[number];

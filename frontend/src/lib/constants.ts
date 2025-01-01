@@ -9,5 +9,6 @@ export const routeMap = {
 
 
 export enum QueryParamState {
-  CreateColumn = "create-column"
+  CreateColumn = "create-column",
+  UpdateBoard = "update-board"
 }

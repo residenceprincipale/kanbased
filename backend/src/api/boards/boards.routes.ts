@@ -1,24 +1,25 @@
 import { createRoute, z } from "@hono/zod-openapi";
 
 import {
-  createMessageContent,
   emptyResponse,
   genericMessageContent,
   jsonContent,
-  jsonContentRequired,
-  zodErrorContent,
+  jsonContentRequired
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { boardsTable } from "../../db/schema/index.js";
+import { ResponseBuilder } from "../../lib/response-builder.js";
 
 const createBoardParamsSchema = createInsertSchema(boardsTable).omit({
-  userId: true,
+  creatorId: true,
 });
+
 const createBoardResponse = createSelectSchema(boardsTable).omit({
-  userId: true,
+  creatorId: true,
   createdAt: true,
   updatedAt: true,
+  deletedAt: true
 });
 
 export const createBoardRoute = createRoute({
@@ -27,31 +28,43 @@ export const createBoardRoute = createRoute({
   request: {
     body: jsonContentRequired(createBoardParamsSchema),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
-    [HTTP_STATUS_CODES.BAD_REQUEST]: createMessageContent(),
-    [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: genericMessageContent,
-  },
+    [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+  }),
 });
 
 export const getBoardsRoute = createRoute({
   method: "get",
   path: "/boards",
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(z.array(createBoardResponse)),
-    [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
-  },
+  }),
 });
 
-export const deleteBoardRoute = createRoute({
-  method: "delete",
+export const toggleBoardDeleteRoute = createRoute({
+  method: "patch",
+  path: "/boards/{boardId}/toggle-delete",
+  request: {
+    params: z.object({ boardId: z.string() }),
+    body: jsonContent(z.object({ deleted: z.boolean() })),
+  },
+  responses: ResponseBuilder.withAuthAndValidation({
+    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
+  }),
+});
+
+export const editBoardRoute = createRoute({
+  method: "patch",
   path: "/boards/{boardId}",
   request: {
     params: z.object({ boardId: z.string() }),
+    body: jsonContent(
+      createBoardParamsSchema.omit({ id: true, createdAt: true })
+    ),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-  },
+    [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+  }),
 });

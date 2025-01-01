@@ -5,6 +5,20 @@ import { queryClient } from "@/lib/query-client";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
+import { UrlState } from "@/lib/url-state";
+import z from "zod";
+import { DeleteBoardModal } from "@/features/boards/delete-board";
+
+const paramsSchema = z.object({
+  open: z
+    .optional(
+      z.discriminatedUnion("type", [
+        z.object({ type: z.literal("delete-board"), boardId: z.string() }),
+        z.object({ type: z.literal("edit-board"), boardId: z.string() }),
+      ])
+    )
+    .catch(undefined),
+});
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
@@ -27,7 +41,10 @@ export const Route = createFileRoute("/_blayout/boards/")({
 
     return null;
   },
+  validateSearch: paramsSchema,
 });
+
+export const states = new UrlState(Route.id);
 
 function BoardsPage() {
   const { data: boards } = api.useSuspenseQuery("get", "/boards");

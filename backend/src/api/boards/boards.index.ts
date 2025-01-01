@@ -1,11 +1,11 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull, not } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import * as routes from './boards.routes.js'
+import * as routes from "./boards.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
-import { ApiError } from "../../lib/utils.js";
+import { isUniqueConstraintError } from "../../lib/utils.js";
 import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
 const boardsRouter = createAuthenticatedRouter();
@@ -21,7 +21,7 @@ boardsRouter.openapi(routes.createBoardRoute, async (c) => {
         .values({
           name: body.name,
           color: body.color,
-          userId,
+          creatorId: userId,
           createdAt: body.createdAt,
           updatedAt: body.updatedAt,
           id: body.id,
@@ -42,19 +42,16 @@ boardsRouter.openapi(routes.createBoardRoute, async (c) => {
 
     return c.json({}, HTTP_STATUS_CODES.CREATED);
   } catch (err) {
-    const isUniqueConstraintError =
-      err && typeof err === "object" && "code" in err && err.code === "23505";
-
-    if (isUniqueConstraintError) {
+    if (isUniqueConstraintError(err)) {
       return c.json(
         { message: "Board name must be unique" },
         HTTP_STATUS_CODES.BAD_REQUEST
       );
     }
 
-    throw new ApiError("An expected error occurred", HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR);
+    // Let the global error handler take care of this
+    throw err;
   }
-
 });
 
 boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
@@ -68,22 +65,61 @@ boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
     })
     .from(boardPermissionsTable)
     .innerJoin(boardsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
-    .where(eq(boardPermissionsTable.userId, userId))
-    .orderBy(desc(boardsTable.createdAt))
-
+    .where(
+      and(
+        eq(boardPermissionsTable.userId, userId),
+        isNull(boardsTable.deletedAt)
+      )
+    )
+    .orderBy(desc(boardsTable.createdAt));
 
   return c.json(boards, HTTP_STATUS_CODES.OK);
 });
 
-boardsRouter.openapi(routes.deleteBoardRoute, async (c) => {
+boardsRouter.openapi(routes.toggleBoardDeleteRoute, async (c) => {
   const userId = c.var.user.id;
   const { boardId } = c.req.valid("param");
+  const body = c.req.valid("json");
 
-  await checkResourceAccess(userId, boardId, 'board', 'admin');
+  await checkResourceAccess(userId, boardId, "board", "admin");
 
-  await db.delete(boardsTable).where(eq(boardsTable.id, boardId));
+  const [updatedBoard] = await db
+    .update(boardsTable)
+    .set({ deletedAt: body.deleted ? new Date().toISOString() : null })
+    .where(eq(boardsTable.id, boardId))
+    .returning();
 
-  return c.json({}, HTTP_STATUS_CODES.OK)
-})
+  return c.json(
+    {
+      id: updatedBoard!.id,
+      name: updatedBoard!.name,
+      color: updatedBoard!.color,
+    },
+    HTTP_STATUS_CODES.OK
+  );
+});
+
+boardsRouter.openapi(routes.editBoardRoute, async (c) => {
+  const userId = c.var.user.id;
+  const { boardId } = c.req.valid("param");
+  const body = c.req.valid("json");
+
+  await checkResourceAccess(userId, boardId, "board", "editor");
+
+  try {
+    await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
+  } catch (err) {
+    if (isUniqueConstraintError(err)) {
+      return c.json(
+        { message: "Board name must be unique" },
+        HTTP_STATUS_CODES.BAD_REQUEST
+      );
+    }
+
+    throw err;
+  }
+
+  return c.json({}, HTTP_STATUS_CODES.OK);
+});
 
 export default boardsRouter;

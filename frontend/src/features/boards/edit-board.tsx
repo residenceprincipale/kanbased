@@ -1,4 +1,4 @@
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -6,73 +6,63 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
+import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { getId } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { CirclePlus } from "lucide-react";
-import { useState, type FormEventHandler } from "react";
-import { toast } from "sonner";
+import { states } from "@/routes/_blayout.boards.index";
+import { type FormEventHandler } from "react";
 
-export function CreateBoard() {
-  const [isOpen, setIsOpen] = useState(false);
-  const { mutate, isPending } = api.useMutation("post", "/boards");
+export function EditBoard(props: { board: BoardProps["board"] }) {
+  const { board } = props;
+  const state = states.use("open");
+  const showEditModal =
+    state.state?.type === "edit-board" && board.id === state.state.boardId;
+  const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
+
+  if (!showEditModal) {
+    return null;
+  }
+
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
     const boardName = fd.get("board-name") as string;
     const currentDate = new Date().toISOString();
+
     mutate(
       {
         body: {
-          id: getId(),
           name: boardName,
           updatedAt: currentDate,
-          createdAt: currentDate,
+        },
+        params: {
+          path: { boardId: board.id },
         },
       },
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
-          toast.success(
-            <div className="flex items-center justify-between w-full">
-              <span>
-                <b>{boardName}</b> board created successfully
-              </span>
-              <Link
-                className={buttonVariants({
-                  size: "sm",
-                  className: "!h-8",
-                })}
-                to="/boards/$boardName"
-                params={{ boardName }}
-              >
-                View
-              </Link>
-            </div>
-          );
-          setIsOpen(false);
+          toast.success("Board updated successfully");
+          state.remove();
         },
       }
     );
   };
 
+  const handleOpenChange = () => {
+    state.remove();
+  };
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button size={"icon"}>
-          <CirclePlus size={24} />
-        </Button>
-      </DialogTrigger>
+    <Dialog open={true} onOpenChange={handleOpenChange}>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <DialogHeader>
-            <DialogTitle>Create board</DialogTitle>
+            <DialogTitle>Edit board</DialogTitle>
           </DialogHeader>
 
           <div className="grid gap-2 mt-4 mb-2">
@@ -82,6 +72,7 @@ export function CreateBoard() {
               name="board-name"
               placeholder="eg: work board"
               required
+              defaultValue={board.name}
             />
             <DialogDescription className="!text-xs">
               Enter a unique name that reflects the purpose of this board.
@@ -90,7 +81,7 @@ export function CreateBoard() {
 
           <DialogFooter>
             <Button disabled={isPending} type="submit" className="w-[72px]">
-              {isPending ? <Spinner /> : "Create"}
+              {isPending ? <Spinner /> : "Update"}
             </Button>
           </DialogFooter>
         </form>

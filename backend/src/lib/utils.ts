@@ -9,3 +9,7 @@ export class ApiError extends Error {
     this.name = "Api Error"
   }
 }
+
+export function isUniqueConstraintError(err: any): boolean {
+  return err && typeof err === "object" && "code" in err && err.code === "23505";
+}

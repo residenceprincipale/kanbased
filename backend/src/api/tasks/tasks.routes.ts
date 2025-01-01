@@ -2,16 +2,13 @@ import z from 'zod';
 import { createRoute } from "@hono/zod-openapi";
 
 import {
-  createMessageContent,
-  emptyResponse,
-  genericMessageContent,
-  jsonContent,
-  jsonContentRequired,
-  zodErrorContent,
+  emptyResponse, jsonContent,
+  jsonContentRequired
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema } from "drizzle-zod";
 import { tasksTable } from "../../db/schema/index.js";
+import { ResponseBuilder } from '../../lib/response-builder.js';
 
 const createTaskBodySchema = createInsertSchema(tasksTable);
 
@@ -23,9 +20,9 @@ export const createTaskRoute = createRoute({
   request: {
     body: jsonContentRequired(createTaskBodySchema),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-  },
+  }),
 });
 
 export const updateTasksRoute = createRoute({
@@ -34,8 +31,7 @@ export const updateTasksRoute = createRoute({
   request: {
     body: jsonContentRequired(updateTasksSchema),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
-  },
+  }),
 });

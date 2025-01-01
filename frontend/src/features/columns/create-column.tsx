@@ -3,18 +3,16 @@ import { ColumnWrapper } from "@/components/column";
 import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
 import { useCreateColumnMutation } from "@/features/columns/queries";
-import {
-  setIsCreateColumnOpen,
-  useGetIsCreateColumnOpen,
-} from "@/routes/_blayout.boards.$boardName";
 import { getId } from "@/lib/utils";
+import { states } from "@/routes/_blayout.boards.$boardName";
 
 export function CreateColumn(props: {
   boardId: string;
   boardName: string;
   nextPosition: number;
 }) {
-  const isCreateColOpen = useGetIsCreateColumnOpen();
+  const { state, remove } = states.use("open");
+  const isCreateColOpen = state === "create-column";
   const createColumnMutation = useCreateColumnMutation(props.boardName);
 
   if (!isCreateColOpen) {
@@ -22,7 +20,7 @@ export function CreateColumn(props: {
   }
 
   const onClose = () => {
-    setIsCreateColumnOpen(undefined);
+    remove(true);
   };
 
   const handleSubmit: FormEventHandler = (e) => {
@@ -50,7 +48,7 @@ export function CreateColumn(props: {
       <form
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget)) {
-            setIsCreateColumnOpen(undefined);
+            onClose();
           }
         }}
         onSubmit={handleSubmit}
