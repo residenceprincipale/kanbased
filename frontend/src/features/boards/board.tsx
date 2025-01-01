@@ -6,6 +6,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { DeleteBoard } from "@/features/boards/delete-board";
 import { EditBoard } from "@/features/boards/edit-board";
 import { Api200Response } from "@/types/type-helpers";
 import { Link } from "@tanstack/react-router";
@@ -52,6 +53,7 @@ export function Board(props: BoardProps) {
                 preload={false}
                 to="."
                 search={{ open: { type: "delete-board", boardId: board.id } }}
+                replace
               >
                 <Trash />
                 Delete
@@ -73,6 +75,7 @@ export function Board(props: BoardProps) {
       </Card>
 
       <EditBoard board={board} />
+      <DeleteBoard board={board} />
     </li>
   );
 }

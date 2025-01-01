@@ -8,55 +8,114 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
+import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
+import { boardsQuery } from "@/lib/query-options-factory";
 import { states } from "@/routes/_blayout.boards.index";
+import { toast } from "sonner";
 
-export function DeleteBoardModal() {
-  const state = states.use("open");
-  const showDeleteConfirmation =
-    state.state?.type === "delete-board" && !!state.state?.boardId;
-  const deleteBoardMutation = api.useMutation("delete", "/boards/{boardId}");
+export function DeleteBoard(props: { board: BoardProps["board"] }) {
+  const urlState = states.use("open");
+  const showDeleteModal =
+    urlState.state?.type === "delete-board" &&
+    urlState.state?.boardId === props.board.id;
 
-  if (!showDeleteConfirmation) {
-    return null;
-  }
+  const deleteBoardMutation = api.useMutation(
+    "patch",
+    "/boards/{boardId}/toggle-delete"
+  );
 
-  const handleDelete = () => {
-    deleteBoardMutation.mutate(
-      { params: { path: { boardId: state.state?.boardId! } } },
+  const handleUndoDelete = (boardId: string) => {
+    toast.promise(
+      deleteBoardMutation.mutateAsync(
+        {
+          params: { path: { boardId } },
+          body: { deleted: false },
+        },
+        {
+          onSuccess: () => {
+            queryClient.invalidateQueries(boardsQuery);
+          },
+        }
+      ),
       {
-        onSuccess: () => {
-          const boardsQuery = api.queryOptions("get", "/boards");
+        loading: "Restoring board...",
+        success: "Board restored successfully",
+        error: "Failed to restore board",
+      }
+    );
+  };
+
+  const handleDelete = async () => {
+    await deleteBoardMutation.mutateAsync(
+      {
+        params: { path: { boardId: urlState.state?.boardId! } },
+        body: { deleted: true },
+      },
+      {
+        onSuccess: (result) => {
           queryClient.invalidateQueries(boardsQuery);
+
+          toast.success(
+            <div className="flex items-center justify-between w-full">
+              <span>
+                <b>{result.name}</b> board deleted successfully
+              </span>
+              <button
+                className={buttonVariants({
+                  size: "sm",
+                  className: "!h-8",
+                })}
+                onClick={() => handleUndoDelete(result.id)}
+              >
+                Undo
+              </button>
+            </div>
+          );
         },
       }
     );
   };
 
   const handleOpenChange = () => {
-    state.remove();
+    urlState.remove(true);
   };
 
+  if (!showDeleteModal) {
+    return null;
+  }
+
   return (
-    <AlertDialog open={showDeleteConfirmation} onOpenChange={handleOpenChange}>
+    <AlertDialog open={true} onOpenChange={handleOpenChange}>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogTitle>
+            Are you sure you want to delete the board {props.board.name}?
+          </AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete all your
-            tasks that belong to this board
+            This action will be permanent, but you can undo it from the toast
+            message.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={handleDelete}
+          <Button
             disabled={deleteBoardMutation.isPending}
+            variant="destructive"
+            onClick={handleDelete}
+            type="submit"
           >
-            {deleteBoardMutation.isPending ? <Spinner /> : "Continue"}
-          </AlertDialogAction>
+            {deleteBoardMutation.isPending ? (
+              <>
+                <Spinner /> Deleting
+              </>
+            ) : (
+              "Delete"
+            )}
+          </Button>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

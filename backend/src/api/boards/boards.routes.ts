@@ -19,6 +19,7 @@ const createBoardResponse = createSelectSchema(boardsTable).omit({
   creatorId: true,
   createdAt: true,
   updatedAt: true,
+  deletedAt: true
 });
 
 export const createBoardRoute = createRoute({
@@ -41,14 +42,15 @@ export const getBoardsRoute = createRoute({
   }),
 });
 
-export const deleteBoardRoute = createRoute({
-  method: "delete",
-  path: "/boards/{boardId}",
+export const toggleBoardDeleteRoute = createRoute({
+  method: "patch",
+  path: "/boards/{boardId}/toggle-delete",
   request: {
     params: z.object({ boardId: z.string() }),
+    body: jsonContent(z.object({ deleted: z.boolean() })),
   },
   responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
   }),
 });
 

@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull, not } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
@@ -65,21 +65,38 @@ boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
     })
     .from(boardPermissionsTable)
     .innerJoin(boardsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
-    .where(eq(boardPermissionsTable.userId, userId))
+    .where(
+      and(
+        eq(boardPermissionsTable.userId, userId),
+        isNull(boardsTable.deletedAt)
+      )
+    )
     .orderBy(desc(boardsTable.createdAt));
 
   return c.json(boards, HTTP_STATUS_CODES.OK);
 });
 
-boardsRouter.openapi(routes.deleteBoardRoute, async (c) => {
+boardsRouter.openapi(routes.toggleBoardDeleteRoute, async (c) => {
   const userId = c.var.user.id;
   const { boardId } = c.req.valid("param");
+  const body = c.req.valid("json");
 
   await checkResourceAccess(userId, boardId, "board", "admin");
 
-  await db.delete(boardsTable).where(eq(boardsTable.id, boardId));
+  const [updatedBoard] = await db
+    .update(boardsTable)
+    .set({ deletedAt: body.deleted ? new Date().toISOString() : null })
+    .where(eq(boardsTable.id, boardId))
+    .returning();
 
-  return c.json({}, HTTP_STATUS_CODES.OK);
+  return c.json(
+    {
+      id: updatedBoard!.id,
+      name: updatedBoard!.name,
+      color: updatedBoard!.color,
+    },
+    HTTP_STATUS_CODES.OK
+  );
 });
 
 boardsRouter.openapi(routes.editBoardRoute, async (c) => {

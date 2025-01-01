@@ -60,7 +60,6 @@ function BoardsPage() {
           {boards?.map((board) => <Board board={board} key={board.id} />)}
         </ul>
       </div>
-      <DeleteBoardModal />
     </main>
   );
 }

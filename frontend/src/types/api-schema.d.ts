@@ -155,6 +155,7 @@ export interface paths {
                         color?: string | null;
                         createdAt?: string | null;
                         updatedAt: string;
+                        deletedAt?: string | null;
                     };
                 };
             };
@@ -224,7 +225,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/boards/{boardId}": {
+    "/boards/{boardId}/toggle-delete": {
         parameters: {
             query?: never;
             header?: never;
@@ -234,7 +235,10 @@ export interface paths {
         get?: never;
         put?: never;
         post?: never;
-        delete: {
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: {
             parameters: {
                 query?: never;
                 header?: never;
@@ -243,14 +247,25 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody?: {
+                content: {
+                    "application/json": {
+                        deleted: boolean;
+                    };
+                };
+            };
             responses: {
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": Record<string, never>;
+                        "application/json": {
+                            /** Format: uuid */
+                            id: string;
+                            name: string;
+                            color: string | null;
+                        };
                     };
                 };
                 403: {
@@ -294,6 +309,19 @@ export interface paths {
                 };
             };
         };
+        trace?: never;
+    };
+    "/boards/{boardId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
         options?: never;
         head?: never;
         patch: {
@@ -311,6 +339,7 @@ export interface paths {
                         name: string;
                         color?: string | null;
                         updatedAt: string;
+                        deletedAt?: string | null;
                     };
                 };
             };

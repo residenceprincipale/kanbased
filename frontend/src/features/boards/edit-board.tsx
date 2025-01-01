@@ -46,6 +46,7 @@ export function EditBoard(props: { board: BoardProps["board"] }) {
       {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+          toast.success("Board updated successfully");
           state.remove();
         },
       }
