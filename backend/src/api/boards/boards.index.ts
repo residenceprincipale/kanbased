@@ -21,7 +21,7 @@ boardsRouter.openapi(routes.createBoardRoute, async (c) => {
         .values({
           name: body.name,
           color: body.color,
-          userId,
+          creatorId: userId,
           createdAt: body.createdAt,
           updatedAt: body.updatedAt,
           id: body.id,

@@ -12,11 +12,11 @@ import { boardsTable } from "../../db/schema/index.js";
 import { ResponseBuilder } from "../../lib/response-builder.js";
 
 const createBoardParamsSchema = createInsertSchema(boardsTable).omit({
-  userId: true,
+  creatorId: true,
 });
 
 const createBoardResponse = createSelectSchema(boardsTable).omit({
-  userId: true,
+  creatorId: true,
   createdAt: true,
   updatedAt: true,
 });
