@@ -40,7 +40,26 @@ const ZodErrorSchema = z.object({
 });
 
 export const zodErrorContent = jsonContent(ZodErrorSchema);
+
 export const createMessageContent = (description: string = "") =>
   jsonContent(z.object({ message: z.string() }), description);
+
 export const genericMessageContent = createMessageContent();
 export const emptyResponse = z.object({});
+
+export const commonResponses = {
+  [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
+  [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+}
+
+export const internalServerErrorResponse = {
+  [HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR]: genericMessageContent
+}
+
+export const unprocessableEntityResponse = {
+  [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
+}
+
+export const forbiddenResponse = {
+  [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
+}

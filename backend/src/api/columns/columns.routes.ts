@@ -1,15 +1,14 @@
 import { createRoute } from "@hono/zod-openapi";
 
 import {
-  emptyResponse,
-  genericMessageContent,
-  jsonContent,
+  emptyResponse, jsonContent,
   jsonContentRequired
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import { columnsTable, tasksTable } from "../../db/schema/index.js";
 import z from "zod";
+import { ResponseBuilder } from "../../lib/response-builder.js";
 
 const createColumnBodySchema = createInsertSchema(columnsTable)
 const tasksResponseSchema = createSelectSchema(tasksTable).omit({
@@ -38,9 +37,9 @@ export const createColumnRoute = createRoute({
   request: {
     body: jsonContentRequired(createColumnBodySchema),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse)
-  },
+  }),
 });
 
 
@@ -50,9 +49,9 @@ export const updateColumnsRoute = createRoute({
   request: {
     body: jsonContentRequired(updateColumnsReqBodySchema),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-  },
+  }),
 });
 
 export const getColumnsRoute = createRoute({
@@ -61,8 +60,7 @@ export const getColumnsRoute = createRoute({
   request: {
     query: z.object({ boardName: z.string() }),
   },
-  responses: {
+  responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(getColumnsResponseSchema),
-    [HTTP_STATUS_CODES.FORBIDDEN]: genericMessageContent,
-  },
+  }),
 });
