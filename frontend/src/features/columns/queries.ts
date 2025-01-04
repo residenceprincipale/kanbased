@@ -2,7 +2,7 @@ import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getColumnsQuery } from "@/lib/query-options-factory";
 import { Api200Response } from "@/types/type-helpers";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { QueryKey, useSuspenseQuery } from "@tanstack/react-query";
 
 export type ColumnsQueryResponse = Api200Response<"/columns", "get">;
 
@@ -66,7 +66,7 @@ export function useCreateColumnMutation(boardName: string) {
               },
             ],
           };
-        },
+        }
       );
 
       return { previousData };
@@ -86,11 +86,14 @@ export function useCreateColumnMutation(boardName: string) {
   });
 }
 
-export function useMoveColumnsMutation(boardName: string, afterOptimisticUpdate?: () => void) {
+export function useMoveColumnsMutation(
+  boardName: string,
+  afterOptimisticUpdate?: () => void
+) {
   const queryKey = getColumnsQuery(boardName).queryKey;
   const mutationKey = ["put", "/columns"];
 
-  return api.useMutation("put", "/columns", {
+  return api.useMutation("patch", "/columns/reorder", {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -103,12 +106,14 @@ export function useMoveColumnsMutation(boardName: string, afterOptimisticUpdate?
         (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
           return {
             ...oldData,
-            columns: oldData.columns.map(col => {
-              const updatedPosition = updatedColPositions.find(updatedCol => updatedCol.id === col.id)?.position;
-              return { ...col, position: updatedPosition ?? col.position }
+            columns: oldData.columns.map((col) => {
+              const updatedPosition = updatedColPositions.find(
+                (updatedCol) => updatedCol.id === col.id
+              )?.position;
+              return { ...col, position: updatedPosition ?? col.position };
             }),
           };
-        },
+        }
       );
 
       afterOptimisticUpdate?.();
@@ -156,7 +161,7 @@ export function useCreateTaskMutation(boardName: string) {
               },
             ],
           };
-        },
+        }
       );
 
       return { previousData };
@@ -176,9 +181,10 @@ export function useCreateTaskMutation(boardName: string) {
   });
 }
 
-
-
-export function useMoveTasksMutation(boardName: string, afterOptimisticUpdate?: () => void) {
+export function useMoveTasksMutation(
+  boardName: string,
+  afterOptimisticUpdate?: () => void
+) {
   const queryKey = getColumnsQuery(boardName).queryKey;
   const mutationKey = ["put", "/tasks/{id}"];
 
@@ -189,16 +195,28 @@ export function useMoveTasksMutation(boardName: string, afterOptimisticUpdate?: 
 
       const previousData = queryClient.getQueryData(queryKey);
 
-      const taskPositionMap = new Map<string, { columnId: string, position: number }>(variables.body.map(task => [task.id, { columnId: task.columnId, position: task.position }]));
+      const taskPositionMap = new Map<
+        string,
+        { columnId: string; position: number }
+      >(
+        variables.body.map((task) => [
+          task.id,
+          { columnId: task.columnId, position: task.position },
+        ])
+      );
 
       queryClient.setQueryData(
         queryKey,
         (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
           return {
             ...oldData,
-            tasks: oldData.tasks.map(task => taskPositionMap.has(task.id) ? ({ ...task, ...taskPositionMap.get(task.id) }) : task),
+            tasks: oldData.tasks.map((task) =>
+              taskPositionMap.has(task.id)
+                ? { ...task, ...taskPositionMap.get(task.id) }
+                : task
+            ),
           };
-        },
+        }
       );
 
       afterOptimisticUpdate?.();
@@ -215,6 +233,40 @@ export function useMoveTasksMutation(boardName: string, afterOptimisticUpdate?: 
       const isMutating = queryClient.isMutating({ mutationKey });
       if (isMutating <= 1) {
         return queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+}
+
+export function useEditColumnMutation({ getColumnsApiQueryKey: queryKey, afterOptimisticUpdate }: { getColumnsApiQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
+  return api.useMutation("patch", "/columns/{columnId}", {
+    onMutate: async (variables) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+          return {
+            ...oldData,
+            columns: oldData.columns.map((column) =>
+              column.id === variables.params.path.columnId
+                ? { ...column, name: variables.body.name }
+                : column
+            ),
+          };
+        }
+      );
+
+      afterOptimisticUpdate?.();
+
+      return { previousData };
+    },
+
+    onError: (err, variables, context: any) => {
+      if (context?.previousData) {
+        queryClient.setQueryData(queryKey, context.previousData);
       }
     },
   });

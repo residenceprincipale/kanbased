@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ColumnWrapper } from "@/components/column";
+import { ColumnWrapper } from "@/components/column-ui";
 import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
 import { useCreateColumnMutation } from "@/features/columns/queries";
