@@ -21,15 +21,15 @@ export function Board(props: BoardProps) {
 
   return (
     <li>
-      <Card className="flex items-center justify-between gap-2 hover:text-bg-muted-foreground p-4 py-3">
+      <Card className="flex items-center justify-between gap-2 hover:text-bg-muted-foreground hover:bg-accent">
         <Link
           to="/boards/$boardName"
           search={{ open: undefined }}
           params={{ boardName: board.name }}
-          className="flex gap-2 flex-1"
+          className="flex gap-2 flex-1 pl-2 py-3"
         >
           <SquareKanban className="shrink-0" />
-          <div className="">{board.name}</div>
+          <div>{board.name}</div>
         </Link>
 
         <DropdownMenu modal={false}>
@@ -38,7 +38,7 @@ export function Board(props: BoardProps) {
               type="button"
               variant="outline"
               size="icon"
-              className="!h-8 !w-8"
+              className="!h-8 !w-8 !mr-2"
             >
               <EllipsisVertical />
             </Button>

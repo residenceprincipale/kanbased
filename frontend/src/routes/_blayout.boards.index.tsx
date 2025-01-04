@@ -7,7 +7,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
 import { UrlState } from "@/lib/url-state";
 import z from "zod";
-import { DeleteBoardModal } from "@/features/boards/delete-board";
 
 const paramsSchema = z.object({
   open: z
