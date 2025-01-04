@@ -11,7 +11,6 @@ export function EditableColumnName(props: {
 }) {
   const [edit, setEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
-  const buttonRef = useRef<HTMLButtonElement>(null);
 
   const editColumnMutation = useEditColumnMutation({
     getColumnsApiQueryKey: props.getColumnsApiQueryKey,
@@ -20,7 +19,6 @@ export function EditableColumnName(props: {
         flushSync(() => {
           setEdit(false);
         });
-        buttonRef.current?.focus();
       }, 0);
     },
   });
@@ -58,7 +56,6 @@ export function EditableColumnName(props: {
   return (
     <button
       type="button"
-      ref={buttonRef}
       onClick={() => {
         flushSync(() => {
           setEdit(true);
