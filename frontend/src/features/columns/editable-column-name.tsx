@@ -11,13 +11,17 @@ export function EditableColumnName(props: {
 }) {
   const [edit, setEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const forceUpdate = useForceUpdate();
   const editColumnMutation = useEditColumnMutation({
     getColumnsApiQueryKey: props.getColumnsApiQueryKey,
     afterOptimisticUpdate: () => {
-      forceUpdate();
-      setEdit(false);
+      setTimeout(() => {
+        flushSync(() => {
+          setEdit(false);
+        });
+        buttonRef.current?.focus();
+      }, 0);
     },
   });
 
@@ -45,7 +49,7 @@ export function EditableColumnName(props: {
               setEdit(false);
             }
           }}
-          className="text-lg font-semibold px-1 focus:outline-none focus:border-none focus:ring focus:ring-offset-2 focus:ring-offset-gray-2 focus:ring-ring rounded bg-inherit w-full"
+          className="text-lg font-semibold px-1 focus:outline-none focus:border-none focus:ring focus:ring-offset-2 focus:ring-ring rounded w-full bg-background dark:bg-gray-3 focus:ring-offset-background dark:focus:ring-offset-gray-3"
         />
       </form>
     );
@@ -54,13 +58,14 @@ export function EditableColumnName(props: {
   return (
     <button
       type="button"
+      ref={buttonRef}
       onClick={() => {
         flushSync(() => {
           setEdit(true);
         });
         inputRef?.current?.select();
       }}
-      className="text-lg font-semibold flex-1 pl-1 ml-2 text-left"
+      className="text-lg font-semibold flex-1 pl-1 ml-2 text-left focus:outline-none focus:border-none focus:ring focus:ring-offset-2 focus:ring-offset-gray-2 focus:ring-ring rounded bg-inherit"
     >
       {props.columnName}
     </button>

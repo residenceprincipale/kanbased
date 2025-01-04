@@ -239,6 +239,7 @@ export function useMoveTasksMutation(
 }
 
 export function useEditColumnMutation({ getColumnsApiQueryKey: queryKey, afterOptimisticUpdate }: { getColumnsApiQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
+
   return api.useMutation("patch", "/columns/{columnId}", {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.

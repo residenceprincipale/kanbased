@@ -32,7 +32,7 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
               snapshot.isDragging && "!border-gray-10 !shadow-xl"
             )}
           >
-            <div className="flex items-center gap-2 justify-between shrink-0">
+            <div className="flex items-center gap-1.5 justify-between shrink-0">
               <EditableColumnName
                 columnName={column.name}
                 columnId={column.id}
