@@ -81,10 +81,7 @@ export const boardsTable = pgTable(
     createdAt: t.timestamp({ mode: "string" }),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
     deletedAt: t.timestamp({ mode: "string" })
-  },
-  (table) => [
-    t.unique("unique_board_name_per_user").on(table.name, table.creatorId),
-  ]
+  }
 );
 
 export const columnsTable = pgTable(

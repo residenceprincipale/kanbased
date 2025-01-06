@@ -1,4 +1,4 @@
-import { and, desc, eq, isNull, not } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
@@ -14,44 +14,47 @@ boardsRouter.openapi(routes.createBoardRoute, async (c) => {
   const body = c.req.valid("json");
   const userId = c.var.user.id;
 
-  try {
-    await db.transaction(async (tx) => {
-      const [createdBoard] = await tx
-        .insert(boardsTable)
-        .values({
-          name: body.name,
-          color: body.color,
-          creatorId: userId,
-          createdAt: body.createdAt,
-          updatedAt: body.updatedAt,
-          id: body.id,
-        })
-        .returning();
+  const boards = await db
+    .select({ boardId: boardsTable.id })
+    .from(boardsTable)
+    .where(
+      and(
+        eq(boardsTable.creatorId, userId),
+        eq(boardsTable.name, body.name),
+        isNull(boardsTable.deletedAt)
+      )
+    );
 
-      if (!createdBoard) {
-        return tx.rollback();
-      }
-
-      await tx.insert(boardPermissionsTable).values({
-        boardId: createdBoard.id,
-        permission: "owner",
-        userId,
-        createdAt: new Date().toISOString(),
-      });
-    });
-
-    return c.json({}, HTTP_STATUS_CODES.CREATED);
-  } catch (err) {
-    if (isUniqueConstraintError(err)) {
-      return c.json(
-        { message: "Board name must be unique" },
-        HTTP_STATUS_CODES.BAD_REQUEST
-      );
-    }
-
-    // Let the global error handler take care of this
-    throw err;
+  if (boards.length) {
+    return c.json(
+      { message: "Board name must be unique" },
+      HTTP_STATUS_CODES.BAD_REQUEST
+    );
   }
+
+  await db.transaction(async (tx) => {
+    const [createdBoard] = await tx
+      .insert(boardsTable)
+      .values({
+        name: body.name,
+        color: body.color,
+        creatorId: userId,
+        createdAt: body.createdAt,
+        updatedAt: body.updatedAt,
+        id: body.id,
+      })
+      .returning();
+
+
+    await tx.insert(boardPermissionsTable).values({
+      boardId: createdBoard!.id,
+      permission: "owner",
+      userId,
+      createdAt: new Date().toISOString(),
+    });
+  });
+
+  return c.json({}, HTTP_STATUS_CODES.CREATED);
 });
 
 boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
