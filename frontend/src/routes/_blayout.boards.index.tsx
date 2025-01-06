@@ -1,23 +1,13 @@
 "use client";
-import { CreateBoard } from "@/features/boards/create-board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { Board } from "@/features/boards/board";
-import { UrlState } from "@/lib/url-state";
-import z from "zod";
-
-const paramsSchema = z.object({
-  open: z
-    .optional(
-      z.discriminatedUnion("type", [
-        z.object({ type: z.literal("delete-board"), boardId: z.string() }),
-        z.object({ type: z.literal("edit-board"), boardId: z.string() }),
-      ])
-    )
-    .catch(undefined),
-});
+import { Button } from "@/components/ui/button";
+import { CirclePlus } from "lucide-react";
+import { ActionsRenderer } from "@/features/boards/actions-renderer";
+import { boardStore } from "@/features/boards/state";
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
@@ -40,10 +30,7 @@ export const Route = createFileRoute("/_blayout/boards/")({
 
     return null;
   },
-  validateSearch: paramsSchema,
 });
-
-export const states = new UrlState(Route.id);
 
 function BoardsPage() {
   const { data: boards } = api.useSuspenseQuery("get", "/boards");
@@ -53,12 +40,18 @@ function BoardsPage() {
       <div className="border py-4 rounded-lg w-full sm:mx-auto sm:w-fit bg-gray-2 h-full flex flex-col flex-1">
         <div className="flex items-center gap-4 justify-between mb-4 shrink-0 px-4">
           <h1 className="text-xl font-semibold">Boards ({boards?.length})</h1>
-          <CreateBoard />
+          <Button
+            size={"icon"}
+            onClick={() => boardStore.send({ type: "createBoard" })}
+          >
+            <CirclePlus size={24} />
+          </Button>
         </div>
         <ul className="sm:min-w-96 w-full flex flex-col gap-2 h-full flex-1 overflow-y-auto custom-scrollbar px-3">
           {boards?.map((board) => <Board board={board} key={board.id} />)}
         </ul>
       </div>
+      <ActionsRenderer />
     </main>
   );
 }
