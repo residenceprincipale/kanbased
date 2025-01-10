@@ -1,6 +1,10 @@
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
+import {
+  Outlet,
+  ScrollRestoration,
+  createRootRoute,
+} from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
@@ -32,6 +36,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <AppContextProvider>
+      <ScrollRestoration />
       <Outlet />
       <Toaster />
       <TanStackRouterDevtools position="bottom-left" />

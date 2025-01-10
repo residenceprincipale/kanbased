@@ -10,13 +10,24 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
+import { fetchAndCacheImage } from "@/lib/utils";
 import { useAppContext } from "@/state/app-state";
 import { Link } from "@tanstack/react-router";
-import { House } from "lucide-react";
+import { House, User } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export function TopSection() {
   const { user } = useUser();
   const { theme, updateTheme } = useAppContext();
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!user?.image) return;
+    fetchAndCacheImage(`${user.image}-${user.id}`, user.image).then((url) => {
+      if (!url) return;
+      setAvatarUrl(url);
+    });
+  }, [user?.image]);
 
   return (
     <div className="flex items-center justify-between gap-2 py-1.5 px-4 w-screen fixed top-0 left-0">
@@ -40,10 +51,12 @@ export function TopSection() {
         <DropdownMenu>
           <DropdownMenuTrigger className="focus:outline-none">
             <Avatar>
-              {user?.image ? (
-                <AvatarImage src={user.image} alt={user.displayName!} />
+              {avatarUrl ? (
+                <AvatarImage src={avatarUrl} alt={user!.displayName!} />
               ) : (
-                <AvatarFallback>{user?.displayName}</AvatarFallback>
+                <AvatarFallback className="border">
+                  <User />
+                </AvatarFallback>
               )}
             </Avatar>
           </DropdownMenuTrigger>

@@ -1,6 +1,5 @@
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -14,15 +13,12 @@ import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { boardsQuery } from "@/lib/query-options-factory";
-import { states } from "@/routes/_blayout.boards.index";
 import { toast } from "sonner";
 
-export function DeleteBoard(props: { board: BoardProps["board"] }) {
-  const urlState = states.use("open");
-  const showDeleteModal =
-    urlState.state?.type === "delete-board" &&
-    urlState.state?.boardId === props.board.id;
-
+export function DeleteBoard(props: {
+  board: BoardProps["board"];
+  onClose: () => void;
+}) {
   const deleteBoardMutation = api.useMutation(
     "patch",
     "/boards/{boardId}/toggle-delete"
@@ -52,7 +48,7 @@ export function DeleteBoard(props: { board: BoardProps["board"] }) {
   const handleDelete = async () => {
     await deleteBoardMutation.mutateAsync(
       {
-        params: { path: { boardId: urlState.state?.boardId! } },
+        params: { path: { boardId: props.board.id } },
         body: { deleted: true },
       },
       {
@@ -75,18 +71,16 @@ export function DeleteBoard(props: { board: BoardProps["board"] }) {
               </button>
             </div>
           );
+
+          props.onClose();
         },
       }
     );
   };
 
   const handleOpenChange = () => {
-    urlState.remove(true);
+    props.onClose();
   };
-
-  if (!showDeleteModal) {
-    return null;
-  }
 
   return (
     <AlertDialog open={true} onOpenChange={handleOpenChange}>
@@ -110,7 +104,7 @@ export function DeleteBoard(props: { board: BoardProps["board"] }) {
           >
             {deleteBoardMutation.isPending ? (
               <>
-                <Spinner /> Deleting
+                <Spinner />
               </>
             ) : (
               "Delete"

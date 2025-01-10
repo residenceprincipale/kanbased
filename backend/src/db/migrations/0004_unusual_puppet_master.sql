@@ -1,0 +1,1 @@
+ALTER TABLE "boards" DROP CONSTRAINT "unique_board_name_per_user";

@@ -1,10 +1,12 @@
 import { Tasks } from "@/features/tasks/tasks";
-import { ColumnWrapper } from "@/components/column";
+import { ColumnWrapper } from "@/components/column-ui";
 import { ColumnsQueryData } from "@/features/columns/queries";
 import { Draggable, Droppable } from "@hello-pangea/dnd";
 import { GripVertical } from "lucide-react";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
+import { EditableColumnName } from "@/features/columns/editable-column-name";
+import { getColumnsQuery } from "@/lib/query-options-factory";
 
 type ColumnProps = {
   column: ColumnsQueryData["columns"][number];
@@ -30,13 +32,15 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
               snapshot.isDragging && "!border-gray-10 !shadow-xl"
             )}
           >
-            <div className="flex items-center gap-2 justify-between shrink-0">
-              <h1 className="text-lg font-semibold flex-1 pl-3">
-                {column.name}
-              </h1>
+            <div className="flex items-center gap-1.5 justify-between shrink-0">
+              <EditableColumnName
+                columnName={column.name}
+                columnId={column.id}
+                getColumnsApiQueryKey={getColumnsQuery(boardName).queryKey}
+              />
 
               <button
-                className="cursor-grab text-muted-foreground w-10 grid place-content-center h-10 hover:text-foreground shrink-0 hover:scale-110 transition-transform active:scale-90 hover:bg-gray-a-4 active:bg-gray-a-4 rounded-full active:cursor-grabbing"
+                className="cursor-grab text-muted-foreground w-10 grid place-content-center h-10 hover:text-foreground shrink-0 hover:bg-gray-a-4 active:bg-gray-a-4 rounded-full active:cursor-grabbing"
                 {...provided.dragHandleProps}
               >
                 <GripVertical size={20} />

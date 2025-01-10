@@ -13,19 +13,15 @@ import { Spinner } from "@/components/ui/spinner";
 import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { states } from "@/routes/_blayout.boards.index";
 import { type FormEventHandler } from "react";
+import { toast } from "sonner";
 
-export function EditBoard(props: { board: BoardProps["board"] }) {
+export function EditBoard(props: {
+  board: BoardProps["board"];
+  onClose: () => void;
+}) {
   const { board } = props;
-  const state = states.use("open");
-  const showEditModal =
-    state.state?.type === "edit-board" && board.id === state.state.boardId;
   const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
-
-  if (!showEditModal) {
-    return null;
-  }
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -47,14 +43,14 @@ export function EditBoard(props: { board: BoardProps["board"] }) {
         onSuccess() {
           queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
           toast.success("Board updated successfully");
-          state.remove();
+          props.onClose();
         },
       }
     );
   };
 
   const handleOpenChange = () => {
-    state.remove();
+    props.onClose();
   };
 
   return (

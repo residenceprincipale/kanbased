@@ -11,10 +11,11 @@ import {
   Droppable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
-import { flushSync } from "react-dom";
+import { useForceUpdate } from "@/hooks/use-force-update";
 
 export function Columns(props: { boardName: string }) {
   const { data } = useColumnsSuspenseQuery(props.boardName);
+  const forceUpdate = useForceUpdate();
   const moveColumnsMutation = useMoveColumnsMutation(props.boardName, () => {
     forceUpdate();
   });
@@ -24,12 +25,6 @@ export function Columns(props: { boardName: string }) {
   const columns = data.columns;
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
   const [_, setForceRender] = useState(false);
-
-  const forceUpdate = () => {
-    flushSync(() => {
-      setForceRender((prev) => !prev);
-    });
-  };
 
   const containerRef = useRef<HTMLDivElement>(null);
 

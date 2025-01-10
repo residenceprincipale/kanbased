@@ -6,7 +6,6 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,12 +14,10 @@ import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getId } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { CirclePlus } from "lucide-react";
-import { useState, type FormEventHandler } from "react";
+import { type FormEventHandler } from "react";
 import { toast } from "sonner";
 
-export function CreateBoard() {
-  const [isOpen, setIsOpen] = useState(false);
+export function CreateBoard(props: { onClose: () => void }) {
   const { mutate, isPending } = api.useMutation("post", "/boards");
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -56,19 +53,14 @@ export function CreateBoard() {
               </Link>
             </div>
           );
-          setIsOpen(false);
+          props.onClose();
         },
       }
     );
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>
-        <Button size={"icon"}>
-          <CirclePlus size={24} />
-        </Button>
-      </DialogTrigger>
+    <Dialog open onOpenChange={props.onClose}>
       <DialogContent className="!gap-0 sm:max-w-[425px]">
         <form className="grid gap-4" onSubmit={handleSubmit}>
           <DialogHeader>

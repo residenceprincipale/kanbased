@@ -6,14 +6,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { DeleteBoard } from "@/features/boards/delete-board";
-import { EditBoard } from "@/features/boards/edit-board";
+import { boardStore } from "@/features/boards/state";
 import { Api200Response } from "@/types/type-helpers";
 import { Link } from "@tanstack/react-router";
 import { EllipsisVertical, Pencil, SquareKanban, Trash } from "lucide-react";
 
+export type Board = Api200Response<"/boards", "get">[number];
+
 export type BoardProps = {
-  board: Api200Response<"/boards", "get">[number];
+  board: Board;
 };
 
 export function Board(props: BoardProps) {
@@ -21,15 +22,15 @@ export function Board(props: BoardProps) {
 
   return (
     <li>
-      <Card className="flex items-center justify-between gap-2 hover:text-bg-muted-foreground p-4 py-3">
+      <Card className="flex items-center justify-between gap-2 hover:text-bg-muted-foreground hover:bg-accent">
         <Link
           to="/boards/$boardName"
           search={{ open: undefined }}
           params={{ boardName: board.name }}
-          className="flex gap-2 flex-1"
+          className="flex gap-2 flex-1 pl-2 py-3"
         >
           <SquareKanban className="shrink-0" />
-          <div className="">{board.name}</div>
+          <div>{board.name}</div>
         </Link>
 
         <DropdownMenu modal={false}>
@@ -38,7 +39,7 @@ export function Board(props: BoardProps) {
               type="button"
               variant="outline"
               size="icon"
-              className="!h-8 !w-8"
+              className="!h-8 !w-8 !mr-2"
             >
               <EllipsisVertical />
             </Button>
@@ -47,35 +48,21 @@ export function Board(props: BoardProps) {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="!text-red-10 focus:!bg-red-3 dark:focus:!bg-red-2"
-              asChild
+              onClick={() => boardStore.send({ type: "deleteBoard", board })}
             >
-              <Link
-                preload={false}
-                to="."
-                search={{ open: { type: "delete-board", boardId: board.id } }}
-                replace
-              >
-                <Trash />
-                Delete
-              </Link>
+              <Trash />
+              Delete
             </DropdownMenuItem>
 
-            <DropdownMenuItem asChild>
-              <Link
-                preload={false}
-                to="."
-                search={{ open: { type: "edit-board", boardId: board.id } }}
-              >
-                <Pencil />
-                Edit
-              </Link>
+            <DropdownMenuItem
+              onClick={() => boardStore.send({ type: "editBoard", board })}
+            >
+              <Pencil />
+              Edit
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </Card>
-
-      <EditBoard board={board} />
-      <DeleteBoard board={board} />
     </li>
   );
 }
