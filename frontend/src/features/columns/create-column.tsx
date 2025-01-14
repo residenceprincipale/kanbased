@@ -10,14 +10,13 @@ import { columnStore } from "@/features/columns/state";
 export type CreateColumnProps = {
   data: {
     boardId: string;
-    boardName: string;
     nextPosition: number;
   };
 };
 
 export function CreateColumn({ data }: CreateColumnProps) {
   const action = useSelector(columnStore, (state) => state.context.action);
-  const createColumnMutation = useCreateColumnMutation(data.boardName);
+  const createColumnMutation = useCreateColumnMutation();
 
   if (action?.type !== "create-column") {
     return null;

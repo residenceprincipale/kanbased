@@ -1,15 +1,18 @@
+import { useForceUpdate } from "@/hooks/use-force-update";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { getColumnsQuery } from "@/lib/query-options-factory";
+import { Route } from "@/routes/_blayout.boards.$boardName";
 import { Api200Response } from "@/types/type-helpers";
-import { QueryKey, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export type ColumnsQueryResponse = Api200Response<"/columns", "get">;
 
-export function useColumnsSuspenseQuery(boardName: string) {
-  const queryOptions = getColumnsQuery(boardName);
+export function useColumnsSuspenseQuery() {
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
   return useSuspenseQuery({
-    ...queryOptions,
+    ...columnsQueryOptions,
     select: transformColumnsQuery,
   });
 }
@@ -34,14 +37,19 @@ export function transformColumnsQuery(data: ColumnsQueryResponse) {
   return {
     boardId: data.boardId,
     boardName: data.boardName,
-    columns: Array.from(columnWithTasksMap.values()),
+    columns: Array.from(columnWithTasksMap.values()).sort(
+      (a, b) => a.position - b.position
+    ),
   };
 }
 
 export type ColumnsQueryData = ReturnType<typeof transformColumnsQuery>;
 
 export function useCreateColumnMutation(boardName: string) {
-  const queryKey = getColumnsQuery(boardName).queryKey;
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
+  const queryKey = columnsQueryOptions.queryKey;
   const mutationKey = ["post", "/columns"];
 
   return api.useMutation("post", "/columns", {
@@ -86,12 +94,13 @@ export function useCreateColumnMutation(boardName: string) {
   });
 }
 
-export function useMoveColumnsMutation(
-  boardName: string,
-  afterOptimisticUpdate?: () => void
-) {
-  const queryKey = getColumnsQuery(boardName).queryKey;
+export function useMoveColumnsMutation() {
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
+  const queryKey = columnsQueryOptions.queryKey;
   const mutationKey = ["put", "/columns"];
+  const forceUpdate = useForceUpdate();
 
   return api.useMutation("patch", "/columns/reorder", {
     onMutate: async (variables) => {
@@ -116,7 +125,7 @@ export function useMoveColumnsMutation(
         }
       );
 
-      afterOptimisticUpdate?.();
+      forceUpdate();
 
       return { previousData };
     },
@@ -135,8 +144,11 @@ export function useMoveColumnsMutation(
   });
 }
 
-export function useCreateTaskMutation(boardName: string) {
-  const queryKey = getColumnsQuery(boardName).queryKey;
+export function useCreateTaskMutation() {
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
+  const queryKey = columnsQueryOptions.queryKey;
   const mutationKey = ["post", "/tasks"];
 
   return api.useMutation("post", "/tasks", {
@@ -181,11 +193,12 @@ export function useCreateTaskMutation(boardName: string) {
   });
 }
 
-export function useMoveTasksMutation(
-  boardName: string,
-  afterOptimisticUpdate?: () => void
-) {
-  const queryKey = getColumnsQuery(boardName).queryKey;
+export function useMoveTasksMutation() {
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
+  const forceUpdate = useForceUpdate();
+  const queryKey = columnsQueryOptions.queryKey;
   const mutationKey = ["put", "/tasks/{id}"];
 
   return api.useMutation("put", "/tasks", {
@@ -219,7 +232,7 @@ export function useMoveTasksMutation(
         }
       );
 
-      afterOptimisticUpdate?.();
+      forceUpdate();
 
       return { previousData };
     },
@@ -238,7 +251,15 @@ export function useMoveTasksMutation(
   });
 }
 
-export function useEditColumnMutation({ getColumnsApiQueryKey: queryKey, afterOptimisticUpdate }: { getColumnsApiQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
+export function useEditColumnMutation({
+  afterOptimisticUpdate,
+}: {
+  afterOptimisticUpdate?: () => void;
+}) {
+  const columnsQueryOptions = Route.useRouteContext({
+    select: (state) => state.columnsQueryOptions,
+  });
+  const queryKey = columnsQueryOptions.queryKey;
 
   return api.useMutation("patch", "/columns/{columnId}", {
     onMutate: async (variables) => {

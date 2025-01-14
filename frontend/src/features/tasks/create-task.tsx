@@ -5,7 +5,6 @@ import { getId } from "@/lib/utils";
 import { useRef, type FormEvent } from "react";
 
 export type CreateCardProps = {
-  boardName: string;
   columnId: string;
   nextPosition: number;
   onComplete: () => void;
@@ -14,7 +13,7 @@ export type CreateCardProps = {
 export function CreateCard(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const createTaskMutation = useCreateTaskMutation(props.boardName);
+  const createTaskMutation = useCreateTaskMutation();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

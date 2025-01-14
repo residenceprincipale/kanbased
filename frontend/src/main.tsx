@@ -20,9 +20,6 @@ export const router = createRouter({
   defaultPreloadStaleTime: 0,
   defaultPendingMinMs: 0,
   defaultPendingMs: 0,
-  context: {
-    queryClient,
-  },
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   defaultPendingComponent: () => (
     <div className="grid place-content-center w-full mt-8">

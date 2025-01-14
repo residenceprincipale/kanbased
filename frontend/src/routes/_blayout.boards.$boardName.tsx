@@ -32,20 +32,18 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
     }
     return null;
   },
-  context: ({ params }) => {
-    const columnsQueryOptions = getColumnsQuery(params.boardName);
+  // I don't know why the returned value is not type safe
+  // when I use the ctx in the context function
+  context: (ctx: any) => {
+    const columnsQueryOptions = getColumnsQuery(ctx.params.boardName);
     return {
       columnsQueryOptions,
-      irshth: true,
     };
   },
 });
 
 function BoardPage() {
   const { boardName } = Route.useParams();
-  const stuff = Route.useRouteContext();
-
-  console.log(stuff);
 
   return (
     <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
@@ -67,7 +65,7 @@ function BoardPage() {
       </div>
 
       <div className="flex-1 h-full min-h-0">
-        <Columns boardName={boardName} />
+        <Columns />
       </div>
     </main>
   );
