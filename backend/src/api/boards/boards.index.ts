@@ -1,7 +1,7 @@
-import { and, desc, eq, isNull } from "drizzle-orm";
+import { and, asc, count, eq, isNull, sql } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
-import { boardPermissionsTable, boardsTable } from "../../db/schema/index.js";
+import { boardPermissionsTable, boardsTable, columnsTable, tasksTable } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import * as routes from "./boards.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
@@ -65,17 +65,21 @@ boardsRouter.openapi(routes.getBoardsRoute, async (c) => {
       id: boardsTable.id,
       name: boardsTable.name,
       color: boardsTable.color,
+      tasksCount: count(tasksTable.id),
+      columnsCount: count(columnsTable.id),
     })
-    .from(boardPermissionsTable)
-    .innerJoin(boardsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
+    .from(boardsTable)
+    .innerJoin(boardPermissionsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
+    .leftJoin(columnsTable, eq(columnsTable.boardId, boardsTable.id))
+    .leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id))
     .where(
       and(
         eq(boardPermissionsTable.userId, userId),
         isNull(boardsTable.deletedAt)
       )
     )
-    .orderBy(desc(boardsTable.createdAt));
-
+    .groupBy(boardsTable.id)
+    .orderBy(asc(boardsTable.createdAt));
   return c.json(boards, HTTP_STATUS_CODES.OK);
 });
 

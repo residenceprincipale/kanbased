@@ -7,12 +7,12 @@ export const Route = createFileRoute("/_blayout")({
 });
 
 function RouteComponent() {
-  useEffect(() => {
-    document.documentElement.classList.add("no-scroll");
-    return () => {
-      document.documentElement.classList.remove("no-scroll");
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.documentElement.classList.add("no-scroll");
+  //   return () => {
+  //     document.documentElement.classList.remove("no-scroll");
+  //   };
+  // }, []);
 
   return (
     <div className="height-screen overflow-y-hidden flex flex-col">

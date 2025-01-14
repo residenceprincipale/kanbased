@@ -12,11 +12,9 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
-  staleTime: Infinity,
   loader: async (ctx) => {
     const boardsQueryOptions = ctx.context.boardsQueryOptions;
     const data = queryClient.getQueryData(boardsQueryOptions.queryKey);
-
     /**
      * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
      * Prefetch won't call the API if there is cache stored in indexedDB.
@@ -44,19 +42,39 @@ function BoardsPage() {
   const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (
-    <main className="h-full flex flex-col pt-10 pb-20 min-h-0 px-6 sm:px-0">
-      <div className="border py-4 rounded-lg w-full sm:mx-auto sm:w-fit bg-gray-2 h-full flex flex-col flex-1">
-        <div className="flex items-center gap-4 justify-between mb-4 shrink-0 px-4">
-          <h1 className="text-xl font-semibold">Boards ({boards?.length})</h1>
+    <main className="container mx-auto px-4 py-8">
+      <div className="flex flex-col gap-8">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold tracking-tight">
+              Boards ({boards?.length || 0})
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Manage and organize your boards
+            </p>
+          </div>
           <Button
-            size={"icon"}
+            size="lg"
             onClick={() => boardStore.send({ type: "createBoard" })}
+            className="gap-2"
           >
-            <CirclePlus size={24} />
+            <CirclePlus className="w-5 h-5" />
+            Create Board
           </Button>
         </div>
-        <ul className="sm:min-w-96 w-full flex flex-col gap-2 h-full flex-1 overflow-y-auto custom-scrollbar px-3">
-          {boards?.map((board) => <Board board={board} key={board.id} />)}
+
+        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {boards?.length === 0 ? (
+            <li className="col-span-full">
+              <div className="text-center py-12 border rounded-lg bg-muted/10">
+                <p className="text-muted-foreground">
+                  No boards yet. Create your first board to get started!
+                </p>
+              </div>
+            </li>
+          ) : (
+            boards?.map((board) => <Board board={board} key={board.id} />)
+          )}
         </ul>
       </div>
       <ActionsRenderer />

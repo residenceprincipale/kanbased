@@ -15,7 +15,6 @@ import { columnStore } from "@/features/columns/state";
 
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
-  staleTime: Infinity,
   loader: async (ctx) => {
     const queryOptions = getColumnsQuery(ctx.params.boardName);
     const data = queryClient.getQueryData(queryOptions.queryKey);

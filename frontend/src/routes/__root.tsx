@@ -29,8 +29,6 @@ export const Route = createRootRouteWithContext()({
     queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
     return null;
   },
-  shouldReload: false,
-  loaderDeps: (opt) => ({}),
 });
 
 function RootComponent() {
