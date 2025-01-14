@@ -1,10 +1,9 @@
 "use client";
 import { Columns } from "@/features/columns/columns";
 
-import { createFileRoute, getRouteApi, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
-import { QueryParamState } from "@/lib/constants";
-import { buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { getColumnsQuery } from "@/lib/query-options-factory";
 import { CirclePlus } from "lucide-react";
 import {
@@ -12,12 +11,7 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { UrlState } from "@/lib/url-state";
-import { z } from "zod";
-
-export const searchParamsSchema = z.object({
-  open: z.union([z.literal("create-column"), z.undefined()]),
-});
+import { columnStore } from "@/features/columns/state";
 
 export const Route = createFileRoute("/_blayout/boards/$boardName")({
   component: BoardPage,
@@ -38,15 +32,20 @@ export const Route = createFileRoute("/_blayout/boards/$boardName")({
     }
     return null;
   },
-  validateSearch: searchParamsSchema,
-  shouldReload: false,
-  loaderDeps: (opt) => false,
+  context: ({ params }) => {
+    const columnsQueryOptions = getColumnsQuery(params.boardName);
+    return {
+      columnsQueryOptions,
+      irshth: true,
+    };
+  },
 });
-
-export const states = new UrlState(Route.id);
 
 function BoardPage() {
   const { boardName } = Route.useParams();
+  const stuff = Route.useRouteContext();
+
+  console.log(stuff);
 
   return (
     <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
@@ -54,17 +53,14 @@ function BoardPage() {
         <h1 className="text-2xl font-bold">{boardName}</h1>
         <TooltipRoot>
           <TooltipTrigger asChild>
-            <Link
-              to="."
-              search={{ open: "create-column" }}
-              className={buttonVariants({
-                size: "icon",
-                className: "w-10 h-9",
-              })}
+            <Button
+              onClick={() => columnStore.send({ type: "createColumn" })}
+              size="icon"
+              className="w-10 h-9"
               aria-label="Add column"
             >
               <CirclePlus size={24} />
-            </Link>
+            </Button>
           </TooltipTrigger>
           <TooltipContent side="bottom">Create column</TooltipContent>
         </TooltipRoot>

@@ -1,5 +1,5 @@
 import { Column } from "@/features/columns/column";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import {
   useColumnsSuspenseQuery,
@@ -24,7 +24,6 @@ export function Columns(props: { boardName: string }) {
   });
   const columns = data.columns;
   const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
-  const [_, setForceRender] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -153,11 +152,13 @@ export function Columns(props: { boardName: string }) {
               </div>
 
               <CreateColumn
-                boardId={data.boardId}
-                boardName={props.boardName}
-                nextPosition={
-                  (sortedColumns[sortedColumns.length - 1]?.position ?? 0) + 1
-                }
+                data={{
+                  boardId: data.boardId,
+                  boardName: props.boardName,
+                  nextPosition:
+                    (sortedColumns[sortedColumns.length - 1]?.position ?? 0) +
+                    1,
+                }}
               />
             </div>
           );

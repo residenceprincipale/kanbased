@@ -13,12 +13,17 @@ import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getId } from "@/lib/utils";
+import { Route } from "@/routes/_blayout.boards.index";
 import { Link } from "@tanstack/react-router";
 import { type FormEventHandler } from "react";
 import { toast } from "sonner";
 
 export function CreateBoard(props: { onClose: () => void }) {
   const { mutate, isPending } = api.useMutation("post", "/boards");
+  const boardsQueryKey = Route.useRouteContext({
+    select: (data) => data.boardsQueryOptions.queryKey,
+  });
+
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const fd = new FormData(e.target as HTMLFormElement);
@@ -35,7 +40,7 @@ export function CreateBoard(props: { onClose: () => void }) {
       },
       {
         onSuccess() {
-          queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+          queryClient.invalidateQueries({ queryKey: boardsQueryKey });
           toast.success(
             <div className="flex items-center justify-between w-full">
               <span>

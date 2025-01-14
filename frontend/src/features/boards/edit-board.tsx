@@ -13,6 +13,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
+import { Route } from "@/routes/_blayout.boards.index";
 import { type FormEventHandler } from "react";
 import { toast } from "sonner";
 
@@ -22,6 +23,9 @@ export function EditBoard(props: {
 }) {
   const { board } = props;
   const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
+  const boardsQueryKey = Route.useRouteContext({
+    select: (data) => data.boardsQueryOptions.queryKey,
+  });
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -41,7 +45,7 @@ export function EditBoard(props: {
       },
       {
         onSuccess() {
-          queryClient.invalidateQueries(api.queryOptions("get", "/boards"));
+          queryClient.invalidateQueries({ queryKey: boardsQueryKey });
           toast.success("Board updated successfully");
           props.onClose();
         },

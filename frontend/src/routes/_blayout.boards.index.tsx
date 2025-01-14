@@ -8,13 +8,14 @@ import { Button } from "@/components/ui/button";
 import { CirclePlus } from "lucide-react";
 import { ActionsRenderer } from "@/features/boards/actions-renderer";
 import { boardStore } from "@/features/boards/state";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/_blayout/boards/")({
   component: BoardsPage,
   staleTime: Infinity,
-  loader: async () => {
-    const queryOptions = api.queryOptions("get", "/boards");
-    const data = queryClient.getQueryData(queryOptions.queryKey);
+  loader: async (ctx) => {
+    const boardsQueryOptions = ctx.context.boardsQueryOptions;
+    const data = queryClient.getQueryData(boardsQueryOptions.queryKey);
 
     /**
      * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
@@ -23,17 +24,24 @@ export const Route = createFileRoute("/_blayout/boards/")({
      * Still it is a good idea to fetch updated data from server.
      */
     if (data) {
-      queryClient.invalidateQueries(queryOptions);
+      queryClient.invalidateQueries(boardsQueryOptions);
     } else {
-      await queryClient.prefetchQuery(queryOptions);
+      await queryClient.prefetchQuery(boardsQueryOptions);
     }
 
     return null;
   },
+  context: () => {
+    const boardsQueryOptions = api.queryOptions("get", "/boards");
+    return { boardsQueryOptions };
+  },
 });
 
 function BoardsPage() {
-  const { data: boards } = api.useSuspenseQuery("get", "/boards");
+  const boardsQueryOptions = Route.useRouteContext({
+    select: (data) => data.boardsQueryOptions,
+  });
+  const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (
     <main className="h-full flex flex-col pt-10 pb-20 min-h-0 px-6 sm:px-0">
