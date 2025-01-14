@@ -1,7 +1,7 @@
-import { CreateBoard } from "@/features/boards/create-board";
-import { DeleteBoard } from "@/features/boards/delete-board";
-import { EditBoard } from "@/features/boards/edit-board";
-import { boardStore } from "@/features/boards/state";
+import { CreateBoard } from "@/routes/_authenticated/_board-layout/boards/-route-impl/create-board";
+import { DeleteBoard } from "@/routes/_authenticated/_board-layout/boards/-route-impl/delete-board";
+import { EditBoard } from "@/routes/_authenticated/_board-layout/boards/-route-impl/edit-board";
+import { boardStore } from "@/routes/_authenticated/_board-layout/boards/-route-impl/state";
 import { useSelector } from "@xstate/store/react";
 
 export function ActionsRenderer() {

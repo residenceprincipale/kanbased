@@ -1,5 +1,5 @@
 "use client";
-import { Columns } from "@/features/columns/columns";
+import { Columns } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/columns";
 
 import { createFileRoute } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
@@ -11,9 +11,11 @@ import {
   TooltipRoot,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { columnStore } from "@/features/columns/state";
+import { columnStore } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/state";
 
-export const Route = createFileRoute("/_blayout/boards/$boardName")({
+export const Route = createFileRoute(
+  "/_authenticated/_board-layout/boards_/$boardName"
+)({
   component: BoardPage,
   loader: async (ctx) => {
     const queryOptions = getColumnsQuery(ctx.params.boardName);

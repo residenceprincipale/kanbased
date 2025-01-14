@@ -1,7 +1,7 @@
 import { useForceUpdate } from "@/hooks/use-force-update";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { Route } from "@/routes/_blayout.boards.$boardName";
+import { Route } from "@/routes/_authenticated/_board-layout/boards_.$boardName/route";
 import { Api200Response } from "@/types/type-helpers";
 import { useSuspenseQuery } from "@tanstack/react-query";
 
@@ -45,7 +45,7 @@ export function transformColumnsQuery(data: ColumnsQueryResponse) {
 
 export type ColumnsQueryData = ReturnType<typeof transformColumnsQuery>;
 
-export function useCreateColumnMutation(boardName: string) {
+export function useCreateColumnMutation() {
   const columnsQueryOptions = Route.useRouteContext({
     select: (state) => state.columnsQueryOptions,
   });

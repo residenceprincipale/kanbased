@@ -1,4 +1,4 @@
-import { Board } from '@/features/boards/board';
+import { Board } from '@/routes/_authenticated/_board-layout/boards/-route-impl/board';
 import { createStore } from '@xstate/store';
 
 type BoardAction = {

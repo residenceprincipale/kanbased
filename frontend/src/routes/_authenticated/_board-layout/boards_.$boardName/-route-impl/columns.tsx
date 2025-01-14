@@ -1,11 +1,11 @@
-import { Column } from "@/features/columns/column";
+import { Column } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/column";
 import { useCallback, useRef } from "react";
-import { CreateColumn } from "@/features/columns/create-column";
+import { CreateColumn } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/create-column";
 import {
   useColumnsSuspenseQuery,
   useMoveColumnsMutation,
   useMoveTasksMutation,
-} from "@/features/columns/queries";
+} from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
 import {
   DragDropContext,
   Droppable,

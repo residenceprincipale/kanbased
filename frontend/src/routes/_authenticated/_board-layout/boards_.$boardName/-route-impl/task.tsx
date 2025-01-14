@@ -1,4 +1,4 @@
-import { Tasks } from "@/features/tasks/tasks";
+import { Tasks } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/tasks";
 import { cn } from "@/lib/utils";
 import { Draggable } from "@hello-pangea/dnd";
 import { memo, useCallback } from "react";

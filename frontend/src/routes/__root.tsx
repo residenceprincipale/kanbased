@@ -1,5 +1,3 @@
-import { api } from "@/lib/openapi-react-query";
-import { queryClient } from "@/lib/query-client";
 import {
   Outlet,
   ScrollRestoration,
@@ -9,6 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { Api200Response } from "@/types/type-helpers";
 
 const TanStackRouterDevtools =
   // @ts-ignore
@@ -22,13 +21,12 @@ const TanStackRouterDevtools =
           // default: res.TanStackRouterDevtoolsPanel
         }))
       );
+interface MyRouterContext {
+  auth: Api200Response<"/current-user", "get">;
+}
 
-export const Route = createRootRouteWithContext()({
+export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
-  loader: () => {
-    queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));
-    return null;
-  },
 });
 
 function RootComponent() {

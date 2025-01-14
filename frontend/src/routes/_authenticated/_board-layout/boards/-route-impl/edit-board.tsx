@@ -10,17 +10,14 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
-import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { Route } from "@/routes/_blayout.boards.index";
+import { Board } from "@/routes/_authenticated/_board-layout/boards/-route-impl/board";
+import { Route } from "@/routes/_authenticated/_board-layout/boards/route";
 import { type FormEventHandler } from "react";
 import { toast } from "sonner";
 
-export function EditBoard(props: {
-  board: BoardProps["board"];
-  onClose: () => void;
-}) {
+export function EditBoard(props: { board: Board; onClose: () => void }) {
   const { board } = props;
   const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
   const boardsQueryKey = Route.useRouteContext({

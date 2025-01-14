@@ -14,9 +14,7 @@ import { env } from "../env.js";
 import { pinoLogger } from "./pino-logger.js";
 import type { PinoLogger } from "hono-pino";
 import { HTTP_STATUS_CODES, HTTP_STATUS_PHRASES } from "./constants.js";
-import type { StatusCode } from "hono/utils/http-status";
-import type { User } from "../db/schema/index.js";
-import type { Session } from "inspector";
+import type { Session, User } from "../db/schema/index.js";
 import { ApiError } from "./utils.js";
 
 export interface AppBindings {

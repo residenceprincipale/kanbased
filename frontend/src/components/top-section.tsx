@@ -8,22 +8,24 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
 import { fetchAndCacheImage } from "@/lib/utils";
+import { Route } from "@/routes/__root";
 import { useAppContext } from "@/state/app-state";
 import { Link } from "@tanstack/react-router";
 import { House, User } from "lucide-react";
 import { useEffect, useState } from "react";
 
 export function TopSection() {
-  const { user } = useUser();
+  const {
+    auth: { user },
+  } = Route.useRouteContext();
   const { theme, updateTheme } = useAppContext();
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user?.image) return;
-    fetchAndCacheImage(`${user.image}-${user.id}`, user.image).then((url) => {
+    fetchAndCacheImage(`${user.image}`, user.image).then((url) => {
       if (!url) return;
       setAvatarUrl(url);
     });

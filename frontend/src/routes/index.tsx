@@ -1,4 +1,3 @@
-import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
@@ -8,7 +7,10 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  const { user } = useUser();
+  const {
+    auth: { user },
+  } = Route.useRouteContext();
+
   return (
     <div className="flex height-screen items-center justify-center">
       <div className="flex flex-col items-center gap-16">

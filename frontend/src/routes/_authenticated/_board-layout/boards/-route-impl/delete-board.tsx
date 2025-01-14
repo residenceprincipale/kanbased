@@ -9,17 +9,14 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
-import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { boardsQuery } from "@/lib/query-options-factory";
-import { Route } from "@/routes/_blayout.boards.index";
+import { Board } from "@/routes/_authenticated/_board-layout/boards/-route-impl/board";
+import { Route } from "@/routes/_authenticated/_board-layout/boards/route";
 import { toast } from "sonner";
 
-export function DeleteBoard(props: {
-  board: BoardProps["board"];
-  onClose: () => void;
-}) {
+export function DeleteBoard(props: { board: Board; onClose: () => void }) {
   const deleteBoardMutation = api.useMutation(
     "patch",
     "/boards/{boardId}/toggle-delete"

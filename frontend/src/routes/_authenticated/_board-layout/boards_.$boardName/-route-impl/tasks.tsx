@@ -1,9 +1,12 @@
 import React, { memo, useCallback, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { CreateCard } from "@/features/tasks/create-task";
+import { CreateCard } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/create-task";
 import { Button } from "@/components/ui/button";
-import { ColumnsQueryData } from "@/features/columns/queries";
-import { Task, TaskProps } from "@/features/tasks/task";
+import { ColumnsQueryData } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
+import {
+  Task,
+  TaskProps,
+} from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/task";
 import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { useOverflowDetector } from "react-detectable-overflow";

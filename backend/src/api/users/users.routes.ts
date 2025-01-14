@@ -4,6 +4,7 @@ import { profilesTable } from "../../db/schema/index.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { jsonContent } from "../../lib/schema-helpers.js";
 import { ResponseBuilder } from "../../lib/response-builder.js";
+import { z } from "zod";
 
 const selectUsersSchema = createSelectSchema(profilesTable);
 
@@ -12,7 +13,10 @@ export const getCurrentUser = createRoute({
   path: "/current-user",
   responses: ResponseBuilder.withAuthAndValidation({
     [HTTP_STATUS_CODES.OK]: jsonContent(
-      selectUsersSchema.omit({ userId: true })
+      z.object({
+        user: selectUsersSchema.omit({ userId: true, id: true }),
+        expiresAt: z.string().datetime(),
+      })
     ),
   }),
 });

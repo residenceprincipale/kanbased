@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 import { ColumnWrapper } from "@/components/column-ui";
 import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
-import { useCreateColumnMutation } from "@/features/columns/queries";
+import { useCreateColumnMutation } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
 import { getId } from "@/lib/utils";
 import { useSelector } from "@xstate/store/react";
-import { columnStore } from "@/features/columns/state";
+import { columnStore } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/state";
 
 export type CreateColumnProps = {
   data: {
@@ -14,9 +14,10 @@ export type CreateColumnProps = {
   };
 };
 
-export function CreateColumn({ data }: CreateColumnProps) {
+export function CreateColumn(props: CreateColumnProps) {
   const action = useSelector(columnStore, (state) => state.context.action);
   const createColumnMutation = useCreateColumnMutation();
+  const { data } = props;
 
   if (action?.type !== "create-column") {
     return null;

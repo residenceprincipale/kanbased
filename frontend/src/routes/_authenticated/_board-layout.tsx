@@ -1,10 +1,10 @@
-import { TopSection } from "@/components/top-section";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { TopSection } from '@/components/top-section'
+import { createFileRoute, Outlet } from '@tanstack/react-router'
+import { useEffect } from 'react'
 
-export const Route = createFileRoute("/_blayout")({
+export const Route = createFileRoute('/_authenticated/_board-layout')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
   // useEffect(() => {
@@ -22,5 +22,5 @@ function RouteComponent() {
       </header>
       <Outlet />
     </div>
-  );
+  )
 }
