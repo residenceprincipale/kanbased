@@ -17,7 +17,7 @@ export function Board({ board }: { board: Board }) {
     <Link
       to="/boards/$boardName"
       params={{ boardName: board.name }}
-      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-all hover:shadow-lg hover:border-primary/50"
+      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg"
     >
       <div className="relative p-6">
         {/* Decorative gradient background */}
