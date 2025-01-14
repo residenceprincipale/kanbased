@@ -13,7 +13,6 @@ export type Tasks = ColumnsQueryData["columns"][number]["tasks"];
 type TasksProps = {
   tasks: Tasks;
   columnId: string;
-  boardName: string;
 };
 
 function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
@@ -28,7 +27,6 @@ function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
               task={task}
               key={task.id}
               taskRef={isLastEl ? props.lastTaskRef : undefined}
-              boardName={props.boardName}
               index={i}
             />
           );
@@ -63,7 +61,7 @@ export function Tasks(props: TasksProps) {
     if (!node) return;
     /**
      * How is this not running on app mount?
-     *  - Well it runs on app mount but `containerRef` will be null because it a parent so does nothing.
+     *  - Well it runs on app mount but `containerRef` will be null because it's a parent so does nothing.
      */
     scrollList();
   }, []);
@@ -76,7 +74,7 @@ export function Tasks(props: TasksProps) {
         ignoreContainerClipping={false}
         isCombineEnabled={false}
       >
-        {(droppableProvided, droppableSnapshot) => {
+        {(droppableProvided) => {
           return (
             <div
               className={cn(
@@ -88,7 +86,6 @@ export function Tasks(props: TasksProps) {
             >
               <div ref={droppableProvided.innerRef} className="min-h-8 px-2">
                 <MemoizedTaskList
-                  boardName={props.boardName}
                   columnId={props.columnId}
                   lastTaskRef={lastTaskRef}
                   tasks={props.tasks}
@@ -104,7 +101,6 @@ export function Tasks(props: TasksProps) {
       <div className="shrink-0 mx-2 mt-3">
         {showAddTask ? (
           <CreateCard
-            boardName={props.boardName}
             columnId={props.columnId}
             nextPosition={
               sortedTasks.length

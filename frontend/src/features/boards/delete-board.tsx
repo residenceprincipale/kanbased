@@ -13,6 +13,7 @@ import { BoardProps } from "@/features/boards/board";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { boardsQuery } from "@/lib/query-options-factory";
+import { Route } from "@/routes/_blayout.boards.index";
 import { toast } from "sonner";
 
 export function DeleteBoard(props: {
@@ -23,6 +24,9 @@ export function DeleteBoard(props: {
     "patch",
     "/boards/{boardId}/toggle-delete"
   );
+  const boardsQueryKey = Route.useRouteContext({
+    select: (data) => data.boardsQueryOptions.queryKey,
+  });
 
   const handleUndoDelete = (boardId: string) => {
     toast.promise(
@@ -33,7 +37,7 @@ export function DeleteBoard(props: {
         },
         {
           onSuccess: () => {
-            queryClient.invalidateQueries(boardsQuery);
+            queryClient.invalidateQueries({ queryKey: boardsQueryKey });
           },
         }
       ),

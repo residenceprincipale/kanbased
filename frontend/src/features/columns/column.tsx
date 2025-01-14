@@ -10,12 +10,11 @@ import { getColumnsQuery } from "@/lib/query-options-factory";
 
 type ColumnProps = {
   column: ColumnsQueryData["columns"][number];
-  boardName: string;
   index: number;
   columnRef?: (node: HTMLElement | null) => void;
 };
 
-export function Column({ column, boardName, index, columnRef }: ColumnProps) {
+export function Column({ column, index, columnRef }: ColumnProps) {
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => {
@@ -36,7 +35,6 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
               <EditableColumnName
                 columnName={column.name}
                 columnId={column.id}
-                getColumnsApiQueryKey={getColumnsQuery(boardName).queryKey}
               />
 
               <button
@@ -46,11 +44,7 @@ export function Column({ column, boardName, index, columnRef }: ColumnProps) {
                 <GripVertical size={20} />
               </button>
             </div>
-            <Tasks
-              boardName={boardName}
-              tasks={column.tasks}
-              columnId={column.id}
-            />
+            <Tasks tasks={column.tasks} columnId={column.id} />
           </ColumnWrapper>
         );
       }}

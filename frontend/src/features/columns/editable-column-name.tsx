@@ -1,19 +1,15 @@
 import { useEditColumnMutation } from "@/features/columns/queries";
-import { useForceUpdate } from "@/hooks/use-force-update";
-import { QueryKey } from "@tanstack/react-query";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 export function EditableColumnName(props: {
   columnName: string;
   columnId: string;
-  getColumnsApiQueryKey: QueryKey;
 }) {
   const [edit, setEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const editColumnMutation = useEditColumnMutation({
-    getColumnsApiQueryKey: props.getColumnsApiQueryKey,
     afterOptimisticUpdate: () => {
       setTimeout(() => {
         flushSync(() => {

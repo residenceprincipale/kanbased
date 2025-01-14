@@ -4,24 +4,23 @@ import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
 import { useCreateColumnMutation } from "@/features/columns/queries";
 import { getId } from "@/lib/utils";
-import { states } from "@/routes/_blayout.boards.$boardName";
+import { useSelector } from "@xstate/store/react";
+import { columnStore } from "@/features/columns/state";
 
-export function CreateColumn(props: {
-  boardId: string;
-  boardName: string;
-  nextPosition: number;
-}) {
-  const { state, remove } = states.use("open");
-  const isCreateColOpen = state === "create-column";
-  const createColumnMutation = useCreateColumnMutation(props.boardName);
+export type CreateColumnProps = {
+  data: {
+    boardId: string;
+    nextPosition: number;
+  };
+};
 
-  if (!isCreateColOpen) {
+export function CreateColumn({ data }: CreateColumnProps) {
+  const action = useSelector(columnStore, (state) => state.context.action);
+  const createColumnMutation = useCreateColumnMutation();
+
+  if (action?.type !== "create-column") {
     return null;
   }
-
-  const onClose = () => {
-    remove(true);
-  };
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -34,13 +33,17 @@ export function CreateColumn(props: {
     createColumnMutation.mutate({
       body: {
         id: getId(),
-        boardId: props.boardId,
+        boardId: data.boardId,
         name,
-        position: props.nextPosition,
+        position: data.nextPosition,
         createdAt: currentDate,
         updatedAt: currentDate,
       },
     });
+  };
+
+  const handleClose = () => {
+    columnStore.send({ type: "clearAction" });
   };
 
   return (
@@ -48,7 +51,7 @@ export function CreateColumn(props: {
       <form
         onBlur={(e) => {
           if (!e.currentTarget.contains(e.relatedTarget)) {
-            onClose();
+            handleClose();
           }
         }}
         onSubmit={handleSubmit}
@@ -62,13 +65,13 @@ export function CreateColumn(props: {
           autoFocus
           onKeyDown={(event) => {
             if (event.key === "Escape") {
-              onClose();
+              handleClose();
             }
           }}
         />
 
         <div className="flex gap-4 w-fit ml-auto mt-4">
-          <Button onClick={onClose} type="button" variant="ghost" size="sm">
+          <Button onClick={handleClose} type="button" variant="ghost" size="sm">
             Cancel
           </Button>
 

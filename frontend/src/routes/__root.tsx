@@ -3,7 +3,7 @@ import { queryClient } from "@/lib/query-client";
 import {
   Outlet,
   ScrollRestoration,
-  createRootRoute,
+  createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
@@ -23,7 +23,7 @@ const TanStackRouterDevtools =
         }))
       );
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext()({
   component: RootComponent,
   loader: () => {
     queryClient.prefetchQuery(api.queryOptions("get", "/current-user"));

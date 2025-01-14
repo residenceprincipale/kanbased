@@ -5,7 +5,6 @@ import { memo, useCallback } from "react";
 
 export type TaskProps = {
   task: Tasks[number];
-  boardName: string;
   index: number;
   taskRef?: (node: HTMLElement | null) => void;
 };

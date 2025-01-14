@@ -1,5 +1,5 @@
 import { Column } from "@/features/columns/column";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/columns/create-column";
 import {
   useColumnsSuspenseQuery,
@@ -11,22 +11,14 @@ import {
   Droppable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
-import { useForceUpdate } from "@/hooks/use-force-update";
 
-export function Columns(props: { boardName: string }) {
-  const { data } = useColumnsSuspenseQuery(props.boardName);
-  const forceUpdate = useForceUpdate();
-  const moveColumnsMutation = useMoveColumnsMutation(props.boardName, () => {
-    forceUpdate();
-  });
-  const moveTasksMutation = useMoveTasksMutation(props.boardName, () => {
-    forceUpdate();
-  });
-  const columns = data.columns;
-  const sortedColumns = [...columns].sort((a, b) => a.position - b.position);
-  const [_, setForceRender] = useState(false);
-
+export function Columns() {
+  const { data } = useColumnsSuspenseQuery();
+  const moveColumnsMutation = useMoveColumnsMutation();
+  const moveTasksMutation = useMoveTasksMutation();
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const columns = data.columns;
 
   const lastColumnRef = useCallback((node: HTMLElement | null) => {
     /*
@@ -61,7 +53,7 @@ export function Columns(props: { boardName: string }) {
     }
 
     if (e.type === "COLUMN") {
-      const colCopy = [...sortedColumns];
+      const colCopy = [...columns];
 
       const [removedEl] = colCopy.splice(e.source.index, 1);
       colCopy.splice(e.destination.index, 0, removedEl!);
@@ -140,9 +132,8 @@ export function Columns(props: { boardName: string }) {
               {...provided.droppableProps}
             >
               <div className="flex h-full" ref={provided.innerRef}>
-                {sortedColumns.map((column, i, arr) => (
+                {columns.map((column, i, arr) => (
                   <Column
-                    boardName={props.boardName}
                     column={column}
                     columnRef={arr.length - 1 === i ? lastColumnRef : undefined}
                     index={i}
@@ -153,11 +144,11 @@ export function Columns(props: { boardName: string }) {
               </div>
 
               <CreateColumn
-                boardId={data.boardId}
-                boardName={props.boardName}
-                nextPosition={
-                  (sortedColumns[sortedColumns.length - 1]?.position ?? 0) + 1
-                }
+                data={{
+                  boardId: data.boardId,
+                  nextPosition:
+                    (columns[columns.length - 1]?.position ?? 0) + 1,
+                }}
               />
             </div>
           );
