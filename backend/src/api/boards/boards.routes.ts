@@ -4,7 +4,7 @@ import {
   emptyResponse,
   genericMessageContent,
   jsonContent,
-  jsonContentRequired
+  jsonContentRequired,
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
@@ -19,7 +19,7 @@ const createBoardResponse = createSelectSchema(boardsTable).omit({
   creatorId: true,
   createdAt: true,
   updatedAt: true,
-  deletedAt: true
+  deletedAt: true,
 });
 
 export const createBoardRoute = createRoute({
@@ -38,7 +38,14 @@ export const getBoardsRoute = createRoute({
   method: "get",
   path: "/boards",
   responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.OK]: jsonContent(z.array(createBoardResponse)),
+    [HTTP_STATUS_CODES.OK]: jsonContent(
+      z.array(
+        createBoardResponse.extend({
+          tasksCount: z.number(),
+          columnsCount: z.number(),
+        })
+      )
+    ),
   }),
 });
 
