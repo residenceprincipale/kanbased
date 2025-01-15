@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateTaskMutation } from "@/features/columns/queries";
+import { useCreateTaskMutation } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
 import { getId } from "@/lib/utils";
 import { useRef, type FormEvent } from "react";
 

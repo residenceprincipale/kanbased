@@ -429,9 +429,12 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            id: number;
-                            displayName: string | null;
-                            image: string | null;
+                            user: {
+                                displayName: string | null;
+                                image: string | null;
+                            };
+                            /** Format: date-time */
+                            expiresAt: string;
                         };
                     };
                 };

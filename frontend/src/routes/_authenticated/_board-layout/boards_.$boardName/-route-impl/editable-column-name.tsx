@@ -1,4 +1,4 @@
-import { useEditColumnMutation } from "@/features/columns/queries";
+import { useEditColumnMutation } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
 import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 

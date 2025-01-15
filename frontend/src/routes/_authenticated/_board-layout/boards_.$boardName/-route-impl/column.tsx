@@ -1,12 +1,11 @@
-import { Tasks } from "@/features/tasks/tasks";
+import { Tasks } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/tasks";
 import { ColumnWrapper } from "@/components/column-ui";
-import { ColumnsQueryData } from "@/features/columns/queries";
-import { Draggable, Droppable } from "@hello-pangea/dnd";
+import { ColumnsQueryData } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
+import { Draggable } from "@hello-pangea/dnd";
 import { GripVertical } from "lucide-react";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
-import { EditableColumnName } from "@/features/columns/editable-column-name";
-import { getColumnsQuery } from "@/lib/query-options-factory";
+import { EditableColumnName } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/editable-column-name";
 
 type ColumnProps = {
   column: ColumnsQueryData["columns"][number];

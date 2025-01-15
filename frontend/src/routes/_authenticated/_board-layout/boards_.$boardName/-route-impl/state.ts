@@ -1,4 +1,3 @@
-import { CreateColumnProps } from "@/features/columns/create-column";
 import { createStore } from "@xstate/store";
 
 type CreateColumnAction = {

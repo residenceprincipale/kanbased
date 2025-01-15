@@ -13,7 +13,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
 import { getId } from "@/lib/utils";
-import { Route } from "@/routes/_blayout.boards.index";
+import { Route } from "@/routes/_authenticated/_board-layout/boards/route";
 import { Link } from "@tanstack/react-router";
 import { type FormEventHandler } from "react";
 import { toast } from "sonner";
