@@ -32,7 +32,7 @@ export function TopSection() {
   }, [user?.image]);
 
   return (
-    <div className="flex items-center justify-between gap-2 py-1.5 px-4 w-screen fixed top-0 left-0">
+    <div className="flex items-center justify-between gap-2 py-1.5 px-4 w-screen fixed top-0 left-0 z-10 bg-background">
       <div className="flex gap-6 items-center flex-1">
         <Link
           to={routeMap.home}

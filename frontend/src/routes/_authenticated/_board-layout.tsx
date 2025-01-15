@@ -10,7 +10,7 @@ function RouteComponent() {
     <div className="height-screen flex flex-col">
       <header className="shrink-0">
         <TopSection />
-        <div className="w-screen h-10" />
+        <div className="w-screen h-10 bg-background" />
       </header>
       <Outlet />
     </div>
