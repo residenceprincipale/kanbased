@@ -13,21 +13,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 export const Route = createFileRoute("/_authenticated/_board-layout/boards")({
   component: BoardsPage,
   loader: async (ctx) => {
-    const boardsQueryOptions = ctx.context.boardsQueryOptions;
-    const data = queryClient.getQueryData(boardsQueryOptions.queryKey);
-    /**
-     * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
-     * Prefetch won't call the API if there is cache stored in indexedDB.
-     * This gives user a good experience when reloading the page and seeing the data quickly.
-     * Still it is a good idea to fetch updated data from server.
-     */
-    if (data) {
-      queryClient.invalidateQueries(boardsQueryOptions);
-    } else {
-      await queryClient.prefetchQuery(boardsQueryOptions);
-    }
-
-    return null;
+    await queryClient.prefetchQuery(ctx.context.boardsQueryOptions);
   },
   context: () => {
     const boardsQueryOptions = api.queryOptions("get", "/boards");
@@ -36,9 +22,7 @@ export const Route = createFileRoute("/_authenticated/_board-layout/boards")({
 });
 
 function BoardsPage() {
-  const boardsQueryOptions = Route.useRouteContext({
-    select: (data) => data.boardsQueryOptions,
-  });
+  const { boardsQueryOptions } = Route.useRouteContext();
   const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (

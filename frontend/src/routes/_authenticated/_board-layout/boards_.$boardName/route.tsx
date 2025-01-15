@@ -18,20 +18,10 @@ export const Route = createFileRoute(
 )({
   component: BoardPage,
   loader: async (ctx) => {
-    const queryOptions = getColumnsQuery(ctx.params.boardName);
-    const data = queryClient.getQueryData(queryOptions.queryKey);
-    /**
-     * Since I use `staleTime` as infinity plus persisting the cache in indexedDB
-     * Prefetch won't call the API if there is cache stored in indexedDB.
-     * This gives user a good experience when reloading the page and seeing the data quickly.
-     * Still it is a good idea to fetch updated data from server.
-     */
-    if (data) {
-      queryClient.invalidateQueries(queryOptions);
-    } else {
-      await queryClient.prefetchQuery(queryOptions);
-    }
-    return null;
+    await queryClient.prefetchQuery({
+      ...ctx.context.columnsQueryOptions,
+      staleTime: 1000 * 60 * 2, // 2 minutes
+    });
   },
   // I don't know why the returned value is not type safe
   // when I use the ctx in the context function

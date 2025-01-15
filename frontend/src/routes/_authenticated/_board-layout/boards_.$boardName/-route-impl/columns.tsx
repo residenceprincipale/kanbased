@@ -2,7 +2,7 @@ import { Column } from "@/routes/_authenticated/_board-layout/boards_.$boardName
 import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/create-column";
 import {
-  useColumnsSuspenseQuery,
+  transformColumnsQuery,
   useMoveColumnsMutation,
   useMoveTasksMutation,
 } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/queries";
@@ -11,9 +11,15 @@ import {
   Droppable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
+import { Route } from "@/routes/_authenticated/_board-layout/boards_.$boardName/route";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
 export function Columns() {
-  const { data } = useColumnsSuspenseQuery();
+  const { columnsQueryOptions } = Route.useRouteContext();
+  const { data } = useSuspenseQuery({
+    ...columnsQueryOptions,
+    select: transformColumnsQuery,
+  });
   const moveColumnsMutation = useMoveColumnsMutation();
   const moveTasksMutation = useMoveTasksMutation();
   const containerRef = useRef<HTMLDivElement>(null);
