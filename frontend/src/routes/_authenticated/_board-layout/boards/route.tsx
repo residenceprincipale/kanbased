@@ -26,42 +26,44 @@ function BoardsPage() {
   const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <div className="flex flex-col gap-8">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">
-              Boards ({boards?.length || 0})
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Manage and organize your boards
-            </p>
+    <div className="h-full overflow-y-auto">
+      <main className="container mx-auto px-4 py-8 h-full">
+        <div className="flex flex-col gap-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold tracking-tight">
+                Boards ({boards?.length || 0})
+              </h1>
+              <p className="text-muted-foreground mt-1">
+                Manage and organize your boards
+              </p>
+            </div>
+            <Button
+              size="lg"
+              onClick={() => boardStore.send({ type: "createBoard" })}
+              className="gap-2"
+            >
+              <CirclePlus className="w-5 h-5" />
+              Create Board
+            </Button>
           </div>
-          <Button
-            size="lg"
-            onClick={() => boardStore.send({ type: "createBoard" })}
-            className="gap-2"
-          >
-            <CirclePlus className="w-5 h-5" />
-            Create Board
-          </Button>
-        </div>
 
-        <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {boards?.length === 0 ? (
-            <li className="col-span-full">
-              <div className="text-center py-12 border rounded-lg bg-muted/10">
-                <p className="text-muted-foreground">
-                  No boards yet. Create your first board to get started!
-                </p>
-              </div>
-            </li>
-          ) : (
-            boards?.map((board) => <Board board={board} key={board.id} />)
-          )}
-        </ul>
-      </div>
-      <ActionsRenderer />
-    </main>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {boards?.length === 0 ? (
+              <li className="col-span-full">
+                <div className="text-center py-12 border rounded-lg bg-muted/10">
+                  <p className="text-muted-foreground">
+                    No boards yet. Create your first board to get started!
+                  </p>
+                </div>
+              </li>
+            ) : (
+              boards?.map((board) => <Board board={board} key={board.id} />)
+            )}
+          </ul>
+        </div>
+        <ActionsRenderer />
+      </main>
+    </div>
   );
 }

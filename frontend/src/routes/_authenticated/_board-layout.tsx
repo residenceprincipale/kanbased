@@ -1,26 +1,18 @@
-import { TopSection } from '@/components/top-section'
-import { createFileRoute, Outlet } from '@tanstack/react-router'
-import { useEffect } from 'react'
+import { TopSection } from "@/components/top-section";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
-export const Route = createFileRoute('/_authenticated/_board-layout')({
+export const Route = createFileRoute("/_authenticated/_board-layout")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
-  // useEffect(() => {
-  //   document.documentElement.classList.add("no-scroll");
-  //   return () => {
-  //     document.documentElement.classList.remove("no-scroll");
-  //   };
-  // }, []);
-
   return (
-    <div className="height-screen overflow-y-hidden flex flex-col">
+    <div className="height-screen flex flex-col">
       <header className="shrink-0">
         <TopSection />
         <div className="w-screen h-10" />
       </header>
       <Outlet />
     </div>
-  )
+  );
 }
