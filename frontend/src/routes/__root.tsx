@@ -35,7 +35,7 @@ function RootComponent() {
       <ScrollRestoration />
       <Outlet />
       <Toaster />
-      <TanStackRouterDevtools position="bottom-left" />
+      <TanStackRouterDevtools position="bottom-right" />
       <ReactQueryDevtools position="bottom" />
     </AppContextProvider>
   );

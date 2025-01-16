@@ -1,4 +1,6 @@
+import { AppSidebar } from "@/components/app-sidebar";
 import { TopSection } from "@/components/top-section";
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/_board-layout")({
@@ -7,12 +9,12 @@ export const Route = createFileRoute("/_authenticated/_board-layout")({
 
 function RouteComponent() {
   return (
-    <div className="height-screen flex flex-col">
-      <header className="shrink-0">
-        <TopSection />
-        <div className="w-screen h-10 bg-background" />
-      </header>
-      <Outlet />
-    </div>
+    <SidebarProvider>
+      <AppSidebar />
+      <main className="w-full p-2">
+        <SidebarTrigger />
+        <Outlet />
+      </main>
+    </SidebarProvider>
   );
 }
