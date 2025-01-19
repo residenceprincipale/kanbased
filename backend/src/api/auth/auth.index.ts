@@ -96,8 +96,10 @@ const authRouter = createRouter();
 authRouter.openapi(authRoutes.logoutRoute, async (c) => {
   const session = c.get("session");
 
+  // @ts-ignore
   await invalidateSession(session.id);
 
+  // @ts-ignore
   deleteSessionTokenCookie(c);
 
   return c.json({}, HTTP_STATUS_CODES.OK);
