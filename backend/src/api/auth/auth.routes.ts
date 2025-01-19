@@ -1,11 +1,14 @@
 import { createRoute, z } from "@hono/zod-openapi";
 import {
+  emptyResponse,
   genericMessageContent,
   jsonContent,
   jsonContentRequired,
   zodErrorContent,
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { authenticatedMiddleware } from "./auth.middleware.js";
+import { verifySessionMiddleware } from "./auth.middleware.js";
 
 const createUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
@@ -85,7 +88,9 @@ export const googleCallbackRoute = createRoute({
 export const logoutRoute = createRoute({
   method: "post",
   path: "/auth/logout",
+  middleware: [verifySessionMiddleware, authenticatedMiddleware],
   responses: {
-    [HTTP_STATUS_CODES.OK]: genericMessageContent,
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+    [HTTP_STATUS_CODES.UNAUTHORIZED]: genericMessageContent,
   },
 });

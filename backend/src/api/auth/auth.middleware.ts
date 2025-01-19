@@ -1,8 +1,9 @@
 import { createMiddleware } from "hono/factory";
 
 import { validateRequest } from "./auth.utils.js";
+import type { AppBindings } from "../../lib/create-app.js";
 
-export const verifySessionMiddleware = createMiddleware(async (c, next) => {
+export const verifySessionMiddleware = createMiddleware<AppBindings>(async (c, next) => {
   const { session, user } = await validateRequest(c);
 
   if (session) {
@@ -13,7 +14,7 @@ export const verifySessionMiddleware = createMiddleware(async (c, next) => {
   return next();
 });
 
-export const authenticatedMiddleware = createMiddleware(async (c, next) => {
+export const authenticatedMiddleware = createMiddleware<AppBindings>(async (c, next) => {
   const user = c.get("user");
 
   if (!user) {

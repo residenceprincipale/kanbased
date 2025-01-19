@@ -23,6 +23,7 @@ import {
   setSession,
   verifyPassword,
 } from "./auth.utils.js";
+import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const authRouter = createRouter();
 
@@ -91,18 +92,16 @@ const authRouter = createRouter();
 //   return c.json({ email: user.email, name: user.name }, 200);
 // });
 
-// authRouter.openapi(authRoutes.logoutRoute, async (c) => {
-//   const session = c.get("session");
+// TODO: Fix type errors
+authRouter.openapi(authRoutes.logoutRoute, async (c) => {
+  const session = c.get("session");
 
-//   if (!session) {
-//     return c.json({ message: "Un authorized" }, 401);
-//   }
+  await invalidateSession(session.id);
 
-//   await invalidateSession(session.id);
-//   deleteSessionTokenCookie(c);
+  deleteSessionTokenCookie(c);
 
-//   return c.json({}, 200);
-// });
+  return c.json({}, HTTP_STATUS_CODES.OK);
+});
 
 authRouter.openapi(authRoutes.loginGoogleRoute, async (c) => {
   const state = generateState();
