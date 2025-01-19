@@ -7,9 +7,8 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  const {
-    auth: { user },
-  } = Route.useRouteContext();
+  const routeCtx = Route.useRouteContext();
+  const user = routeCtx.auth?.user;
 
   return (
     <div className="flex height-screen items-center justify-center">

@@ -46,16 +46,13 @@ function DefaultPendingComponent() {
 }
 
 function App() {
-  const { data, isLoading, error } = api.useQuery(
-    "get",
-    "/current-user",
-    undefined,
-    { staleTime: 0 }
-  );
+  const { data, isLoading } = api.useQuery("get", "/current-user", undefined, {
+    staleTime: 0,
+    retry: 0,
+  });
 
-  if (isLoading) return <DefaultPendingComponent />;
-
-  if (!data || error) return <div>Error!</div>;
+  // TODO: handle this better
+  if (isLoading) return;
 
   return <RouterProvider router={router} context={{ auth: data }} />;
 }
