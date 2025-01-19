@@ -1,20 +1,11 @@
 "use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -27,12 +18,27 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import { Route } from "@/routes/__root";
+import { api } from "@/lib/openapi-react-query";
+import { router } from "@/main";
+import { toast } from "sonner";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const {
-    auth: { user },
-  } = Route.useRouteContext();
+  const routeCtx = Route.useRouteContext();
+  const user = routeCtx?.auth?.user;
+  const logoutMutation = api.useMutation("post", "/auth/logout", {
+    onSuccess: () => {
+      router.navigate({ to: "/auth/login" });
+    },
+  });
+
+  const handleLogout = () => {
+    toast.promise(() => logoutMutation.mutateAsync({}), {
+      loading: "Logging out...",
+      success: "Logged out successfully",
+      error: "Failed to log out",
+    });
+  };
 
   return (
     <SidebarMenu>
@@ -56,7 +62,7 @@ export function NavUser() {
                 <span className="truncate font-semibold">
                   {user.displayName}
                 </span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -80,12 +86,12 @@ export function NavUser() {
                     {user.displayName}
                   </span>
                   {/* TODO: add email */}
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate text-xs">{user?.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

@@ -20,10 +20,7 @@ function HomeComponent() {
 
         <div>
           <h2 className="mb-4">
-            Welcome{" "}
-            <span className="font-medium">
-              {user?.displayName?.split(" ")[0]}!
-            </span>{" "}
+            Welcome <span className="font-medium">{user?.displayName}!</span>{" "}
           </h2>
           <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
             <h2>Quick links</h2>
