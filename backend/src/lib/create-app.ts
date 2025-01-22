@@ -112,6 +112,7 @@ export default function createApp() {
             ? err.message
             : "An unexpected error occurred.",
       stack: err instanceof Error && isDevelopment ? err.stack : undefined,
+      statusCode,
     };
 
     isDevelopment && c.var.logger.error(err);

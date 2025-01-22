@@ -9,6 +9,8 @@ import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
 import { api } from "@/lib/openapi-react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { router } from "@/main";
 const TanStackRouterDevtools =
   // @ts-ignore
   process.env.NODE_ENV === "production"
@@ -33,6 +35,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootComponent() {
+  const { authQueryOptions } = Route.useRouteContext();
+  useSuspenseQuery(authQueryOptions);
+
   return (
     <AppContextProvider>
       <ScrollRestoration />

@@ -2,6 +2,7 @@ import { createMiddleware } from "hono/factory";
 
 import { validateRequest } from "./auth.utils.js";
 import type { AppBindings } from "../../lib/create-app.js";
+import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 export const verifySessionMiddleware = createMiddleware<AppBindings>(async (c, next) => {
   const { session, user } = await validateRequest(c);
@@ -18,7 +19,7 @@ export const authenticatedMiddleware = createMiddleware<AppBindings>(async (c, n
   const user = c.get("user");
 
   if (!user) {
-    return c.json({ message: "Un-authorized access" }, 401);
+    return c.json({ message: "Un-authorized access", statusCode: HTTP_STATUS_CODES.UNAUTHORIZED }, HTTP_STATUS_CODES.UNAUTHORIZED);
   }
 
   return next();
