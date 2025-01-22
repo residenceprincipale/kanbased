@@ -9,8 +9,8 @@ import { idbPersister, queryClient } from "@/lib/query-client";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 
 import "./tailwind.css";
-import { Spinner } from "@/components/ui/spinner";
-import { api } from "@/lib/openapi-react-query";
+import { useIsRestoring } from "@tanstack/react-query";
+import { DefaultPendingComponent } from "@/components/default-loader";
 
 // Set up a Router instance
 export const router = createRouter({
@@ -23,9 +23,6 @@ export const router = createRouter({
   defaultPendingMs: 0,
   defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
   defaultPendingComponent: DefaultPendingComponent,
-  context: {
-    auth: undefined!,
-  },
 });
 
 // Register things for typesafety
@@ -37,24 +34,8 @@ declare module "@tanstack/react-router" {
 
 const rootElement = document.getElementById("app")!;
 
-function DefaultPendingComponent() {
-  return (
-    <div className="grid place-content-center w-full mt-8">
-      <Spinner size="lg" />
-    </div>
-  );
-}
-
 function App() {
-  const { data, isLoading } = api.useQuery("get", "/current-user", undefined, {
-    staleTime: 0,
-    retry: 0,
-  });
-
-  // TODO: handle this better
-  if (isLoading) return;
-
-  return <RouterProvider router={router} context={{ auth: data }} />;
+  return <RouterProvider router={router} />;
 }
 
 if (!rootElement.innerHTML) {
@@ -64,7 +45,15 @@ if (!rootElement.innerHTML) {
       client={queryClient}
       persistOptions={{ persister: idbPersister, maxAge: Infinity }}
     >
-      <App />
+      <AppWrapper>
+        <App />
+      </AppWrapper>
     </PersistQueryClientProvider>
   );
+}
+
+function AppWrapper(props: React.PropsWithChildren) {
+  const isRestoring = useIsRestoring();
+  if (isRestoring) return null;
+  return props.children;
 }

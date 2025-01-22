@@ -17,15 +17,14 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Route } from "@/routes/__root";
 import { api } from "@/lib/openapi-react-query";
 import { router } from "@/main";
 import { toast } from "sonner";
+import { useUser } from "@/hooks/use-user";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const routeCtx = Route.useRouteContext();
-  const user = routeCtx?.auth?.user;
+  const user = useUser();
   const logoutMutation = api.useMutation("post", "/auth/logout", {
     onSuccess: () => {
       router.navigate({ to: "/auth/login" });

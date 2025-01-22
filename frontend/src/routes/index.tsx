@@ -1,3 +1,4 @@
+import { useUser } from "@/hooks/use-user";
 import { routeMap } from "@/lib/constants";
 import { Link } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
@@ -7,8 +8,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomeComponent() {
-  const routeCtx = Route.useRouteContext();
-  const user = routeCtx.auth?.user;
+  const user = useUser();
 
   return (
     <div className="flex height-screen items-center justify-center">
@@ -20,7 +20,7 @@ function HomeComponent() {
 
         <div>
           <h2 className="mb-4">
-            Welcome <span className="font-medium">{user?.displayName}!</span>{" "}
+            Welcome <span className="font-medium">{user.displayName}!</span>{" "}
           </h2>
           <nav className="flex flex-col items-center justify-center gap-4 rounded-3xl border border-gray-200 p-6 dark:border-gray-700">
             <h2>Quick links</h2>

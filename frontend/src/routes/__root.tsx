@@ -7,8 +7,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
-import { Api200Response } from "@/types/type-helpers";
 
+import { api } from "@/lib/openapi-react-query";
 const TanStackRouterDevtools =
   // @ts-ignore
   process.env.NODE_ENV === "production"
@@ -21,12 +21,15 @@ const TanStackRouterDevtools =
           // default: res.TanStackRouterDevtoolsPanel
         }))
       );
-interface MyRouterContext {
-  auth: Api200Response<"/current-user", "get">;
-}
+
+interface MyRouterContext {}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
+  context: () => {
+    const authQueryOptions = api.queryOptions("get", "/current-user");
+    return { authQueryOptions };
+  },
 });
 
 function RootComponent() {

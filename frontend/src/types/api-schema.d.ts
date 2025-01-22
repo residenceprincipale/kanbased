@@ -37,6 +37,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -150,6 +151,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -169,6 +171,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -179,6 +182,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -221,6 +225,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -231,6 +236,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -250,6 +256,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -260,6 +267,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -321,6 +329,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -340,6 +349,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -350,6 +360,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -405,6 +416,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -415,6 +427,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -434,6 +447,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -444,6 +458,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -489,6 +504,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -508,6 +524,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -518,6 +535,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -583,6 +601,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -602,6 +621,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -612,6 +632,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -655,6 +676,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -674,6 +696,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -684,6 +707,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -740,6 +764,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -759,6 +784,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -769,6 +795,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -825,6 +852,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -844,6 +872,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -854,6 +883,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -903,6 +933,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -922,6 +953,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -932,6 +964,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -974,6 +1007,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
@@ -993,6 +1027,7 @@ export interface paths {
                                 }[];
                                 name: string;
                             };
+                            statusCode: number;
                         };
                     };
                 };
@@ -1003,6 +1038,7 @@ export interface paths {
                     content: {
                         "application/json": {
                             message: string;
+                            statusCode: number;
                         };
                     };
                 };
