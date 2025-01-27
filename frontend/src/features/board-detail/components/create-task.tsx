@@ -1,19 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateTaskMutation } from "@/features/board-detail/columns/queries";
+import { useCreateTaskMutation } from "@/features/board-detail/queries/tasks";
 import { getId } from "@/lib/utils";
+import { QueryKey } from "@tanstack/react-query";
 import { useRef, type FormEvent } from "react";
 
 export type CreateCardProps = {
   columnId: string;
   nextPosition: number;
   onComplete: () => void;
+  columnsQueryKey: QueryKey;
 };
 
 export function CreateCard(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const createTaskMutation = useCreateTaskMutation();
+  const createTaskMutation = useCreateTaskMutation({
+    columnsQueryKey: props.columnsQueryKey,
+  });
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();

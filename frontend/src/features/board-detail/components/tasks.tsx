@@ -1,24 +1,23 @@
 import React, { memo, useCallback, useRef, useState } from "react";
 import { flushSync } from "react-dom";
-import { CreateCard } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/create-task";
 import { Button } from "@/components/ui/button";
-import { ColumnsQueryData } from "@/features/board-detail/columns/queries";
-import {
-  Task,
-  TaskProps,
-} from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/task";
 import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { useOverflowDetector } from "react-detectable-overflow";
-
-export type Tasks = ColumnsQueryData["columns"][number]["tasks"];
+import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
+import { Task } from "@/features/board-detail/components/task";
+import { CreateCard } from "@/features/board-detail/components/create-task";
+import { QueryKey } from "@tanstack/react-query";
 
 type TasksProps = {
-  tasks: Tasks;
+  tasks: ColumnsWithTasksQueryData["columns"][number]["tasks"];
   columnId: string;
+  columnsQueryKey: QueryKey;
 };
 
-function TaskList(props: TasksProps & { lastTaskRef: TaskProps["taskRef"] }) {
+function TaskList(
+  props: TasksProps & { lastTaskRef: (node: HTMLElement | null) => void }
+) {
   return (
     <>
       {[...props.tasks]
@@ -92,6 +91,7 @@ export function Tasks(props: TasksProps) {
                   columnId={props.columnId}
                   lastTaskRef={lastTaskRef}
                   tasks={props.tasks}
+                  columnsQueryKey={props.columnsQueryKey}
                 />
 
                 {droppableProvided.placeholder}
@@ -113,6 +113,7 @@ export function Tasks(props: TasksProps) {
             onComplete={() => {
               setShowAddTask(false);
             }}
+            columnsQueryKey={props.columnsQueryKey}
           />
         ) : (
           <Button

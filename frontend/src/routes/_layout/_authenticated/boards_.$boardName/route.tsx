@@ -1,63 +1,37 @@
-'use client'
-import { Columns } from '@/features/board-detail/components/columns'
+"use client";
+import { Columns } from "@/features/board-detail/components/columns";
 
-import { createFileRoute } from '@tanstack/react-router'
-import { queryClient } from '@/lib/query-client'
-import { Button } from '@/components/ui/button'
-import { columnsQueryOptions } from '@/lib/query-options-factory'
-import { CirclePlus } from 'lucide-react'
-import {
-  TooltipContent,
-  TooltipRoot,
-  TooltipTrigger,
-} from '@/components/ui/tooltip'
-import { columnStore } from '@/features/board-detail/columns/state'
+import { createFileRoute } from "@tanstack/react-router";
+import { queryClient } from "@/lib/query-client";
+import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { ModalProvider } from "@/state/modals";
+import { CreateColumnButton } from "@/features/board-detail/components/create-column-button";
 
 export const Route = createFileRoute(
-  '/_layout/_authenticated/boards_/$boardName',
+  "/_layout/_authenticated/boards_/$boardName"
 )({
   component: BoardPage,
   loader: async (ctx) => {
-    await queryClient.prefetchQuery({
-      ...ctx.context.columnsQueryOptions,
-      staleTime: 1000 * 60 * 2, // 2 minutes
-    })
+    const { boardName } = ctx.params;
+    await queryClient.prefetchQuery(columnsQueryOptions(boardName));
   },
-  // I don't know why the returned value is not type safe
-  // when I use the ctx in the context function
-  context: (ctx: any) => {
-    const columnsQueryOptions = columnsQueryOptions(ctx.params.boardName)
-    return {
-      columnsQueryOptions,
-    }
-  },
-})
+});
 
 function BoardPage() {
-  const { boardName } = Route.useParams()
+  const { boardName } = Route.useParams();
 
   return (
-    <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
-      <div className="flex gap-5 items-center shrink-0 px-8">
-        <h1 className="text-2xl font-bold">{boardName}</h1>
-        <TooltipRoot>
-          <TooltipTrigger asChild>
-            <Button
-              onClick={() => columnStore.send({ type: 'createColumn' })}
-              size="icon"
-              className="w-10 h-9"
-              aria-label="Add column"
-            >
-              <CirclePlus size={24} />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom">Create column</TooltipContent>
-        </TooltipRoot>
-      </div>
+    <ModalProvider>
+      <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
+        <div className="flex gap-5 items-center shrink-0 px-8">
+          <h1 className="text-2xl font-bold">{boardName}</h1>
+          <CreateColumnButton />
+        </div>
 
-      <div className="flex-1 h-full min-h-0">
-        <Columns />
-      </div>
-    </main>
-  )
+        <div className="flex-1 h-full min-h-0">
+          <Columns boardName={boardName} />
+        </div>
+      </main>
+    </ModalProvider>
+  );
 }

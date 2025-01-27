@@ -1,19 +1,26 @@
-import { Tasks } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/tasks";
 import { ColumnWrapper } from "@/components/column-ui";
-import { ColumnsQueryData } from "@/features/board-detail/columns/queries";
 import { Draggable } from "@hello-pangea/dnd";
 import { GripVertical } from "lucide-react";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { EditableColumnName } from "@/features/board-detail/components/editable-column-name";
+import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
+import { Tasks } from "@/features/board-detail/components/tasks";
+import { QueryKey } from "@tanstack/react-query";
 
 type ColumnProps = {
-  column: ColumnsQueryData["columns"][number];
+  column: ColumnsWithTasksQueryData["columns"][number];
   index: number;
   columnRef?: (node: HTMLElement | null) => void;
+  columnsQueryKey: QueryKey;
 };
 
-export function Column({ column, index, columnRef }: ColumnProps) {
+export function Column({
+  column,
+  index,
+  columnRef,
+  columnsQueryKey,
+}: ColumnProps) {
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => {
@@ -34,16 +41,22 @@ export function Column({ column, index, columnRef }: ColumnProps) {
               <EditableColumnName
                 columnName={column.name}
                 columnId={column.id}
+                columnsQueryKey={columnsQueryKey}
               />
 
               <button
                 className="cursor-grab text-muted-foreground w-10 grid place-content-center h-10 hover:text-foreground shrink-0 hover:bg-gray-a-4 active:bg-gray-a-4 rounded-full active:cursor-grabbing"
                 {...provided.dragHandleProps}
+                type="button"
               >
                 <GripVertical size={20} />
               </button>
             </div>
-            <Tasks tasks={column.tasks} columnId={column.id} />
+            <Tasks
+              tasks={column.tasks}
+              columnId={column.id}
+              columnsQueryKey={columnsQueryKey}
+            />
           </ColumnWrapper>
         );
       }}

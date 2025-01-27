@@ -2,28 +2,28 @@ import { Column } from "@/features/board-detail/components/column";
 import { useCallback, useRef } from "react";
 import { CreateColumn } from "@/features/board-detail/components/create-column";
 import {
-  transformColumnsQuery,
-  useMoveColumnsMutation,
-  useMoveTasksMutation,
-} from "@/features/board-detail/columns/queries";
-import {
   DragDropContext,
   Droppable,
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
-import { Route } from "@/routes/_authenticated/boards_.$boardName/route";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useColumnsSuspenseQuery,
+  useMoveColumnsMutation,
+} from "@/features/board-detail/queries/columns";
+import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { useMoveTasksMutation } from "@/features/board-detail/queries/tasks";
+import {
+  useColumnModalControls,
+  useColumnModalState,
+} from "@/features/board-detail/state/column";
 
-export function Columns() {
-  const { columnsQueryOptions } = Route.useRouteContext();
-  const { data } = useSuspenseQuery({
-    ...columnsQueryOptions,
-    select: transformColumnsQuery,
-  });
-  const moveColumnsMutation = useMoveColumnsMutation();
-  const moveTasksMutation = useMoveTasksMutation();
+export function Columns(props: { boardName: string }) {
+  const { data } = useColumnsSuspenseQuery({ boardName: props.boardName });
+  const columnsQueryKey = columnsQueryOptions(props.boardName).queryKey;
+  const moveColumnsMutation = useMoveColumnsMutation({ columnsQueryKey });
+  const moveTasksMutation = useMoveTasksMutation({ columnsQueryKey });
   const containerRef = useRef<HTMLDivElement>(null);
-
+  const { closeModal } = useColumnModalControls();
   const columns = data.columns;
 
   const lastColumnRef = useCallback((node: HTMLElement | null) => {
@@ -141,6 +141,7 @@ export function Columns() {
                 {columns.map((column, i, arr) => (
                   <Column
                     column={column}
+                    columnsQueryKey={columnsQueryKey}
                     columnRef={arr.length - 1 === i ? lastColumnRef : undefined}
                     index={i}
                     key={column.id}
@@ -149,17 +150,31 @@ export function Columns() {
                 {provided.placeholder}
               </div>
 
-              <CreateColumn
-                data={{
-                  boardId: data.boardId,
-                  nextPosition:
-                    (columns[columns.length - 1]?.position ?? 0) + 1,
-                }}
-              />
+              <CreateColumnModalGate>
+                <CreateColumn
+                  data={{
+                    boardId: data.boardId,
+                    boardName: props.boardName,
+                    nextPosition:
+                      (columns[columns.length - 1]?.position ?? 0) + 1,
+                  }}
+                  onClose={closeModal}
+                />
+              </CreateColumnModalGate>
             </div>
           );
         }}
       </Droppable>
     </DragDropContext>
   );
+}
+
+function CreateColumnModalGate(props: React.PropsWithChildren) {
+  const { activeModal } = useColumnModalState();
+
+  if (activeModal?.type !== "create-column") {
+    return null;
+  }
+
+  return props.children;
 }

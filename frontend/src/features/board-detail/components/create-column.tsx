@@ -2,26 +2,25 @@ import { Button } from "@/components/ui/button";
 import { ColumnWrapper } from "@/components/column-ui";
 import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
-import { useCreateColumnMutation } from "@/features/board-detail/columns/queries";
 import { getId } from "@/lib/utils";
-import { useSelector } from "@xstate/store/react";
-import { columnStore } from "@/features/board-detail/columns/state";
+import { useCreateColumnMutation } from "@/features/board-detail/queries/columns";
+import { columnsQueryOptions } from "@/lib/query-options-factory";
 
 export type CreateColumnProps = {
   data: {
     boardId: string;
+    boardName: string;
     nextPosition: number;
   };
+  onClose: () => void;
 };
 
 export function CreateColumn(props: CreateColumnProps) {
-  const action = useSelector(columnStore, (state) => state.context.action);
-  const createColumnMutation = useCreateColumnMutation();
-  const { data } = props;
+  const createColumnMutation = useCreateColumnMutation({
+    columnsQueryKey: columnsQueryOptions(props.data.boardName).queryKey,
+  });
 
-  if (action?.type !== "create-column") {
-    return null;
-  }
+  const { data } = props;
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
@@ -44,7 +43,7 @@ export function CreateColumn(props: CreateColumnProps) {
   };
 
   const handleClose = () => {
-    columnStore.send({ type: "clearAction" });
+    props.onClose();
   };
 
   return (

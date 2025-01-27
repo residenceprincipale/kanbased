@@ -1,13 +1,10 @@
 import { useForceUpdate } from "@/hooks/use-force-update";
 import { api } from "@/lib/openapi-react-query";
-import { queryClient } from "@/lib/query-client";
-import { Route } from "@/routes/_authenticated/boards_.$boardName/route";
-import { Api200Response } from "@/types/type-helpers";
+import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { ColumnsWithTasksResponse } from "@/types/api-response-types";
+import { QueryKey, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 
-export type ColumnsQueryResponse = Api200Response<"/columns", "get">;
-
-
-export function transformColumnsQuery(data: ColumnsQueryResponse) {
+function transformColumnsQuery(data: ColumnsWithTasksResponse) {
   type ColumnWithTasks = (typeof data.columns)[number] & {
     tasks: typeof data.tasks;
   };
@@ -33,13 +30,18 @@ export function transformColumnsQuery(data: ColumnsQueryResponse) {
   };
 }
 
-export type ColumnsQueryData = ReturnType<typeof transformColumnsQuery>;
+export type ColumnsWithTasksQueryData = ReturnType<typeof transformColumnsQuery>;
 
-export function useCreateColumnMutation() {
-  const columnsQueryOptions = Route.useRouteContext({
-    select: (state) => state.columnsQueryOptions,
+export function useColumnsSuspenseQuery(params: { boardName: string }) {
+  return useSuspenseQuery({
+    ...columnsQueryOptions(params.boardName),
+    select: transformColumnsQuery,
   });
-  const queryKey = columnsQueryOptions.queryKey;
+}
+
+export function useCreateColumnMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
   const mutationKey = ["post", "/columns"];
 
   return api.useMutation("post", "/columns", {
@@ -51,7 +53,7 @@ export function useCreateColumnMutation() {
 
       queryClient.setQueryData(
         queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
           return {
             ...oldData,
             columns: [
@@ -67,28 +69,25 @@ export function useCreateColumnMutation() {
         }
       );
 
-      return { previousData };
-    },
-
-    onError: (err, variables, context: any) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
       }
+    },
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
     },
     onSettled: () => {
       const isMutating = queryClient.isMutating({ mutationKey });
       if (isMutating <= 1) {
-        return queryClient.invalidateQueries({ queryKey });
+        queryClient.invalidateQueries({ queryKey });
       }
     },
   });
 }
 
-export function useMoveColumnsMutation() {
-  const columnsQueryOptions = Route.useRouteContext({
-    select: (state) => state.columnsQueryOptions,
-  });
-  const queryKey = columnsQueryOptions.queryKey;
+export function useMoveColumnsMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
   const mutationKey = ["put", "/columns"];
   const forceUpdate = useForceUpdate();
 
@@ -102,7 +101,7 @@ export function useMoveColumnsMutation() {
 
       queryClient.setQueryData(
         queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
           return {
             ...oldData,
             columns: oldData.columns.map((col) => {
@@ -115,141 +114,33 @@ export function useMoveColumnsMutation() {
         }
       );
 
+      // Don't know why, but the columns are not updated immediately after the move mutation.
+      // So we need to force update the component to reflect the changes.
       forceUpdate();
 
-      return { previousData };
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
     },
 
-    onError: (err, variables, context: any) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
-      }
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
     },
     onSettled: () => {
       const isMutating = queryClient.isMutating({ mutationKey });
       if (isMutating <= 1) {
-        return queryClient.invalidateQueries({ queryKey });
+        queryClient.invalidateQueries({ queryKey });
       }
     },
   });
 }
 
-export function useCreateTaskMutation() {
-  const columnsQueryOptions = Route.useRouteContext({
-    select: (state) => state.columnsQueryOptions,
-  });
-  const queryKey = columnsQueryOptions.queryKey;
-  const mutationKey = ["post", "/tasks"];
-
-  return api.useMutation("post", "/tasks", {
-    onMutate: async (variables) => {
-      // Cancel any on-going request as it may accidentally update the cache.
-      await queryClient.cancelQueries({ queryKey });
-
-      const previousData = queryClient.getQueryData(queryKey);
-
-      queryClient.setQueryData(
-        queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
-          return {
-            ...oldData,
-            tasks: [
-              ...oldData.tasks,
-              {
-                columnId: variables.body.columnId,
-                id: variables.body.id,
-                name: variables.body.name,
-                position: variables.body.position,
-              },
-            ],
-          };
-        }
-      );
-
-      return { previousData };
-    },
-
-    onError: (err, variables, context: any) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
-      }
-    },
-    onSettled: () => {
-      const isMutating = queryClient.isMutating({ mutationKey });
-      if (isMutating <= 1) {
-        return queryClient.invalidateQueries({ queryKey });
-      }
-    },
-  });
-}
-
-export function useMoveTasksMutation() {
-  const columnsQueryOptions = Route.useRouteContext({
-    select: (state) => state.columnsQueryOptions,
-  });
-  const forceUpdate = useForceUpdate();
-  const queryKey = columnsQueryOptions.queryKey;
-  const mutationKey = ["put", "/tasks/{id}"];
-
-  return api.useMutation("put", "/tasks", {
-    onMutate: async (variables) => {
-      // Cancel any on-going request as it may accidentally update the cache.
-      await queryClient.cancelQueries({ queryKey });
-
-      const previousData = queryClient.getQueryData(queryKey);
-
-      const taskPositionMap = new Map<
-        string,
-        { columnId: string; position: number }
-      >(
-        variables.body.map((task) => [
-          task.id,
-          { columnId: task.columnId, position: task.position },
-        ])
-      );
-
-      queryClient.setQueryData(
-        queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
-          return {
-            ...oldData,
-            tasks: oldData.tasks.map((task) =>
-              taskPositionMap.has(task.id)
-                ? { ...task, ...taskPositionMap.get(task.id) }
-                : task
-            ),
-          };
-        }
-      );
-
-      forceUpdate();
-
-      return { previousData };
-    },
-
-    onError: (err, variables, context: any) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
-      }
-    },
-    onSettled: () => {
-      const isMutating = queryClient.isMutating({ mutationKey });
-      if (isMutating <= 1) {
-        return queryClient.invalidateQueries({ queryKey });
-      }
-    },
-  });
-}
-
-export function useEditColumnMutation({
-  afterOptimisticUpdate,
-}: {
+export function useEditColumnMutation(params: {
+  columnsQueryKey: QueryKey;
   afterOptimisticUpdate?: () => void;
 }) {
-  const columnsQueryOptions = Route.useRouteContext({
-    select: (state) => state.columnsQueryOptions,
-  });
-  const queryKey = columnsQueryOptions.queryKey;
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
 
   return api.useMutation("patch", "/columns/{columnId}", {
     onMutate: async (variables) => {
@@ -259,7 +150,7 @@ export function useEditColumnMutation({
 
       queryClient.setQueryData(
         queryKey,
-        (oldData: ColumnsQueryResponse): ColumnsQueryResponse => {
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
           return {
             ...oldData,
             columns: oldData.columns.map((column) =>
@@ -271,15 +162,15 @@ export function useEditColumnMutation({
         }
       );
 
-      afterOptimisticUpdate?.();
+      params.afterOptimisticUpdate?.();
 
-      return { previousData };
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
     },
 
-    onError: (err, variables, context: any) => {
-      if (context?.previousData) {
-        queryClient.setQueryData(queryKey, context.previousData);
-      }
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
     },
   });
 }

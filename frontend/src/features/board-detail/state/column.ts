@@ -1,26 +1,10 @@
-import { createStore } from "@xstate/store";
+import { useModalControls, useModalState } from "@/state/modals"
 
-type CreateColumnAction = {
-  type: "create-column";
-};
+export interface CreateColumnModal {
+  type: 'create-column'
+}
 
-type Action = CreateColumnAction | null;
-type ColumnContext = {
-  action: Action;
-};
+type ColumnModalState = CreateColumnModal | null;
 
-const columnContext: ColumnContext = {
-  action: null,
-};
-
-export const columnStore = createStore({
-  context: columnContext,
-  on: {
-    createColumn: {
-      action: { type: 'create-column' }
-    },
-    clearAction: {
-      action: null
-    }
-  },
-});
+export const useColumnModalState = useModalState<ColumnModalState>;
+export const useColumnModalControls = useModalControls<ColumnModalState>;
