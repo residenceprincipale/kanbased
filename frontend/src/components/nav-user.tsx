@@ -20,11 +20,12 @@ import {
 import { api } from "@/lib/openapi-react-query";
 import { router } from "@/main";
 import { toast } from "sonner";
-import { useUser } from "@/hooks/use-user";
+import { useSession } from "@/queries/session";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const user = useUser();
+  const session = useSession();
+  const user = session?.user!;
   const logoutMutation = api.useMutation("post", "/auth/logout", {
     onSuccess: () => {
       router.navigate({ to: "/auth/login" });

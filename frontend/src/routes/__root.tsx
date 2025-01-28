@@ -12,6 +12,7 @@ import { api } from "@/lib/openapi-react-query";
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { router } from "@/main";
 import { DefaultPendingComponent } from "@/components/default-loader";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
 const TanStackRouterDevtools =
   // @ts-ignore
   process.env.NODE_ENV === "production"
@@ -29,15 +30,10 @@ interface MyRouterContext {}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
-  context: () => {
-    const authQueryOptions = api.queryOptions("get", "/current-user");
-    return { authQueryOptions };
-  },
 });
 
 function RootComponent() {
-  const { authQueryOptions } = Route.useRouteContext();
-  const { isLoading } = useQuery(authQueryOptions);
+  const { isLoading } = useQuery(sessionQueryOptions);
 
   if (isLoading) {
     return <DefaultPendingComponent />;

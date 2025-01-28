@@ -1,0 +1,176 @@
+import { useForceUpdate } from "@/hooks/use-force-update";
+import { api } from "@/lib/openapi-react-query";
+import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { ColumnsWithTasksResponse } from "@/types/api-response-types";
+import { QueryKey, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+
+function transformColumnsQuery(data: ColumnsWithTasksResponse) {
+  type ColumnWithTasks = (typeof data.columns)[number] & {
+    tasks: typeof data.tasks;
+  };
+  const columnWithTasksMap = new Map<string, ColumnWithTasks>();
+
+  for (let column of data.columns) {
+    columnWithTasksMap.set(column.id, Object.assign(column, { tasks: [] }));
+  }
+
+  for (let task of data.tasks) {
+    if (columnWithTasksMap.has(task.columnId)) {
+      const tasks = columnWithTasksMap.get(task.columnId)!.tasks;
+      tasks.push(task);
+    }
+  }
+
+  return {
+    boardId: data.boardId,
+    boardName: data.boardName,
+    columns: Array.from(columnWithTasksMap.values()).sort(
+      (a, b) => a.position - b.position
+    ),
+  };
+}
+
+export type ColumnsWithTasksQueryData = ReturnType<typeof transformColumnsQuery>;
+
+export function useColumnsSuspenseQuery(params: { boardName: string }) {
+  return useSuspenseQuery({
+    ...columnsQueryOptions(params.boardName),
+    select: transformColumnsQuery,
+  });
+}
+
+export function useCreateColumnMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+  const mutationKey = ["post", "/columns"];
+
+  return api.useMutation("post", "/columns", {
+    onMutate: async (variables) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          return {
+            ...oldData,
+            columns: [
+              ...oldData.columns,
+              {
+                boardId: oldData.boardId,
+                id: variables.body.id!,
+                name: variables.body.name,
+                position: variables.body.position,
+              },
+            ],
+          };
+        }
+      );
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+}
+
+export function useMoveColumnsMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+  const mutationKey = ["put", "/columns"];
+  const forceUpdate = useForceUpdate();
+
+  return api.useMutation("patch", "/columns/reorder", {
+    onMutate: async (variables) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData(queryKey);
+      const updatedColPositions = variables.body;
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          return {
+            ...oldData,
+            columns: oldData.columns.map((col) => {
+              const updatedPosition = updatedColPositions.find(
+                (updatedCol) => updatedCol.id === col.id
+              )?.position;
+              return { ...col, position: updatedPosition ?? col.position };
+            }),
+          };
+        }
+      );
+
+      // Don't know why, but the columns are not updated immediately after the move mutation.
+      // So we need to force update the component to reflect the changes.
+      forceUpdate();
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+}
+
+export function useEditColumnMutation(params: {
+  columnsQueryKey: QueryKey;
+  afterOptimisticUpdate?: () => void;
+}) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+
+  return api.useMutation("patch", "/columns/{columnId}", {
+    onMutate: async (variables) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          return {
+            ...oldData,
+            columns: oldData.columns.map((column) =>
+              column.id === variables.params.path.columnId
+                ? { ...column, name: variables.body.name }
+                : column
+            ),
+          };
+        }
+      );
+
+      params.afterOptimisticUpdate?.();
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+  });
+}

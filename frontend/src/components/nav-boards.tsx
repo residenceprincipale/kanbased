@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, Icon, KanbanSquare } from "lucide-react";
+import { ChevronRight, KanbanSquare } from "lucide-react";
 import { useState } from "react";
 import {
   Collapsible,
@@ -16,19 +16,14 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Route } from "@/routes/_authenticated/_board-layout";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { Link } from "@tanstack/react-router";
+import { boardsQueryOptions } from "@/lib/query-options-factory";
 
 export function NavBoards() {
   const [open, setOpen] = useState(true);
-  const { boardsQueryOptions } = Route.useRouteContext();
-  const {
-    data: boards,
-    isLoading,
-    isError,
-  } = useQuery({ ...boardsQueryOptions, enabled: open });
+  const { data: boards, isLoading, isError } = useQuery(boardsQueryOptions);
 
   return (
     <SidebarGroup>
