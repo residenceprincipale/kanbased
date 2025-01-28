@@ -22,7 +22,7 @@ function BoardPage() {
 
   return (
     <ModalProvider>
-      <main className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
+      <div className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
         <div className="flex gap-5 items-center shrink-0 px-8">
           <h1 className="text-2xl font-bold">{boardName}</h1>
           <CreateColumnButton />
@@ -31,7 +31,7 @@ function BoardPage() {
         <div className="flex-1 h-full min-h-0">
           <Columns boardName={boardName} />
         </div>
-      </main>
+      </div>
     </ModalProvider>
   );
 }
