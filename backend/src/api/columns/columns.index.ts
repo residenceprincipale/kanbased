@@ -67,7 +67,7 @@ columnsRouter.openapi(routes.getColumnsRoute, async (c) => {
 
   if (!boards.length) {
     return c.json(
-      { message: `You do not have access to this resource` },
+      { message: `You do not have access to this resource`, statusCode: HTTP_STATUS_CODES.FORBIDDEN },
       HTTP_STATUS_CODES.FORBIDDEN
     );
   }

@@ -27,7 +27,7 @@ boardsRouter.openapi(routes.createBoardRoute, async (c) => {
 
   if (boards.length) {
     return c.json(
-      { message: "Board name must be unique" },
+      { message: "Board name must be unique", statusCode: HTTP_STATUS_CODES.BAD_REQUEST },
       HTTP_STATUS_CODES.BAD_REQUEST
     );
   }
@@ -118,7 +118,7 @@ boardsRouter.openapi(routes.editBoardRoute, async (c) => {
   } catch (err) {
     if (isUniqueConstraintError(err)) {
       return c.json(
-        { message: "Board name must be unique" },
+        { message: "Board name must be unique", statusCode: HTTP_STATUS_CODES.BAD_REQUEST },
         HTTP_STATUS_CODES.BAD_REQUEST
       );
     }
