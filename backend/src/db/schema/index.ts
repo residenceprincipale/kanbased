@@ -104,7 +104,7 @@ export const tasksTable = pgTable(
   "tasks",
   {
     id: t.uuid().primaryKey(),
-    name: t.varchar({ length: 100 }).notNull(),
+    name: t.text().notNull(),
     columnId: t
       .uuid()
       .references(() => columnsTable.id, { onDelete: "cascade" })
