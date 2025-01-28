@@ -30,6 +30,9 @@ jobs:
             echo "Removing old dist folder"
             rm -rf ./dist
 
+            echo "Running migrations"
+            pnpm run prod:db:migrate || exit
+
             echo "Building the app"
             pnpm run build || exit
 
