@@ -1,10 +1,10 @@
-import { Tasks } from "@/routes/_authenticated/_board-layout/boards_.$boardName/-route-impl/tasks";
 import { cn } from "@/lib/utils";
+import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { Draggable } from "@hello-pangea/dnd";
 import { memo, useCallback } from "react";
 
 export type TaskProps = {
-  task: Tasks[number];
+  task: ColumnsWithTasksResponse["tasks"][number];
   index: number;
   taskRef?: (node: HTMLElement | null) => void;
 };
@@ -22,7 +22,7 @@ function TaskComp(props: TaskProps) {
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="mb-3"
+          className="mb-3 !cursor-default"
         >
           <div
             className={cn(

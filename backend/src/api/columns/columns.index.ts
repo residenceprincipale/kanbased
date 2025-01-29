@@ -136,4 +136,15 @@ columnsRouter.openapi(routes.updateColumnRoute, async (c) => {
   );
 });
 
+columnsRouter.openapi(routes.deleteColumnRoute, async (c) => {
+  const userId = c.var.user.id;
+  const { columnId } = c.req.valid("param");
+
+  await checkResourceAccess(userId, columnId, "column", "admin");
+
+  await db.delete(columnsTable).where(eq(columnsTable.id, columnId));
+
+  return c.json({}, HTTP_STATUS_CODES.OK);
+});
+
 export default columnsRouter;

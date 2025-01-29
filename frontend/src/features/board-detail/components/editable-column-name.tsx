@@ -34,7 +34,7 @@ export function EditableColumnName(props: {
 
   if (edit) {
     return (
-      <form onSubmit={handleSubmit} className="flex-1 min-w-0 pl-2">
+      <form onSubmit={handleSubmit} className="flex-1 min-w-0">
         <input
           ref={inputRef}
           name={props.columnName}
@@ -61,7 +61,7 @@ export function EditableColumnName(props: {
         });
         inputRef?.current?.select();
       }}
-      className="text-lg font-semibold flex-1 pl-1 ml-2 text-left focus:outline-none focus:border-none focus:ring focus:ring-offset-2 focus:ring-offset-gray-2 focus:ring-ring rounded bg-inherit"
+      className="text-lg font-semibold flex-1 pl-1 text-left focus:outline-none focus:border-none focus:ring focus:ring-offset-2 focus:ring-offset-gray-2 focus:ring-ring rounded bg-inherit"
     >
       {props.columnName}
     </button>

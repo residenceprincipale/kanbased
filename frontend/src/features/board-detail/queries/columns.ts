@@ -2,7 +2,9 @@ import { useForceUpdate } from "@/hooks/use-force-update";
 import { api } from "@/lib/openapi-react-query";
 import { columnsQueryOptions } from "@/lib/query-options-factory";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
+import { paths } from "@/types/api-schema";
 import { QueryKey, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 function transformColumnsQuery(data: ColumnsWithTasksResponse) {
   type ColumnWithTasks = (typeof data.columns)[number] & {
@@ -171,6 +173,49 @@ export function useEditColumnMutation(params: {
 
     onError: (_err, _variables, rollback: any) => {
       rollback?.();
+    },
+  });
+}
+
+export function useDeleteColumnMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+
+  return api.useMutation("delete", "/columns/{columnId}", {
+    onMutate: async (variables: { params: { path: { columnId: string } } }) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          return {
+            ...oldData,
+            columns: oldData.columns.filter(
+              (column) => column.id !== variables.params.path.columnId
+            ),
+            tasks: oldData.tasks.filter(
+              (task) => task.columnId !== variables.params.path.columnId
+            ),
+          };
+        }
+      );
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      }
+    },
+
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+
+    onSuccess: () => {
+      toast.success("Column deleted successfully");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 }

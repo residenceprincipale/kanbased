@@ -78,3 +78,14 @@ export const updateColumnRoute = createRoute({
     [HTTP_STATUS_CODES.OK]: jsonContent(columnsSelectSchema.pick({ id: true, name: true })),
   }),
 });
+
+export const deleteColumnRoute = createRoute({
+  method: "delete",
+  path: "/columns/{columnId}",
+  request: {
+    params: z.object({ columnId: z.string() }),
+  },
+  responses: ResponseBuilder.withAuthAndValidation({
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+  }),
+});
