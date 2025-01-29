@@ -2,13 +2,14 @@ import { and, eq, inArray, sql, SQL } from "drizzle-orm";
 
 import { db } from "../../db/index.js";
 import {
+  boardPermissionsTable,
   boardsTable,
   columnsTable,
   tasksTable,
 } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import * as routes from './columns.routes.js';
-import { type GetColumnsResponse, } from "./columns.routes.js";
+import * as routes from "./columns.routes.js";
+import { type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { checkResourceAccess } from "../shared/board-permissions.utils.js";
 
@@ -20,9 +21,7 @@ columnsRouter.openapi(routes.createColumnRoute, async (c) => {
 
   await checkResourceAccess(userId, body.boardId, "board", "admin");
 
-  await db
-    .insert(columnsTable)
-    .values(body)
+  await db.insert(columnsTable).values(body);
 
   return c.json({}, HTTP_STATUS_CODES.CREATED);
 });
@@ -61,47 +60,58 @@ columnsRouter.openapi(routes.getColumnsRoute, async (c) => {
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
+    .innerJoin(
+      boardPermissionsTable,
+      eq(boardPermissionsTable.boardId, boardsTable.id)
+    )
     .where(
-      eq(boardsTable.name, params.boardName),
+      and(
+        eq(boardsTable.name, params.boardName),
+        eq(boardPermissionsTable.userId, userId)
+      )
     );
 
   if (!boards.length) {
     return c.json(
-      { message: `You do not have access to this resource`, statusCode: HTTP_STATUS_CODES.FORBIDDEN },
+      {
+        message: `You do not have access to this resource`,
+        statusCode: HTTP_STATUS_CODES.FORBIDDEN,
+      },
       HTTP_STATUS_CODES.FORBIDDEN
     );
   }
 
-  const boardId = boards[0]!.boardId;
+  const boardId = boards[0]?.boardId;
+  if (!boardId) {
+    return c.json(
+      {
+        message: `Invalid board data`,
+        statusCode: HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR,
+      },
+      HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR
+    );
+  }
 
-  await checkResourceAccess(userId, boardId, 'board', 'viewer');
+  await checkResourceAccess(userId, boardId, "board", "viewer");
 
-  const result = await db
+  // First get columns
+  const columns = await db
     .select()
     .from(columnsTable)
-    .where(eq(columnsTable.boardId, boardId))
-    .leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id));
+    .where(eq(columnsTable.boardId, boardId));
+
+  // Then get tasks for these columns
+  const tasks = await db
+    .select()
+    .from(tasksTable)
+    .where(inArray(tasksTable.columnId, columns.map(col => col.id)));
 
   const response: GetColumnsResponse = {
     boardId,
     boardName: params.boardName,
-    columns: [],
-    tasks: [],
+    columns,
+    tasks,
   };
-
-  const columnMap = new Map<string, GetColumnsResponse["columns"][number]>();
-
-  for (let item of result) {
-    if (!columnMap.has(item.columns.id)) {
-      columnMap.set(item.columns.id, item.columns);
-    }
-
-    if (item.tasks) {
-      response.tasks.push(item.tasks);
-    }
-  }
-
-  response.columns = Array.from(columnMap.values());
 
   return c.json(response, HTTP_STATUS_CODES.OK);
 });
@@ -114,10 +124,16 @@ columnsRouter.openapi(routes.updateColumnRoute, async (c) => {
 
   const body = c.req.valid("json");
 
-  const [updatedCol] = await db.update(columnsTable).set(body).where(eq(columnsTable.id, columnId)).returning();
+  const [updatedCol] = await db
+    .update(columnsTable)
+    .set(body)
+    .where(eq(columnsTable.id, columnId))
+    .returning();
 
-  return c.json({ id: updatedCol!.id, name: updatedCol!.name }, HTTP_STATUS_CODES.OK);
-
-})
+  return c.json(
+    { id: updatedCol!.id, name: updatedCol!.name },
+    HTTP_STATUS_CODES.OK
+  );
+});
 
 export default columnsRouter;

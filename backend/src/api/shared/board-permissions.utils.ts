@@ -97,21 +97,30 @@ export async function checkResourceAccess(
 
   const results = await query;
 
+  // Handle case where no results found
+  if (!results?.length) {
+    throwForbiddenErr();
+  }
+
   if (Array.isArray(resourceId)) {
-    // Check if we found all requested resources
-    if (results.length !== resourceId.length) {
+    // Create a Set of found resource IDs for O(1) lookup
+    const foundResourceIds = new Set(results.map(r => r.resourceId));
+
+    // Verify we got back the same number of results as requested IDs
+    if (foundResourceIds.size !== resourceId.length) {
       throwForbiddenErr();
     }
 
-    for (let id of resourceId) {
-      const isResourceExist = results.some(result => result.resourceId === id);
-      if (!isResourceExist) {
+    // Check if all requested IDs exist and have sufficient permissions
+    for (const id of resourceId) {
+      if (!foundResourceIds.has(id)) {
         throwForbiddenErr();
       }
     }
   }
 
-  for (let result of results) {
+  // Check permissions for all results
+  for (const result of results) {
     const hasPermission =
       permissionLevels[result.permission] >=
       permissionLevels[requiredPermission];
@@ -120,8 +129,6 @@ export async function checkResourceAccess(
       throwForbiddenErr();
     }
   }
-
-
 }
 
 function throwForbiddenErr() {
