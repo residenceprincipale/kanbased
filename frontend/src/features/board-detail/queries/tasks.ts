@@ -3,6 +3,7 @@ import { api } from "@/lib/openapi-react-query";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { useForceUpdate } from "@/hooks/use-force-update";
 import { flushSync } from "react-dom";
+import { toast } from "sonner";
 
 export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
@@ -143,6 +144,46 @@ export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, after
       if (isMutating <= 1) {
         queryClient.invalidateQueries({ queryKey });
       }
+    },
+  });
+}
+
+export function useDeleteTaskMutation(params: { columnsQueryKey: QueryKey }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+
+  return api.useMutation("delete", "/tasks/{taskId}", {
+    onMutate: async (variables: { params: { path: { taskId: string } } }) => {
+      // Cancel any on-going request as it may accidentally update the cache.
+      await queryClient.cancelQueries({ queryKey });
+      const previousData = queryClient.getQueryData(queryKey);
+
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          return {
+            ...oldData,
+            tasks: oldData.tasks.filter(
+              (task) => task.id !== variables.params.path.taskId
+            ),
+          };
+        }
+      );
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      };
+    },
+
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+
+    onSuccess: () => {
+      toast.success("Task deleted successfully");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
     },
   });
 }

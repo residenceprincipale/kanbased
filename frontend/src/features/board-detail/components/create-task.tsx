@@ -16,11 +16,13 @@ export type CreateCardProps = {
 export function CreateCard(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
   const createTaskMutation = useCreateTaskMutation({
     columnsQueryKey: props.columnsQueryKey,
   });
 
-  useInteractiveOutside(textAreaRef, () => {
+  useInteractiveOutside(wrapperRef, () => {
     props.onComplete();
   });
 
@@ -43,7 +45,7 @@ export function CreateCard(props: CreateCardProps) {
   };
 
   return (
-    <div>
+    <div ref={wrapperRef}>
       <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
           name="task"

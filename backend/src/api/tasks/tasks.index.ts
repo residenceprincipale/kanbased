@@ -5,7 +5,7 @@ import {
   tasksTable,
 } from "../../db/schema/index.js";
 import { createAuthenticatedRouter } from "../../lib/create-app.js";
-import { createTaskRoute, updateTaskRoute, updateTasksRoute } from "./tasks.routes.js";
+import { createTaskRoute, updateTaskRoute, updateTasksRoute, deleteTaskRoute } from "./tasks.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { and, count, eq, inArray, sql, SQL } from "drizzle-orm";
 import { checkResourceAccess } from "../shared/board-permissions.utils.js";
@@ -69,6 +69,16 @@ tasksRouter.openapi(updateTasksRoute, async (c) => {
     .update(tasksTable)
     .set({ position: finalSqlForPosition, columnId: finalSqlForColumnId })
     .where(inArray(tasksTable.id, taskIds));
+
+  return c.json({}, HTTP_STATUS_CODES.OK);
+});
+
+tasksRouter.openapi(deleteTaskRoute, async (c) => {
+  const userId = c.var.user.id;
+  const taskId = c.req.valid("param").taskId;
+
+  await checkResourceAccess(userId, taskId, 'task', 'admin');
+  await db.delete(tasksTable).where(eq(tasksTable.id, taskId));
 
   return c.json({}, HTTP_STATUS_CODES.OK);
 });

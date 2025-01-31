@@ -47,3 +47,14 @@ export const updateTasksRoute = createRoute({
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
   }),
 });
+
+export const deleteTaskRoute = createRoute({
+  method: "delete",
+  path: "/tasks/{taskId}",
+  request: {
+    params: z.object({ taskId: z.string() }),
+  },
+  responses: ResponseBuilder.withAuthAndValidation({
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+  }),
+});
