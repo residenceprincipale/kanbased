@@ -1,11 +1,18 @@
 import { Button } from "@/components/ui/button";
 import { EditTask } from "@/features/board-detail/components/edit-task";
+import { useDeleteTaskMutation } from "@/features/board-detail/queries/tasks";
 import { cn } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { Draggable } from "@hello-pangea/dnd";
 import { QueryKey } from "@tanstack/react-query";
-import { Pencil } from "lucide-react";
+import { MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { memo, useCallback, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export type TaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
@@ -17,6 +24,9 @@ export type TaskProps = {
 function TaskComp(props: TaskProps) {
   const { task } = props;
   const [isEditing, setIsEditing] = useState(false);
+  const deleteTaskMutation = useDeleteTaskMutation({
+    columnsQueryKey: props.columnsQueryKey,
+  });
 
   return (
     <Draggable draggableId={task.id} index={props.index}>
@@ -49,17 +59,43 @@ function TaskComp(props: TaskProps) {
             >
               <span className="break-words">{task.name}</span>
 
-              <Button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsEditing(true);
-                }}
-                variant="ghost"
-                size="icon"
-                className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-5 w-8 h-8 shrink-0"
-              >
-                <Pencil className="w-3 h-3" />
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    onClick={(e) => e.stopPropagation()}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground w-8 h-8 hover:bg-gray-5"
+                    variant="ghost"
+                    size="icon"
+                  >
+                    <MoreVertical className="w-4 h-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={() => {
+                      setIsEditing(true);
+                    }}
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit Task
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => {
+                      deleteTaskMutation.mutate({
+                        params: {
+                          path: {
+                            taskId: task.id,
+                          },
+                        },
+                      });
+                    }}
+                    className="text-destructive focus:text-destructive"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    Delete Task
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           )}
         </div>
