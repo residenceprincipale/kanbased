@@ -52,10 +52,6 @@ export function CreateCard(props: CreateCardProps) {
           name="task"
           ref={textAreaRef}
           required
-          onChange={(e) => {
-            let el = e.currentTarget;
-            el.style.height = `${el.scrollHeight}px`;
-          }}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();

@@ -1,7 +1,10 @@
+import { Button } from "@/components/ui/button";
+import { EditTask } from "@/features/board-detail/components/edit-task";
 import { cn } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { Draggable } from "@hello-pangea/dnd";
-import { memo, useCallback } from "react";
+import { Pencil } from "lucide-react";
+import { memo, useCallback, useState } from "react";
 
 export type TaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
@@ -11,6 +14,7 @@ export type TaskProps = {
 
 function TaskComp(props: TaskProps) {
   const { task } = props;
+  const [isEditing, setIsEditing] = useState(false);
 
   return (
     <Draggable draggableId={task.id} index={props.index}>
@@ -22,18 +26,40 @@ function TaskComp(props: TaskProps) {
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="mb-3 !cursor-default"
+          className="mb-3 !cursor-default group"
         >
-          <div
-            className={cn(
-              "text-foreground p-2 rounded-lg min-h-16 break-words border dark:hover:bg-gray-4 hover:bg-gray-3",
-              snapshot.isDragging
-                ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
-                : "dark:border-transparent bg-white dark:bg-gray-3"
-            )}
-          >
-            {task.name}
-          </div>
+          {isEditing ? (
+            <EditTask
+              task={task}
+              columnsQueryKey={[]}
+              onComplete={() => {
+                setIsEditing(false);
+              }}
+            />
+          ) : (
+            <div
+              className={cn(
+                "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between",
+                snapshot.isDragging
+                  ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
+                  : "dark:border-transparent bg-white dark:bg-gray-3"
+              )}
+            >
+              <span className="break-words">{task.name}</span>
+
+              <Button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsEditing(true);
+                }}
+                variant="ghost"
+                size="icon"
+                className="opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-5 w-8 h-8 shrink-0"
+              >
+                <Pencil className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
         </div>
       )}
     </Draggable>
