@@ -11,14 +11,10 @@
   <title>Kanbased</title>
 
   <script>
-    let theme = "light";
-    const savedTheme = localStorage.getItem("theme");
-    if (savedTheme) {
-      theme = savedTheme;
-    } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      theme = "dark";
+    let theme = localStorage.getItem("theme") || "system";
+    if (theme === "dark" || (theme === "system" && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+      document.documentElement.classList.add("dark");
     }
-    theme === "dark" && document.documentElement.classList.add("dark");
   </script>
 </head>
 
