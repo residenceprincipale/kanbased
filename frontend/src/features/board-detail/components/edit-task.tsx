@@ -1,5 +1,6 @@
 import { Textarea } from "@/components/ui/textarea";
 import { useUpdateTaskMutation } from "@/features/board-detail/queries/tasks";
+import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { QueryKey } from "@tanstack/react-query";
 import { useCallback, useRef } from "react";
@@ -16,10 +17,13 @@ export function EditTask(props: EditTaskProps) {
     columnsQueryKey: props.columnsQueryKey,
     afterOptimisticUpdate: () => {
       setTimeout(() => {
-        textAreaRef.current!.value = "";
         props.onComplete();
       }, 0);
     },
+  });
+
+  useInteractiveOutside(textAreaRef, () => {
+    props.onComplete();
   });
 
   const handleSubmit = async () => {
