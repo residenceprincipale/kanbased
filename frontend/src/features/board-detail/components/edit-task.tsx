@@ -1,10 +1,8 @@
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useCreateTaskMutation } from "@/features/board-detail/queries/tasks";
-import { getId } from "@/lib/utils";
+import { useUpdateTaskMutation } from "@/features/board-detail/queries/tasks";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { QueryKey } from "@tanstack/react-query";
-import { useCallback, useLayoutEffect, useRef, type FormEvent } from "react";
+import { useCallback, useRef } from "react";
 
 export type EditTaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
@@ -14,25 +12,31 @@ export type EditTaskProps = {
 
 export function EditTask(props: EditTaskProps) {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
-  const createTaskMutation = useCreateTaskMutation({
+  const updateTaskMutation = useUpdateTaskMutation({
     columnsQueryKey: props.columnsQueryKey,
+    afterOptimisticUpdate: () => {
+      setTimeout(() => {
+        textAreaRef.current!.value = "";
+        props.onComplete();
+      }, 0);
+    },
   });
 
   const handleSubmit = async () => {
     const name = textAreaRef.current!.value;
-    textAreaRef.current!.value = "";
     const currentDate = new Date().toISOString();
 
-    // createTaskMutation.mutate({
-    //   body: {
-    //     id: getId(),
-    //     name,
-    //     createdAt: currentDate,
-    //     updatedAt: currentDate,
-    //   },
-    // });
-
-    props.onComplete();
+    updateTaskMutation.mutate({
+      params: {
+        path: {
+          taskId: props.task.id,
+        },
+      },
+      body: {
+        name,
+        updatedAt: currentDate,
+      },
+    });
   };
 
   return (
@@ -44,7 +48,8 @@ export function EditTask(props: EditTaskProps) {
             textAreaRef.current = node;
 
             if (node) {
-              node.select();
+              node.focus();
+              node.setSelectionRange(node.value.length, node.value.length);
             }
           }, [])}
           defaultValue={props.task.name}

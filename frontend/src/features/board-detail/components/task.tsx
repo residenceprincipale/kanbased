@@ -3,6 +3,7 @@ import { EditTask } from "@/features/board-detail/components/edit-task";
 import { cn } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { Draggable } from "@hello-pangea/dnd";
+import { QueryKey } from "@tanstack/react-query";
 import { Pencil } from "lucide-react";
 import { memo, useCallback, useState } from "react";
 
@@ -10,6 +11,7 @@ export type TaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
   index: number;
   taskRef?: (node: HTMLElement | null) => void;
+  columnsQueryKey: QueryKey;
 };
 
 function TaskComp(props: TaskProps) {
@@ -31,7 +33,7 @@ function TaskComp(props: TaskProps) {
           {isEditing ? (
             <EditTask
               task={task}
-              columnsQueryKey={[]}
+              columnsQueryKey={props.columnsQueryKey}
               onComplete={() => {
                 setIsEditing(false);
               }}

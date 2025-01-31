@@ -25,6 +25,18 @@ export const createTaskRoute = createRoute({
   }),
 });
 
+export const updateTaskRoute = createRoute({
+  method: "patch",
+  path: "/tasks/{taskId}",
+  request: {
+    body: jsonContentRequired(createTaskBodySchema.pick({ name: true, updatedAt: true, })),
+    params: z.object({ taskId: z.string() }),
+  },
+  responses: ResponseBuilder.withAuthAndValidation({
+    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+  }),
+});
+
 export const updateTasksRoute = createRoute({
   method: "put",
   path: "/tasks",

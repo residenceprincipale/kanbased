@@ -30,6 +30,7 @@ function TaskList(
               key={task.id}
               taskRef={isLastEl ? props.lastTaskRef : undefined}
               index={i}
+              columnsQueryKey={props.columnsQueryKey}
             />
           );
         })}
