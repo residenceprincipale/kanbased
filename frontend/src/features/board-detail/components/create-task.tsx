@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useCreateTaskMutation } from "@/features/board-detail/queries/tasks";
+import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
 import { getId } from "@/lib/utils";
 import { QueryKey } from "@tanstack/react-query";
 import { useRef, type FormEvent } from "react";
@@ -17,6 +18,10 @@ export function CreateCard(props: CreateCardProps) {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const createTaskMutation = useCreateTaskMutation({
     columnsQueryKey: props.columnsQueryKey,
+  });
+
+  useInteractiveOutside(textAreaRef, () => {
+    props.onComplete();
   });
 
   const handleSubmit = async (e: FormEvent) => {
@@ -39,23 +44,11 @@ export function CreateCard(props: CreateCardProps) {
 
   return (
     <div>
-      <form
-        onBlur={(e) => {
-          if (!e.currentTarget.contains(e.relatedTarget)) {
-            props.onComplete();
-          }
-        }}
-        onSubmit={handleSubmit}
-        className="space-y-3"
-      >
+      <form onSubmit={handleSubmit} className="space-y-3">
         <Textarea
           name="task"
           ref={textAreaRef}
           required
-          onChange={(e) => {
-            let el = e.currentTarget;
-            el.style.height = `${el.scrollHeight}px`;
-          }}
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();

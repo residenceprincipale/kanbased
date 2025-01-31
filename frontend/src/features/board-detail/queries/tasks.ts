@@ -2,6 +2,7 @@ import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/openapi-react-query";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { useForceUpdate } from "@/hooks/use-force-update";
+import { flushSync } from "react-dom";
 
 export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
@@ -90,6 +91,44 @@ export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
       // Don't know why, but the columns are not updated immediately.
       // So we need to force update the component to reflect the changes.
       forceUpdate();
+
+      return () => {
+        queryClient.setQueryData(queryKey, previousData);
+      };
+    },
+
+    onError: (_err, _variables, rollback: any) => {
+      rollback?.();
+    },
+    onSettled: () => {
+      const isMutating = queryClient.isMutating({ mutationKey });
+      if (isMutating <= 1) {
+        queryClient.invalidateQueries({ queryKey });
+      }
+    },
+  });
+}
+
+export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
+  const queryClient = useQueryClient();
+  const queryKey = params.columnsQueryKey;
+  const mutationKey = ["patch", "/tasks/{taskId}"];
+  const forceUpdate = useForceUpdate();
+
+  return api.useMutation("patch", "/tasks/{taskId}", {
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey });
+
+      const previousData = queryClient.getQueryData(queryKey);
+      queryClient.setQueryData(queryKey, (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+        return {
+          ...oldData,
+          tasks: oldData.tasks.map((task) => task.id === variables.params.path.taskId ? { ...task, name: variables.body.name } : task)
+        }
+      })
+
+      forceUpdate();
+      params.afterOptimisticUpdate?.();
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
