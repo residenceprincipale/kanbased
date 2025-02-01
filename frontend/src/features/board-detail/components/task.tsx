@@ -51,7 +51,7 @@ function TaskComp(props: TaskProps) {
           ) : (
             <div
               className={cn(
-                "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between",
+                "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1",
                 snapshot.isDragging
                   ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
                   : "dark:border-transparent bg-white dark:bg-gray-3"
@@ -63,11 +63,11 @@ function TaskComp(props: TaskProps) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     onClick={(e) => e.stopPropagation()}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-foreground w-8 h-8 hover:bg-gray-5"
+                    className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-8 h-8 hover:bg-gray-5"
                     variant="ghost"
                     size="icon"
                   >
-                    <MoreVertical className="w-4 h-4" />
+                    <MoreVertical className="w-6 h-6" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
