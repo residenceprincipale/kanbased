@@ -63,11 +63,11 @@ function TaskComp(props: TaskProps) {
                 <DropdownMenuTrigger asChild>
                   <Button
                     onClick={(e) => e.stopPropagation()}
-                    className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-8 h-8 hover:bg-gray-5"
+                    className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5"
                     variant="ghost"
                     size="icon"
                   >
-                    <MoreVertical className="w-6 h-6" />
+                    <MoreVertical className="w-4 h-4" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

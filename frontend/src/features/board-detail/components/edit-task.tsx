@@ -1,4 +1,4 @@
-import { Textarea } from "@/components/ui/textarea";
+import { CustomizedTextarea } from "@/components/ui/customized-textarea";
 import { useUpdateTaskMutation } from "@/features/board-detail/queries/tasks";
 import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
@@ -46,7 +46,7 @@ export function EditTask(props: EditTaskProps) {
   return (
     <div>
       <form>
-        <Textarea
+        <CustomizedTextarea
           name="task"
           ref={useCallback((node: HTMLTextAreaElement | null) => {
             textAreaRef.current = node;
@@ -54,6 +54,7 @@ export function EditTask(props: EditTaskProps) {
             if (node) {
               node.focus();
               node.setSelectionRange(node.value.length, node.value.length);
+              node.scrollIntoView({ block: "nearest", behavior: "smooth" });
             }
           }, [])}
           defaultValue={props.task.name}
@@ -61,6 +62,11 @@ export function EditTask(props: EditTaskProps) {
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
+
+              if (event.shiftKey) {
+                return;
+              }
+
               handleSubmit();
             }
             if (event.key === "Escape") {

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { CustomizedTextarea } from "@/components/ui/customized-textarea";
 import { useCreateTaskMutation } from "@/features/board-detail/queries/tasks";
 import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
 import { getId } from "@/lib/utils";
@@ -47,13 +47,14 @@ export function CreateCard(props: CreateCardProps) {
   return (
     <div ref={wrapperRef}>
       <form onSubmit={handleSubmit} className="space-y-3">
-        <Textarea
+        <CustomizedTextarea
           name="task"
           ref={textAreaRef}
           required
           onKeyDown={(event) => {
             if (event.key === "Enter") {
               event.preventDefault();
+              if (event.shiftKey) return;
               buttonRef.current!.click();
             }
             if (event.key === "Escape") {
