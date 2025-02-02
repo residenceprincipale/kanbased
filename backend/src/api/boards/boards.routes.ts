@@ -22,56 +22,57 @@ const createBoardResponse = createSelectSchema(boardsTable).omit({
   deletedAt: true,
 });
 
-export const createBoardRoute = createRoute({
-  method: "post",
-  path: "/boards",
-  request: {
-    body: jsonContentRequired(createBoardParamsSchema),
-  },
-  responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse),
-    [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+const routes = {
+  createBoard: createRoute({
+    method: "post",
+    path: "/boards",
+    request: {
+      body: jsonContentRequired(createBoardParamsSchema),
+    },
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.CREATED]: jsonContent(emptyResponse),
+      [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+    }),
   }),
-});
 
-export const getBoardsRoute = createRoute({
-  method: "get",
-  path: "/boards",
-  responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.OK]: jsonContent(
-      z.array(
+  getBoards: createRoute({
+    method: "get",
+    path: "/boards",
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.OK]: jsonContent(z.array(
         createBoardResponse.extend({
           tasksCount: z.number(),
           columnsCount: z.number(),
         })
-      )
-    ),
+      ))
+    })
   }),
-});
 
-export const toggleBoardDeleteRoute = createRoute({
-  method: "patch",
-  path: "/boards/{boardId}/toggle-delete",
-  request: {
-    params: z.object({ boardId: z.string() }),
-    body: jsonContent(z.object({ deleted: z.boolean() })),
-  },
-  responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
+  toggleBoardDelete: createRoute({
+    method: "patch",
+    path: "/boards/{boardId}/toggle-delete",
+    request: {
+      params: z.object({ boardId: z.string() }),
+      body: jsonContentRequired(z.object({ deleted: z.boolean() })),
+    },
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
+    }),
   }),
-});
 
-export const editBoardRoute = createRoute({
-  method: "patch",
-  path: "/boards/{boardId}",
-  request: {
-    params: z.object({ boardId: z.string() }),
-    body: jsonContent(
-      createBoardParamsSchema.omit({ id: true, createdAt: true })
-    ),
-  },
-  responses: ResponseBuilder.withAuthAndValidation({
-    [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-    [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+  editBoard: createRoute({
+    method: "patch",
+    path: "/boards/{boardId}",
+    request: {
+      params: z.object({ boardId: z.string() }),
+      body: jsonContentRequired(createBoardParamsSchema.omit({ id: true, createdAt: true })),
+    },
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+      [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+      [HTTP_STATUS_CODES.NOT_FOUND]: genericMessageContent,
+    }),
   }),
-});
+};
+
+export default routes;

@@ -9,7 +9,7 @@ import { and, eq, or } from "drizzle-orm";
 import { getCookie, setCookie } from "hono/cookie";
 
 import { db } from "../../db/index.js";
-import { accountsTable, usersTable } from "../../db/schema/index.js";
+import { accountsTable, profilesTable, usersTable, type User } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { createRouter } from "../../lib/create-app.js";
 import * as authRoutes from "./auth.routes.js";
@@ -22,75 +22,160 @@ import {
   invalidateSession,
   setSession,
   verifyPassword,
+  createUser,
+  createProfile,
+  validatePassword,
+  checkLoginAttempts,
+  getLoginBlockDuration,
+  createEmailVerificationToken,
+  verifyEmail,
+  sendVerificationEmail,
 } from "./auth.utils.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 
 const authRouter = createRouter();
 
-// authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
-//   const body = await c.req.json();
+authRouter.openapi(authRoutes.registerUserRoute, async (c) => {
+  const body = c.req.valid("json")
 
-//   const existingAccount = await db
-//     .select()
-//     .from(usersTable)
-//     .where(
-//       or(eq(usersTable.email, body.email), eq(usersTable.name, body.name)),
-//     );
+  const passwordErrors = await validatePassword(body.password);
+  if (passwordErrors.length > 0) {
+    return c.json(
+      {
+        success: false,
+        error: {
+          name: "ValidationError",
+          issues: passwordErrors.map(error => ({
+            path: ["password"],
+            code: error.code,
+            message: error.message,
+          })),
+        },
+        statusCode: HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY,
+      },
+      HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY,
+    );
+  }
 
-//   if (existingAccount.length) {
-//     return c.json(
-//       {
-//         message: `A user with this email already exist. Please login`,
-//       },
-//       400,
-//     );
-//   }
+  // Check if user already exists
+  const existingUser = await db.query.usersTable.findFirst({
+    where: eq(usersTable.email, body.email),
+  });
 
-//   const hash = await hashPassword(body.password);
+  if (existingUser) {
+    return c.json(
+      {
+        success: false,
+        error: {
+          name: "ValidationError",
+          issues: [{
+            path: ["email"],
+            code: "custom",
+            message: "A user with this email already exists. Please login.",
+          }],
+        },
+        statusCode: HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY,
+      },
+      HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY,
+    );
+  }
 
-//   const result = await db
-//     .insert(usersTable)
-//     .values({
-//       email: body.email,
-//       password: hash,
-//       name: body.name,
-//       accountType: "email",
-//     })
-//     .returning();
+  // Create user
+  const user = await createUser(body.email);
 
-//   const { password, ...rest } = result[0]!;
-//   await setSession(c, rest!.id);
+  // Create account with password
+  const hashedPassword = await hashPassword(body.password);
+  await db.insert(accountsTable).values({
+    userId: user.id,
+    accountType: "email",
+    password: hashedPassword,
+  });
 
-//   return c.json(rest, 200);
-// });
+  // Create profile
+  await createProfile(user.id, body.name || body.email, null);
 
-// authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
-//   const body = await c.req.json();
+  // Create and send verification email
+  const verificationToken = await createEmailVerificationToken(user.id);
+  await sendVerificationEmail(user.email, verificationToken);
 
-//   const [user] = await db
-//     .select()
-//     .from(usersTable)
-//     .where(
-//       and(
-//         or(eq(usersTable.name, body.name), eq(usersTable.email, body.email)),
-//         eq(usersTable.accountType, "email"),
-//       ),
-//     );
+  // Set session
+  await setSession(c, user.id);
 
-//   if (!user) {
-//     return c.json({ message: "User does not exist, Please sign up." }, 400);
-//   }
+  return c.json({
+    email: user.email,
+    name: body.name,
+  }, HTTP_STATUS_CODES.OK);
+});
 
-//   const isPasswordMatched = await verifyPassword(body.password, user.password);
+authRouter.openapi(authRoutes.loginUserRoute, async (c) => {
+  const body = await c.req.json();
+  const email = body.email || "";
 
-//   if (!isPasswordMatched) {
-//     return c.json({ message: "Invalid credentials" }, 400);
-//   }
+  // Check rate limiting
+  if (!checkLoginAttempts(email)) {
+    const blockDuration = getLoginBlockDuration(email);
+    return c.json(
+      {
+        success: false,
+        error: {
+          name: "TooManyRequests",
+          message: `Too many login attempts. Please try again in ${Math.ceil(blockDuration / 1000 / 60)} minutes.`,
+        },
+        statusCode: HTTP_STATUS_CODES.TOO_MANY_REQUESTS,
+      },
+      HTTP_STATUS_CODES.TOO_MANY_REQUESTS,
+    );
+  }
 
-//   await setSession(c, user!.id);
+  // Find user by email
+  const user = await db.query.usersTable.findFirst({
+    where: eq(usersTable.email, email),
+  });
 
-//   return c.json({ email: user.email, name: user.name }, 200);
-// });
+  if (!user) {
+    return c.json({
+      name: null,
+      email: email,
+    }, HTTP_STATUS_CODES.OK);
+  }
+
+  // Get account with password
+  const account = await db.query.accountsTable.findFirst({
+    where: and(
+      eq(accountsTable.userId, user.id),
+      eq(accountsTable.accountType, "email"),
+    ),
+  });
+
+  if (!account || !account.password) {
+    return c.json({
+      name: null,
+      email: email,
+    }, HTTP_STATUS_CODES.OK);
+  }
+
+  // Verify password
+  const isPasswordValid = await verifyPassword(body.password, account.password);
+  if (!isPasswordValid) {
+    return c.json({
+      name: null,
+      email: email,
+    }, HTTP_STATUS_CODES.OK);
+  }
+
+  // Set session
+  await setSession(c, user.id);
+
+  // Get profile for name
+  const profile = await db.query.profilesTable.findFirst({
+    where: eq(profilesTable.userId, user.id),
+  });
+
+  return c.json({
+    email: user.email,
+    name: profile?.displayName || null,
+  }, HTTP_STATUS_CODES.OK);
+});
 
 // TODO: Fix type errors
 authRouter.openapi(authRoutes.logoutRoute, async (c) => {
@@ -186,6 +271,45 @@ authRouter.openapi(authRoutes.googleCallbackRoute, async (c) => {
   await setSession(c, userId);
 
   return c.redirect(env.FE_ORIGIN);
+});
+
+authRouter.openapi(authRoutes.verifyEmailRoute, async (c) => {
+  const query = c.req.query();
+  const token = query.token;
+  if (!token) {
+    return c.json({
+      success: false,
+      message: "Verification token is required",
+    }, HTTP_STATUS_CODES.OK);
+  }
+
+  const success = await verifyEmail(token);
+
+  return c.json({
+    success,
+    message: success
+      ? "Email verified successfully"
+      : "Invalid or expired verification token",
+  }, HTTP_STATUS_CODES.OK);
+});
+
+authRouter.openapi(authRoutes.resendVerificationRoute, async (c) => {
+  const user = c.get("user") as User;
+
+  if (user.emailVerified) {
+    return c.json({
+      success: false,
+      message: "Email is already verified",
+    }, HTTP_STATUS_CODES.OK);
+  }
+
+  const verificationToken = await createEmailVerificationToken(user.id);
+  await sendVerificationEmail(user.email, verificationToken);
+
+  return c.json({
+    success: true,
+    message: "Verification email sent",
+  }, HTTP_STATUS_CODES.OK);
 });
 
 export default authRouter;

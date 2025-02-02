@@ -39,6 +39,21 @@ export const accountsTable = pgTable(
   ]
 );
 
+export const emailVerificationTokensTable = pgTable(
+  "email_verification_tokens",
+  {
+    id: t.text().primaryKey(),
+    userId: t
+      .integer()
+      .notNull()
+      .references(() => usersTable.id, { onDelete: "cascade" }),
+    expiresAt: t.timestamp({ withTimezone: true, mode: "date" }).notNull(),
+  },
+  (table) => [
+    t.index("user_id_idx").on(table.userId),
+  ]
+);
+
 export const sessionsTable = pgTable(
   "sessions",
   {
