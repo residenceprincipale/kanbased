@@ -10,9 +10,26 @@ import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { authenticatedMiddleware } from "./auth.middleware.js";
 import { verifySessionMiddleware } from "./auth.middleware.js";
 
-const createUserRequestSchema = z.object({
+const passwordSchema = z
+  .string()
+  .min(8, { message: "Password must be at least 8 characters long" })
+  .max(20, { message: "Password must be at most 20 characters long" })
+  .refine((password) => /[A-Z]/.test(password), {
+    message: "Password must contain at least one uppercase letter",
+  })
+  .refine((password) => /[a-z]/.test(password), {
+    message: "Password must contain at least one lowercase letter",
+  })
+  .refine((password) => /[0-9]/.test(password), {
+    message: "Password must contain at least one number",
+  })
+  .refine((password) => /[!@#$%^&*]/.test(password), {
+    message: "Password must contain at least one special character",
+  });
+
+const registerUserRequestSchema = z.object({
   name: z.string().min(1).openapi({}).nullable(),
-  password: z.string().min(8),
+  password: passwordSchema,
   email: z.string().email(),
 });
 
@@ -27,16 +44,26 @@ const loginUserRequestSchema = z
     path: ["name", "email"],
   });
 
-const registerUserResponse = createUserRequestSchema.omit({ password: true });
+const registerUserResponseSchema = registerUserRequestSchema.omit({ password: true });
+
+const loginErrorResponse = z.object({
+  success: z.boolean(),
+  error: z.object({
+    name: z.string(),
+    message: z.string(),
+  }),
+  statusCode: z.number(),
+});
+
 
 export const registerUserRoute = createRoute({
   method: "post",
   path: "/auth/register/email",
   request: {
-    body: jsonContentRequired(createUserRequestSchema),
+    body: jsonContentRequired(registerUserRequestSchema),
   },
   responses: {
-    [HTTP_STATUS_CODES.OK]: jsonContent(registerUserResponse),
+    [HTTP_STATUS_CODES.OK]: jsonContent(registerUserResponseSchema),
     [HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY]: zodErrorContent,
   },
 });
@@ -45,23 +72,11 @@ export const loginUserRoute = createRoute({
   method: "post",
   path: "/auth/login/email",
   request: {
-    body: {
-      content: {
-        "application/json": {
-          schema: loginUserRequestSchema,
-        },
-      },
-    },
+    body: jsonContentRequired(loginUserRequestSchema),
   },
   responses: {
-    200: {
-      content: {
-        "application/json": {
-          schema: registerUserResponse,
-        },
-      },
-      description: "No content",
-    },
+    [HTTP_STATUS_CODES.OK]: jsonContent(registerUserResponseSchema),
+    [HTTP_STATUS_CODES.TOO_MANY_REQUESTS]: jsonContent(loginErrorResponse),
   },
 });
 
@@ -91,6 +106,35 @@ export const logoutRoute = createRoute({
   middleware: [verifySessionMiddleware, authenticatedMiddleware],
   responses: {
     [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+    [HTTP_STATUS_CODES.UNAUTHORIZED]: genericMessageContent,
+  },
+});
+
+export const verifyEmailRoute = createRoute({
+  method: "get",
+  path: "/auth/verify-email",
+  request: {
+    query: z.object({
+      token: z.string(),
+    }),
+  },
+  responses: {
+    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({
+      success: z.boolean(),
+      message: z.string(),
+    })),
+  },
+});
+
+export const resendVerificationRoute = createRoute({
+  method: "post",
+  path: "/auth/resend-verification",
+  middleware: [verifySessionMiddleware, authenticatedMiddleware],
+  responses: {
+    [HTTP_STATUS_CODES.OK]: jsonContent(z.object({
+      success: z.boolean(),
+      message: z.string(),
+    })),
     [HTTP_STATUS_CODES.UNAUTHORIZED]: genericMessageContent,
   },
 });
