@@ -6,8 +6,7 @@ import {
   tasksTable,
   type ResourcePermission,
 } from "../../db/schema/index.js";
-import { ApiError } from "../../lib/utils.js";
-import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { PermissionError } from "../../lib/error-utils.js";
 const permissionLevels = {
   owner: 3,
   admin: 2,
@@ -17,18 +16,9 @@ const permissionLevels = {
 
 export type ResourceType = "board" | "column" | "task";
 
-/*
-  Note: I wanted to handle this in a middleware, but with @hono/zod-openapi
-  middlewares are not typesafe, if I get req body like this `c.req.valid("json")`
-  You don't get the typesafe req body. It was a bit annoying.
-  
-  Throwing the error and catching it with the global error handler seemed cleaner and simpler
-  I will re-write if If middlewares become typesafe in this package.
- */
-
 /**
  * Checks if the user has the required permission for a given resource.
- * Throws an ApiError with a FORBIDDEN status if the user does not have permission.
+ * Throws a `PermissionError` if the user does not have permission.
  */
 export async function checkResourceAccess(
   userId: number,
@@ -99,7 +89,7 @@ export async function checkResourceAccess(
 
   // Handle case where no results found
   if (!results?.length) {
-    throwForbiddenErr();
+    throwPermissionError();
   }
 
   if (Array.isArray(resourceId)) {
@@ -108,13 +98,13 @@ export async function checkResourceAccess(
 
     // Verify we got back the same number of results as requested IDs
     if (foundResourceIds.size !== resourceId.length) {
-      throwForbiddenErr();
+      throwPermissionError();
     }
 
     // Check if all requested IDs exist and have sufficient permissions
     for (const id of resourceId) {
       if (!foundResourceIds.has(id)) {
-        throwForbiddenErr();
+        throwPermissionError();
       }
     }
   }
@@ -126,14 +116,12 @@ export async function checkResourceAccess(
       permissionLevels[requiredPermission];
 
     if (!hasPermission) {
-      throwForbiddenErr();
+      throwPermissionError();
     }
   }
 }
 
-function throwForbiddenErr() {
-  throw new ApiError(
-    "You do not have permission to perform this action.",
-    HTTP_STATUS_CODES.FORBIDDEN
-  );
+function throwPermissionError() {
+  const msg = "You do not have permission to perform this action.";
+  throw new PermissionError({ message: msg, displayMessage: msg });
 }

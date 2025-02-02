@@ -8,7 +8,7 @@ import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import { createTaskRoute, updateTaskRoute, updateTasksRoute, deleteTaskRoute } from "./tasks.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import { and, count, eq, inArray, sql, SQL } from "drizzle-orm";
-import { checkResourceAccess } from "../shared/board-permissions.utils.js";
+import { checkResourceAccess } from "../shared/board-permissions.js";
 
 const tasksRouter = createAuthenticatedRouter();
 

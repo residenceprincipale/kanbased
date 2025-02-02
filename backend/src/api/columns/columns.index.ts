@@ -11,7 +11,7 @@ import { createAuthenticatedRouter } from "../../lib/create-app.js";
 import * as routes from "./columns.routes.js";
 import { type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
-import { checkResourceAccess } from "../shared/board-permissions.utils.js";
+import { checkResourceAccess } from "../shared/board-permissions.js";
 
 const columnsRouter = createAuthenticatedRouter();
 

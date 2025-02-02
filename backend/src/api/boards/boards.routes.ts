@@ -22,8 +22,8 @@ const createBoardResponse = createSelectSchema(boardsTable).omit({
   deletedAt: true,
 });
 
-export const routes = {
-  createBoardRoute: createRoute({
+const routes = {
+  createBoard: createRoute({
     method: "post",
     path: "/boards",
     request: {
@@ -35,7 +35,7 @@ export const routes = {
     }),
   }),
 
-  getBoardsRoute: createRoute({
+  getBoards: createRoute({
     method: "get",
     path: "/boards",
     responses: ResponseBuilder.withAuthAndValidation({
@@ -48,7 +48,7 @@ export const routes = {
     })
   }),
 
-  toggleBoardDeleteRoute: createRoute({
+  toggleBoardDelete: createRoute({
     method: "patch",
     path: "/boards/{boardId}/toggle-delete",
     request: {
@@ -60,7 +60,7 @@ export const routes = {
     }),
   }),
 
-  editBoardRoute: createRoute({
+  editBoard: createRoute({
     method: "patch",
     path: "/boards/{boardId}",
     request: {
@@ -74,3 +74,5 @@ export const routes = {
     }),
   }),
 };
+
+export default routes;

@@ -1,140 +1,58 @@
-import type { routes } from "./boards.routes.js";
+import routes from "./boards.routes.js";
+import * as boardService from "./boards.service.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import type { InferHandlers } from "../../lib/types.js";
-import { db } from "../../db/index.js";
-import { boardsTable } from "../../db/schema/index.js";
+import { getUser, sendJson } from "../../lib/request-helpers.js";
 
-import { and, asc, count, eq, isNull } from "drizzle-orm";
-
-import { boardPermissionsTable, columnsTable, tasksTable } from "../../db/schema/index.js";
-import { isUniqueConstraintError } from "../../lib/utils.js";
-import { checkResourceAccess } from "../shared/board-permissions.utils.js";
-
-
-export const handlers: InferHandlers<typeof routes> = {
-  createBoardRoute: async (c) => {
+const handlers: InferHandlers<typeof routes> = {
+  createBoard: async (c) => {
     const body = c.req.valid("json");
-    const userId = c.var.user.id;
+    const userId = getUser(c).id;
 
-    const boards = await db
-      .select({ boardId: boardsTable.id })
-      .from(boardsTable)
-      .where(
-        and(
-          eq(boardsTable.creatorId, userId),
-          eq(boardsTable.name, body.name),
-          isNull(boardsTable.deletedAt)
-        )
-      );
+    await boardService.createBoard(userId, body);
 
-    if (boards.length) {
-      return c.json(
-        { message: "Board name must be unique", statusCode: HTTP_STATUS_CODES.BAD_REQUEST },
-        HTTP_STATUS_CODES.BAD_REQUEST
-      );
-    }
-
-    await db.transaction(async (tx) => {
-      const [createdBoard] = await tx
-        .insert(boardsTable)
-        .values({
-          name: body.name,
-          color: body.color,
-          creatorId: userId,
-          createdAt: body.createdAt,
-          updatedAt: body.updatedAt,
-          id: body.id,
-        })
-        .returning();
-
-
-      await tx.insert(boardPermissionsTable).values({
-        boardId: createdBoard!.id,
-        permission: "owner",
-        userId,
-        createdAt: new Date().toISOString(),
-      });
-    });
-
-    return c.json({}, HTTP_STATUS_CODES.CREATED);
-
+    return sendJson(c, {}, HTTP_STATUS_CODES.CREATED);
   },
 
-  getBoardsRoute: async (c) => {
-    const userId = c.var.user.id;
+  getBoards: async (c) => {
+    const userId = getUser(c).id;
 
-    const boards = await db
-      .select({
-        id: boardsTable.id,
-        name: boardsTable.name,
-        color: boardsTable.color,
-        tasksCount: count(tasksTable.id),
-        columnsCount: count(columnsTable.id),
-      })
-      .from(boardsTable)
-      .innerJoin(boardPermissionsTable, eq(boardPermissionsTable.boardId, boardsTable.id))
-      .leftJoin(columnsTable, eq(columnsTable.boardId, boardsTable.id))
-      .leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id))
-      .where(
-        and(
-          eq(boardPermissionsTable.userId, userId),
-          isNull(boardsTable.deletedAt)
-        )
-      )
-      .groupBy(boardsTable.id)
-      .orderBy(asc(boardsTable.createdAt));
-    return c.json(boards, HTTP_STATUS_CODES.OK);
+    const boards = await boardService.getBoards(userId);
 
+    return sendJson(c, boards, HTTP_STATUS_CODES.OK);
   },
 
-  toggleBoardDeleteRoute: async (c) => {
-    const userId = c.var.user.id;
+  toggleBoardDelete: async (c) => {
+    const userId = getUser(c).id;
     const { boardId } = c.req.valid("param");
     const body = c.req.valid("json");
 
-    await checkResourceAccess(userId, boardId, "board", "admin");
+    const updatedBoard = await boardService.toggleBoardDelete(
+      userId,
+      boardId,
+      body.deleted
+    );
 
-    const [updatedBoard] = await db
-      .update(boardsTable)
-      .set({ deletedAt: body.deleted ? new Date().toISOString() : null })
-      .where(eq(boardsTable.id, boardId))
-      .returning();
-
-    return c.json(
+    return sendJson(
+      c,
       {
-        id: updatedBoard!.id,
-        name: updatedBoard!.name,
-        color: updatedBoard!.color,
+        id: updatedBoard.id,
+        name: updatedBoard.name,
+        color: updatedBoard.color,
       },
       HTTP_STATUS_CODES.OK
     );
-
   },
 
-  editBoardRoute: async (c) => {
+  editBoard: async (c) => {
     const userId = c.var.user.id;
     const { boardId } = c.req.valid("param");
     const body = c.req.valid("json");
 
-    await checkResourceAccess(userId, boardId, "board", "editor");
+    await boardService.editBoard(userId, boardId, body);
 
-    try {
-      await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
-    } catch (err) {
-      if (isUniqueConstraintError(err)) {
-        return c.json(
-          { message: "Board name must be unique", statusCode: HTTP_STATUS_CODES.BAD_REQUEST },
-          HTTP_STATUS_CODES.BAD_REQUEST
-        );
-      }
-
-      throw err;
-    }
-
-    return c.json({}, HTTP_STATUS_CODES.OK);
-
-  }
+    return sendJson(c, {}, HTTP_STATUS_CODES.OK);
+  },
 };
 
-
-
+export default handlers;

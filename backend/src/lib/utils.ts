@@ -1,23 +1,9 @@
-import type { StatusCode } from "hono/utils/http-status";
 import type { Handler } from "hono";
 import type { RouteConfig } from "@hono/zod-openapi";
 import type { AppBindings } from "./create-app.js";
 import type { InferHandlers, InferMiddlewares } from "./types.js";
 import type { OpenAPIHono } from "@hono/zod-openapi";
 
-export class ApiError extends Error {
-  statusCode: StatusCode;
-
-  constructor(message: string, statusCode: StatusCode) {
-    super(message);
-    this.statusCode = statusCode;
-    this.name = "Api Error"
-  }
-}
-
-export function isUniqueConstraintError(err: any): boolean {
-  return err && typeof err === "object" && "code" in err && err.code === "23505";
-}
 
 /**
  * Register routes and their handlers to a router in a type-safe way

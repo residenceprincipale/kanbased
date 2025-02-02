@@ -13,7 +13,8 @@ import { pinoLogger } from "./pino-logger.js";
 import type { PinoLogger } from "hono-pino";
 import { HTTP_STATUS_CODES, HTTP_STATUS_PHRASES } from "./constants.js";
 import type { Session, User } from "../db/schema/index.js";
-import { ApiError } from "./utils.js";
+import { PermissionError, UnprocessableEntityError } from "./error-utils.js";
+import type { StatusCode } from "hono/utils/http-status";
 
 export interface AppBindings {
   Variables: {
@@ -94,18 +95,24 @@ export default function createApp() {
 
   app.onError((err, c) => {
     const isDevelopment = env.NODE_ENV !== "production";
-    const statusCode =
-      err instanceof ApiError
-        ? err.statusCode
-        : HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+    let statusCode: StatusCode = HTTP_STATUS_CODES.INTERNAL_SERVER_ERROR;
+    let message =
+      "An unexpected error occurred, Please contact support if the problem persists.";
+
+    if (err instanceof PermissionError) {
+      statusCode = HTTP_STATUS_CODES.FORBIDDEN;
+      message =
+        err.displayMessage ??
+        "You do not have permission to perform this action.";
+    }
+
+    if (err instanceof UnprocessableEntityError) {
+      statusCode = HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY;
+      message = err.displayMessage;
+    }
 
     const data = {
-      message:
-        err instanceof ApiError
-          ? err.message
-          : isDevelopment && err instanceof Error
-            ? err.message
-            : "An unexpected error occurred.",
+      message,
       stack: err instanceof Error && isDevelopment ? err.stack : undefined,
       statusCode,
     };
