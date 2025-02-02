@@ -1,19 +1,7 @@
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 import * as schema from "./schema/index.js";
-import { Table } from "drizzle-orm";
 
-type SchemaKeys = {
-  [K in keyof typeof schema]: (typeof schema)[K] extends Table ? K : never;
-}[keyof typeof schema];
-
-type TablesMap = {
-  [K in SchemaKeys]?: {
-    insert: ReturnType<typeof createInsertSchema<(typeof schema)[K]>>;
-    select: ReturnType<typeof createSelectSchema<(typeof schema)[K]>>;
-  };
-};
-
-export const zodDbSchema: TablesMap = {
+export const zodDbSchema = {
   usersTable: {
     insert: createInsertSchema(schema.usersTable),
     select: createSelectSchema(schema.usersTable),
