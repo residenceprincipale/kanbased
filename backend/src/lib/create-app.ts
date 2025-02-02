@@ -1,6 +1,4 @@
-import type { Context as HonoContext } from "hono";
-
-import { OpenAPIHono, type RouteConfig, type RouteHandler } from "@hono/zod-openapi";
+import { OpenAPIHono } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
@@ -24,7 +22,6 @@ export interface AppBindings {
     logger: PinoLogger;
   };
 }
-
 
 export function createRouter() {
   return new OpenAPIHono<AppBindings>({
@@ -55,7 +52,6 @@ export default function createApp() {
   app.use(
     "/*",
     cors({
-      // TODO: Change origin later
       origin: env.FE_ORIGIN,
       credentials: true,
     })

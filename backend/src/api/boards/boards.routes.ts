@@ -58,19 +58,19 @@ export const routes = {
     responses: ResponseBuilder.withAuthAndValidation({
       [HTTP_STATUS_CODES.OK]: jsonContent(createBoardResponse),
     }),
+  }),
 
-    editBoardRoute: createRoute({
-      method: "patch",
-      path: "/boards/{boardId}",
-      request: {
-        params: z.object({ boardId: z.string() }),
-        body: jsonContentRequired(createBoardParamsSchema.omit({ id: true, createdAt: true })),
-      },
-      responses: ResponseBuilder.withAuthAndValidation({
-        [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
-        [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
-        [HTTP_STATUS_CODES.NOT_FOUND]: genericMessageContent,
-      }),
+  editBoardRoute: createRoute({
+    method: "patch",
+    path: "/boards/{boardId}",
+    request: {
+      params: z.object({ boardId: z.string() }),
+      body: jsonContentRequired(createBoardParamsSchema.omit({ id: true, createdAt: true })),
+    },
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+      [HTTP_STATUS_CODES.BAD_REQUEST]: genericMessageContent,
+      [HTTP_STATUS_CODES.NOT_FOUND]: genericMessageContent,
     }),
-  })
+  }),
 };
