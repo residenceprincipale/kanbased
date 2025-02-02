@@ -33,7 +33,7 @@ function MainLayoutWrapper(props: React.PropsWithChildren) {
         "w-full pb-2 px-2 h-svh flex flex-col",
         // Temp fix to prevent scrollbar from appearing on board detail page,
         // I couldn't figure out how to fix this properly yet.
-        isBoardDetailPage && "overflow-y-hidden"
+        isBoardDetailPage && ""
       )}
     >
       {props.children}

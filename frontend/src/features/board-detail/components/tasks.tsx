@@ -81,7 +81,7 @@ export function Tasks(props: TasksProps) {
           return (
             <div
               className={cn(
-                "overflow-x-hidden custom-scrollbar flex-grow min-h-0",
+                "overflow-x-hidden custom-scrollbar flex-grow min-h-0 overflow-x-hidden",
                 overflow ? "overflow-y-auto" : "overflow-y-hidden"
               )}
               {...droppableProvided.droppableProps}

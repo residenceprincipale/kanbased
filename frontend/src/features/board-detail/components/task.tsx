@@ -38,7 +38,7 @@ function TaskComp(props: TaskProps) {
           }, [])}
           {...provided.draggableProps}
           {...provided.dragHandleProps}
-          className="mb-3 !cursor-default group"
+          className="mb-3 !cursor-default group overflow-x-hidden"
         >
           {isEditing ? (
             <EditTask
