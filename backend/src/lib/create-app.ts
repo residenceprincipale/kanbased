@@ -1,6 +1,6 @@
 import type { Context as HonoContext } from "hono";
 
-import { OpenAPIHono } from "@hono/zod-openapi";
+import { OpenAPIHono, type RouteConfig, type RouteHandler } from "@hono/zod-openapi";
 import { apiReference } from "@scalar/hono-api-reference";
 import { cors } from "hono/cors";
 import { csrf } from "hono/csrf";
@@ -25,7 +25,6 @@ export interface AppBindings {
   };
 }
 
-export type Context = HonoContext<AppBindings>;
 
 export function createRouter() {
   return new OpenAPIHono<AppBindings>({

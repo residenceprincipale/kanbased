@@ -20,6 +20,7 @@ import {
   sessionsTable,
   type User,
   usersTable,
+  emailVerificationTokensTable,
 } from "../../db/schema/index.js";
 import { env } from "../../env.js";
 import { z } from "zod";
@@ -27,6 +28,128 @@ import { z } from "zod";
 const SESSION_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 24 * 15;
 const SESSION_MAX_DURATION_MS = SESSION_REFRESH_INTERVAL_MS * 2;
 const SESSION_COOKIE_NAME = "session";
+
+// Rate limiting maps
+const loginAttempts = new Map<string, { count: number; firstAttempt: number }>();
+const EMAIL_VERIFICATION_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_BLOCK_DURATION = 15 * 60 * 1000; // 15 minutes
+
+// Password validation constants
+const MIN_PASSWORD_LENGTH = 8;
+const REQUIRE_LOWERCASE = true;
+const REQUIRE_UPPERCASE = true;
+const REQUIRE_NUMBER = true;
+const REQUIRE_SPECIAL = true;
+
+export interface PasswordValidationError {
+  code: string;
+  message: string;
+}
+
+export async function validatePassword(password: string): Promise<PasswordValidationError[]> {
+  const errors: PasswordValidationError[] = [];
+
+  // Length check
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    errors.push({
+      code: "min_length",
+      message: `Password must be at least ${MIN_PASSWORD_LENGTH} characters long`,
+    });
+  }
+
+  // Character requirements
+  if (REQUIRE_LOWERCASE && !/[a-z]/.test(password)) {
+    errors.push({
+      code: "require_lowercase",
+      message: "Password must contain at least one lowercase letter",
+    });
+  }
+
+  if (REQUIRE_UPPERCASE && !/[A-Z]/.test(password)) {
+    errors.push({
+      code: "require_uppercase",
+      message: "Password must contain at least one uppercase letter",
+    });
+  }
+
+  if (REQUIRE_NUMBER && !/\d/.test(password)) {
+    errors.push({
+      code: "require_number",
+      message: "Password must contain at least one number",
+    });
+  }
+
+  if (REQUIRE_SPECIAL && !/[^A-Za-z0-9]/.test(password)) {
+    errors.push({
+      code: "require_special",
+      message: "Password must contain at least one special character",
+    });
+  }
+
+  // Check if password has been exposed in data breaches
+  try {
+    const hashBytes = await sha256(new TextEncoder().encode(password));
+    const hash = encodeHexLowerCase(hashBytes).toUpperCase();
+    const prefix = hash.slice(0, 5);
+    const suffix = hash.slice(5);
+
+    const response = await fetch(`https://api.pwnedpasswords.com/range/${prefix}`);
+    const text = await response.text();
+
+    const hashes = text.split('\n');
+    for (const hash of hashes) {
+      const [hashSuffix] = hash.split(':');
+      if (hashSuffix === suffix) {
+        errors.push({
+          code: "password_exposed",
+          message: "This password has been exposed in data breaches. Please choose a different password.",
+        });
+        break;
+      }
+    }
+  } catch (error) {
+    console.error('Error checking HaveIBeenPwned:', error);
+  }
+
+  return errors;
+}
+
+export function checkLoginAttempts(identifier: string): boolean {
+  const now = Date.now();
+  const attempts = loginAttempts.get(identifier);
+
+  if (!attempts) {
+    loginAttempts.set(identifier, { count: 1, firstAttempt: now });
+    return true;
+  }
+
+  // Reset if block duration has passed
+  if (now - attempts.firstAttempt > LOGIN_BLOCK_DURATION) {
+    loginAttempts.set(identifier, { count: 1, firstAttempt: now });
+    return true;
+  }
+
+  // Block if too many attempts
+  if (attempts.count >= MAX_LOGIN_ATTEMPTS) {
+    return false;
+  }
+
+  // Increment attempts
+  attempts.count += 1;
+  loginAttempts.set(identifier, attempts);
+  return true;
+}
+
+export function getLoginBlockDuration(identifier: string): number {
+  const attempts = loginAttempts.get(identifier);
+  if (!attempts || attempts.count < MAX_LOGIN_ATTEMPTS) {
+    return 0;
+  }
+
+  const timeLeft = LOGIN_BLOCK_DURATION - (Date.now() - attempts.firstAttempt);
+  return Math.max(0, timeLeft);
+}
 
 export const github = new GitHub(
   env.GITHUB_CLIENT_ID!,
@@ -238,3 +361,59 @@ export const googleUserSchema = z.object({
 });
 
 export type GoogleUser = z.infer<typeof googleUserSchema>;
+
+export async function createEmailVerificationToken(userId: number): Promise<string> {
+  const token = generateSessionToken(); // Reuse the same token generation
+  const id = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+
+  await db.insert(emailVerificationTokensTable).values({
+    id,
+    userId,
+    expiresAt: new Date(Date.now() + EMAIL_VERIFICATION_EXPIRY),
+  });
+
+  return token;
+}
+
+export async function verifyEmail(token: string): Promise<boolean> {
+  const tokenId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+
+  const verificationToken = await db.query.emailVerificationTokensTable.findFirst({
+    where: eq(emailVerificationTokensTable.id, tokenId),
+  });
+
+  if (!verificationToken) {
+    return false;
+  }
+
+  if (Date.now() >= verificationToken.expiresAt.getTime()) {
+    await db.delete(emailVerificationTokensTable)
+      .where(eq(emailVerificationTokensTable.id, tokenId));
+    return false;
+  }
+
+  // Mark email as verified
+  await db.update(usersTable)
+    .set({ emailVerified: new Date() })
+    .where(eq(usersTable.id, verificationToken.userId));
+
+  // Delete the token
+  await db.delete(emailVerificationTokensTable)
+    .where(eq(emailVerificationTokensTable.id, tokenId));
+
+  return true;
+}
+
+export async function sendVerificationEmail(email: string, token: string) {
+  // In a real application, you would send an actual email
+  // For this example, we'll just log it
+  console.log(`
+    To: ${email}
+    Subject: Verify your email
+    
+    Please click the link below to verify your email:
+    ${env.BE_ORIGIN}/auth/verify-email?token=${token}
+    
+    This link will expire in 24 hours.
+  `);
+}
