@@ -7,7 +7,7 @@ import {
   columnsTable,
   tasksTable,
 } from "../../db/schema/index.js";
-import { checkResourceAccess } from "../shared/board-permissions.js";
+import { checkResourceAccess } from "../../shared/services/board-permissions.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import {
   PermissionError,

@@ -1,11 +1,13 @@
+import { apiReference } from "@scalar/hono-api-reference";
 import authRouter from "./api/auth/auth.index.js";
 import boardsRouter from "./api/boards/boards.index.js";
 import columnsRouter from "./api/columns/columns.index.js";
 import tasksRouter from "./api/tasks/tasks.index.js";
 import usersRouter from "./api/users/users.index.js";
 import createApp from "./lib/create-app.js";
+import packageJSON from "../package.json" with { type: "json" };
 
-export const app = createApp();
+const app = createApp();
 
 app.get("/", (c) => {
   return c.html(`
@@ -46,6 +48,31 @@ app.get("/", (c) => {
     `)
 });
 
+
+
+app.doc("/doc", {
+  openapi: "3.0.0",
+  info: {
+    version: packageJSON.version,
+    title: packageJSON.name,
+  },
+});
+
+app.get(
+  "/reference",
+  apiReference({
+    theme: "kepler",
+    layout: "classic",
+    defaultHttpClient: {
+      targetKey: "javascript",
+      clientKey: "fetch",
+    },
+    spec: {
+      url: "/doc",
+    },
+  })
+);
+
 const routes = [
   authRouter,
   boardsRouter,
@@ -55,5 +82,7 @@ const routes = [
 ];
 
 routes.forEach((route) => {
-  app.route("/", route);
+  app.route("/api/v1", route);
 });
+
+export default app;
