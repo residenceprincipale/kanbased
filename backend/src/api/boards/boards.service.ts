@@ -7,7 +7,7 @@ import {
   tasksTable,
 } from "../../db/schema/index.js";
 import { and, asc, count, eq, isNull } from "drizzle-orm";
-import { checkResourceAccess } from "../shared/board-permissions.js";
+import { checkResourceAccess } from "../../shared/services/board-permissions.js";
 import { UnprocessableEntityError } from "../../lib/error-utils.js";
 
 export async function createBoard(

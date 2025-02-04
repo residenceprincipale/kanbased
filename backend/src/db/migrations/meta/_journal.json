@@ -5,43 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1735120904495,
-      "tag": "0000_brief_zodiak",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1735120963451,
-      "tag": "0001_minor_nebula",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1735732197857,
-      "tag": "0002_slippery_shinko_yamashiro",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1735747976698,
-      "tag": "0003_little_hannibal_king",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1736184161631,
-      "tag": "0004_unusual_puppet_master",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1738081905809,
-      "tag": "0005_late_zarek",
+      "when": 1738697073109,
+      "tag": "0000_busy_wild_pack",
       "breakpoints": true
     }
   ]

@@ -1,10 +1,10 @@
 import { Api200Response } from './type-helpers';
 
 // Board list response type
-export type BoardListResponse = Api200Response<'/boards', 'get'>;
+export type BoardListResponse = Api200Response<'/api/v1/boards', 'get'>;
 
 // Current user response type
-export type CurrentSessionResponse = Api200Response<'/current-user', 'get'>;
+export type CurrentSessionResponse = Api200Response<'/api/v1/current-user', 'get'>;
 
 // Columns response type
-export type ColumnsWithTasksResponse = Api200Response<'/columns', 'get'>;
+export type ColumnsWithTasksResponse = Api200Response<'/api/v1/columns', 'get'>;

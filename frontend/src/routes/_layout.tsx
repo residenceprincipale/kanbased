@@ -1,10 +1,16 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { queryClient } from "@/lib/query-client";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { cn } from "@/lib/utils";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_layout")({
   component: RouteComponent,
+  loader: async () => {
+    // TODO: set stale time later
+    await queryClient.fetchQuery(sessionQueryOptions);
+  },
 });
 
 function RouteComponent() {

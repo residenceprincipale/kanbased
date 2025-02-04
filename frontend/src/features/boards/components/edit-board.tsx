@@ -19,7 +19,10 @@ import { EditBoardModal } from "@/features/boards/state/board";
 
 export function EditBoard(props: EditBoardModal) {
   const { board } = props;
-  const { mutate, isPending } = api.useMutation("patch", "/boards/{boardId}");
+  const { mutate, isPending } = api.useMutation(
+    "patch",
+    "/api/v1/boards/{boardId}"
+  );
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();

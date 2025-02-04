@@ -8,9 +8,9 @@ import { toast } from "sonner";
 export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
-  const mutationKey = ["post", "/tasks"];
+  const mutationKey = ["post", "/api/v1/tasks"] as const;
 
-  return api.useMutation("post", "/tasks", {
+  return api.useMutation("post", "/api/v1/tasks", {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -55,10 +55,10 @@ export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
 export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
-  const mutationKey = ["put", "/tasks/{id}"];
+  const mutationKey = ["put", "/api/v1/tasks"] as const;
   const forceUpdate = useForceUpdate();
 
-  return api.useMutation("put", "/tasks", {
+  return api.useMutation(mutationKey[0], mutationKey[1], {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -113,10 +113,10 @@ export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
 export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
-  const mutationKey = ["patch", "/tasks/{taskId}"];
+  const mutationKey = ["patch", "/api/v1/tasks/{taskId}"] as const;
   const forceUpdate = useForceUpdate();
 
-  return api.useMutation("patch", "/tasks/{taskId}", {
+  return api.useMutation(mutationKey[0], mutationKey[1], {
     onMutate: async (variables) => {
       await queryClient.cancelQueries({ queryKey });
 
@@ -152,7 +152,7 @@ export function useDeleteTaskMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
 
-  return api.useMutation("delete", "/tasks/{taskId}", {
+  return api.useMutation("delete", "/api/v1/tasks/{taskId}", {
     onMutate: async (variables: { params: { path: { taskId: string } } }) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });

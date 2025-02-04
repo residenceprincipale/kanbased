@@ -20,19 +20,20 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { api } from "@/lib/openapi-react-query";
 import { router } from "@/main";
 import { toast } from "sonner";
 import { useSession } from "@/queries/session";
 import { useAppContext } from "@/state/app-state";
+import { authClient } from "@/lib/auth";
+import { useMutation } from "@tanstack/react-query";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
-  const session = useSession();
-  const user = session?.user!;
+  const { user } = useSession();
   const { theme, updateTheme } = useAppContext();
 
-  const logoutMutation = api.useMutation("post", "/auth/logout", {
+  const logoutMutation = useMutation({
+    mutationFn: () => authClient.signOut(),
     onSuccess: () => {
       router.navigate({ to: "/auth/login" });
     },
@@ -52,7 +53,7 @@ export function NavUser() {
   }, [theme, updateTheme]);
 
   const handleLogout = () => {
-    toast.promise(() => logoutMutation.mutateAsync({}), {
+    toast.promise(() => logoutMutation.mutateAsync(), {
       loading: "Logging out...",
       success: "Logged out successfully",
       error: "Failed to log out",
@@ -71,16 +72,14 @@ export function NavUser() {
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage
                   src={user.image!}
-                  alt={user.displayName ?? "user image"}
+                  alt={user.name ?? "user image"}
                 />
                 <AvatarFallback className="rounded-lg">
                   <User />
                 </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">
-                  {user.displayName}
-                </span>
+                <span className="truncate font-semibold">{user.name}</span>
                 <span className="truncate text-xs">{user?.email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
@@ -95,17 +94,14 @@ export function NavUser() {
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image!} alt={user.displayName!} />
+                  <AvatarImage src={user.image!} alt={user.name!} />
                   <AvatarFallback className="rounded-lg">
                     <User />
                   </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    {user.displayName}
-                  </span>
-                  {/* TODO: add email */}
-                  <span className="truncate text-xs">{user?.email}</span>
+                  <span className="truncate font-semibold">{user.name}</span>
+                  <span className="truncate text-xs">{user.email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>

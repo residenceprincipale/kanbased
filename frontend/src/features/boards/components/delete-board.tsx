@@ -18,7 +18,7 @@ import { DeleteBoardModal } from "@/features/boards/state/board";
 export function DeleteBoard(props: DeleteBoardModal) {
   const deleteBoardMutation = api.useMutation(
     "patch",
-    "/boards/{boardId}/toggle-delete"
+    "/api/v1/boards/{boardId}/toggle-delete"
   );
   const boardsQueryKey = boardsQueryOptions.queryKey;
 

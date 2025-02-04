@@ -1,6 +1,53 @@
 import { pgTable } from "drizzle-orm/pg-core";
 import * as t from "drizzle-orm/pg-core";
 
+export const usersTable = pgTable("users", {
+  id: t.text("id").primaryKey(),
+  name: t.text('name').notNull(),
+  email: t.text('email').notNull().unique(),
+  emailVerified: t.boolean('email_verified').notNull(),
+  image: t.text('image'),
+  createdAt: t.timestamp('created_at').notNull(),
+  updatedAt: t.timestamp('updated_at').notNull()
+});
+
+export const sessionsTable = pgTable("sessions", {
+  id: t.text("id").primaryKey(),
+  expiresAt: t.timestamp("expires_at").notNull(),
+  token: t.text('token').notNull().unique(),
+  createdAt: t.timestamp('created_at').notNull(),
+  updatedAt: t.timestamp('updated_at').notNull(),
+  ipAddress: t.text('ip_address'),
+  userAgent: t.text('user_agent'),
+  userId: t.text('user_id').notNull().references(() => usersTable.id)
+});
+
+export const accountsTable = pgTable("accounts", {
+  id: t.text("id").primaryKey(),
+  accountId: t.text("account_id").notNull(),
+  providerId: t.text('provider_id').notNull(),
+  userId: t.text('user_id').notNull().references(() => usersTable.id),
+  accessToken: t.text('access_token'),
+  refreshToken: t.text('refresh_token'),
+  idToken: t.text('id_token'),
+  accessTokenExpiresAt: t.timestamp('access_token_expires_at'),
+  refreshTokenExpiresAt: t.timestamp('refresh_token_expires_at'),
+  scope: t.text('scope'),
+  password: t.text('password'),
+  createdAt: t.timestamp('created_at').notNull(),
+  updatedAt: t.timestamp('updated_at').notNull()
+});
+
+export const verificationsTable = pgTable("verifications", {
+  id: t.text("id").primaryKey(),
+  identifier: t.text('identifier').notNull(),
+  value: t.text('value').notNull(),
+  expiresAt: t.timestamp('expires_at').notNull(),
+  createdAt: t.timestamp('created_at'),
+  updatedAt: t.timestamp('updated_at')
+});
+
+
 export const accountTypeEnum = t.pgEnum("accountType", [
   "email",
   "github",
@@ -14,68 +61,10 @@ export const permissionEnum = t.pgEnum("permission", [
   "viewer",
 ]);
 
-export const usersTable = pgTable("users", {
-  id: t.serial().primaryKey(),
-  email: t.varchar({ length: 256 }).unique().notNull(),
-  emailVerified: t.timestamp({ mode: "date" }),
-});
-
-export const accountsTable = pgTable(
-  "accounts",
-  {
-    id: t.serial().primaryKey(),
-    userId: t
-      .integer()
-      .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
-    accountType: accountTypeEnum().notNull(),
-    githubId: t.text().unique(),
-    googleId: t.text().unique(),
-    password: t.text(),
-    salt: t.text(),
-  },
-  (table) => [
-    t.index("user_id_account_type_idx").on(table.userId, table.accountType),
-  ]
-);
-
-export const emailVerificationTokensTable = pgTable(
-  "email_verification_tokens",
-  {
-    id: t.text().primaryKey(),
-    userId: t
-      .integer()
-      .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
-    expiresAt: t.timestamp({ withTimezone: true, mode: "date" }).notNull(),
-  },
-  (table) => [
-    t.index("user_id_idx").on(table.userId),
-  ]
-);
-
-export const sessionsTable = pgTable(
-  "sessions",
-  {
-    id: t.text().primaryKey(),
-    userId: t
-      .integer()
-      .notNull()
-      .references(() => usersTable.id, { onDelete: "cascade" }),
-    expiresAt: t
-      .timestamp({
-        withTimezone: true,
-        mode: "date",
-      })
-      .notNull(),
-  },
-  (table) => [t.index("user_id_idx").on(table.userId)]
-);
-
 export const profilesTable = pgTable("profiles", {
   id: t.serial().primaryKey(),
   userId: t
-    .integer()
+    .text()
     .notNull()
     .references(() => usersTable.id, { onDelete: "cascade" })
     .unique(),
@@ -90,7 +79,7 @@ export const boardsTable = pgTable(
     name: t.varchar({ length: 50 }).notNull(),
     color: t.varchar({ length: 255 }),
     creatorId: t
-      .integer()
+      .text()
       .references(() => usersTable.id)
       .notNull(),
     createdAt: t.timestamp({ mode: "string" }),
@@ -140,7 +129,7 @@ export const boardPermissionsTable = pgTable(
       .references(() => boardsTable.id, { onDelete: "cascade" })
       .notNull(),
     userId: t
-      .integer()
+      .text()
       .references(() => usersTable.id, { onDelete: "cascade" })
       .notNull(),
     permission: permissionEnum().notNull(),
@@ -154,6 +143,7 @@ export const boardPermissionsTable = pgTable(
   ]
 );
 
-export type Session = typeof sessionsTable.$inferSelect;
-export type User = typeof usersTable.$inferSelect;
 export type ResourcePermission = (typeof permissionEnum.enumValues)[number];
+
+
+

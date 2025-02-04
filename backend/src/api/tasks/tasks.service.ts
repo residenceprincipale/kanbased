@@ -2,7 +2,7 @@ import { eq, inArray, sql, SQL } from "drizzle-orm";
 import type { InsertType } from "../../db/db-table-types.js";
 import { db } from "../../db/index.js";
 import { tasksTable } from "../../db/schema/index.js";
-import { checkResourceAccess } from "../shared/board-permissions.js";
+import { checkResourceAccess } from "../../shared/services/board-permissions.js";
 
 export async function createTask(
   userId: number,

@@ -1,6 +1,6 @@
 import { eq } from "drizzle-orm";
 import { db } from "../../db/index.js";
-import { createAuthenticatedRouter } from "../../lib/create-app.js";
+import { createAuthenticatedRouter } from "../../lib/router.js";
 import * as userRoutes from "./users.routes.js";
 import { profilesTable } from "../../db/schema/index.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";

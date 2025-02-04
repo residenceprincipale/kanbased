@@ -1,9 +1,11 @@
-import { QueryClient } from '@tanstack/react-query'
+import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query'
 import { get, set, del } from 'idb-keyval'
 import {
   PersistedClient,
   Persister,
 } from '@tanstack/react-query-persist-client'
+import { router } from '@/main';
+import { UnauthorizedError } from '@/lib/utils';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -12,8 +14,21 @@ export const queryClient = new QueryClient({
       staleTime: 2000
     },
   },
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      if (error instanceof UnauthorizedError) {
+        router.navigate({ to: "/auth/login" });
+      }
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error, query) => {
+      if (error instanceof UnauthorizedError) {
+        router.navigate({ to: "/auth/login" });
+      }
+    },
+  }),
 })
-
 export const idbPersister = createIDBPersister();
 
 export function createIDBPersister() {
