@@ -31,5 +31,3 @@ export const auth = betterAuth({
     openAPI()
   ]
 });
-
-auth.api.signInSocial

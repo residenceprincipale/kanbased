@@ -1,91 +1,70 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+"use client";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { routeMap } from "@/lib/constants";
-import { useState, type FormEventHandler } from "react";
-import { fetchClient } from "@/lib/fetch-client";
-import { Loader } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
-import type { paths } from "@/types/api-schema";
 import { authClient } from "@/lib/auth";
+import { createFileRoute } from "@tanstack/react-router";
+import { Spinner } from "@/components/ui/spinner";
 
 export const Route = createFileRoute("/auth/login")({
-  component: LoginForm,
+  component: SignIn,
 });
 
-type ApiRouteUrls<TPaths extends keyof paths> = `${string}${TPaths}`;
+export default function SignIn() {
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
+  const [isEmailLoginLoading, setIsEmailLoginLoading] = useState(false);
 
-function LoginForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
-  const session = authClient.useSession();
-
-  const handleSubmit: FormEventHandler = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.target as HTMLFormElement);
-    const email = fd.get("email") as string;
-    const password = fd.get("password") as string;
-
-    setIsSubmitting(true);
-    const { error } = await fetchClient.POST("/auth/login/email", {
-      body: {
-        email,
-        password,
-      },
-    });
-    setIsSubmitting(false);
-
-    if (error) {
-      // toast(error.message);
-    } else {
-      navigate({ to: "/" });
-    }
+    setIsEmailLoginLoading(true);
+    const formData = new FormData(e.target as HTMLFormElement);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+    await authClient.signIn.email({ email, password });
+    setIsEmailLoginLoading(false);
   };
 
   const handleGoogleLogin = async () => {
-    const { error, data } = await authClient.signIn.social({
+    setIsGoogleLoading(true);
+    await authClient.signIn.social({
       provider: "google",
-      callbackURL: window.location.origin,
+      callbackURL: "/dashboard",
     });
-
-    console.log("data: ", data);
+    setIsGoogleLoading(false);
   };
 
-  if (true) {
-    // TODO: For now just use google auth.
-    return (
-      <div className="height-screen flex justify-center items-center">
-        <button
-          type="button"
-          onClick={handleGoogleLogin}
-          className={cn(buttonVariants(), "gap-2")}
-        >
-          {/* <GoogleIcon /> */}
-          <GoogleIcon />
-          Sign in with Google
-        </button>
-      </div>
-    );
-  }
+  const handleGithubLogin = async () => {
+    setIsGithubLoading(true);
+    await authClient.signIn.social({
+      provider: "github",
+      callbackURL: "/dashboard",
+    });
+    setIsGithubLoading(false);
+  };
 
   return (
     <form
+      className="w-full h-svh flex items-center justify-center"
       onSubmit={handleSubmit}
-      className="height-screen flex justify-center items-center"
     >
-      <Card className="max-w-sm">
+      <Card className="max-w-md">
         <CardHeader>
-          <CardTitle className="text-2xl">Login</CardTitle>
-          <CardDescription>
+          <CardTitle className="text-lg md:text-xl">Sign In</CardTitle>
+          <CardDescription className="text-xs md:text-sm">
             Enter your email below to login to your account
           </CardDescription>
         </CardHeader>
@@ -101,31 +80,72 @@ function LoginForm() {
                 required
               />
             </div>
+
             <div className="grid gap-2">
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
-                {/* <Link ="#" className="ml-auto inline-block text-sm underline">
+                <Link
+                  href="#"
+                  className="ml-auto inline-block text-sm underline"
+                >
                   Forgot your password?
-                </Link> */}
+                </Link>
               </div>
-              <Input name="password" id="password" type="password" required />
+
+              <Input
+                id="password"
+                type="password"
+                placeholder="password"
+                autoComplete="password"
+                name="password"
+                required
+              />
             </div>
-            <Button type="submit" className="w-full gap-2">
-              {isSubmitting ? (
-                <>
-                  <Loader className="animate-spin w-4 h-4" />
-                  Logging in...
-                </>
-              ) : (
-                "Login"
-              )}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isEmailLoginLoading}
+            >
+              {isEmailLoginLoading ? <Spinner /> : "Login"}
             </Button>
           </div>
-          <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{" "}
-            <Link to={routeMap.register} className="underline">
-              Sign up
-            </Link>
+
+          <Link
+            to="/auth/register"
+            className={buttonVariants({
+              variant: "link",
+              className: "text-left pl-0 w-fit my-2.5",
+            })}
+          >
+            Don't have an account? Sign up
+          </Link>
+          <div
+            className={cn(
+              "w-full gap-2 flex items-center",
+              "justify-between flex-col"
+            )}
+          >
+            <Button
+              variant="outline"
+              className={cn("w-full gap-2")}
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={isGoogleLoading}
+            >
+              {isGoogleLoading ? <Spinner /> : <GoogleIcon />}
+              Sign in with Google
+            </Button>
+            <Button
+              variant="outline"
+              className={cn("w-full gap-2")}
+              type="button"
+              onClick={handleGithubLogin}
+              disabled={isGithubLoading}
+            >
+              {isGithubLoading ? <Spinner /> : <GithubIcon />}
+              Sign in with Github
+            </Button>
           </div>
         </CardContent>
       </Card>
@@ -158,6 +178,22 @@ function GoogleIcon() {
         fill="#1976D2"
         d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
       />
+    </svg>
+  );
+}
+
+function GithubIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="1em"
+      height="1em"
+      viewBox="0 0 24 24"
+    >
+      <path
+        fill="currentColor"
+        d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5c.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34c-.46-1.16-1.11-1.47-1.11-1.47c-.91-.62.07-.6.07-.6c1 .07 1.53 1.03 1.53 1.03c.87 1.52 2.34 1.07 2.91.83c.09-.65.35-1.09.63-1.34c-2.22-.25-4.55-1.11-4.55-4.92c0-1.11.38-2 1.03-2.71c-.1-.25-.45-1.29.1-2.64c0 0 .84-.27 2.75 1.02c.79-.22 1.65-.33 2.5-.33s1.71.11 2.5.33c1.91-1.29 2.75-1.02 2.75-1.02c.55 1.35.2 2.39.1 2.64c.65.71 1.03 1.6 1.03 2.71c0 3.82-2.34 4.66-4.57 4.91c.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2"
+      ></path>
     </svg>
   );
 }

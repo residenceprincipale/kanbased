@@ -33,11 +33,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootComponent() {
-  const { isLoading } = useQuery(sessionQueryOptions);
+  // const { isLoading } = useQuery(sessionQueryOptions);
 
-  if (isLoading) {
-    return <DefaultPendingComponent />;
-  }
+  // if (isLoading) {
+  //   return <DefaultPendingComponent />;
+  // }
 
   return (
     <AppContextProvider>
