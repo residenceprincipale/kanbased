@@ -20,7 +20,6 @@ export const auth = betterAuth({
     enabled: true,
   },
 
-  basePath: "/api/v1/auth",
   trustedOrigins: [env.FE_ORIGIN],
   socialProviders: {
     google: {
@@ -32,3 +31,5 @@ export const auth = betterAuth({
     openAPI()
   ]
 });
+
+auth.api.signInSocial

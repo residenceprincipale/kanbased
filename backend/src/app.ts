@@ -74,15 +74,18 @@ app.get(
 );
 
 const routes = [
-  authRouter,
   boardsRouter,
   usersRouter,
   columnsRouter,
   tasksRouter,
 ];
 
+
+
 routes.forEach((route) => {
   app.route("/api/v1", route);
 });
+
+app.route("/api", authRouter);
 
 export default app;

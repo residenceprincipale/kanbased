@@ -1,69 +1,80 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { routeMap } from '@/lib/constants'
-import { useState, type FormEventHandler } from 'react'
-import { fetchClient } from '@/lib/fetch-client'
-import { toast } from 'sonner'
-import { Loader } from 'lucide-react'
-import { cn } from '@/lib/utils'
-import type { paths } from '@/types/api-schema'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { routeMap } from "@/lib/constants";
+import { useState, type FormEventHandler } from "react";
+import { fetchClient } from "@/lib/fetch-client";
+import { Loader } from "lucide-react";
+import { cn } from "@/lib/utils";
+import type { paths } from "@/types/api-schema";
+import { authClient } from "@/lib/auth";
 
-export const Route = createFileRoute('/auth/login')({
+export const Route = createFileRoute("/auth/login")({
   component: LoginForm,
-})
+});
 
-type ApiRouteUrls<TPaths extends keyof paths> = `${string}${TPaths}`
-const googleLoginUrl: ApiRouteUrls<'/auth/login/google'> = `${
-  import.meta.env.CLIENT_MY_API_BASE_URL
-}/auth/login/google`
+type ApiRouteUrls<TPaths extends keyof paths> = `${string}${TPaths}`;
 
 function LoginForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const navigate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const session = authClient.useSession();
 
   const handleSubmit: FormEventHandler = async (e) => {
-    e.preventDefault()
-    const fd = new FormData(e.target as HTMLFormElement)
-    const email = fd.get('email') as string
-    const password = fd.get('password') as string
+    e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    const email = fd.get("email") as string;
+    const password = fd.get("password") as string;
 
-    setIsSubmitting(true)
-    const { error } = await fetchClient.POST('/auth/login/email', {
+    setIsSubmitting(true);
+    const { error } = await fetchClient.POST("/auth/login/email", {
       body: {
         email,
         password,
       },
-    })
-    setIsSubmitting(false)
+    });
+    setIsSubmitting(false);
 
     if (error) {
       // toast(error.message);
     } else {
-      navigate({ to: '/' })
+      navigate({ to: "/" });
     }
-  }
+  };
+
+  const handleGoogleLogin = async () => {
+    const { error, data } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: window.location.origin,
+    });
+
+    console.log("data: ", data);
+  };
 
   if (true) {
     // TODO: For now just use google auth.
     return (
       <div className="height-screen flex justify-center items-center">
-        <a href={googleLoginUrl} className={cn(buttonVariants(), 'gap-2')}>
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          className={cn(buttonVariants(), "gap-2")}
+        >
           {/* <GoogleIcon /> */}
           <GoogleIcon />
           Sign in with Google
-        </a>
+        </button>
       </div>
-    )
+    );
   }
 
   return (
@@ -106,12 +117,12 @@ function LoginForm() {
                   Logging in...
                 </>
               ) : (
-                'Login'
+                "Login"
               )}
             </Button>
           </div>
           <div className="mt-4 text-center text-sm">
-            Don&apos;t have an account?{' '}
+            Don&apos;t have an account?{" "}
             <Link to={routeMap.register} className="underline">
               Sign up
             </Link>
@@ -119,7 +130,7 @@ function LoginForm() {
         </CardContent>
       </Card>
     </form>
-  )
+  );
 }
 
 function GoogleIcon() {
@@ -148,5 +159,5 @@ function GoogleIcon() {
         d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 01-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"
       />
     </svg>
-  )
+  );
 }
