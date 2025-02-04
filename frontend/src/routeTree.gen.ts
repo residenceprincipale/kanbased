@@ -12,12 +12,11 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
-import { Route as LayoutAuthenticatedImport } from './routes/_layout/_authenticated'
+import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register/route'
 import { Route as AuthLoginRouteImport } from './routes/auth/login/route'
-import { Route as LayoutAuthenticatedIndexImport } from './routes/_layout/_authenticated/index'
-import { Route as LayoutAuthenticatedBoardsRouteImport } from './routes/_layout/_authenticated/boards/route'
-import { Route as LayoutAuthenticatedBoardsBoardNameRouteImport } from './routes/_layout/_authenticated/boards_.$boardName/route'
+import { Route as LayoutBoardsRouteImport } from './routes/_layout/boards/route'
+import { Route as LayoutBoardsBoardNameRouteImport } from './routes/_layout/boards_.$boardName/route'
 
 // Create/Update Routes
 
@@ -26,8 +25,9 @@ const LayoutRoute = LayoutImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutAuthenticatedRoute = LayoutAuthenticatedImport.update({
-  id: '/_authenticated',
+const LayoutIndexRoute = LayoutIndexImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => LayoutRoute,
 } as any)
 
@@ -43,25 +43,19 @@ const AuthLoginRouteRoute = AuthLoginRouteImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutAuthenticatedIndexRoute = LayoutAuthenticatedIndexImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => LayoutAuthenticatedRoute,
+const LayoutBoardsRouteRoute = LayoutBoardsRouteImport.update({
+  id: '/boards',
+  path: '/boards',
+  getParentRoute: () => LayoutRoute,
 } as any)
 
-const LayoutAuthenticatedBoardsRouteRoute =
-  LayoutAuthenticatedBoardsRouteImport.update({
-    id: '/boards',
-    path: '/boards',
-    getParentRoute: () => LayoutAuthenticatedRoute,
-  } as any)
-
-const LayoutAuthenticatedBoardsBoardNameRouteRoute =
-  LayoutAuthenticatedBoardsBoardNameRouteImport.update({
+const LayoutBoardsBoardNameRouteRoute = LayoutBoardsBoardNameRouteImport.update(
+  {
     id: '/boards_/$boardName',
     path: '/boards/$boardName',
-    getParentRoute: () => LayoutAuthenticatedRoute,
-  } as any)
+    getParentRoute: () => LayoutRoute,
+  } as any,
+)
 
 // Populate the FileRoutesByPath interface
 
@@ -73,6 +67,13 @@ declare module '@tanstack/react-router' {
       fullPath: ''
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
+    }
+    '/_layout/boards': {
+      id: '/_layout/boards'
+      path: '/boards'
+      fullPath: '/boards'
+      preLoaderRoute: typeof LayoutBoardsRouteImport
+      parentRoute: typeof LayoutImport
     }
     '/auth/login': {
       id: '/auth/login'
@@ -88,121 +89,86 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_layout/_authenticated': {
-      id: '/_layout/_authenticated'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutAuthenticatedImport
-      parentRoute: typeof LayoutImport
-    }
-    '/_layout/_authenticated/boards': {
-      id: '/_layout/_authenticated/boards'
-      path: '/boards'
-      fullPath: '/boards'
-      preLoaderRoute: typeof LayoutAuthenticatedBoardsRouteImport
-      parentRoute: typeof LayoutAuthenticatedImport
-    }
-    '/_layout/_authenticated/': {
-      id: '/_layout/_authenticated/'
+    '/_layout/': {
+      id: '/_layout/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutAuthenticatedIndexImport
-      parentRoute: typeof LayoutAuthenticatedImport
+      preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
     }
-    '/_layout/_authenticated/boards_/$boardName': {
-      id: '/_layout/_authenticated/boards_/$boardName'
+    '/_layout/boards_/$boardName': {
+      id: '/_layout/boards_/$boardName'
       path: '/boards/$boardName'
       fullPath: '/boards/$boardName'
-      preLoaderRoute: typeof LayoutAuthenticatedBoardsBoardNameRouteImport
-      parentRoute: typeof LayoutAuthenticatedImport
+      preLoaderRoute: typeof LayoutBoardsBoardNameRouteImport
+      parentRoute: typeof LayoutImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface LayoutAuthenticatedRouteChildren {
-  LayoutAuthenticatedBoardsRouteRoute: typeof LayoutAuthenticatedBoardsRouteRoute
-  LayoutAuthenticatedIndexRoute: typeof LayoutAuthenticatedIndexRoute
-  LayoutAuthenticatedBoardsBoardNameRouteRoute: typeof LayoutAuthenticatedBoardsBoardNameRouteRoute
-}
-
-const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
-  LayoutAuthenticatedBoardsRouteRoute: LayoutAuthenticatedBoardsRouteRoute,
-  LayoutAuthenticatedIndexRoute: LayoutAuthenticatedIndexRoute,
-  LayoutAuthenticatedBoardsBoardNameRouteRoute:
-    LayoutAuthenticatedBoardsBoardNameRouteRoute,
-}
-
-const LayoutAuthenticatedRouteWithChildren =
-  LayoutAuthenticatedRoute._addFileChildren(LayoutAuthenticatedRouteChildren)
-
 interface LayoutRouteChildren {
-  LayoutAuthenticatedRoute: typeof LayoutAuthenticatedRouteWithChildren
+  LayoutBoardsRouteRoute: typeof LayoutBoardsRouteRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
+  LayoutBoardsBoardNameRouteRoute: typeof LayoutBoardsBoardNameRouteRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutAuthenticatedRoute: LayoutAuthenticatedRouteWithChildren,
+  LayoutBoardsRouteRoute: LayoutBoardsRouteRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
+  LayoutBoardsBoardNameRouteRoute: LayoutBoardsBoardNameRouteRoute,
 }
 
 const LayoutRouteWithChildren =
   LayoutRoute._addFileChildren(LayoutRouteChildren)
 
 export interface FileRoutesByFullPath {
-  '': typeof LayoutAuthenticatedRouteWithChildren
+  '': typeof LayoutRouteWithChildren
+  '/boards': typeof LayoutBoardsRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
-  '/boards': typeof LayoutAuthenticatedBoardsRouteRoute
-  '/': typeof LayoutAuthenticatedIndexRoute
-  '/boards/$boardName': typeof LayoutAuthenticatedBoardsBoardNameRouteRoute
+  '/': typeof LayoutIndexRoute
+  '/boards/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
 
 export interface FileRoutesByTo {
-  '': typeof LayoutRouteWithChildren
+  '/boards': typeof LayoutBoardsRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
-  '/boards': typeof LayoutAuthenticatedBoardsRouteRoute
-  '/': typeof LayoutAuthenticatedIndexRoute
-  '/boards/$boardName': typeof LayoutAuthenticatedBoardsBoardNameRouteRoute
+  '/': typeof LayoutIndexRoute
+  '/boards/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
+  '/_layout/boards': typeof LayoutBoardsRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
-  '/_layout/_authenticated': typeof LayoutAuthenticatedRouteWithChildren
-  '/_layout/_authenticated/boards': typeof LayoutAuthenticatedBoardsRouteRoute
-  '/_layout/_authenticated/': typeof LayoutAuthenticatedIndexRoute
-  '/_layout/_authenticated/boards_/$boardName': typeof LayoutAuthenticatedBoardsBoardNameRouteRoute
+  '/_layout/': typeof LayoutIndexRoute
+  '/_layout/boards_/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/boards'
     | '/auth/login'
     | '/auth/register'
-    | '/boards'
     | '/'
     | '/boards/$boardName'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | ''
-    | '/auth/login'
-    | '/auth/register'
-    | '/boards'
-    | '/'
-    | '/boards/$boardName'
+  to: '/boards' | '/auth/login' | '/auth/register' | '/' | '/boards/$boardName'
   id:
     | '__root__'
     | '/_layout'
+    | '/_layout/boards'
     | '/auth/login'
     | '/auth/register'
-    | '/_layout/_authenticated'
-    | '/_layout/_authenticated/boards'
-    | '/_layout/_authenticated/'
-    | '/_layout/_authenticated/boards_/$boardName'
+    | '/_layout/'
+    | '/_layout/boards_/$boardName'
   fileRoutesById: FileRoutesById
 }
 
@@ -236,8 +202,14 @@ export const routeTree = rootRoute
     "/_layout": {
       "filePath": "_layout.tsx",
       "children": [
-        "/_layout/_authenticated"
+        "/_layout/boards",
+        "/_layout/",
+        "/_layout/boards_/$boardName"
       ]
+    },
+    "/_layout/boards": {
+      "filePath": "_layout/boards/route.tsx",
+      "parent": "/_layout"
     },
     "/auth/login": {
       "filePath": "auth/login/route.tsx"
@@ -245,26 +217,13 @@ export const routeTree = rootRoute
     "/auth/register": {
       "filePath": "auth/register/route.tsx"
     },
-    "/_layout/_authenticated": {
-      "filePath": "_layout/_authenticated.tsx",
-      "parent": "/_layout",
-      "children": [
-        "/_layout/_authenticated/boards",
-        "/_layout/_authenticated/",
-        "/_layout/_authenticated/boards_/$boardName"
-      ]
+    "/_layout/": {
+      "filePath": "_layout/index.tsx",
+      "parent": "/_layout"
     },
-    "/_layout/_authenticated/boards": {
-      "filePath": "_layout/_authenticated/boards/route.tsx",
-      "parent": "/_layout/_authenticated"
-    },
-    "/_layout/_authenticated/": {
-      "filePath": "_layout/_authenticated/index.tsx",
-      "parent": "/_layout/_authenticated"
-    },
-    "/_layout/_authenticated/boards_/$boardName": {
-      "filePath": "_layout/_authenticated/boards_.$boardName/route.tsx",
-      "parent": "/_layout/_authenticated"
+    "/_layout/boards_/$boardName": {
+      "filePath": "_layout/boards_.$boardName/route.tsx",
+      "parent": "/_layout"
     }
   }
 }

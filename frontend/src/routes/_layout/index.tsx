@@ -1,15 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useSession } from "@/queries/session";
-import { Link } from "@tanstack/react-router";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { createFileRoute } from '@tanstack/react-router'
+import { useSession } from '@/queries/session'
+import { Link } from '@tanstack/react-router'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
 
-export const Route = createFileRoute("/_layout/_authenticated/")({
+export const Route = createFileRoute('/_layout/')({
   component: HomeComponent,
-});
+})
 
 function HomeComponent() {
-  const session = useSession();
+  const session = useSession()
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4">
@@ -29,5 +29,5 @@ function HomeComponent() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }
