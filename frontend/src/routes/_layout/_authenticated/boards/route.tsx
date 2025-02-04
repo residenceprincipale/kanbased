@@ -37,8 +37,9 @@ function BoardsPage() {
 
           {boards?.length === 0 ? (
             <div className="text-center py-12 border rounded-lg bg-muted/10">
-              <p className="text-muted-foreground">
-                No boards yet. Create your first board to get started!
+              <h1 className="text-xl font-bold mb-1">No boards yet</h1>
+              <p className="text-muted-foreground mb-4 text-sm">
+                Create your first board to get started!
               </p>
 
               <CreateBoardButton size="sm" />
