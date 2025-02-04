@@ -10,10 +10,6 @@ export const zodDbSchema = {
     insert: createInsertSchema(schema.accountsTable),
     select: createSelectSchema(schema.accountsTable),
   },
-  emailVerificationTokensTable: {
-    insert: createInsertSchema(schema.emailVerificationTokensTable),
-    select: createSelectSchema(schema.emailVerificationTokensTable),
-  },
   sessionsTable: {
     insert: createInsertSchema(schema.sessionsTable),
     select: createSelectSchema(schema.sessionsTable),

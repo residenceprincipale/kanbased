@@ -4,116 +4,7 @@
  */
 
 export interface paths {
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": Record<string, never>;
-                    };
-                };
-                401: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            message: string;
-                            statusCode: number;
-                        };
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login/google": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                302: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login/google/callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                302: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/boards": {
+    "/api/v1/boards": {
         parameters: {
             query?: never;
             header?: never;
@@ -279,7 +170,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/boards/{boardId}/toggle-delete": {
+    "/api/v1/boards/{boardId}/toggle-delete": {
         parameters: {
             query?: never;
             header?: never;
@@ -301,7 +192,7 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         deleted: boolean;
@@ -368,7 +259,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/boards/{boardId}": {
+    "/api/v1/boards/{boardId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -390,7 +281,7 @@ export interface paths {
                 };
                 cookie?: never;
             };
-            requestBody?: {
+            requestBody: {
                 content: {
                     "application/json": {
                         name: string;
@@ -421,6 +312,17 @@ export interface paths {
                     };
                 };
                 403: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": {
+                            message: string;
+                            statusCode: number;
+                        };
+                    };
+                };
+                404: {
                     headers: {
                         [name: string]: unknown;
                     };
@@ -466,7 +368,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/current-user": {
+    "/api/v1/current-user": {
         parameters: {
             query?: never;
             header?: never;
@@ -549,7 +451,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/columns": {
+    "/api/v1/columns": {
         parameters: {
             query?: never;
             header?: never;
@@ -719,7 +621,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/columns/reorder": {
+    "/api/v1/columns/reorder": {
         parameters: {
             query?: never;
             header?: never;
@@ -803,7 +705,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/columns/{columnId}": {
+    "/api/v1/columns/{columnId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -953,7 +855,7 @@ export interface paths {
         };
         trace?: never;
     };
-    "/tasks": {
+    "/api/v1/tasks": {
         parameters: {
             query?: never;
             header?: never;
@@ -1112,7 +1014,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/tasks/{taskId}": {
+    "/api/v1/tasks/{taskId}": {
         parameters: {
             query?: never;
             header?: never;

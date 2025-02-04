@@ -1,1 +1,0 @@
-ALTER TABLE "tasks" ALTER COLUMN "name" SET DATA TYPE text;
