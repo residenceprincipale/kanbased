@@ -10,9 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
-import { Loader2 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth";
@@ -23,7 +21,7 @@ export const Route = createFileRoute("/auth/login")({
   component: SignIn,
 });
 
-export default function SignIn() {
+function SignIn() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isGithubLoading, setIsGithubLoading] = useState(false);
   const [isEmailLoginLoading, setIsEmailLoginLoading] = useState(false);
