@@ -30,26 +30,27 @@ function SignUp() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setIsRegistering(true);
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
+    const passwordConfirmation = formData.get("passwordConfirmation") as string;
     const firstName = formData.get("firstName") as string;
     const lastName = formData.get("lastName") as string;
+
+    if (password !== passwordConfirmation) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
+    setIsRegistering(true);
+    const imageBase64 = image ? await convertImageToBase64(image) : "";
 
     await authClient.signUp.email({
       email,
       password,
       name: `${firstName} ${lastName}`,
-      image: image ? await convertImageToBase64(image) : "",
-      callbackURL: "/dashboard",
+      image: imageBase64,
       fetchOptions: {
-        onResponse: () => {
-          setIsRegistering(false);
-        },
-        onRequest: () => {
-          setIsRegistering(true);
-        },
         onError: (ctx) => {
           toast.error(ctx.error.message);
         },
@@ -58,6 +59,7 @@ function SignUp() {
         },
       },
     });
+    setIsRegistering(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {

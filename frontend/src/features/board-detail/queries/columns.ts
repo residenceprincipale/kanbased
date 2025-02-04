@@ -44,9 +44,9 @@ export function useColumnsSuspenseQuery(params: { boardName: string }) {
 export function useCreateColumnMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
-  const mutationKey = ["post", "/columns"];
+  const mutationKey = ["post", "/api/v1/columns"] as const;
 
-  return api.useMutation("post", "/columns", {
+  return api.useMutation(mutationKey[0], mutationKey[1], {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -90,10 +90,10 @@ export function useCreateColumnMutation(params: { columnsQueryKey: QueryKey }) {
 export function useMoveColumnsMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
-  const mutationKey = ["put", "/columns"];
+  const mutationKey = ["patch", "/api/v1/columns/reorder"] as const;
   const forceUpdate = useForceUpdate();
 
-  return api.useMutation("patch", "/columns/reorder", {
+  return api.useMutation(mutationKey[0], mutationKey[1], {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -144,7 +144,7 @@ export function useEditColumnMutation(params: {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
 
-  return api.useMutation("patch", "/columns/{columnId}", {
+  return api.useMutation("patch", "/api/v1/columns/{columnId}", {
     onMutate: async (variables) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });
@@ -181,7 +181,7 @@ export function useDeleteColumnMutation(params: { columnsQueryKey: QueryKey }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
 
-  return api.useMutation("delete", "/columns/{columnId}", {
+  return api.useMutation("delete", "/api/v1/columns/{columnId}", {
     onMutate: async (variables: { params: { path: { columnId: string } } }) => {
       // Cancel any on-going request as it may accidentally update the cache.
       await queryClient.cancelQueries({ queryKey });

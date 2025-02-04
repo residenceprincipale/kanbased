@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useRouter } from "@tanstack/react-router";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth";
 import { createFileRoute } from "@tanstack/react-router";
@@ -25,6 +25,7 @@ function SignIn() {
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [isGithubLoading, setIsGithubLoading] = useState(false);
   const [isEmailLoginLoading, setIsEmailLoginLoading] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -32,15 +33,19 @@ function SignIn() {
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    await authClient.signIn.email({ email, password });
+    await authClient.signIn.email({
+      email,
+      password,
+    });
     setIsEmailLoginLoading(false);
+    router.navigate({ to: "/" });
   };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: window.location.origin,
     });
     setIsGoogleLoading(false);
   };
@@ -49,7 +54,7 @@ function SignIn() {
     setIsGithubLoading(true);
     await authClient.signIn.social({
       provider: "github",
-      callbackURL: "/dashboard",
+      callbackURL: window.location.origin,
     });
     setIsGithubLoading(false);
   };

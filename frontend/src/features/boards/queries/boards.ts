@@ -6,7 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 export function useCreateBoardMutation() {
   const queryClient = useQueryClient();
 
-  return api.useMutation("post", "/boards", {
+  return api.useMutation("post", "/api/v1/boards", {
     onSuccess: () => {
       queryClient.invalidateQueries(boardsQueryOptions);
     }

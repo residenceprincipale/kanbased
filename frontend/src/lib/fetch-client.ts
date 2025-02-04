@@ -6,3 +6,4 @@ export const fetchClient = createClient<paths>({
   credentials: 'include'
 });
 
+

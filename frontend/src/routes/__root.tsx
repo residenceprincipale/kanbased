@@ -8,11 +8,6 @@ import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
 
-import { api } from "@/lib/openapi-react-query";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
-import { router } from "@/main";
-import { DefaultPendingComponent } from "@/components/default-loader";
-import { sessionQueryOptions } from "@/lib/query-options-factory";
 const TanStackRouterDevtools =
   // @ts-ignore
   process.env.NODE_ENV === "production"
@@ -33,12 +28,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootComponent() {
-  // const { isLoading } = useQuery(sessionQueryOptions);
-
-  // if (isLoading) {
-  //   return <DefaultPendingComponent />;
-  // }
-
   return (
     <AppContextProvider>
       <ScrollRestoration />
