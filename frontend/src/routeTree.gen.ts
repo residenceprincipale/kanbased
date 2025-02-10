@@ -13,8 +13,10 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as AuthResetPasswordRouteImport } from './routes/auth/reset-password/route'
 import { Route as AuthRegisterRouteImport } from './routes/auth/register/route'
 import { Route as AuthLoginRouteImport } from './routes/auth/login/route'
+import { Route as AuthForgotPasswordRouteImport } from './routes/auth/forgot-password/route'
 import { Route as LayoutBoardsRouteImport } from './routes/_layout/boards/route'
 import { Route as LayoutBoardsBoardNameRouteImport } from './routes/_layout/boards_.$boardName/route'
 
@@ -31,6 +33,12 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const AuthResetPasswordRouteRoute = AuthResetPasswordRouteImport.update({
+  id: '/auth/reset-password',
+  path: '/auth/reset-password',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRegisterRouteRoute = AuthRegisterRouteImport.update({
   id: '/auth/register',
   path: '/auth/register',
@@ -40,6 +48,12 @@ const AuthRegisterRouteRoute = AuthRegisterRouteImport.update({
 const AuthLoginRouteRoute = AuthLoginRouteImport.update({
   id: '/auth/login',
   path: '/auth/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthForgotPasswordRouteRoute = AuthForgotPasswordRouteImport.update({
+  id: '/auth/forgot-password',
+  path: '/auth/forgot-password',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -75,6 +89,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutBoardsRouteImport
       parentRoute: typeof LayoutImport
     }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordRouteImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
@@ -87,6 +108,13 @@ declare module '@tanstack/react-router' {
       path: '/auth/register'
       fullPath: '/auth/register'
       preLoaderRoute: typeof AuthRegisterRouteImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/reset-password': {
+      id: '/auth/reset-password'
+      path: '/auth/reset-password'
+      fullPath: '/auth/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordRouteImport
       parentRoute: typeof rootRoute
     }
     '/_layout/': {
@@ -126,16 +154,20 @@ const LayoutRouteWithChildren =
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
   '/boards': typeof LayoutBoardsRouteRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
+  '/auth/reset-password': typeof AuthResetPasswordRouteRoute
   '/': typeof LayoutIndexRoute
   '/boards/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
 
 export interface FileRoutesByTo {
   '/boards': typeof LayoutBoardsRouteRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
+  '/auth/reset-password': typeof AuthResetPasswordRouteRoute
   '/': typeof LayoutIndexRoute
   '/boards/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
@@ -144,8 +176,10 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
   '/_layout/boards': typeof LayoutBoardsRouteRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRouteRoute
   '/auth/login': typeof AuthLoginRouteRoute
   '/auth/register': typeof AuthRegisterRouteRoute
+  '/auth/reset-password': typeof AuthResetPasswordRouteRoute
   '/_layout/': typeof LayoutIndexRoute
   '/_layout/boards_/$boardName': typeof LayoutBoardsBoardNameRouteRoute
 }
@@ -155,18 +189,29 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/boards'
+    | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/reset-password'
     | '/'
     | '/boards/$boardName'
   fileRoutesByTo: FileRoutesByTo
-  to: '/boards' | '/auth/login' | '/auth/register' | '/' | '/boards/$boardName'
+  to:
+    | '/boards'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/auth/register'
+    | '/auth/reset-password'
+    | '/'
+    | '/boards/$boardName'
   id:
     | '__root__'
     | '/_layout'
     | '/_layout/boards'
+    | '/auth/forgot-password'
     | '/auth/login'
     | '/auth/register'
+    | '/auth/reset-password'
     | '/_layout/'
     | '/_layout/boards_/$boardName'
   fileRoutesById: FileRoutesById
@@ -174,14 +219,18 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
+  AuthForgotPasswordRouteRoute: typeof AuthForgotPasswordRouteRoute
   AuthLoginRouteRoute: typeof AuthLoginRouteRoute
   AuthRegisterRouteRoute: typeof AuthRegisterRouteRoute
+  AuthResetPasswordRouteRoute: typeof AuthResetPasswordRouteRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
+  AuthForgotPasswordRouteRoute: AuthForgotPasswordRouteRoute,
   AuthLoginRouteRoute: AuthLoginRouteRoute,
   AuthRegisterRouteRoute: AuthRegisterRouteRoute,
+  AuthResetPasswordRouteRoute: AuthResetPasswordRouteRoute,
 }
 
 export const routeTree = rootRoute
@@ -195,8 +244,10 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
+        "/auth/forgot-password",
         "/auth/login",
-        "/auth/register"
+        "/auth/register",
+        "/auth/reset-password"
       ]
     },
     "/_layout": {
@@ -211,11 +262,17 @@ export const routeTree = rootRoute
       "filePath": "_layout/boards/route.tsx",
       "parent": "/_layout"
     },
+    "/auth/forgot-password": {
+      "filePath": "auth/forgot-password/route.tsx"
+    },
     "/auth/login": {
       "filePath": "auth/login/route.tsx"
     },
     "/auth/register": {
       "filePath": "auth/register/route.tsx"
+    },
+    "/auth/reset-password": {
+      "filePath": "auth/reset-password/route.tsx"
     },
     "/_layout/": {
       "filePath": "_layout/index.tsx",

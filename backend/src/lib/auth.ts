@@ -15,10 +15,18 @@ export const auth = betterAuth({
       session: schema.sessionsTable,
       user: schema.usersTable,
       verification: schema.verificationsTable
-    }
+    },
   }),
   emailAndPassword: {
     enabled: true,
+    sendResetPassword: async ({ user, url }) => {
+      await resend.emails.send({
+        from: 'support@mail.kanbased.com',
+        to: user.email,
+        subject: "Reset your password",
+        html: `<p>Click the link to reset your password: <a href="${url}">${url}</a></p>`,
+      });
+    },
   },
   emailVerification: {
     sendOnSignUp: true,

@@ -1,6 +1,15 @@
 "use client";
 
-import { ChevronsUpDown, LogOut, Moon, Sun, User } from "lucide-react";
+import {
+  ChevronsUpDown,
+  LogOut,
+  Moon,
+  Sun,
+  User,
+  Mail,
+  MailWarning,
+  Lock,
+} from "lucide-react";
 import { useEffect } from "react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -9,9 +18,13 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -39,6 +52,22 @@ export function NavUser() {
     },
   });
 
+  const verifyEmailMutation = useMutation({
+    mutationFn: () =>
+      authClient.sendVerificationEmail({
+        email: user.email,
+        callbackURL: window.location.origin,
+      }),
+  });
+
+  const forgotPasswordMutation = useMutation({
+    mutationFn: () =>
+      authClient.forgetPassword({
+        email: user.email,
+        redirectTo: `${window.location.origin}/auth/reset-password`,
+      }),
+  });
+
   // Handle system theme changes
   useEffect(() => {
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -57,6 +86,25 @@ export function NavUser() {
       loading: "Logging out...",
       success: "Logged out successfully",
       error: "Failed to log out",
+    });
+  };
+
+  const handleVerifyEmail = () => {
+    toast.promise(() => verifyEmailMutation.mutateAsync(), {
+      loading: "Sending verification email...",
+      success: "Verification email sent successfully, please check your email.",
+      error: "Failed to send verification email",
+      position: "bottom-center",
+    });
+  };
+
+  const handleResetPassword = async () => {
+    toast.promise(() => forgotPasswordMutation.mutateAsync(), {
+      loading: "Sending reset password email...",
+      success:
+        "Reset password email sent successfully, please check your email.",
+      error: "Failed to send reset password email",
+      position: "bottom-center",
     });
   };
 
@@ -91,20 +139,43 @@ export function NavUser() {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.image!} alt={user.name!} />
-                  <AvatarFallback className="rounded-lg">
-                    <User />
-                  </AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
-                </div>
-              </div>
-            </DropdownMenuLabel>
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <Avatar className="h-8 w-8 rounded-lg">
+                      <AvatarImage src={user.image!} alt={user.name!} />
+                      <AvatarFallback className="rounded-lg">
+                        <User />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {user.name}
+                      </span>
+                      <span className="truncate text-xs">{user.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuSubTrigger>
+
+              <DropdownMenuPortal>
+                <DropdownMenuSubContent>
+                  {!user.emailVerified && (
+                    <DropdownMenuItem onClick={handleVerifyEmail}>
+                      <MailWarning className="h-4 w-4" />
+                      Verify email
+                    </DropdownMenuItem>
+                  )}
+
+                  <DropdownMenuItem onClick={handleResetPassword}>
+                    <Lock className="h-4 w-4" />
+                    Reset Password
+                  </DropdownMenuItem>
+                </DropdownMenuSubContent>
+              </DropdownMenuPortal>
+            </DropdownMenuSub>
+
             <DropdownMenuSeparator />
 
             {/* Theme Selection */}
@@ -139,6 +210,7 @@ export function NavUser() {
             </DropdownMenuRadioGroup>
 
             <DropdownMenuSeparator />
+
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className="mr-2 h-4 w-4" />
               Log out

@@ -7,6 +7,8 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AppContextProvider } from "@/state/app-state";
 import { lazy } from "react";
 import { Toaster } from "@/components/ui/sonner";
+import { queryClient } from "@/lib/query-client";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
 
 const TanStackRouterDevtools =
   // @ts-ignore

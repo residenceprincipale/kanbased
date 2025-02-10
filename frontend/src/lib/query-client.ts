@@ -22,8 +22,10 @@ export const queryClient = new QueryClient({
     },
   }),
   mutationCache: new MutationCache({
-    onError: (error, query) => {
-      if (error instanceof UnauthorizedError) {
+    onError: (error) => {
+      const isAuthPage = window && window.location.pathname.includes("/auth/login");
+
+      if (error instanceof UnauthorizedError && !isAuthPage) {
         router.navigate({ to: "/auth/login" });
       }
     },

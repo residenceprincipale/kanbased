@@ -56,6 +56,9 @@ function SignUp() {
           toast.error(ctx.error.message);
         },
         onSuccess: async () => {
+          toast("A verification email has been sent to your email address.", {
+            description: "Please verify your email.",
+          });
           router.navigate({ to: "/" });
         },
       },
