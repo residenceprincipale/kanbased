@@ -4,6 +4,7 @@ import { db } from "../db/index.js";
 import { env } from "../env.js";
 import { openAPI } from "better-auth/plugins";
 import * as schema from "../db/schema/index.js";
+import resend from "./email.js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -18,6 +19,18 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
+  },
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await resend.emails.send({
+        from: 'support@mail.kanbased.com',
+        to: user.email,
+        subject: "Verify your email address",
+        html: `<p>Click the link to verify your email: <a href="${url}">${url}</a></p>`,
+      });
+    },
   },
 
   trustedOrigins: [env.FE_ORIGIN],

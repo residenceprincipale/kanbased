@@ -11,6 +11,7 @@ export declare global {
       GOOGLE_CLIENT_SECRET: string;
       BE_ORIGIN: string;
       FE_ORIGIN: string;
+      RESEND_API_KEY: string;
     }
   }
 }
