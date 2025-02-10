@@ -1,6 +1,6 @@
 import { createMiddleware } from "hono/factory";
-import { auth } from "../../lib/auth.js";
-import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+import { auth } from "../lib/auth.js";
+import { HTTP_STATUS_CODES } from "../lib/constants.js";
 
 export const verifySessionMiddleware = createMiddleware(async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });

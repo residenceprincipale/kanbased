@@ -1,7 +1,7 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import { HTTP_STATUS_CODES } from "./constants.js";
 import type { AppBindings } from "./create-app.js";
-import { verifySessionMiddleware, authenticatedMiddleware } from "../shared/middlewares/auth.middleware.js";
+import { verifySessionMiddleware, authenticatedMiddleware } from "../middlewares/auth.middleware.js";
 
 export function createRouter() {
   const router = new OpenAPIHono<AppBindings>({
