@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "build": "tsc",
+    "prestart": "pnpm db:migrate",
     "start": "node --env-file=.env ./dist/src",
     "dev": "tsx watch --env-file=.env src/index.ts",
     "dev:db:start": "docker compose -f docker-compose.dev.yml up",
