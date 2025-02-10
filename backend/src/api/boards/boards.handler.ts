@@ -1,5 +1,5 @@
 import routes from "./boards.routes.js";
-import * as boardService from "./boards.service.js";
+import * as boardService from "../../use-cases/boards.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import type { InferHandlers } from "../../lib/types.js";
 import { getUser, sendJson } from "../../lib/request-helpers.js";

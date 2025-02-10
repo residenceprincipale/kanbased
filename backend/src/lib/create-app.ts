@@ -12,8 +12,8 @@ import type { auth } from "./auth.js";
 
 export interface AppBindings {
   Variables: {
-    user: typeof auth.$Infer.Session.user | null;
-    session: typeof auth.$Infer.Session.session | null
+    user: typeof auth.$Infer.Session.user;
+    session: typeof auth.$Infer.Session.session;
     logger: PinoLogger;
   };
 }
@@ -50,14 +50,12 @@ export default function createApp() {
 
     if (err instanceof PermissionError) {
       statusCode = HTTP_STATUS_CODES.FORBIDDEN;
-      message =
-        err.displayMessage ??
-        "You do not have permission to perform this action.";
+      message = err.message;
     }
 
     if (err instanceof UnprocessableEntityError) {
       statusCode = HTTP_STATUS_CODES.UNPROCESSABLE_ENTITY;
-      message = err.displayMessage;
+      message = err.message;
     }
 
     const data = {

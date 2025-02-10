@@ -1,12 +1,12 @@
 import { and, eq, inArray } from "drizzle-orm";
-import { db } from "../../db/index.js";
+import { db } from "../db/index.js";
 import {
   boardPermissionsTable,
   columnsTable,
   tasksTable,
   type ResourcePermission,
-} from "../../db/schema/index.js";
-import { PermissionError } from "../../lib/error-utils.js";
+} from "../db/schema/index.js";
+import { PermissionError } from "../lib/error-utils.js";
 const permissionLevels = {
   owner: 3,
   admin: 2,
@@ -21,7 +21,7 @@ export type ResourceType = "board" | "column" | "task";
  * Throws a `PermissionError` if the user does not have permission.
  */
 export async function checkResourceAccess(
-  userId: number,
+  userId: string,
   resourceId: string | string[],
   resourceType: ResourceType,
   requiredPermission: ResourcePermission
@@ -89,7 +89,7 @@ export async function checkResourceAccess(
 
   // Handle case where no results found
   if (!results?.length) {
-    throwPermissionError();
+    throw new PermissionError();
   }
 
   if (Array.isArray(resourceId)) {
@@ -98,13 +98,13 @@ export async function checkResourceAccess(
 
     // Verify we got back the same number of results as requested IDs
     if (foundResourceIds.size !== resourceId.length) {
-      throwPermissionError();
+      throw new PermissionError();
     }
 
     // Check if all requested IDs exist and have sufficient permissions
     for (const id of resourceId) {
       if (!foundResourceIds.has(id)) {
-        throwPermissionError();
+        throw new PermissionError();
       }
     }
   }
@@ -116,12 +116,7 @@ export async function checkResourceAccess(
       permissionLevels[requiredPermission];
 
     if (!hasPermission) {
-      throwPermissionError();
+      throw new PermissionError();
     }
   }
-}
-
-function throwPermissionError() {
-  const msg = "You do not have permission to perform this action.";
-  throw new PermissionError({ message: msg, displayMessage: msg });
 }

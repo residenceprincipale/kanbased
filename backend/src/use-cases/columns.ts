@@ -1,21 +1,19 @@
 import { and, eq, inArray, SQL, sql } from "drizzle-orm";
-import type { InsertType } from "../../db/db-table-types.js";
-import { db } from "../../db/index.js";
+import type { InsertType } from "../db/table-types.js";
+import { db } from "../db/index.js";
 import {
   boardPermissionsTable,
   boardsTable,
   columnsTable,
   tasksTable,
-} from "../../db/schema/index.js";
-import { checkResourceAccess } from "../../shared/services/board-permissions.js";
-import { HTTP_STATUS_CODES } from "../../lib/constants.js";
+} from "../db/schema/index.js";
+import { checkResourceAccess } from "./permissions.js";
 import {
-  PermissionError,
-  UnprocessableEntityError,
-} from "../../lib/error-utils.js";
+  PermissionError
+} from "../lib/error-utils.js";
 
 export async function createColumn(
-  userId: number,
+  userId: string,
   body: InsertType<"columnsTable">
 ) {
   await checkResourceAccess(userId, body.boardId, "board", "admin");
@@ -23,7 +21,7 @@ export async function createColumn(
 }
 
 export async function reorderColumns(
-  userId: number,
+  userId: string,
   columns: Pick<InsertType<"columnsTable">, "id" | "position">[]
 ) {
   const columnIds = columns.map((col) => col.id);
@@ -48,7 +46,7 @@ export async function reorderColumns(
     .where(inArray(columnsTable.id, columnIds));
 }
 
-export async function getColumnsAndTasks(userId: number, boardName: string) {
+export async function getColumnsAndTasks(userId: string, boardName: string) {
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
@@ -64,19 +62,10 @@ export async function getColumnsAndTasks(userId: number, boardName: string) {
     );
 
   if (!boards.length) {
-    throw new PermissionError({
-      message: `You do not have access to this resource`,
-      displayMessage: `You do not have access to this resource`,
-    });
+    throw new PermissionError();
   }
 
-  const boardId = boards[0]?.boardId;
-  if (!boardId) {
-    throw new UnprocessableEntityError({
-      message: `Invalid board data`,
-      displayMessage: `Invalid board data`,
-    });
-  }
+  const boardId = boards[0]!.boardId;
 
   await checkResourceAccess(userId, boardId, "board", "viewer");
 
@@ -100,7 +89,7 @@ export async function getColumnsAndTasks(userId: number, boardName: string) {
   return { columns, tasks, boardId };
 }
 
-export async function updateColumnName(userId: number, columnId: string, body: Pick<InsertType<"columnsTable">, 'name'>) {
+export async function updateColumnName(userId: string, columnId: string, body: Pick<InsertType<"columnsTable">, 'name'>) {
   await checkResourceAccess(userId, columnId, "column", "admin");
 
   const [updatedCol] = await db
@@ -112,7 +101,7 @@ export async function updateColumnName(userId: number, columnId: string, body: P
   return updatedCol!;
 }
 
-export async function deleteColumn(userId: number, columnId: string) {
+export async function deleteColumn(userId: string, columnId: string) {
   await checkResourceAccess(userId, columnId, "column", "admin");
   await db.delete(columnsTable).where(eq(columnsTable.id, columnId));
 }

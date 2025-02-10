@@ -12,12 +12,12 @@ usersRouter.openapi(userRoutes.getCurrentUser, async (c) => {
   const session = c.get("session");
 
   const result = await db.query.profilesTable.findFirst({
-    where: eq(profilesTable.userId, user.id),
+    where: eq(profilesTable.userId, user!.id),
   });
 
   const data = result!
 
-  return c.json({ user: { displayName: data.displayName, image: data.image }, expiresAt: session.expiresAt }, HTTP_STATUS_CODES.OK);
+  return c.json({ user: { displayName: data.displayName, image: data.image }, expiresAt: session!.expiresAt }, HTTP_STATUS_CODES.OK);
 });
 
 export default usersRouter;

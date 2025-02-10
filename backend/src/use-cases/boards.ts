@@ -1,27 +1,20 @@
-import type { InsertType } from "../../db/db-table-types.js";
-import { db } from "../../db/index.js";
+import type { InsertType } from "../db/table-types.js";
+import { db } from "../db/index.js";
 import {
   boardPermissionsTable,
   boardsTable,
   columnsTable,
   tasksTable,
-} from "../../db/schema/index.js";
+} from "../db/schema/index.js";
 import { and, asc, count, eq, isNull } from "drizzle-orm";
-import { checkResourceAccess } from "../../shared/services/board-permissions.js";
-import { UnprocessableEntityError } from "../../lib/error-utils.js";
+import { checkResourceAccess } from "./permissions.js";
+import { UnprocessableEntityError } from "../lib/error-utils.js";
 
 export async function createBoard(
-  userId: number,
+  userId: string,
   body: Omit<InsertType<"boardsTable">, "creatorId">
 ) {
-  const isBoardUnique = await getIsBoardUnique(userId, body.name);
-
-  if (!isBoardUnique) {
-    throw new UnprocessableEntityError({
-      message: "Board name must be unique",
-      displayMessage: "Board name must be unique",
-    });
-  }
+  await assertBoardNameIsUnique(userId, body.name);
 
   await db.transaction(async (tx) => {
     const [createdBoard] = await tx
@@ -45,7 +38,7 @@ export async function createBoard(
   });
 }
 
-export async function getIsBoardUnique(userId: number, name: string) {
+export async function assertBoardNameIsUnique(userId: string, name: string) {
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
@@ -57,10 +50,12 @@ export async function getIsBoardUnique(userId: number, name: string) {
       )
     );
 
-  return boards.length === 0;
+  if (boards.length > 0) {
+    throw new UnprocessableEntityError("Board name must be unique");
+  }
 }
 
-export function getBoards(userId: number) {
+export function getBoards(userId: string) {
   return db
     .select({
       id: boardsTable.id,
@@ -87,7 +82,7 @@ export function getBoards(userId: number) {
 }
 
 export async function toggleBoardDelete(
-  userId: number,
+  userId: string,
   boardId: string,
   deleted: boolean
 ) {
@@ -103,20 +98,13 @@ export async function toggleBoardDelete(
 }
 
 export async function editBoard(
-  userId: number,
+  userId: string,
   boardId: string,
   body: Omit<InsertType<"boardsTable">, "creatorId" | "id">
 ) {
   await checkResourceAccess(userId, boardId, "board", "editor");
 
-  const isBoardUnique = await getIsBoardUnique(userId, body.name);
-
-  if (!isBoardUnique) {
-    throw new UnprocessableEntityError({
-      message: "Board name must be unique",
-      displayMessage: "Board name must be unique",
-    });
-  }
+  await assertBoardNameIsUnique(userId, body.name);
 
   await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
 }

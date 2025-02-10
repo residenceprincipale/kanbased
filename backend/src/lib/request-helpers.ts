@@ -7,7 +7,8 @@ export function sendJson<TContext extends Context, TData extends JSONValue, TSta
   data: TData,
   status: TStatus,
 ) {
-  return c.json<TData, TStatus>(data, status);
+  // @ts-ignore
+  return c.json<TData, StatusCode>(data, status);
 }
 
 export function getUser(c: Context) {

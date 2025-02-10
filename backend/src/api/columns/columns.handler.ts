@@ -2,7 +2,7 @@ import { type GetColumnsResponse } from "./columns.routes.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
 import type { InferHandlers } from "../../lib/types.js";
 import type routes from "./columns.routes.js";
-import * as columnsService from "./columns.service.js";
+import * as columnsService from "../../use-cases/columns.js";
 import { sendJson } from "../../lib/request-helpers.js";
 
 

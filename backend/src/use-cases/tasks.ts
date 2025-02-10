@@ -1,11 +1,11 @@
 import { eq, inArray, sql, SQL } from "drizzle-orm";
-import type { InsertType } from "../../db/db-table-types.js";
-import { db } from "../../db/index.js";
-import { tasksTable } from "../../db/schema/index.js";
-import { checkResourceAccess } from "../../shared/services/board-permissions.js";
+import type { InsertType } from "../db/table-types.js";
+import { db } from "../db/index.js";
+import { tasksTable } from "../db/schema/index.js";
+import { checkResourceAccess } from "./permissions.js";
 
 export async function createTask(
-  userId: number,
+  userId: string,
   task: InsertType<"tasksTable">
 ) {
   await checkResourceAccess(userId, task.columnId, "column", "admin");
@@ -16,7 +16,7 @@ export async function createTask(
 }
 
 export async function updateTaskName(
-  userId: number,
+  userId: string,
   taskId: string,
   task: Pick<InsertType<"tasksTable">, "name" | "updatedAt">
 ) {
@@ -26,7 +26,7 @@ export async function updateTaskName(
 }
 
 export async function updateTasksPosition(
-  userId: number,
+  userId: string,
   tasks: Pick<InsertType<"tasksTable">, "position" | "columnId" | "id">[]
 ) {
   const taskIds = tasks.map((task) => task.id);
@@ -62,7 +62,7 @@ export async function updateTasksPosition(
     .where(inArray(tasksTable.id, taskIds));
 }
 
-export async function deleteTask(userId: number, taskId: string) {
+export async function deleteTask(userId: string, taskId: string) {
   await checkResourceAccess(userId, taskId, "task", "admin");
   await db.delete(tasksTable).where(eq(tasksTable.id, taskId));
 }

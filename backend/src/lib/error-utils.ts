@@ -1,19 +1,15 @@
 export class PermissionError extends Error {
-  displayMessage: string;
-
-  constructor({ message, displayMessage = '' }: { message: string, displayMessage?: string }) {
+  constructor(message = "You do not have permission to perform this action.") {
     super(message);
     this.name = "Permission Error"
-    this.displayMessage = displayMessage;
+    this.message = message;
   }
 }
 
 export class UnprocessableEntityError extends Error {
-  displayMessage: string;
-
-  constructor({ message, displayMessage = '' }: { message: string, displayMessage?: string }) {
+  constructor(message = "Invalid board data") {
     super(message);
     this.name = "Unprocessable Entity Error"
-    this.displayMessage = displayMessage;
+    this.message = message;
   }
 }
