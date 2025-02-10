@@ -50,6 +50,7 @@ function SignUp() {
       password,
       name: `${firstName} ${lastName}`,
       image: imageBase64,
+      callbackURL: window.location.origin,
       fetchOptions: {
         onError: (ctx) => {
           toast.error(ctx.error.message);

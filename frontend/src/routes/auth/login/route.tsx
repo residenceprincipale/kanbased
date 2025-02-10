@@ -27,42 +27,64 @@ function SignIn() {
   const [isEmailLoginLoading, setIsEmailLoginLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleUserPasswordLogin = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
     setIsEmailLoginLoading(true);
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
-    await authClient.signIn.email({
-      email,
-      password,
-    });
+    await authClient.signIn.email(
+      {
+        email,
+        password,
+      },
+      {
+        onSuccess: () => {
+          router.navigate({ to: "/" });
+        },
+      }
+    );
     setIsEmailLoginLoading(false);
-    router.navigate({ to: "/" });
   };
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-    await authClient.signIn.social({
-      provider: "google",
-      callbackURL: window.location.origin,
-    });
+    await authClient.signIn.social(
+      {
+        provider: "google",
+        callbackURL: window.location.origin,
+      },
+      {
+        onSuccess: () => {
+          router.navigate({ to: "/" });
+        },
+      }
+    );
     setIsGoogleLoading(false);
   };
 
   const handleGithubLogin = async () => {
     setIsGithubLoading(true);
-    await authClient.signIn.social({
-      provider: "github",
-      callbackURL: window.location.origin,
-    });
+    await authClient.signIn.social(
+      {
+        provider: "github",
+        callbackURL: window.location.origin,
+      },
+      {
+        onSuccess: () => {
+          router.navigate({ to: "/" });
+        },
+      }
+    );
     setIsGithubLoading(false);
   };
 
   return (
     <form
       className="w-full h-svh flex items-center justify-center"
-      onSubmit={handleSubmit}
+      onSubmit={handleUserPasswordLogin}
     >
       <Card className="max-w-md">
         <CardHeader>
