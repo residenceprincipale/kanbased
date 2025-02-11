@@ -46,9 +46,22 @@ export async function fetchAndCacheImage(cacheName: string, imageUrl: string): P
 };
 
 
-export class UnauthorizedError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = "UnauthorizedError";
+interface AuthError {
+  code?: string;
+  message?: string;
+  status: number;
+  statusText: string;
+}
+
+type AuthResponse<T> = {
+  data: T;
+  error: AuthError | null;
+};
+
+export function handleAuthResponse<T>(response: AuthResponse<T>): T {
+  if (response.error) {
+    throw response.error;
   }
+
+  return response.data;
 }

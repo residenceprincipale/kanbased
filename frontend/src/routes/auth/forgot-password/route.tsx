@@ -13,6 +13,8 @@ import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
+import { getOrigin } from "@/lib/constants";
+import { handleAuthResponse } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth/forgot-password")({
   component: RouteComponent,
@@ -20,8 +22,10 @@ export const Route = createFileRoute("/auth/forgot-password")({
 
 function RouteComponent() {
   const forgotPasswordMutation = useMutation({
-    mutationFn: (data: { email: string; redirectTo: string }) =>
-      authClient.forgetPassword(data),
+    mutationFn: async (data: { email: string; redirectTo: string }) => {
+      const res = await authClient.forgetPassword(data);
+      return handleAuthResponse(res);
+    },
   });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -33,7 +37,7 @@ function RouteComponent() {
       () =>
         forgotPasswordMutation.mutateAsync({
           email,
-          redirectTo: `${window.location.origin}/auth/reset-password`,
+          redirectTo: `${getOrigin()}/auth/reset-password`,
         }),
       {
         loading: "Sending reset link...",

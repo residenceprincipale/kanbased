@@ -15,6 +15,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { authClient } from "@/lib/auth";
 import { toast } from "sonner";
 import { useMutation } from "@tanstack/react-query";
+import { handleAuthResponse } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth/reset-password")({
   component: ResetPassword,
@@ -23,7 +24,10 @@ export const Route = createFileRoute("/auth/reset-password")({
 function ResetPassword() {
   const router = useRouter();
   const resetPasswordMutation = useMutation({
-    mutationFn: authClient.resetPassword,
+    mutationFn: async (data: { newPassword: string; token: string }) => {
+      const res = await authClient.resetPassword(data);
+      return handleAuthResponse(res);
+    },
   });
 
   const token = new URLSearchParams(window.location.search).get("token");

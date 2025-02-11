@@ -11,6 +11,7 @@ import {
   Lock,
 } from "lucide-react";
 import { useEffect } from "react";
+import { handleAuthResponse } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -39,6 +40,7 @@ import { useSession } from "@/queries/session";
 import { useAppContext } from "@/state/app-state";
 import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
+import { getOrigin } from "@/lib/constants";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -46,26 +48,33 @@ export function NavUser() {
   const { theme, updateTheme } = useAppContext();
 
   const logoutMutation = useMutation({
-    mutationFn: () => authClient.signOut(),
+    mutationFn: async () => {
+      const res = await authClient.signOut();
+      return handleAuthResponse(res);
+    },
     onSuccess: () => {
       router.navigate({ to: "/auth/login" });
     },
   });
 
   const verifyEmailMutation = useMutation({
-    mutationFn: () =>
-      authClient.sendVerificationEmail({
+    mutationFn: async () => {
+      const res = await authClient.sendVerificationEmail({
         email: user.email,
-        callbackURL: window.location.origin,
-      }),
+        callbackURL: getOrigin(),
+      });
+      return handleAuthResponse(res);
+    },
   });
 
   const forgotPasswordMutation = useMutation({
-    mutationFn: () =>
-      authClient.forgetPassword({
+    mutationFn: async () => {
+      const res = await authClient.forgetPassword({
         email: user.email,
-        redirectTo: `${window.location.origin}/auth/reset-password`,
-      }),
+        redirectTo: `${getOrigin()}/auth/reset-password`,
+      });
+      return handleAuthResponse(res);
+    },
   });
 
   // Handle system theme changes

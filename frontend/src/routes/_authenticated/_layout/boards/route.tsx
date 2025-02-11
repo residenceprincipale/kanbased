@@ -9,7 +9,7 @@ import { BoardActions } from '@/features/boards/components/board-actions'
 import { ModalProvider } from '@/state/modals'
 import { CreateBoardButton } from '@/features/boards/components/create-board-button'
 
-export const Route = createFileRoute('/_layout/boards')({
+export const Route = createFileRoute('/_authenticated/_layout/boards')({
   component: BoardsPage,
   loader: async () => {
     await queryClient.prefetchQuery(boardsQueryOptions)

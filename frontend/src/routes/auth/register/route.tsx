@@ -17,6 +17,7 @@ import { authClient } from "@/lib/auth";
 import { toast } from "sonner";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
+import { getOrigin } from "@/lib/constants";
 
 export const Route = createFileRoute("/auth/register")({
   component: SignUp,
@@ -50,7 +51,7 @@ function SignUp() {
       password,
       name: `${firstName} ${lastName}`,
       image: imageBase64,
-      callbackURL: window.location.origin,
+      callbackURL: getOrigin(),
       fetchOptions: {
         onError: (ctx) => {
           toast.error(ctx.error.message);

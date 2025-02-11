@@ -1,33 +1,33 @@
-import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query'
-import { get, set, del } from 'idb-keyval'
+import { QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
+import { get, set, del } from 'idb-keyval';
 import {
   PersistedClient,
   Persister,
-} from '@tanstack/react-query-persist-client'
-import { router } from '@/main';
-import { UnauthorizedError } from '@/lib/utils';
+} from '@tanstack/react-query-persist-client';
+import { toast } from 'sonner';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 1000 * 60 * 60 * 24, // 24 hours
-      staleTime: 2000
+      staleTime: 2000,
     },
+    mutations: {
+      meta: {
+        showToastOnMutationError: true,
+      }
+    }
   },
-  queryCache: new QueryCache({
-    onError: (error, query) => {
-      if (error instanceof UnauthorizedError) {
-        router.navigate({ to: "/auth/login" });
-      }
-    },
-  }),
+  queryCache: new QueryCache(),
   mutationCache: new MutationCache({
-    onError: (error) => {
-      const isAuthPage = window && window.location.pathname.includes("/auth/login");
+    onError: (error, _variables, _context, mutation) => {
+      if (mutation.meta?.showToastOnMutationError) {
+        // NOTE: I probably should not give my email here, but I don't want to setup a new email for this.
+        const message = typeof error?.message === "string" ? error.message : "An unexpected error occurred, please try again later or contact us at irshathv2@gmail.com";
 
-      if (error instanceof UnauthorizedError && !isAuthPage) {
-        router.navigate({ to: "/auth/login" });
+        toast.error(message);
       }
+
     },
   }),
 })
@@ -46,4 +46,16 @@ export function createIDBPersister() {
       await del(idbValidKey)
     },
   } as Persister
+}
+
+interface MyMeta extends Record<string, unknown> {
+  showToastOnQueryError?: boolean;
+  showToastOnMutationError?: boolean;
+}
+
+declare module '@tanstack/react-query' {
+  interface Register {
+    queryMeta: MyMeta;
+    mutationMeta: MyMeta;
+  }
 }

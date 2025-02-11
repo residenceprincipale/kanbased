@@ -7,7 +7,9 @@ import { columnsQueryOptions } from '@/lib/query-options-factory'
 import { ModalProvider } from '@/state/modals'
 import { CreateColumnButton } from '@/features/board-detail/components/create-column-button'
 
-export const Route = createFileRoute('/_layout/boards_/$boardName')({
+export const Route = createFileRoute(
+  '/_authenticated/_layout/boards_/$boardName',
+)({
   component: BoardPage,
   loader: async (ctx) => {
     const { boardName } = ctx.params
