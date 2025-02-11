@@ -19,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 
 export const Route = createFileRoute("/auth/login")({
   component: SignIn,
@@ -34,6 +35,8 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const search = Route.useSearch();
+
+  useLoggedInRedirect();
 
   const userPasswordLoginMutation = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {

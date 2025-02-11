@@ -15,12 +15,14 @@ import { toast } from "sonner";
 import { Spinner } from "@/components/ui/spinner";
 import { getOrigin } from "@/lib/constants";
 import { handleAuthResponse } from "@/lib/utils";
+import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 
 export const Route = createFileRoute("/auth/forgot-password")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  useLoggedInRedirect();
   const forgotPasswordMutation = useMutation({
     mutationFn: async (data: { email: string; redirectTo: string }) => {
       const res = await authClient.forgetPassword(data);

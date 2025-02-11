@@ -18,6 +18,7 @@ import { toast } from "sonner";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
 import { getOrigin } from "@/lib/constants";
+import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 
 export const Route = createFileRoute("/auth/register")({
   component: SignUp,
@@ -28,6 +29,8 @@ function SignUp() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
+
+  useLoggedInRedirect();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
