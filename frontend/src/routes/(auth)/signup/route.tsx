@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
@@ -8,46 +8,46 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { X } from "lucide-react";
-import { authClient } from "@/lib/auth";
-import { toast } from "sonner";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Spinner } from "@/components/ui/spinner";
-import { getOrigin } from "@/lib/constants";
-import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { useState } from 'react'
+import { X } from 'lucide-react'
+import { authClient } from '@/lib/auth'
+import { toast } from 'sonner'
+import { createFileRoute, useRouter } from '@tanstack/react-router'
+import { Spinner } from '@/components/ui/spinner'
+import { getOrigin } from '@/lib/constants'
+import { useLoggedInRedirect } from '@/hooks/use-logged-in-redirect'
 
-export const Route = createFileRoute("/auth/register")({
+export const Route = createFileRoute('/(auth)/signup')({
   component: SignUp,
-});
+})
 
 function SignUp() {
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isRegistering, setIsRegistering] = useState(false);
-  const router = useRouter();
+  const [image, setImage] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isRegistering, setIsRegistering] = useState(false)
+  const router = useRouter()
 
-  useLoggedInRedirect();
+  useLoggedInRedirect()
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get("email") as string;
-    const password = formData.get("password") as string;
-    const passwordConfirmation = formData.get("passwordConfirmation") as string;
-    const firstName = formData.get("firstName") as string;
-    const lastName = formData.get("lastName") as string;
+    e.preventDefault()
+    const formData = new FormData(e.target as HTMLFormElement)
+    const email = formData.get('email') as string
+    const password = formData.get('password') as string
+    const passwordConfirmation = formData.get('passwordConfirmation') as string
+    const firstName = formData.get('firstName') as string
+    const lastName = formData.get('lastName') as string
 
     if (password !== passwordConfirmation) {
-      toast.error("Passwords do not match");
-      return;
+      toast.error('Passwords do not match')
+      return
     }
 
-    setIsRegistering(true);
-    const imageBase64 = image ? await convertImageToBase64(image) : "";
+    setIsRegistering(true)
+    const imageBase64 = image ? await convertImageToBase64(image) : ''
 
     await authClient.signUp.email({
       email,
@@ -57,30 +57,30 @@ function SignUp() {
       callbackURL: getOrigin(),
       fetchOptions: {
         onError: (ctx) => {
-          toast.error(ctx.error.message);
+          toast.error(ctx.error.message)
         },
         onSuccess: async () => {
-          toast("A verification email has been sent to your email address.", {
-            description: "Please verify your email.",
-          });
-          router.navigate({ to: "/" });
+          toast('A verification email has been sent to your email address.', {
+            description: 'Please verify your email.',
+          })
+          router.navigate({ to: '/' })
         },
       },
-    });
-    setIsRegistering(false);
-  };
+    })
+    setIsRegistering(false)
+  }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const file = e.target.files?.[0]
     if (file) {
-      setImage(file);
-      const reader = new FileReader();
+      setImage(file)
+      const reader = new FileReader()
       reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+        setImagePreview(reader.result as string)
+      }
+      reader.readAsDataURL(file)
     }
-  };
+  }
 
   return (
     <form
@@ -171,8 +171,8 @@ function SignUp() {
                     <X
                       className="cursor-pointer"
                       onClick={() => {
-                        setImage(null);
-                        setImagePreview(null);
+                        setImage(null)
+                        setImagePreview(null)
                       }}
                     />
                   )}
@@ -180,20 +180,20 @@ function SignUp() {
               </div>
             </div>
             <Button type="submit" className="w-full" disabled={isRegistering}>
-              {isRegistering ? <Spinner /> : "Create an account"}
+              {isRegistering ? <Spinner /> : 'Create an account'}
             </Button>
           </div>
         </CardContent>
       </Card>
     </form>
-  );
+  )
 }
 
 async function convertImageToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
+    const reader = new FileReader()
+    reader.onloadend = () => resolve(reader.result as string)
+    reader.onerror = reject
+    reader.readAsDataURL(file)
+  })
 }

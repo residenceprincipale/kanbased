@@ -53,7 +53,7 @@ export function NavUser() {
       return handleAuthResponse(res);
     },
     onSuccess: () => {
-      router.navigate({ to: "/auth/login" });
+      router.navigate({ to: "/login" });
     },
   });
 

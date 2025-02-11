@@ -1,39 +1,39 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute } from '@tanstack/react-router'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
-import { getOrigin } from "@/lib/constants";
-import { handleAuthResponse } from "@/lib/utils";
-import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { authClient } from '@/lib/auth'
+import { useMutation } from '@tanstack/react-query'
+import { toast } from 'sonner'
+import { Spinner } from '@/components/ui/spinner'
+import { getOrigin } from '@/lib/constants'
+import { handleAuthResponse } from '@/lib/utils'
+import { useLoggedInRedirect } from '@/hooks/use-logged-in-redirect'
 
-export const Route = createFileRoute("/auth/forgot-password")({
+export const Route = createFileRoute('/(auth)/forgot-password')({
   component: RouteComponent,
-});
+})
 
 function RouteComponent() {
-  useLoggedInRedirect();
+  useLoggedInRedirect()
   const forgotPasswordMutation = useMutation({
     mutationFn: async (data: { email: string; redirectTo: string }) => {
-      const res = await authClient.forgetPassword(data);
-      return handleAuthResponse(res);
+      const res = await authClient.forgetPassword(data)
+      return handleAuthResponse(res)
     },
-  });
+  })
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.target as HTMLFormElement);
-    const email = formData.get("email") as string;
+    e.preventDefault()
+    const formData = new FormData(e.target as HTMLFormElement)
+    const email = formData.get('email') as string
 
     toast.promise(
       () =>
@@ -42,12 +42,12 @@ function RouteComponent() {
           redirectTo: `${getOrigin()}/auth/reset-password`,
         }),
       {
-        loading: "Sending reset link...",
-        success: "Reset link sent successfully",
-        error: "Failed to send reset link",
-      }
-    );
-  };
+        loading: 'Sending reset link...',
+        success: 'Reset link sent successfully',
+        error: 'Failed to send reset link',
+      },
+    )
+  }
 
   return (
     <div className="container flex items-center justify-center min-h-[calc(100vh-4rem)]">
@@ -80,5 +80,5 @@ function RouteComponent() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

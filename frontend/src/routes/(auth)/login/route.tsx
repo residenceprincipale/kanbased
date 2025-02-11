@@ -21,7 +21,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 
-export const Route = createFileRoute("/auth/login")({
+export const Route = createFileRoute("/(auth)/login")({
   component: SignIn,
   validateSearch: (search): { redirect?: string } => {
     return {
@@ -123,7 +123,7 @@ function SignIn() {
               <div className="flex items-center">
                 <Label htmlFor="password">Password</Label>
                 <Link
-                  to="/auth/forgot-password"
+                  to="/forgot-password"
                   className="ml-auto inline-block text-sm underline"
                   tabIndex={-1}
                 >
@@ -163,7 +163,7 @@ function SignIn() {
           </div>
 
           <Link
-            to="/auth/register"
+            to="/signup"
             className={buttonVariants({
               variant: "link",
               className: "text-left pl-0 w-fit my-2.5",

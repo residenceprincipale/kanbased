@@ -11,7 +11,7 @@ export function useSession() {
   }
 
   if (data?.data === null || !data) {
-    router.navigate({ to: "/auth/login" });
+    router.navigate({ to: "/login" });
   }
 
   return data.data;
