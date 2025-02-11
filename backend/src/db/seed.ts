@@ -10,6 +10,8 @@ if (!env.DB_SEEDING) {
   throw new Error('You must set DB_SEEDING to "true" when running seeds');
 }
 
+console.log("Deploy test");
+
 async function resetTable(db: Db, table: Table) {
   return db.execute(
     sql.raw(`TRUNCATE TABLE ${getTableName(table)} RESTART IDENTITY CASCADE`),
