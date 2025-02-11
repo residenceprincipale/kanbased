@@ -13,6 +13,8 @@ export declare global {
       FE_ORIGIN: string;
       BE_PORT: string;
       RESEND_API_KEY: string;
+      GITHUB_CLIENT_ID: string;
+      GITHUB_CLIENT_SECRET: string;
     }
   }
 }
