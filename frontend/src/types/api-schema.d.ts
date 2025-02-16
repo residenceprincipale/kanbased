@@ -368,35 +368,48 @@ export interface paths {
         };
         trace?: never;
     };
-    "/api/v1/current-user": {
+    "/api/v1/boards/import": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get: {
+        get?: never;
+        put?: never;
+        post: {
             parameters: {
                 query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: {
+                content: {
+                    "application/json": {
+                        boards: {
+                            boardName: string;
+                            columns: {
+                                name: string;
+                                position: number;
+                                tasks: {
+                                    /** Format: uuid */
+                                    columnId: string;
+                                    name: string;
+                                    position: number;
+                                }[];
+                            }[];
+                        }[];
+                    };
+                };
+            };
             responses: {
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            user: {
-                                displayName: string | null;
-                                image: string | null;
-                            };
-                            /** Format: date-time */
-                            expiresAt: string;
-                        };
+                        "application/json": Record<string, never>;
                     };
                 };
                 403: {
@@ -443,8 +456,6 @@ export interface paths {
                 };
             };
         };
-        put?: never;
-        post?: never;
         delete?: never;
         options?: never;
         head?: never;

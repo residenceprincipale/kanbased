@@ -1,6 +1,7 @@
 import { and, eq, inArray, SQL, sql } from "drizzle-orm";
 import type { InsertType } from "../db/table-types.js";
-import { db } from "../db/index.js";
+import { db, type DbTypeOrTransaction } from "../db/index.js";
+import { db as database } from "../db/index.js";
 import {
   boardPermissionsTable,
   boardsTable,
@@ -14,10 +15,12 @@ import {
 
 export async function createColumn(
   userId: string,
-  body: InsertType<"columnsTable">
+  body: InsertType<"columnsTable">,
+  db: DbTypeOrTransaction = database
 ) {
-  await checkResourceAccess(userId, body.boardId, "board", "admin");
-  await db.insert(columnsTable).values(body);
+  await checkResourceAccess(userId, body.boardId, "board", "admin", db);
+  const [createdColumn] = await db.insert(columnsTable).values(body).returning();
+  return createdColumn!;
 }
 
 export async function reorderColumns(

@@ -23,7 +23,12 @@ export interface ExportBoardsModal {
   onClose: () => void
 }
 
-type BoardModalState = CreateBoardModal | DeleteBoardModal | EditBoardModal | ExportBoardsModal | null
+export interface ImportBoardsModal {
+  type: 'import-boards',
+  onClose: () => void
+}
+
+type BoardModalState = CreateBoardModal | DeleteBoardModal | EditBoardModal | ExportBoardsModal | ImportBoardsModal | null
 
 export const useBoardModalState = useModalState<BoardModalState>;
 export const useBoardModalControls = useModalControls<BoardModalState>;
