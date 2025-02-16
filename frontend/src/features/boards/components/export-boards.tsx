@@ -20,8 +20,8 @@ import { cn } from "@/lib/utils";
 export function ExportBoards({ onClose }: ExportBoardsModal) {
   return (
     <Dialog open onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl">
-        <DialogHeader>
+      <DialogContent className="max-w-3xl flex flex-col">
+        <DialogHeader className="shrink-0">
           <DialogTitle>Export Data</DialogTitle>
         </DialogHeader>
 
@@ -82,7 +82,7 @@ function Content() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative w-full">
       <div>
         <Button
           size="sm"
@@ -104,7 +104,7 @@ function Content() {
           Download
         </Button>
       </div>
-      <pre className="bg-muted p-4 rounded-lg overflow-auto max-h-[60vh] text-sm">
+      <pre className="bg-muted p-4 rounded-lg overflow-auto max-h-[60vh] text-sm break-all w-full">
         {data}
       </pre>
     </div>
