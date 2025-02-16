@@ -2,6 +2,7 @@ import { useBoardModalState } from "@/features/boards/state/board";
 import { CreateBoard } from "@/features/boards/components/create-board";
 import { DeleteBoard } from "@/features/boards/components/delete-board";
 import { EditBoard } from "@/features/boards/components/edit-board";
+import { ExportBoards } from "@/features/boards/components/export-boards";
 
 export function BoardActions() {
   const { activeModal } = useBoardModalState();
@@ -13,6 +14,8 @@ export function BoardActions() {
       return <EditBoard {...activeModal} />;
     case "delete-board":
       return <DeleteBoard {...activeModal} />;
+    case "export-boards":
+      return <ExportBoards {...activeModal} />;
     default:
       return null;
   }

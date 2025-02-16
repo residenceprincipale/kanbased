@@ -1,0 +1,31 @@
+import { Button } from "@/components/ui/button";
+import { useBoardModalControls } from "@/features/boards/state/board";
+import { EllipsisVertical } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+export function OtherActions() {
+  const { openModal, closeModal } = useBoardModalControls();
+
+  const handleExportAllBoards = () => {
+    openModal({ type: "export-boards", onClose: closeModal });
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="icon">
+          <EllipsisVertical />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={handleExportAllBoards}>
+          Export data as JSON
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
