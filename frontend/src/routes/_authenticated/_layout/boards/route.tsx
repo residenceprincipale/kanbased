@@ -1,23 +1,24 @@
-'use client'
-import { queryClient } from '@/lib/query-client'
+"use client";
+import { queryClient } from "@/lib/query-client";
 
-import { createFileRoute } from '@tanstack/react-router'
-import { useSuspenseQuery } from '@tanstack/react-query'
-import { boardsQueryOptions } from '@/lib/query-options-factory'
-import { BoardList } from '@/features/boards/components/board-list'
-import { BoardActions } from '@/features/boards/components/board-actions'
-import { ModalProvider } from '@/state/modals'
-import { CreateBoardButton } from '@/features/boards/components/create-board-button'
+import { createFileRoute } from "@tanstack/react-router";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { boardsQueryOptions } from "@/lib/query-options-factory";
+import { BoardList } from "@/features/boards/components/board-list";
+import { BoardActions } from "@/features/boards/components/board-actions";
+import { ModalProvider } from "@/state/modals";
+import { CreateBoardButton } from "@/features/boards/components/create-board-button";
+import { OtherActions } from "@/features/boards/components/other-boards-actions";
 
-export const Route = createFileRoute('/_authenticated/_layout/boards')({
+export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
   loader: async () => {
-    await queryClient.prefetchQuery(boardsQueryOptions)
+    await queryClient.prefetchQuery(boardsQueryOptions);
   },
-})
+});
 
 function BoardsPage() {
-  const { data: boards } = useSuspenseQuery(boardsQueryOptions)
+  const { data: boards } = useSuspenseQuery(boardsQueryOptions);
 
   return (
     <ModalProvider>
@@ -32,7 +33,11 @@ function BoardsPage() {
                 Manage and organize your boards
               </p>
             </div>
-            <CreateBoardButton />
+
+            <div className="flex items-center gap-3">
+              <CreateBoardButton />
+              <OtherActions />
+            </div>
           </div>
 
           {boards?.length === 0 ? (
@@ -51,5 +56,5 @@ function BoardsPage() {
       </div>
       <BoardActions />
     </ModalProvider>
-  )
+  );
 }

@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { useBoardModalControls } from "@/features/boards/state/board";
 import { CirclePlus } from "lucide-react";
 
-export function CreateBoardButton({ size = "lg" }: { size?: "sm" | "lg" }) {
+export function CreateBoardButton({ size }: { size?: "sm" | "lg" }) {
   const { openModal, closeModal } = useBoardModalControls();
 
   return (
