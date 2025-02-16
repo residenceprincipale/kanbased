@@ -3,6 +3,7 @@ import type { RouteConfig } from "@hono/zod-openapi";
 import type { AppBindings } from "./create-app.js";
 import type { InferHandlers, InferMiddlewares } from "./types.js";
 import type { OpenAPIHono } from "@hono/zod-openapi";
+import { randomUUID } from "node:crypto";
 
 
 /**
@@ -34,4 +35,8 @@ export function registerRouteHandlers<
 
     router.openapi(routeConfig, handlers[key] as Handler<AppBindings>);
   });
+}
+
+export function getRandomId() {
+  return randomUUID()
 }

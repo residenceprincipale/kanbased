@@ -1,12 +1,14 @@
 import { eq, inArray, sql, SQL } from "drizzle-orm";
 import type { InsertType } from "../db/table-types.js";
-import { db } from "../db/index.js";
+import { db, type DbTypeOrTransaction } from "../db/index.js";
+import { db as database } from "../db/index.js";
 import { tasksTable } from "../db/schema/index.js";
 import { checkResourceAccess } from "./permissions.js";
 
 export async function createTask(
   userId: string,
-  task: InsertType<"tasksTable">
+  task: InsertType<"tasksTable">,
+  db: DbTypeOrTransaction = database
 ) {
   await checkResourceAccess(userId, task.columnId, "column", "admin");
 

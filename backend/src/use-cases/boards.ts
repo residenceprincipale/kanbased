@@ -1,5 +1,6 @@
 import type { InsertType } from "../db/table-types.js";
-import { db } from "../db/index.js";
+import { db, type DbTypeOrTransaction } from "../db/index.js";
+import { db as database } from "../db/index.js";
 import {
   boardPermissionsTable,
   boardsTable,
@@ -12,11 +13,12 @@ import { UnprocessableEntityError } from "../lib/error-utils.js";
 
 export async function createBoard(
   userId: string,
-  body: Omit<InsertType<"boardsTable">, "creatorId">
+  body: Omit<InsertType<"boardsTable">, "creatorId">,
+  db: DbTypeOrTransaction = database
 ) {
   await assertBoardNameIsUnique(userId, body.name);
 
-  await db.transaction(async (tx) => {
+  const res = await db.transaction(async (tx) => {
     const [createdBoard] = await tx
       .insert(boardsTable)
       .values({
@@ -35,7 +37,11 @@ export async function createBoard(
       userId,
       createdAt: new Date().toISOString(),
     });
+
+    return createdBoard;
   });
+
+  return res!;
 }
 
 export async function assertBoardNameIsUnique(userId: string, name: string) {
@@ -108,3 +114,4 @@ export async function editBoard(
 
   await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
 }
+

@@ -12,3 +12,4 @@ export const db = drizzle({
 });
 
 export type Db = typeof db;
+export type DbTypeOrTransaction = Parameters<Parameters<Db['transaction']>[0]>[0] | Db;
