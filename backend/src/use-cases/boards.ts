@@ -16,7 +16,7 @@ export async function createBoard(
   body: Omit<InsertType<"boardsTable">, "creatorId">,
   db: DbTypeOrTransaction = database
 ) {
-  await assertBoardNameIsUnique(userId, body.name);
+  await assertBoardNameIsUnique(userId, body.name, db);
 
   const res = await db.transaction(async (tx) => {
     const [createdBoard] = await tx
@@ -44,7 +44,7 @@ export async function createBoard(
   return res!;
 }
 
-export async function assertBoardNameIsUnique(userId: string, name: string) {
+export async function assertBoardNameIsUnique(userId: string, name: string, db: DbTypeOrTransaction = database) {
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)

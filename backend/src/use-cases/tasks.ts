@@ -10,7 +10,7 @@ export async function createTask(
   task: InsertType<"tasksTable">,
   db: DbTypeOrTransaction = database
 ) {
-  await checkResourceAccess(userId, task.columnId, "column", "admin");
+  await checkResourceAccess(userId, task.columnId, "column", "admin", db);
 
   const [newTask] = await db.insert(tasksTable).values(task).returning();
 

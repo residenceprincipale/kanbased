@@ -18,7 +18,7 @@ export async function createColumn(
   body: InsertType<"columnsTable">,
   db: DbTypeOrTransaction = database
 ) {
-  await checkResourceAccess(userId, body.boardId, "board", "admin");
+  await checkResourceAccess(userId, body.boardId, "board", "admin", db);
   const [createdColumn] = await db.insert(columnsTable).values(body).returning();
   return createdColumn!;
 }

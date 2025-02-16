@@ -1,5 +1,5 @@
 import { and, eq, inArray } from "drizzle-orm";
-import { db } from "../db/index.js";
+import { db, type DbTypeOrTransaction } from "../db/index.js";
 import {
   boardPermissionsTable,
   columnsTable,
@@ -24,9 +24,10 @@ export async function checkResourceAccess(
   userId: string,
   resourceId: string | string[],
   resourceType: ResourceType,
-  requiredPermission: ResourcePermission
+  requiredPermission: ResourcePermission,
+  db_or_tx: DbTypeOrTransaction = db
 ): Promise<void> {
-  let query = db
+  let query = db_or_tx
     .select({
       permission: boardPermissionsTable.permission,
       resourceId:

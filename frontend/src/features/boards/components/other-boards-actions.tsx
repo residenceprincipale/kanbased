@@ -14,6 +14,10 @@ export function OtherActions() {
     openModal({ type: "export-boards", onClose: closeModal });
   };
 
+  const handleImportAllBoards = () => {
+    openModal({ type: "import-boards", onClose: closeModal });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -24,6 +28,10 @@ export function OtherActions() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem onClick={handleExportAllBoards}>
           Export data as JSON
+        </DropdownMenuItem>
+
+        <DropdownMenuItem onClick={handleImportAllBoards}>
+          Import data from JSON
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
