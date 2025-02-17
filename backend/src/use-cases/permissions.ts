@@ -4,16 +4,16 @@ import {
   boardPermissionsTable,
   columnsTable,
   tasksTable,
-  type ResourcePermission,
 } from "../db/schema/index.js";
 import { PermissionError } from "../lib/error-utils.js";
-const permissionLevels = {
+const permissionLevels: Record<ResourcePermission, number> = {
   owner: 3,
   admin: 2,
   editor: 1,
   viewer: 0,
 };
 
+export type ResourcePermission = "owner" | "admin" | "editor" | "viewer";
 export type ResourceType = "board" | "column" | "task";
 
 /**
@@ -113,7 +113,7 @@ export async function checkResourceAccess(
   // Check permissions for all results
   for (const result of results) {
     const hasPermission =
-      permissionLevels[result.permission] >=
+      permissionLevels[result.permission as ResourcePermission] >=
       permissionLevels[requiredPermission];
 
     if (!hasPermission) {
