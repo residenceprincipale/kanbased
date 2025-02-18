@@ -11,9 +11,9 @@
     "dev:db:delete": "docker compose -f docker-compose.dev.yml down -v",
     "dev:db:seed": "tsx --env-file=.env src/db/seed.ts",
     "db:migrate": "drizzle-kit migrate",
-    "db:studio": "drizzle-kit studio",
-    "db:push": "drizzle-kit push",
-    "db:generate": "drizzle-kit generate",
+    "db:studio": "NODE_OPTIONS='--import tsx' drizzle-kit studio",
+    "db:push": "NODE_OPTIONS='--import tsx' drizzle-kit push",
+    "db:generate": "NODE_OPTIONS='--import tsx' drizzle-kit generate",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },

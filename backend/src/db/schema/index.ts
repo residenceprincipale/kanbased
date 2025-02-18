@@ -3,7 +3,22 @@ import * as t from "drizzle-orm/pg-core";
 import {
   organization as organizationsTable,
   user as usersTable,
+  session as sessionsTable,
+  account as accountsTable,
+  verification as verificationsTable,
+  member as membersTable,
+  invitation as invitationsTable,
 } from "./auth-schema.js";
+
+export {
+  organizationsTable,
+  usersTable,
+  sessionsTable,
+  accountsTable,
+  verificationsTable,
+  membersTable,
+  invitationsTable,
+};
 
 export const boardsTable = pgTable("boards", {
   id: t.uuid().primaryKey(),
