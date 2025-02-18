@@ -4,20 +4,20 @@ import { Input } from "@/components/ui/input";
 import { FormEventHandler } from "react";
 import { getId } from "@/lib/utils";
 import { useCreateColumnMutation } from "@/features/board-detail/queries/columns";
-import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { QueryKey } from "@tanstack/react-query";
 
 export type CreateColumnProps = {
   data: {
     boardId: string;
-    boardName: string;
     nextPosition: number;
+    columnsQueryKey: QueryKey;
   };
   onClose: () => void;
 };
 
 export function CreateColumn(props: CreateColumnProps) {
   const createColumnMutation = useCreateColumnMutation({
-    columnsQueryKey: columnsQueryOptions(props.data.boardName).queryKey,
+    columnsQueryKey: props.data.columnsQueryKey,
   });
 
   const { data } = props;

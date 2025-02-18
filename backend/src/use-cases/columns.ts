@@ -12,24 +12,25 @@ import { checkResourceAccess } from "./permissions.js";
 import {
   PermissionError
 } from "../lib/error-utils.js";
+import type { AuthCtx } from "../lib/types.js";
 
 export async function createColumn(
-  userId: string,
+  authCtx: AuthCtx,
   body: InsertType<"columnsTable">,
   db: DbTypeOrTransaction = database
 ) {
-  await checkResourceAccess(userId, body.boardId, "board", "admin", db);
+  await checkResourceAccess(authCtx, body.boardId, "board", "admin", db);
   const [createdColumn] = await db.insert(columnsTable).values(body).returning();
   return createdColumn!;
 }
 
 export async function reorderColumns(
-  userId: string,
+  authCtx: AuthCtx,
   columns: Pick<InsertType<"columnsTable">, "id" | "position">[]
 ) {
   const columnIds = columns.map((col) => col.id);
 
-  await checkResourceAccess(userId, columnIds, "column", "editor");
+  await checkResourceAccess(authCtx, columnIds, "column", "editor");
 
   const sqlChunks: SQL[] = [];
   sqlChunks.push(sql`(case`);
@@ -49,9 +50,9 @@ export async function reorderColumns(
     .where(inArray(columnsTable.id, columnIds));
 }
 
-export async function getColumnsAndTasks(userId: string, boardName: string) {
+export async function getColumnsAndTasks(authCtx: AuthCtx, boardUrl: string) {
   const boards = await db
-    .select({ boardId: boardsTable.id })
+    .select({ boardId: boardsTable.id, boardName: boardsTable.name })
     .from(boardsTable)
     .innerJoin(
       boardPermissionsTable,
@@ -59,8 +60,8 @@ export async function getColumnsAndTasks(userId: string, boardName: string) {
     )
     .where(
       and(
-        eq(boardsTable.name, boardName),
-        eq(boardPermissionsTable.userId, userId)
+        eq(boardsTable.boardUrl, boardUrl),
+        eq(boardPermissionsTable.userId, authCtx.user.id)
       )
     );
 
@@ -69,8 +70,9 @@ export async function getColumnsAndTasks(userId: string, boardName: string) {
   }
 
   const boardId = boards[0]!.boardId;
+  const boardName = boards[0]!.boardName;
 
-  await checkResourceAccess(userId, boardId, "board", "viewer");
+  await checkResourceAccess(authCtx, boardId, "board", "viewer");
 
   // First get columns
   const columns = await db
@@ -89,11 +91,11 @@ export async function getColumnsAndTasks(userId: string, boardName: string) {
       )
     );
 
-  return { columns, tasks, boardId };
+  return { columns, tasks, boardId, boardName };
 }
 
-export async function updateColumnName(userId: string, columnId: string, body: Pick<InsertType<"columnsTable">, 'name'>) {
-  await checkResourceAccess(userId, columnId, "column", "admin");
+export async function updateColumnName(authCtx: AuthCtx, columnId: string, body: Pick<InsertType<"columnsTable">, 'name'>) {
+  await checkResourceAccess(authCtx, columnId, "column", "admin");
 
   const [updatedCol] = await db
     .update(columnsTable)
@@ -104,7 +106,7 @@ export async function updateColumnName(userId: string, columnId: string, body: P
   return updatedCol!;
 }
 
-export async function deleteColumn(userId: string, columnId: string) {
-  await checkResourceAccess(userId, columnId, "column", "admin");
+export async function deleteColumn(authCtx: AuthCtx, columnId: string) {
+  await checkResourceAccess(authCtx, columnId, "column", "admin");
   await db.delete(columnsTable).where(eq(columnsTable.id, columnId));
 }

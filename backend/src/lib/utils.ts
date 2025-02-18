@@ -1,6 +1,6 @@
 import type { Handler } from "hono";
 import type { RouteConfig } from "@hono/zod-openapi";
-import type { AppBindings } from "./create-app.js";
+import type { AppBindings } from "./types.js";
 import type { InferHandlers, InferMiddlewares } from "./types.js";
 import type { OpenAPIHono } from "@hono/zod-openapi";
 import { randomUUID } from "node:crypto";

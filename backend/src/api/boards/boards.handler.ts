@@ -9,29 +9,29 @@ import { getRandomId } from "../../lib/utils.js";
 
 const handlers: InferHandlers<typeof routes> = {
   createBoard: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const body = c.req.valid("json");
 
-    await boardsUseCases.createBoard(userId, body);
+    await boardsUseCases.createBoard(authCtx, body);
 
     return c.json({}, HTTP_STATUS_CODES.CREATED);
   },
 
   getBoards: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
 
-    const boards = await boardsUseCases.getBoards(userId);
+    const boards = await boardsUseCases.getBoards(authCtx);
 
     return c.json(boards, HTTP_STATUS_CODES.OK);
   },
 
   toggleBoardDelete: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const { boardId } = c.req.valid("param");
     const body = c.req.valid("json");
 
     const updatedBoard = await boardsUseCases.toggleBoardDelete(
-      userId,
+      authCtx,
       boardId,
       body.deleted
     );
@@ -41,37 +41,39 @@ const handlers: InferHandlers<typeof routes> = {
         id: updatedBoard.id,
         name: updatedBoard.name,
         color: updatedBoard.color,
+        boardUrl: updatedBoard.boardUrl,
       },
       HTTP_STATUS_CODES.OK
     );
   },
 
   editBoard: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const { boardId } = c.req.valid("param");
     const body = c.req.valid("json");
 
-    await boardsUseCases.editBoard(userId, boardId, body);
+    await boardsUseCases.editBoard(authCtx, boardId, body);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
 
   importBoards: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const { boards } = c.req.valid("json");
     const nowDate = new Date().toISOString();
 
     await db.transaction(async (tx) => {
       for (let board of boards) {
-        const createdBoard = await boardsUseCases.createBoard(userId, {
+        const createdBoard = await boardsUseCases.createBoard(authCtx, {
           id: getRandomId(),
           name: board.boardName,
           createdAt: nowDate,
           updatedAt: nowDate,
+          boardUrl: board.boardUrl,
         }, tx);
 
         for (let column of board.columns) {
-          const createdColumn = await columnsUseCases.createColumn(userId, {
+          const createdColumn = await columnsUseCases.createColumn(authCtx, {
             id: getRandomId(),
             name: column.name,
             createdAt: nowDate,
@@ -81,7 +83,7 @@ const handlers: InferHandlers<typeof routes> = {
           }, tx);
 
           for (let task of column.tasks) {
-            await tasksUseCases.createTask(userId, {
+            await tasksUseCases.createTask(authCtx, {
               id: getRandomId(),
               name: task.name,
               createdAt: nowDate,

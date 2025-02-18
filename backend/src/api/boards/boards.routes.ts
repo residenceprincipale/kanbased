@@ -16,11 +16,11 @@ import {
 import { ResponseBuilder } from "../../lib/response-builder.js";
 
 const createBoardParamsSchema = createInsertSchema(boardsTable).omit({
-  creatorId: true,
+  organizationId: true,
 });
 
 const createBoardResponse = createSelectSchema(boardsTable).omit({
-  creatorId: true,
+  organizationId: true,
   createdAt: true,
   updatedAt: true,
   deletedAt: true,
@@ -29,6 +29,7 @@ const createBoardResponse = createSelectSchema(boardsTable).omit({
 const importBoardsBodySchema = z.object({
   boards: z.array(z.object({
     boardName: z.string(),
+    boardUrl: z.string(),
     columns: z.array(
       createInsertSchema(columnsTable)
         .pick({ name: true, position: true })

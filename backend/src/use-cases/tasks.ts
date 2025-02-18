@@ -4,13 +4,14 @@ import { db, type DbTypeOrTransaction } from "../db/index.js";
 import { db as database } from "../db/index.js";
 import { tasksTable } from "../db/schema/index.js";
 import { checkResourceAccess } from "./permissions.js";
+import type { AuthCtx } from "../lib/types.js";
 
 export async function createTask(
-  userId: string,
+  authCtx: AuthCtx,
   task: InsertType<"tasksTable">,
   db: DbTypeOrTransaction = database
 ) {
-  await checkResourceAccess(userId, task.columnId, "column", "admin", db);
+  await checkResourceAccess(authCtx, task.columnId, "column", "admin", db);
 
   const [newTask] = await db.insert(tasksTable).values(task).returning();
 
@@ -18,24 +19,24 @@ export async function createTask(
 }
 
 export async function updateTaskName(
-  userId: string,
+  authCtx: AuthCtx,
   taskId: string,
   task: Pick<InsertType<"tasksTable">, "name" | "updatedAt">
 ) {
-  await checkResourceAccess(userId, taskId, "task", "editor");
+  await checkResourceAccess(authCtx, taskId, "task", "editor");
 
   await db.update(tasksTable).set(task).where(eq(tasksTable.id, taskId));
 }
 
 export async function updateTasksPosition(
-  userId: string,
+  authCtx: AuthCtx,
   tasks: Pick<InsertType<"tasksTable">, "position" | "columnId" | "id">[]
 ) {
   const taskIds = tasks.map((task) => task.id);
   const columnIds = [...new Set(tasks.map((task) => task.columnId))];
 
-  await checkResourceAccess(userId, columnIds, "column", "editor");
-  await checkResourceAccess(userId, taskIds, "task", "editor");
+  await checkResourceAccess(authCtx, columnIds, "column", "editor");
+  await checkResourceAccess(authCtx, taskIds, "task", "editor");
 
   const sqlChunksForPosition: SQL[] = [];
   const sqlChunksForColumnId: SQL[] = [];
@@ -64,7 +65,7 @@ export async function updateTasksPosition(
     .where(inArray(tasksTable.id, taskIds));
 }
 
-export async function deleteTask(userId: string, taskId: string) {
-  await checkResourceAccess(userId, taskId, "task", "admin");
+export async function deleteTask(authCtx: AuthCtx, taskId: string) {
+  await checkResourceAccess(authCtx, taskId, "task", "admin");
   await db.delete(tasksTable).where(eq(tasksTable.id, taskId));
 }

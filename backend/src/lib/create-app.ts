@@ -4,19 +4,10 @@ import { csrf } from "hono/csrf";
 
 import { env } from "../env.js";
 import { pinoLogger } from "./pino-logger.js";
-import type { PinoLogger } from "hono-pino";
 import { HTTP_STATUS_CODES, HTTP_STATUS_PHRASES } from "./constants.js";
 import { PermissionError, UnprocessableEntityError } from "./error-utils.js";
 import type { StatusCode } from "hono/utils/http-status";
-import type { auth } from "./auth.js";
-
-export interface AppBindings {
-  Variables: {
-    user: typeof auth.$Infer.Session.user;
-    session: typeof auth.$Infer.Session.session;
-    logger: PinoLogger;
-  };
-}
+import type { AppBindings } from "./types.js";
 
 export default function createApp() {
   const appRouter = new OpenAPIHono<AppBindings>();

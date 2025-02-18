@@ -1,9 +1,10 @@
 import { authClient } from "@/lib/auth";
 import { api } from "@/lib/openapi-react-query";
 import { queryOptions } from "@tanstack/react-query";
-export function columnsQueryOptions(boardName: string) {
+
+export function columnsQueryOptions(boardUrl: string) {
   return api.queryOptions("get", "/api/v1/columns", {
-    params: { query: { boardName } },
+    params: { query: { boardUrl } },
   });
 }
 

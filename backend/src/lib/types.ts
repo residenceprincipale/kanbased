@@ -1,6 +1,20 @@
-import type { AppBindings } from "./create-app.js";
 import type { RouteConfig, RouteHandler } from "@hono/zod-openapi";
 import type { Context as HonoContext, MiddlewareHandler } from "hono";
+import { auth } from "./auth.js";
+import type { PinoLogger } from "hono-pino";
+
+
+export type AuthCtx = {
+  user: typeof auth.$Infer.Session.user;
+  session: Omit<typeof auth.$Infer.Session.session, "activeOrganizationId"> & { activeOrganizationId: string };
+}
+
+export interface AppBindings {
+  Variables: {
+    authCtx: AuthCtx;
+    logger: PinoLogger;
+  };
+}
 
 /**
  * Utility type to infer handler types from route definitions

@@ -12,13 +12,15 @@ import { Label } from "@/components/ui/label";
 import { Spinner } from "@/components/ui/spinner";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { type FormEventHandler } from "react";
+import { useState, type FormEventHandler } from "react";
 import { toast } from "sonner";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
 import { EditBoardModal } from "@/features/boards/state/board";
 
 export function EditBoard(props: EditBoardModal) {
   const { board } = props;
+  const [boardName, setBoardName] = useState("");
+  const boardUrl = boardName.toLowerCase().split(" ").join("-");
   const { mutate, isPending } = api.useMutation(
     "patch",
     "/api/v1/boards/{boardId}"
@@ -26,8 +28,6 @@ export function EditBoard(props: EditBoardModal) {
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    const fd = new FormData(e.target as HTMLFormElement);
-    const boardName = fd.get("board-name") as string;
     const currentDate = new Date().toISOString();
     const boardsQueryKey = boardsQueryOptions.queryKey;
 
@@ -35,6 +35,7 @@ export function EditBoard(props: EditBoardModal) {
       {
         body: {
           name: boardName,
+          boardUrl,
           updatedAt: currentDate,
         },
         params: {
@@ -70,11 +71,16 @@ export function EditBoard(props: EditBoardModal) {
               name="board-name"
               placeholder="eg: work board"
               required
-              defaultValue={board.name}
+              value={boardName}
+              onChange={(e) => setBoardName(e.target.value ?? "")}
             />
             <DialogDescription className="!text-xs">
               Enter a unique name that reflects the purpose of this board.
             </DialogDescription>
+
+            <p className="text-xs">
+              Board URL: <b>{boardUrl}</b>
+            </p>
           </div>
 
           <DialogFooter>

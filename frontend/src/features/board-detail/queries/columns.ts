@@ -3,15 +3,14 @@ import { transformColumnsQuery } from "@/lib/helpers";
 import { api } from "@/lib/openapi-react-query";
 import { columnsQueryOptions } from "@/lib/query-options-factory";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
-import { paths } from "@/types/api-schema";
 import { QueryKey, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export type ColumnsWithTasksQueryData = ReturnType<typeof transformColumnsQuery>;
 
-export function useColumnsSuspenseQuery(params: { boardName: string }) {
+export function useColumnsSuspenseQuery(params: { boardUrl: string }) {
   return useSuspenseQuery({
-    ...columnsQueryOptions(params.boardName),
+    ...columnsQueryOptions(params.boardUrl),
     select: transformColumnsQuery,
   });
 }

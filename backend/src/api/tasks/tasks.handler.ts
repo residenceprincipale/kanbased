@@ -5,38 +5,38 @@ import * as tasksUseCases from "../../use-cases/tasks.js";
 
 const handlers: InferHandlers<typeof routes> = {
   createTask: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const body = c.req.valid("json");
 
-    const task = await tasksUseCases.createTask(userId, body);
+    const task = await tasksUseCases.createTask(authCtx, body);
 
     return c.json(task, HTTP_STATUS_CODES.OK);
   },
 
   updateTaskName: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const { taskId } = c.req.valid("param");
     const body = c.req.valid("json");
 
-    await tasksUseCases.updateTaskName(userId, taskId, body);
+    await tasksUseCases.updateTaskName(authCtx, taskId, body);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
 
   updateTasksPosition: async (c) => {
-    const userId = c.var.user.id;
+    const authCtx = c.var.authCtx;
     const tasks = c.req.valid("json");
 
-    await tasksUseCases.updateTasksPosition(userId, tasks);
+    await tasksUseCases.updateTasksPosition(authCtx, tasks);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
 
   deleteTask: async (c) => {
-    const userId = c.var.user.id;
-    const taskId = c.req.valid("param").taskId;
+    const authCtx = c.var.authCtx;
+    const { taskId } = c.req.valid("param");
 
-    await tasksUseCases.deleteTask(userId, taskId);
+    await tasksUseCases.deleteTask(authCtx, taskId);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
