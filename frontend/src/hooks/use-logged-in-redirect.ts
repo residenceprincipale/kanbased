@@ -4,10 +4,13 @@ import { useRouter } from "@tanstack/react-router";
 
 export function useLoggedInRedirect() {
   const router = useRouter();
-  const { data } = useQuery({ ...sessionQueryOptions, refetchOnMount: false, });
+  const { data } = useQuery({ ...sessionQueryOptions, refetchOnMount: false });
 
   if (data?.data?.session) {
-    router.navigate({ to: "/" });
+    if (!data.data.session.activeOrganizationId) {
+      router.navigate({ to: "/welcome" });
+    } else {
+      router.navigate({ to: "/" });
+    }
   }
-
 }

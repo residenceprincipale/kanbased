@@ -19,6 +19,12 @@ export const Route = createFileRoute("/_authenticated")({
         },
       });
     }
+
+    if (!data?.session.activeOrganizationId) {
+      throw redirect({
+        to: "/welcome",
+      });
+    }
   },
 });
 
