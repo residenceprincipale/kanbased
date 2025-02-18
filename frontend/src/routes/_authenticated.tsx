@@ -20,7 +20,10 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
 
-    if (!data?.session.activeOrganizationId) {
+    if (
+      !data?.session.activeOrganizationId &&
+      !location.pathname?.includes("/new-organization")
+    ) {
       throw redirect({
         to: "/new-organization",
       });
