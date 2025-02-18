@@ -126,7 +126,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
                 disabled={importBoardsMutation.isPending}
               >
                 {importBoardsMutation.isPending ? (
-                  <Spinner className="w-4 h-4" />
+                  <Spinner />
                 ) : (
                   <ImportIcon className="w-4 h-4" />
                 )}

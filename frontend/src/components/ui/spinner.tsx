@@ -24,7 +24,7 @@ export interface SpinnerProps
 }
 
 const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
-  ({ className, size, asChild = false, children, ...props }, ref) => {
+  ({ size, asChild = false, children, ...props }, ref) => {
     const Comp = asChild ? Slot : "span";
 
     const renderSpinnerIcon = (
@@ -39,10 +39,7 @@ const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
             }}
           >
             <span
-              className={cn(
-                "block w-full h-[30%] rounded-full bg-current",
-                className
-              )}
+              className={cn("block w-full h-[30%] rounded-full bg-current")}
             ></span>
           </span>
         ))}
