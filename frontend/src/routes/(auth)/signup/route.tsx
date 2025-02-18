@@ -63,7 +63,7 @@ function SignUp() {
           toast("A verification email has been sent to your email address.", {
             description: "Please verify your email.",
           });
-          router.navigate({ to: "/welcome" });
+          router.navigate({ to: "/" });
         },
       },
     });
