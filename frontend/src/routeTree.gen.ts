@@ -19,7 +19,7 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password/route'
 import { Route as AuthenticatedLayoutIndexImport } from './routes/_authenticated/_layout/index'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
-import { Route as AuthenticatedLayoutBoardsBoardUrlRouteImport } from '../routes/_authenticated/_layout/boards_.$boardUrl/route
+import { Route as AuthenticatedLayoutBoardsBoardUrlRouteImport } from './routes/_authenticated/_layout/boards_.$boardUrl/route'
 
 // Create/Update Routes
 
@@ -215,35 +215,35 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-  | ''
-  | '/forgot-password'
-  | '/login'
-  | '/reset-password'
-  | '/signup'
-  | '/boards'
-  | '/'
-  | '/boards/$boardUrl'
+    | ''
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/boards'
+    | '/'
+    | '/boards/$boardUrl'
   fileRoutesByTo: FileRoutesByTo
   to:
-  | ''
-  | '/forgot-password'
-  | '/login'
-  | '/reset-password'
-  | '/signup'
-  | '/boards'
-  | '/'
-  | '/boards/$boardUrl'
+    | ''
+    | '/forgot-password'
+    | '/login'
+    | '/reset-password'
+    | '/signup'
+    | '/boards'
+    | '/'
+    | '/boards/$boardUrl'
   id:
-  | '__root__'
-  | '/_authenticated'
-  | '/(auth)/forgot-password'
-  | '/(auth)/login'
-  | '/(auth)/reset-password'
-  | '/(auth)/signup'
-  | '/_authenticated/_layout'
-  | '/_authenticated/_layout/boards'
-  | '/_authenticated/_layout/'
-  | '/_authenticated/_layout/boards_/$boardUrl'
+    | '__root__'
+    | '/_authenticated'
+    | '/(auth)/forgot-password'
+    | '/(auth)/login'
+    | '/(auth)/reset-password'
+    | '/(auth)/signup'
+    | '/_authenticated/_layout'
+    | '/_authenticated/_layout/boards'
+    | '/_authenticated/_layout/'
+    | '/_authenticated/_layout/boards_/$boardUrl'
   fileRoutesById: FileRoutesById
 }
 
