@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
-import { Route as authWelcomeRouteImport } from './routes/(auth)/welcome/route'
+import { Route as AuthenticatedNewOrganizationRouteImport } from './routes/_authenticated/new-organization/route'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup/route'
 import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-password/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
@@ -34,11 +34,12 @@ const AuthenticatedLayoutRoute = AuthenticatedLayoutImport.update({
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
-const authWelcomeRouteRoute = authWelcomeRouteImport.update({
-  id: '/(auth)/welcome',
-  path: '/welcome',
-  getParentRoute: () => rootRoute,
-} as any)
+const AuthenticatedNewOrganizationRouteRoute =
+  AuthenticatedNewOrganizationRouteImport.update({
+    id: '/new-organization',
+    path: '/new-organization',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const authSignupRouteRoute = authSignupRouteImport.update({
   id: '/(auth)/signup',
@@ -123,12 +124,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authSignupRouteImport
       parentRoute: typeof rootRoute
     }
-    '/(auth)/welcome': {
-      id: '/(auth)/welcome'
-      path: '/welcome'
-      fullPath: '/welcome'
-      preLoaderRoute: typeof authWelcomeRouteImport
-      parentRoute: typeof rootRoute
+    '/_authenticated/new-organization': {
+      id: '/_authenticated/new-organization'
+      path: '/new-organization'
+      fullPath: '/new-organization'
+      preLoaderRoute: typeof AuthenticatedNewOrganizationRouteImport
+      parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/_layout': {
       id: '/_authenticated/_layout'
@@ -180,10 +181,13 @@ const AuthenticatedLayoutRouteWithChildren =
   AuthenticatedLayoutRoute._addFileChildren(AuthenticatedLayoutRouteChildren)
 
 interface AuthenticatedRouteChildren {
+  AuthenticatedNewOrganizationRouteRoute: typeof AuthenticatedNewOrganizationRouteRoute
   AuthenticatedLayoutRoute: typeof AuthenticatedLayoutRouteWithChildren
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedNewOrganizationRouteRoute:
+    AuthenticatedNewOrganizationRouteRoute,
   AuthenticatedLayoutRoute: AuthenticatedLayoutRouteWithChildren,
 }
 
@@ -197,7 +201,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
   '/signup': typeof authSignupRouteRoute
-  '/welcome': typeof authWelcomeRouteRoute
+  '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
@@ -209,7 +213,7 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
   '/signup': typeof authSignupRouteRoute
-  '/welcome': typeof authWelcomeRouteRoute
+  '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
@@ -222,7 +226,7 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRouteRoute
   '/(auth)/reset-password': typeof authResetPasswordRouteRoute
   '/(auth)/signup': typeof authSignupRouteRoute
-  '/(auth)/welcome': typeof authWelcomeRouteRoute
+  '/_authenticated/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/_authenticated/_layout': typeof AuthenticatedLayoutRouteWithChildren
   '/_authenticated/_layout/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
@@ -237,7 +241,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
-    | '/welcome'
+    | '/new-organization'
     | '/boards'
     | '/'
     | '/boards/$boardUrl'
@@ -248,7 +252,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
-    | '/welcome'
+    | '/new-organization'
     | '/boards'
     | '/'
     | '/boards/$boardUrl'
@@ -259,7 +263,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/reset-password'
     | '/(auth)/signup'
-    | '/(auth)/welcome'
+    | '/_authenticated/new-organization'
     | '/_authenticated/_layout'
     | '/_authenticated/_layout/boards'
     | '/_authenticated/_layout/'
@@ -273,7 +277,6 @@ export interface RootRouteChildren {
   authLoginRouteRoute: typeof authLoginRouteRoute
   authResetPasswordRouteRoute: typeof authResetPasswordRouteRoute
   authSignupRouteRoute: typeof authSignupRouteRoute
-  authWelcomeRouteRoute: typeof authWelcomeRouteRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -282,7 +285,6 @@ const rootRouteChildren: RootRouteChildren = {
   authLoginRouteRoute: authLoginRouteRoute,
   authResetPasswordRouteRoute: authResetPasswordRouteRoute,
   authSignupRouteRoute: authSignupRouteRoute,
-  authWelcomeRouteRoute: authWelcomeRouteRoute,
 }
 
 export const routeTree = rootRoute
@@ -299,13 +301,13 @@ export const routeTree = rootRoute
         "/(auth)/forgot-password",
         "/(auth)/login",
         "/(auth)/reset-password",
-        "/(auth)/signup",
-        "/(auth)/welcome"
+        "/(auth)/signup"
       ]
     },
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
+        "/_authenticated/new-organization",
         "/_authenticated/_layout"
       ]
     },
@@ -321,8 +323,9 @@ export const routeTree = rootRoute
     "/(auth)/signup": {
       "filePath": "(auth)/signup/route.tsx"
     },
-    "/(auth)/welcome": {
-      "filePath": "(auth)/welcome/route.tsx"
+    "/_authenticated/new-organization": {
+      "filePath": "_authenticated/new-organization/route.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/_layout": {
       "filePath": "_authenticated/_layout.tsx",

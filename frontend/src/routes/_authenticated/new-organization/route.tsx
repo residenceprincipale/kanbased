@@ -18,16 +18,13 @@ import { useMutation } from "@tanstack/react-query";
 import { handleAuthResponse } from "@/lib/utils";
 import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { queryClient } from "@/lib/query-client";
-import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 
-export const Route = createFileRoute("/(auth)/welcome")({
+export const Route = createFileRoute("/_authenticated/new-organization")({
   component: Welcome,
 });
 
 function Welcome() {
   const router = useRouter();
-
-  useLoggedInRedirect();
 
   const activeOrgMutation = useMutation({
     mutationFn: async ({ organizationId }: { organizationId: string }) => {

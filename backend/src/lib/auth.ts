@@ -5,8 +5,10 @@ import { env } from "../env.js";
 import { openAPI, organization } from "better-auth/plugins";
 import * as schema from "../db/schema/auth-schema.js";
 import resend from "./email.js";
+import { getActiveOrganization } from "../use-cases/organization.js";
 
 export const auth = betterAuth({
+  appName: "kanbased",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
@@ -49,6 +51,21 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
+    }
+  },
+  databaseHooks: {
+    session: {
+      create: {
+        before: async (session) => {
+          const activeOrganizationId = await getActiveOrganization(session.userId);
+          return {
+            data: {
+              ...session,
+              activeOrganizationId
+            }
+          }
+        }
+      }
     }
   },
   plugins: [
