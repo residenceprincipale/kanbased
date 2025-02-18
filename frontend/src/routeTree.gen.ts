@@ -19,7 +19,7 @@ import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password/route'
 import { Route as AuthenticatedLayoutIndexImport } from './routes/_authenticated/_layout/index'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
-import { Route as AuthenticatedLayoutBoardsBoardNameRouteImport } from './routes/_authenticated/_layout/boards_.$boardName/route'
+import { Route as AuthenticatedLayoutBoardsBoardUrlRouteImport } from '../routes/_authenticated/_layout/boards_.$boardUrl/route
 
 // Create/Update Routes
 
@@ -70,10 +70,10 @@ const AuthenticatedLayoutBoardsRouteRoute =
     getParentRoute: () => AuthenticatedLayoutRoute,
   } as any)
 
-const AuthenticatedLayoutBoardsBoardNameRouteRoute =
-  AuthenticatedLayoutBoardsBoardNameRouteImport.update({
-    id: '/boards_/$boardName',
-    path: '/boards/$boardName',
+const AuthenticatedLayoutBoardsBoardUrlRouteRoute =
+  AuthenticatedLayoutBoardsBoardUrlRouteImport.update({
+    id: '/boards_/$boardUrl',
+    path: '/boards/$boardUrl',
     getParentRoute: () => AuthenticatedLayoutRoute,
   } as any)
 
@@ -137,11 +137,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLayoutIndexImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
-    '/_authenticated/_layout/boards_/$boardName': {
-      id: '/_authenticated/_layout/boards_/$boardName'
-      path: '/boards/$boardName'
-      fullPath: '/boards/$boardName'
-      preLoaderRoute: typeof AuthenticatedLayoutBoardsBoardNameRouteImport
+    '/_authenticated/_layout/boards_/$boardUrl': {
+      id: '/_authenticated/_layout/boards_/$boardUrl'
+      path: '/boards/$boardUrl'
+      fullPath: '/boards/$boardUrl'
+      preLoaderRoute: typeof AuthenticatedLayoutBoardsBoardUrlRouteImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
   }
@@ -152,14 +152,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedLayoutRouteChildren {
   AuthenticatedLayoutBoardsRouteRoute: typeof AuthenticatedLayoutBoardsRouteRoute
   AuthenticatedLayoutIndexRoute: typeof AuthenticatedLayoutIndexRoute
-  AuthenticatedLayoutBoardsBoardNameRouteRoute: typeof AuthenticatedLayoutBoardsBoardNameRouteRoute
+  AuthenticatedLayoutBoardsBoardUrlRouteRoute: typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
 
 const AuthenticatedLayoutRouteChildren: AuthenticatedLayoutRouteChildren = {
   AuthenticatedLayoutBoardsRouteRoute: AuthenticatedLayoutBoardsRouteRoute,
   AuthenticatedLayoutIndexRoute: AuthenticatedLayoutIndexRoute,
-  AuthenticatedLayoutBoardsBoardNameRouteRoute:
-    AuthenticatedLayoutBoardsBoardNameRouteRoute,
+  AuthenticatedLayoutBoardsBoardUrlRouteRoute:
+    AuthenticatedLayoutBoardsBoardUrlRouteRoute,
 }
 
 const AuthenticatedLayoutRouteWithChildren =
@@ -185,7 +185,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof authSignupRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
-  '/boards/$boardName': typeof AuthenticatedLayoutBoardsBoardNameRouteRoute
+  '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
 
 export interface FileRoutesByTo {
@@ -196,7 +196,7 @@ export interface FileRoutesByTo {
   '/signup': typeof authSignupRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
-  '/boards/$boardName': typeof AuthenticatedLayoutBoardsBoardNameRouteRoute
+  '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
 
 export interface FileRoutesById {
@@ -209,41 +209,41 @@ export interface FileRoutesById {
   '/_authenticated/_layout': typeof AuthenticatedLayoutRouteWithChildren
   '/_authenticated/_layout/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
-  '/_authenticated/_layout/boards_/$boardName': typeof AuthenticatedLayoutBoardsBoardNameRouteRoute
+  '/_authenticated/_layout/boards_/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | ''
-    | '/forgot-password'
-    | '/login'
-    | '/reset-password'
-    | '/signup'
-    | '/boards'
-    | '/'
-    | '/boards/$boardName'
+  | ''
+  | '/forgot-password'
+  | '/login'
+  | '/reset-password'
+  | '/signup'
+  | '/boards'
+  | '/'
+  | '/boards/$boardUrl'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | ''
-    | '/forgot-password'
-    | '/login'
-    | '/reset-password'
-    | '/signup'
-    | '/boards'
-    | '/'
-    | '/boards/$boardName'
+  | ''
+  | '/forgot-password'
+  | '/login'
+  | '/reset-password'
+  | '/signup'
+  | '/boards'
+  | '/'
+  | '/boards/$boardUrl'
   id:
-    | '__root__'
-    | '/_authenticated'
-    | '/(auth)/forgot-password'
-    | '/(auth)/login'
-    | '/(auth)/reset-password'
-    | '/(auth)/signup'
-    | '/_authenticated/_layout'
-    | '/_authenticated/_layout/boards'
-    | '/_authenticated/_layout/'
-    | '/_authenticated/_layout/boards_/$boardName'
+  | '__root__'
+  | '/_authenticated'
+  | '/(auth)/forgot-password'
+  | '/(auth)/login'
+  | '/(auth)/reset-password'
+  | '/(auth)/signup'
+  | '/_authenticated/_layout'
+  | '/_authenticated/_layout/boards'
+  | '/_authenticated/_layout/'
+  | '/_authenticated/_layout/boards_/$boardUrl'
   fileRoutesById: FileRoutesById
 }
 
@@ -304,7 +304,7 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/_layout/boards",
         "/_authenticated/_layout/",
-        "/_authenticated/_layout/boards_/$boardName"
+        "/_authenticated/_layout/boards_/$boardUrl"
       ]
     },
     "/_authenticated/_layout/boards": {
@@ -315,8 +315,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/_layout/index.tsx",
       "parent": "/_authenticated/_layout"
     },
-    "/_authenticated/_layout/boards_/$boardName": {
-      "filePath": "_authenticated/_layout/boards_.$boardName/route.tsx",
+    "/_authenticated/_layout/boards_/$boardUrl": {
+      "filePath": "_authenticated/_layout/boards_.$boardUrl/route.tsx",
       "parent": "/_authenticated/_layout"
     }
   }

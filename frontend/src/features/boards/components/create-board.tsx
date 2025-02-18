@@ -14,22 +14,24 @@ import { useCreateBoardMutation } from "@/features/boards/queries/boards";
 import { CreateBoardModal } from "@/features/boards/state/board";
 import { getId } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { type FormEventHandler } from "react";
+import { useState, type FormEventHandler } from "react";
 import { toast } from "sonner";
 
 export function CreateBoard(props: CreateBoardModal) {
   const createBoardMutation = useCreateBoardMutation();
+  const [boardName, setBoardName] = useState("");
+  const boardUrl = boardName.toLowerCase().split(" ").join("-");
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
-    const fd = new FormData(e.target as HTMLFormElement);
-    const boardName = fd.get("board-name") as string;
     const currentDate = new Date().toISOString();
+
     createBoardMutation.mutate(
       {
         body: {
           id: getId(),
           name: boardName,
+          boardUrl,
           updatedAt: currentDate,
           createdAt: currentDate,
         },
@@ -46,8 +48,8 @@ export function CreateBoard(props: CreateBoardModal) {
                   size: "sm",
                   className: "!h-8",
                 })}
-                to="/boards/$boardName"
-                params={{ boardName }}
+                to="/boards/$boardUrl"
+                params={{ boardUrl }}
               >
                 View
               </Link>
@@ -74,10 +76,16 @@ export function CreateBoard(props: CreateBoardModal) {
               name="board-name"
               placeholder="eg: work board"
               required
+              value={boardName}
+              onChange={(e) => setBoardName(e.target.value ?? "")}
             />
             <DialogDescription className="!text-xs">
               Enter a unique name that reflects the purpose of this board.
             </DialogDescription>
+
+            <p className="text-xs">
+              Board URL: <b>{boardUrl}</b>
+            </p>
           </div>
 
           <DialogFooter>

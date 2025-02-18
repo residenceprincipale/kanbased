@@ -12,10 +12,13 @@ import z from "zod";
 import { ResponseBuilder } from "../../lib/response-builder.js";
 import { zodDbSchema } from "../../db/zod-db-schema.js";
 
-const columnsInsertSchema = createInsertSchema(columnsTable);
+const columnsInsertSchema = createInsertSchema(columnsTable).omit({
+  deletedAt: true,
+});
 const columnsSelectSchema = createSelectSchema(columnsTable).omit({
   createdAt: true,
   updatedAt: true,
+  deletedAt: true,
 });
 
 const getColumnsResponseSchema = z.object({
@@ -26,6 +29,7 @@ const getColumnsResponseSchema = z.object({
     zodDbSchema.tasksTable.select.omit({
       createdAt: true,
       updatedAt: true,
+      deletedAt: true,
     })
   ),
 });

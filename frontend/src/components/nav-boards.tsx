@@ -53,8 +53,8 @@ export function NavBoards() {
                     <SidebarMenuSubItem key={board.id}>
                       <SidebarMenuSubButton asChild>
                         <Link
-                          to="/boards/$boardName"
-                          params={{ boardName: board.name }}
+                          to="/boards/$boardUrl"
+                          params={{ boardUrl: board.boardUrl }}
                         >
                           <span>{board.name}</span>
                         </Link>

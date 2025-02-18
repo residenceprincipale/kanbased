@@ -30,6 +30,7 @@ export interface paths {
                             id: string;
                             name: string;
                             color: string | null;
+                            boardUrl: string;
                             tasksCount: number;
                             columnsCount: number;
                         }[];
@@ -97,6 +98,7 @@ export interface paths {
                         createdAt?: string | null;
                         updatedAt: string;
                         deletedAt?: string | null;
+                        boardUrl: string;
                     };
                 };
             };
@@ -210,6 +212,7 @@ export interface paths {
                             id: string;
                             name: string;
                             color: string | null;
+                            boardUrl: string;
                         };
                     };
                 };
@@ -288,6 +291,7 @@ export interface paths {
                         color?: string | null;
                         updatedAt: string;
                         deletedAt?: string | null;
+                        boardUrl: string;
                     };
                 };
             };
@@ -389,6 +393,7 @@ export interface paths {
                     "application/json": {
                         boards: {
                             boardName: string;
+                            boardUrl: string;
                             columns: {
                                 name: string;
                                 position: number;
@@ -472,7 +477,7 @@ export interface paths {
         get: {
             parameters: {
                 query: {
-                    boardName: string;
+                    boardUrl: string;
                 };
                 header?: never;
                 path?: never;
@@ -963,6 +968,7 @@ export interface paths {
                         position: number;
                         createdAt: string;
                         updatedAt: string;
+                        deletedAt?: string | null;
                     };
                 };
             };

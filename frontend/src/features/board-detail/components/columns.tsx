@@ -7,19 +7,23 @@ import {
   OnDragEndResponder,
 } from "@hello-pangea/dnd";
 import {
-  useColumnsSuspenseQuery,
+  ColumnsWithTasksQueryData,
   useMoveColumnsMutation,
 } from "@/features/board-detail/queries/columns";
-import { columnsQueryOptions } from "@/lib/query-options-factory";
 import { useMoveTasksMutation } from "@/features/board-detail/queries/tasks";
 import {
   useColumnModalControls,
   useColumnModalState,
 } from "@/features/board-detail/state/column";
+import { QueryKey } from "@tanstack/react-query";
 
-export function Columns(props: { boardName: string }) {
-  const { data } = useColumnsSuspenseQuery({ boardName: props.boardName });
-  const columnsQueryKey = columnsQueryOptions(props.boardName).queryKey;
+export function Columns({
+  data,
+  columnsQueryKey,
+}: {
+  data: ColumnsWithTasksQueryData;
+  columnsQueryKey: QueryKey;
+}) {
   const moveColumnsMutation = useMoveColumnsMutation({ columnsQueryKey });
   const moveTasksMutation = useMoveTasksMutation({ columnsQueryKey });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -154,9 +158,9 @@ export function Columns(props: { boardName: string }) {
                 <CreateColumn
                   data={{
                     boardId: data.boardId,
-                    boardName: props.boardName,
                     nextPosition:
                       (columns[columns.length - 1]?.position ?? 0) + 1,
+                    columnsQueryKey,
                   }}
                   onClose={closeModal}
                 />
