@@ -6,6 +6,9 @@ import {
   tasksTable,
 } from "../db/schema/index.js";
 import { PermissionError } from "../lib/error-utils.js";
+import type { AuthCtx } from "../lib/types.js";
+
+
 const permissionLevels: Record<ResourcePermission, number> = {
   owner: 3,
   admin: 2,
@@ -21,7 +24,7 @@ export type ResourceType = "board" | "column" | "task";
  * Throws a `PermissionError` if the user does not have permission.
  */
 export async function checkResourceAccess(
-  userId: string,
+  authCtx: AuthCtx,
   resourceId: string | string[],
   resourceType: ResourceType,
   requiredPermission: ResourcePermission,
@@ -44,7 +47,7 @@ export async function checkResourceAccess(
     case "board":
       query = query.where(
         and(
-          eq(boardPermissionsTable.userId, userId),
+          eq(boardPermissionsTable.userId, authCtx.user.id),
           Array.isArray(resourceId)
             ? inArray(boardPermissionsTable.boardId, resourceId)
             : eq(boardPermissionsTable.boardId, resourceId)
@@ -60,7 +63,7 @@ export async function checkResourceAccess(
         )
         .where(
           and(
-            eq(boardPermissionsTable.userId, userId),
+            eq(boardPermissionsTable.userId, authCtx.user.id),
             Array.isArray(resourceId)
               ? inArray(columnsTable.id, resourceId)
               : eq(columnsTable.id, resourceId)
@@ -77,7 +80,7 @@ export async function checkResourceAccess(
         .innerJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id))
         .where(
           and(
-            eq(boardPermissionsTable.userId, userId),
+            eq(boardPermissionsTable.userId, authCtx.user.id),
             Array.isArray(resourceId)
               ? inArray(tasksTable.id, resourceId)
               : eq(tasksTable.id, resourceId)

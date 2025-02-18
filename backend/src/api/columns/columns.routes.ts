@@ -62,7 +62,7 @@ const routes = {
     method: "get",
     path: "/columns",
     request: {
-      query: z.object({ boardName: z.string() }),
+      query: z.object({ boardUrl: z.string() }),
     },
     responses: ResponseBuilder.withAuthAndValidation({
       [HTTP_STATUS_CODES.OK]: jsonContent(getColumnsResponseSchema),

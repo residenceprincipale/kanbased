@@ -7,16 +7,17 @@ import {
   columnsTable,
   tasksTable,
 } from "../db/schema/index.js";
-import { and, asc, count, eq, isNull } from "drizzle-orm";
+import { and, asc, count, eq, isNull, or } from "drizzle-orm";
 import { checkResourceAccess } from "./permissions.js";
 import { UnprocessableEntityError } from "../lib/error-utils.js";
+import type { AuthCtx } from "../lib/types.js";
 
 export async function createBoard(
-  userId: string,
-  body: Omit<InsertType<"boardsTable">, "creatorId">,
+  authCtx: AuthCtx,
+  body: Omit<InsertType<"boardsTable">, "organizationId">,
   db: DbTypeOrTransaction = database
 ) {
-  await assertBoardNameIsUnique(userId, body.name, db);
+  await assertBoardNameIsUnique(authCtx, body.name, db);
 
   const res = await db.transaction(async (tx) => {
     const [createdBoard] = await tx
@@ -24,9 +25,10 @@ export async function createBoard(
       .values({
         name: body.name,
         color: body.color,
-        creatorId: userId,
+        organizationId: authCtx.session.activeOrganizationId,
         createdAt: body.createdAt,
         updatedAt: body.updatedAt,
+        boardUrl: body.boardUrl,
         id: body.id,
       })
       .returning();
@@ -34,7 +36,7 @@ export async function createBoard(
     await tx.insert(boardPermissionsTable).values({
       boardId: createdBoard!.id,
       permission: "owner",
-      userId,
+      userId: authCtx.user.id,
       createdAt: new Date().toISOString(),
     });
 
@@ -44,13 +46,13 @@ export async function createBoard(
   return res!;
 }
 
-export async function assertBoardNameIsUnique(userId: string, name: string, db: DbTypeOrTransaction = database) {
+export async function assertBoardNameIsUnique(authCtx: AuthCtx, name: string, db: DbTypeOrTransaction = database) {
   const boards = await db
     .select({ boardId: boardsTable.id })
     .from(boardsTable)
     .where(
       and(
-        eq(boardsTable.creatorId, userId),
+        eq(boardsTable.organizationId, authCtx.session.activeOrganizationId),
         eq(boardsTable.name, name),
         isNull(boardsTable.deletedAt)
       )
@@ -61,12 +63,13 @@ export async function assertBoardNameIsUnique(userId: string, name: string, db: 
   }
 }
 
-export function getBoards(userId: string) {
+export async function getBoards(authCtx: AuthCtx) {
   return db
     .select({
       id: boardsTable.id,
       name: boardsTable.name,
       color: boardsTable.color,
+      boardUrl: boardsTable.boardUrl,
       tasksCount: count(tasksTable.id),
       columnsCount: count(columnsTable.id),
     })
@@ -79,20 +82,20 @@ export function getBoards(userId: string) {
     .leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id))
     .where(
       and(
-        eq(boardPermissionsTable.userId, userId),
+        eq(boardPermissionsTable.userId, authCtx.user.id),
         isNull(boardsTable.deletedAt)
-      )
+      ),
     )
     .groupBy(boardsTable.id)
     .orderBy(asc(boardsTable.createdAt));
 }
 
 export async function toggleBoardDelete(
-  userId: string,
+  authCtx: AuthCtx,
   boardId: string,
   deleted: boolean
 ) {
-  await checkResourceAccess(userId, boardId, "board", "admin");
+  await checkResourceAccess(authCtx, boardId, "board", "admin");
 
   const [updatedBoard] = await db
     .update(boardsTable)
@@ -104,13 +107,13 @@ export async function toggleBoardDelete(
 }
 
 export async function editBoard(
-  userId: string,
+  authCtx: AuthCtx,
   boardId: string,
-  body: Omit<InsertType<"boardsTable">, "creatorId" | "id">
+  body: Omit<InsertType<"boardsTable">, "creatorId" | "id" | 'organizationId'>
 ) {
-  await checkResourceAccess(userId, boardId, "board", "editor");
+  await checkResourceAccess(authCtx, boardId, "board", "editor");
 
-  await assertBoardNameIsUnique(userId, body.name);
+  await assertBoardNameIsUnique(authCtx, body.name);
 
   await db.update(boardsTable).set(body).where(eq(boardsTable.id, boardId));
 }

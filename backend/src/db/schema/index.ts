@@ -7,11 +7,12 @@ import {
 
 export const boardsTable = pgTable("boards", {
   id: t.uuid().primaryKey(),
-  name: t.varchar({ length: 50 }).notNull(),
+  name: t.varchar({ length: 255 }).notNull(),
   color: t.varchar({ length: 255 }),
   createdAt: t.timestamp({ mode: "string" }),
   updatedAt: t.timestamp({ mode: "string" }).notNull(),
   deletedAt: t.timestamp({ mode: "string" }),
+  boardUrl: t.text().notNull(),
   organizationId: t
     .text()
     .references(() => organizationsTable.id, { onDelete: "cascade" })
@@ -30,6 +31,7 @@ export const columnsTable = pgTable(
     position: t.integer().notNull(),
     createdAt: t.timestamp({ mode: "string" }),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
+    deletedAt: t.timestamp({ mode: "string" }),
   },
   (table) => [t.index("column_board_idx").on(table.boardId)]
 );
@@ -46,6 +48,7 @@ export const tasksTable = pgTable(
     position: t.doublePrecision().notNull(),
     createdAt: t.timestamp({ mode: "string" }).notNull(),
     updatedAt: t.timestamp({ mode: "string" }).notNull(),
+    deletedAt: t.timestamp({ mode: "string" }),
   },
   (table) => [t.index("column_id_idx").on(table.columnId)]
 );
