@@ -5,10 +5,9 @@ import {
   LogOut,
   Moon,
   Sun,
-  User,
-  Mail,
   MailWarning,
   Lock,
+  Building2,
 } from "lucide-react";
 import { useEffect } from "react";
 import { handleAuthResponse } from "@/lib/utils";
@@ -19,7 +18,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuPortal,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -28,23 +26,19 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@/components/ui/sidebar";
-import { router } from "@/main";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { useSession } from "@/queries/session";
 import { useAppContext } from "@/state/app-state";
 import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
+import { router } from "@/main";
+import { toast } from "sonner";
+import { useActiveOrganization } from "@/queries/organization";
 
 export function NavUser() {
-  const { isMobile } = useSidebar();
-  const { user } = useSession();
+  const { user, session } = useSession();
+  const organization = useActiveOrganization();
   const { theme, updateTheme } = useAppContext();
 
   const logoutMutation = useMutation({
@@ -118,115 +112,72 @@ export function NavUser() {
   };
 
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-            >
-              <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage
-                  src={user.image!}
-                  alt={user.name ?? "user image"}
-                />
-                <AvatarFallback className="rounded-lg">
-                  <User />
-                </AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-semibold">{user.name}</span>
-                <span className="truncate text-xs">{user?.email}</span>
-              </div>
-              <ChevronsUpDown className="ml-auto size-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-            side={isMobile ? "bottom" : "top"}
-            align="end"
-            sideOffset={4}
-          >
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <DropdownMenuLabel className="p-0 font-normal">
-                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={user.image!} alt={user.name!} />
-                      <AvatarFallback className="rounded-lg">
-                        <User />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-semibold">
-                        {user.name}
-                      </span>
-                      <span className="truncate text-xs">{user.email}</span>
-                    </div>
-                  </div>
-                </DropdownMenuLabel>
-              </DropdownMenuSubTrigger>
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" className="w-full justify-between px-4 py-2">
+          <div className="flex items-center gap-3">
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.image || ""} alt={user.name || "User"} />
+              <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+            </Avatar>
+            <div className="flex flex-col items-start text-sm">
+              <span className="font-medium">{user.name}</span>
 
-              <DropdownMenuPortal>
-                <DropdownMenuSubContent>
-                  {!user.emailVerified && (
-                    <DropdownMenuItem onClick={handleVerifyEmail}>
-                      <MailWarning className="h-4 w-4" />
-                      Verify email
-                    </DropdownMenuItem>
-                  )}
+              {organization.isLoading ? (
+                <div className="animate-pulse bg-gray-4 w-32 h-4 rounded-md" />
+              ) : (
+                <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                  <Building2 />
+                  <span>{organization?.data?.name || "No Organization"}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <ChevronsUpDown className="h-4 w-4 opacity-50" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="w-56" align="start" side="right">
+        <DropdownMenuLabel>My Account</DropdownMenuLabel>
 
-                  <DropdownMenuItem onClick={handleResetPassword}>
-                    <Lock className="h-4 w-4" />
-                    Reset Password
-                  </DropdownMenuItem>
-                </DropdownMenuSubContent>
-              </DropdownMenuPortal>
-            </DropdownMenuSub>
+        {!user.emailVerified && (
+          <DropdownMenuItem onClick={handleVerifyEmail}>
+            <MailWarning className="mr-2 h-4 w-4" />
+            Verify Email
+          </DropdownMenuItem>
+        )}
 
-            <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={handleResetPassword}>
+          <Lock className="mr-2 h-4 w-4" />
+          Reset Password
+        </DropdownMenuItem>
 
-            {/* Theme Selection */}
+        <DropdownMenuSeparator />
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>
+            <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+            <span>Theme</span>
+          </DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
             <DropdownMenuRadioGroup
               value={theme}
-              onValueChange={updateTheme as any}
+              onValueChange={(value) => updateTheme(value as any)}
             >
-              <DropdownMenuRadioItem value="light">
-                <Sun className="mr-2 h-4 w-4" />
-                Light
-              </DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">
-                <Moon className="mr-2 h-4 w-4" />
-                Dark
-              </DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
+              <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
               <DropdownMenuRadioItem value="system">
-                <svg
-                  className="mr-2 h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25"
-                  />
-                </svg>
                 System
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
 
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SidebarMenuItem>
-    </SidebarMenu>
+        <DropdownMenuItem onClick={handleLogout}>
+          <LogOut className="mr-2 h-4 w-4" />
+          Log out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

@@ -1,5 +1,6 @@
 import { authClient } from "@/lib/auth";
 import { api } from "@/lib/openapi-react-query";
+import { handleAuthResponse } from "@/lib/utils";
 import { queryOptions } from "@tanstack/react-query";
 
 export function columnsQueryOptions(boardUrl: string) {
@@ -16,4 +17,14 @@ export const boardsQueryOptions = queryOptions({
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
   queryFn: () => authClient.getSession(),
+});
+
+
+export const activeOrganizationQueryOptions = (organizationId: string | null | undefined) => queryOptions({
+  queryKey: ["organizations"],
+  queryFn: async () => {
+    const res = await authClient.organization.getFullOrganization({ query: { organizationId: organizationId! } })
+    return handleAuthResponse(res);
+  },
+  enabled: !!organizationId
 });
