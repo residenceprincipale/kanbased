@@ -10,7 +10,7 @@ import {
   Building2,
 } from "lucide-react";
 import { useEffect } from "react";
-import { handleAuthResponse } from "@/lib/utils";
+import { handleAuthResponse, promiseTimeout } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -81,6 +81,9 @@ export function NavUser() {
         organizationId,
       });
       return handleAuthResponse(res);
+    },
+    onSuccess: () => {
+      window.location.reload();
     },
   });
 
