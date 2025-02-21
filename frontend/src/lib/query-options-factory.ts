@@ -20,11 +20,21 @@ export const sessionQueryOptions = queryOptions({
 });
 
 
-export const activeOrganizationQueryOptions = (organizationId: string | null | undefined) => queryOptions({
-  queryKey: ["organizations"],
+export const activeOrganizationQueryOptions = (organizationId: string | null | undefined, userId: string) => queryOptions({
+  queryKey: [userId, "organizations", organizationId],
   queryFn: async () => {
     const res = await authClient.organization.getFullOrganization({ query: { organizationId: organizationId! } })
     return handleAuthResponse(res);
   },
   enabled: !!organizationId
+});
+
+
+export const organizationsListQueryOptions = (userId: string) => queryOptions({
+  queryKey: [userId, "organizations"],
+  queryFn: async () => {
+    const res = await authClient.organization.list();
+    return handleAuthResponse(res);
+  },
+  enabled: !!userId
 });

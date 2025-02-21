@@ -15,9 +15,9 @@ import { handleAuthResponse } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
+  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuSeparator,
@@ -34,11 +34,15 @@ import { useMutation } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
 import { router } from "@/main";
 import { toast } from "sonner";
-import { useActiveOrganization } from "@/queries/organization";
+import {
+  useActiveOrganizationQuery,
+  useOrganizationsListQuery,
+} from "@/queries/organization";
 
 export function NavUser() {
   const { user, session } = useSession();
-  const organization = useActiveOrganization();
+  const organizationQuery = useActiveOrganizationQuery();
+  const organizationListQuery = useOrganizationsListQuery();
   const { theme, updateTheme } = useAppContext();
 
   const logoutMutation = useMutation({
@@ -66,6 +70,15 @@ export function NavUser() {
       const res = await authClient.forgetPassword({
         email: user.email,
         redirectTo: `${getOrigin()}/auth/reset-password`,
+      });
+      return handleAuthResponse(res);
+    },
+  });
+
+  const switchOrganizationMutation = useMutation({
+    mutationFn: async (organizationId: string) => {
+      const res = await authClient.organization.setActive({
+        organizationId,
       });
       return handleAuthResponse(res);
     },
@@ -111,6 +124,15 @@ export function NavUser() {
     });
   };
 
+  const handleSwitchOrganization = (organizationId: string) => {
+    const promise = switchOrganizationMutation.mutateAsync(organizationId);
+    toast.promise(promise, {
+      loading: "Switching organization...",
+      error: "Failed to switch organization",
+      position: "top-center",
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -123,12 +145,14 @@ export function NavUser() {
             <div className="flex flex-col items-start text-sm">
               <span className="font-medium">{user.name}</span>
 
-              {organization.isLoading ? (
+              {organizationQuery.isLoading ? (
                 <div className="animate-pulse bg-gray-4 w-32 h-4 rounded-md" />
               ) : (
                 <div className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Building2 />
-                  <span>{organization?.data?.name || "No Organization"}</span>
+                  <span>
+                    {organizationQuery?.data?.name || "No Organization"}
+                  </span>
                 </div>
               )}
             </div>
@@ -137,8 +161,6 @@ export function NavUser() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start" side="right">
-        <DropdownMenuLabel>My Account</DropdownMenuLabel>
-
         {!user.emailVerified && (
           <DropdownMenuItem onClick={handleVerifyEmail}>
             <MailWarning className="mr-2 h-4 w-4" />
@@ -170,6 +192,21 @@ export function NavUser() {
                 System
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
+          </DropdownMenuSubContent>
+        </DropdownMenuSub>
+
+        <DropdownMenuSub>
+          <DropdownMenuSubTrigger>Switch organization</DropdownMenuSubTrigger>
+          <DropdownMenuSubContent>
+            {organizationListQuery.data?.map((org) => (
+              <DropdownMenuCheckboxItem
+                checked={org.id === session.activeOrganizationId}
+                key={org.id}
+                onCheckedChange={() => handleSwitchOrganization(org.id)}
+              >
+                {org.name}
+              </DropdownMenuCheckboxItem>
+            ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
 
