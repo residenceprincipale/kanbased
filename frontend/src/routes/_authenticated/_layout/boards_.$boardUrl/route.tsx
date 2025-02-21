@@ -16,12 +16,21 @@ export const Route = createFileRoute(
     const { boardUrl } = ctx.params;
     await queryClient.prefetchQuery(columnsQueryOptions(boardUrl));
   },
+  errorComponent: (error) => {
+    return <ErrorComponent message={error.error?.message} />;
+  },
 });
 
 function BoardPage() {
   const { boardUrl } = Route.useParams();
-  const { data } = useColumnsSuspenseQuery({ boardUrl });
+  const { data, error } = useColumnsSuspenseQuery({ boardUrl });
   const boardName = data.boardName;
+
+  // Not sure why. The error component is not being rendered when there is an error.
+  // Hence, we are checking the error status code manually.
+  if (error) {
+    return <ErrorComponent message={error?.message} />;
+  }
 
   return (
     <ModalProvider>
@@ -39,5 +48,13 @@ function BoardPage() {
         </div>
       </div>
     </ModalProvider>
+  );
+}
+
+function ErrorComponent({ message }: { message?: string }) {
+  return (
+    <p className="text-center text-destructive-foreground">
+      {message || "An error occurred"}
+    </p>
   );
 }
