@@ -3,7 +3,6 @@ import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
-import { useOverflowDetector } from "react-detectable-overflow";
 import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
 import { Task } from "@/features/board-detail/components/task";
 import { CreateCard } from "@/features/board-detail/components/create-task";
@@ -52,8 +51,6 @@ export function Tasks(props: TasksProps) {
   const containerCbRef = useCallback((node: HTMLDivElement | null) => {
     if (!node) return;
     containerRef.current = node;
-    // @ts-ignore
-    overflowRef.current = node;
   }, []);
 
   const lastTaskRef = useCallback((node: HTMLElement | null) => {
