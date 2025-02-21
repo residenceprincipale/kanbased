@@ -3,7 +3,6 @@ import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
-import { useOverflowDetector } from "react-detectable-overflow";
 import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
 import { Task } from "@/features/board-detail/components/task";
 import { CreateCard } from "@/features/board-detail/components/create-task";
@@ -44,10 +43,6 @@ export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
-  const { ref: overflowRef, overflow } = useOverflowDetector({
-    handleHeight: true,
-    handleWidth: false,
-  });
 
   function scrollList() {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
@@ -56,8 +51,6 @@ export function Tasks(props: TasksProps) {
   const containerCbRef = useCallback((node: HTMLDivElement | null) => {
     if (!node) return;
     containerRef.current = node;
-    // @ts-ignore
-    overflowRef.current = node;
   }, []);
 
   const lastTaskRef = useCallback((node: HTMLElement | null) => {
@@ -81,8 +74,7 @@ export function Tasks(props: TasksProps) {
           return (
             <div
               className={cn(
-                "overflow-x-hidden custom-scrollbar flex-grow min-h-0 overflow-x-hidden",
-                overflow ? "overflow-y-auto" : "overflow-y-hidden"
+                "custom-scrollbar flex-grow min-h-0 overflow-y-auto"
               )}
               {...droppableProvided.droppableProps}
               ref={containerCbRef}

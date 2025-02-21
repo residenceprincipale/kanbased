@@ -8,6 +8,7 @@ import {
 } from "@hello-pangea/dnd";
 import {
   ColumnsWithTasksQueryData,
+  useColumnsSuspenseQuery,
   useMoveColumnsMutation,
 } from "@/features/board-detail/queries/columns";
 import { useMoveTasksMutation } from "@/features/board-detail/queries/tasks";
@@ -18,12 +19,13 @@ import {
 import { QueryKey } from "@tanstack/react-query";
 
 export function Columns({
-  data,
+  boardUrl,
   columnsQueryKey,
 }: {
-  data: ColumnsWithTasksQueryData;
+  boardUrl: string;
   columnsQueryKey: QueryKey;
 }) {
+  const { data } = useColumnsSuspenseQuery({ boardUrl });
   const moveColumnsMutation = useMoveColumnsMutation({ columnsQueryKey });
   const moveTasksMutation = useMoveTasksMutation({ columnsQueryKey });
   const containerRef = useRef<HTMLDivElement>(null);

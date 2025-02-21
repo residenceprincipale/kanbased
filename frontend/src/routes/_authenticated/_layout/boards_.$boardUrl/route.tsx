@@ -42,7 +42,7 @@ function BoardPage() {
 
         <div className="flex-1 h-full min-h-0">
           <Columns
-            data={data}
+            boardUrl={boardUrl}
             columnsQueryKey={columnsQueryOptions(boardUrl).queryKey}
           />
         </div>
