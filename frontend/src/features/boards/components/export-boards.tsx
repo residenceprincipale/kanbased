@@ -43,7 +43,7 @@ function Content() {
       const allBoardsPromise =
         boards?.map(async (board) => {
           const boardData = await qc.ensureQueryData(
-            columnsQueryOptions(board.name)
+            columnsQueryOptions(board.boardUrl)
           );
           return transformColumnsQuery(boardData);
         }) ?? [];
