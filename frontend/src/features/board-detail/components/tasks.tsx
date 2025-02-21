@@ -74,7 +74,7 @@ export function Tasks(props: TasksProps) {
           return (
             <div
               className={cn(
-                "custom-scrollbar flex-grow min-h-0 overflow-y-auto"
+                "custom-scrollbar flex-grow min-h-0 overflow-y-auto overflow-x-hidden"
               )}
               {...droppableProvided.droppableProps}
               ref={containerCbRef}
