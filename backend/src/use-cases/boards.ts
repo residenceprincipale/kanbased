@@ -7,7 +7,7 @@ import {
   columnsTable,
   tasksTable,
 } from "../db/schema/index.js";
-import { and, asc, count, eq, isNull, or } from "drizzle-orm";
+import { and, asc, count, eq, isNull } from "drizzle-orm";
 import { checkResourceAccess } from "./permissions.js";
 import { UnprocessableEntityError } from "../lib/error-utils.js";
 import type { AuthCtx } from "../lib/types.js";
@@ -35,6 +35,7 @@ export async function createBoard(
 
     await tx.insert(boardPermissionsTable).values({
       boardId: createdBoard!.id,
+      organizationId: authCtx.session.activeOrganizationId,
       permission: "owner",
       userId: authCtx.user.id,
       createdAt: new Date().toISOString(),
@@ -76,13 +77,14 @@ export async function getBoards(authCtx: AuthCtx) {
     .from(boardsTable)
     .innerJoin(
       boardPermissionsTable,
-      eq(boardPermissionsTable.boardId, boardsTable.id)
+      eq(boardPermissionsTable.boardId, boardsTable.id),
     )
     .leftJoin(columnsTable, eq(columnsTable.boardId, boardsTable.id))
     .leftJoin(tasksTable, eq(tasksTable.columnId, columnsTable.id))
     .where(
       and(
         eq(boardPermissionsTable.userId, authCtx.user.id),
+        eq(boardsTable.organizationId, authCtx.session.activeOrganizationId),
         isNull(boardsTable.deletedAt)
       ),
     )

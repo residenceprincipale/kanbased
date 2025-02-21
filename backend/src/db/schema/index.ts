@@ -80,13 +80,18 @@ export const boardPermissionsTable = pgTable(
       .text()
       .references(() => usersTable.id, { onDelete: "cascade" })
       .notNull(),
+    organizationId: t
+      .text()
+      .references(() => organizationsTable.id, { onDelete: "cascade" })
+      .notNull(),
     permission: t.varchar({ length: 255 }).notNull(),
     createdAt: t.timestamp({ mode: "string" }).notNull().defaultNow(),
   },
   (table) => [
     // Ensure user can only have one role per board
-    t.unique("unique_board_member").on(table.boardId, table.userId),
+    t.unique("unique_board_member").on(table.boardId, table.userId, table.organizationId),
     t.index("board_members_user_idx").on(table.userId),
     t.index("board_members_board_idx").on(table.boardId),
+    t.index("board_members_organization_idx").on(table.organizationId),
   ]
 );
