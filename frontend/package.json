@@ -33,17 +33,14 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "idb-keyval": "^6.2.1",
-    "isbot": "^4",
     "lucide-react": "^0.454.0",
     "openapi-fetch": "^0.11.1",
     "openapi-react-query": "^0.2.4",
     "react": "^19.0.0",
-    "react-detectable-overflow": "^0.8.0",
     "react-dom": "^19.0.0",
     "sonner": "^1.7.0",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.24.1"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@tanstack/router-plugin": "^1.79.0",

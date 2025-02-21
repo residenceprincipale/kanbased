@@ -44,10 +44,6 @@ export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
-  const { ref: overflowRef, overflow } = useOverflowDetector({
-    handleHeight: true,
-    handleWidth: false,
-  });
 
   function scrollList() {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
@@ -81,8 +77,7 @@ export function Tasks(props: TasksProps) {
           return (
             <div
               className={cn(
-                "overflow-x-hidden custom-scrollbar flex-grow min-h-0 overflow-x-hidden",
-                overflow ? "overflow-y-auto" : "overflow-y-hidden"
+                "custom-scrollbar flex-grow min-h-0 overflow-y-auto"
               )}
               {...droppableProvided.droppableProps}
               ref={containerCbRef}
