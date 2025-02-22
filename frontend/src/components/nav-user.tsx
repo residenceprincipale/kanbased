@@ -3,14 +3,13 @@
 import {
   ChevronsUpDown,
   LogOut,
-  Moon,
-  Sun,
   MailWarning,
   Lock,
   Building2,
+  Settings,
 } from "lucide-react";
 import { useEffect } from "react";
-import { handleAuthResponse, promiseTimeout } from "@/lib/utils";
+import { handleAuthResponse } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -18,8 +17,7 @@ import {
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -38,6 +36,7 @@ import {
   useActiveOrganizationQuery,
   useOrganizationsListQuery,
 } from "@/queries/organization";
+import { Link } from "@tanstack/react-router";
 
 export function NavUser() {
   const { user, session } = useSession();
@@ -123,7 +122,7 @@ export function NavUser() {
       success:
         "Reset password email sent successfully, please check your email.",
       error: "Failed to send reset password email",
-      position: "bottom-center",
+      position: "top-center",
     });
   };
 
@@ -164,21 +163,7 @@ export function NavUser() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start" side="right">
-        {!user.emailVerified && (
-          <DropdownMenuItem onClick={handleVerifyEmail}>
-            <MailWarning className="mr-2 h-4 w-4" />
-            Verify Email
-          </DropdownMenuItem>
-        )}
-
-        <DropdownMenuItem onClick={handleResetPassword}>
-          <Lock className="mr-2 h-4 w-4" />
-          Reset Password
-        </DropdownMenuItem>
-
-        <DropdownMenuSeparator />
-
-        <DropdownMenuSub>
+        {/* <DropdownMenuSub>
           <DropdownMenuSubTrigger>
             <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -196,8 +181,10 @@ export function NavUser() {
               </DropdownMenuRadioItem>
             </DropdownMenuRadioGroup>
           </DropdownMenuSubContent>
-        </DropdownMenuSub>
+        </DropdownMenuSub> */}
 
+        <DropdownMenuLabel>Organization</DropdownMenuLabel>
+        <DropdownMenuSeparator />
         <DropdownMenuSub>
           <DropdownMenuSubTrigger>Switch organization</DropdownMenuSubTrigger>
           <DropdownMenuSubContent>
@@ -212,6 +199,26 @@ export function NavUser() {
             ))}
           </DropdownMenuSubContent>
         </DropdownMenuSub>
+        <DropdownMenuSeparator />
+
+        {!user.emailVerified && (
+          <DropdownMenuItem onClick={handleVerifyEmail}>
+            <MailWarning className="mr-2 h-4 w-4" />
+            Verify Email
+          </DropdownMenuItem>
+        )}
+
+        <DropdownMenuItem onClick={handleResetPassword}>
+          <Lock className="mr-2 h-4 w-4" />
+          Reset Password
+        </DropdownMenuItem>
+
+        <DropdownMenuItem asChild>
+          <Link to="/user-settings">
+            <Settings className="mr-2 h-4 w-4" />
+            User Settings
+          </Link>
+        </DropdownMenuItem>
 
         <DropdownMenuItem onClick={handleLogout}>
           <LogOut className="mr-2 h-4 w-4" />

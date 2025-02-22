@@ -5,26 +5,26 @@ import type { AuthCtx } from "../lib/types.js";
 import { s3Client } from "../lib/s3-client.js";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-export const getUserImagePresignedUrl = async (authCtx: AuthCtx, fileName: string, contentType: string) => {
-  const key = `users/${authCtx.session.userId}/images/${randomUUID()}-${fileName}`;
+export const getUserImagePresignedUrl = async (
+  authCtx: AuthCtx,
+  fileName: string,
+  contentType: string
+) => {
+  const key = `users/${authCtx.session.userId}/${randomUUID()}-${fileName}`;
 
   const command = new PutObjectCommand({
     Bucket: env.S3_BUCKET_NAME,
     Key: key,
     ContentType: contentType,
-    Metadata: {
-      userId: authCtx.session.userId,
-      originalName: fileName,
-    },
-    ContentLength: 5 * 1024 * 1024, // 5MB limit
   });
 
   const url = await getSignedUrl(s3Client, command, {
-    expiresIn: 600,
+    expiresIn: 5 * 60, // 5 minutes
   });
 
   return {
     url,
     key,
+    imageUrl: `${env.PUBLIC_IMAGE_DOMAIN}/${key}`,
   };
 };

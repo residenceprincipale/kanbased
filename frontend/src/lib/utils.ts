@@ -46,22 +46,37 @@ export async function fetchAndCacheImage(cacheName: string, imageUrl: string): P
 };
 
 
-interface AuthError {
+export interface AuthErrorType {
   code?: string;
   message?: string;
   status: number;
   statusText: string;
 }
 
-type AuthResponse<T> = {
-  data: T;
-  error: AuthError | null;
-};
 
-export function handleAuthResponse<T>(response: AuthResponse<T>): T {
+export function handleAuthResponse<T>(response: {
+  data: T;
+  error: AuthErrorType | null;
+}): T {
   if (response.error) {
-    throw response.error;
+    throw new AuthError(response.error);
   }
 
   return response.data;
 }
+
+export class UserViewableError {
+  message: string;
+  constructor(message: string) {
+    this.message = message;
+  }
+}
+
+export class AuthError {
+  error: AuthErrorType;
+
+  constructor(error: AuthErrorType) {
+    this.error = error;
+  }
+}
+

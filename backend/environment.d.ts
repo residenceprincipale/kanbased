@@ -19,6 +19,7 @@ export declare global {
       S3_SECRET_ACCESS_KEY: string;
       S3_BUCKET_NAME: string;
       S3_ENDPOINT: string;
+      PUBLIC_IMAGE_DOMAIN: string;
     }
   }
 }

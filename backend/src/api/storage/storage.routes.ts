@@ -24,6 +24,7 @@ const routes = {
         z.object({
           url: z.string(),
           key: z.string(),
+          imageUrl: z.string(),
         })
       ),
     }),

@@ -5,6 +5,7 @@ import {
   Persister,
 } from '@tanstack/react-query-persist-client';
 import { toast } from 'sonner';
+import { AuthError, UserViewableError } from '@/lib/utils';
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -22,10 +23,14 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error, _variables, _context, mutation) => {
       if (mutation.meta?.showToastOnMutationError) {
-        // NOTE: I probably should not give my email here, but I don't want to setup a new email for this.
-        const message = typeof error?.message === "string" ? error.message : "An unexpected error occurred, please try again later or contact us at irshathv2@gmail.com";
-
-        toast.error(message);
+        if (error instanceof UserViewableError || error instanceof AuthError) {
+          toast.error(error.message);
+        } else {
+          // TODO: Probably not a good idea to give my email here.
+          // TODO: Show only user viewable error messages. This needs to handled from backend.
+          const message = typeof error?.message === "string" ? error.message : "An unexpected error occurred, please try again later or contact us at irshathv2@gmail.com";
+          toast.error(message);
+        }
       }
 
     },

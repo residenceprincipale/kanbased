@@ -8,12 +8,13 @@ const handlers: InferHandlers<typeof routes> = {
     const { fileName, contentType } = c.req.valid("json");
     const authCtx = c.var.authCtx;
 
-    const { url, key } = await getUserImagePresignedUrl(authCtx, fileName, contentType);
+    const { url, key, imageUrl } = await getUserImagePresignedUrl(authCtx, fileName, contentType);
 
     return c.json(
       {
         url,
         key,
+        imageUrl,
       },
       HTTP_STATUS_CODES.OK
     );
