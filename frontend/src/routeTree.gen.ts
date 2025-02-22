@@ -19,6 +19,7 @@ import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-pas
 import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password/route'
 import { Route as AuthenticatedLayoutIndexImport } from './routes/_authenticated/_layout/index'
+import { Route as AuthenticatedLayoutUserSettingsRouteImport } from './routes/_authenticated/_layout/user-settings/route'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
 import { Route as AuthenticatedLayoutBoardsBoardUrlRouteImport } from './routes/_authenticated/_layout/boards_.$boardUrl/route'
 
@@ -70,6 +71,13 @@ const AuthenticatedLayoutIndexRoute = AuthenticatedLayoutIndexImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedLayoutRoute,
 } as any)
+
+const AuthenticatedLayoutUserSettingsRouteRoute =
+  AuthenticatedLayoutUserSettingsRouteImport.update({
+    id: '/user-settings',
+    path: '/user-settings',
+    getParentRoute: () => AuthenticatedLayoutRoute,
+  } as any)
 
 const AuthenticatedLayoutBoardsRouteRoute =
   AuthenticatedLayoutBoardsRouteImport.update({
@@ -145,6 +153,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLayoutBoardsRouteImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
+    '/_authenticated/_layout/user-settings': {
+      id: '/_authenticated/_layout/user-settings'
+      path: '/user-settings'
+      fullPath: '/user-settings'
+      preLoaderRoute: typeof AuthenticatedLayoutUserSettingsRouteImport
+      parentRoute: typeof AuthenticatedLayoutImport
+    }
     '/_authenticated/_layout/': {
       id: '/_authenticated/_layout/'
       path: '/'
@@ -166,12 +181,15 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedLayoutRouteChildren {
   AuthenticatedLayoutBoardsRouteRoute: typeof AuthenticatedLayoutBoardsRouteRoute
+  AuthenticatedLayoutUserSettingsRouteRoute: typeof AuthenticatedLayoutUserSettingsRouteRoute
   AuthenticatedLayoutIndexRoute: typeof AuthenticatedLayoutIndexRoute
   AuthenticatedLayoutBoardsBoardUrlRouteRoute: typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
 
 const AuthenticatedLayoutRouteChildren: AuthenticatedLayoutRouteChildren = {
   AuthenticatedLayoutBoardsRouteRoute: AuthenticatedLayoutBoardsRouteRoute,
+  AuthenticatedLayoutUserSettingsRouteRoute:
+    AuthenticatedLayoutUserSettingsRouteRoute,
   AuthenticatedLayoutIndexRoute: AuthenticatedLayoutIndexRoute,
   AuthenticatedLayoutBoardsBoardUrlRouteRoute:
     AuthenticatedLayoutBoardsBoardUrlRouteRoute,
@@ -203,6 +221,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof authSignupRouteRoute
   '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
+  '/user-settings': typeof AuthenticatedLayoutUserSettingsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
@@ -215,6 +234,7 @@ export interface FileRoutesByTo {
   '/signup': typeof authSignupRouteRoute
   '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
+  '/user-settings': typeof AuthenticatedLayoutUserSettingsRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
@@ -229,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
   '/_authenticated/_layout': typeof AuthenticatedLayoutRouteWithChildren
   '/_authenticated/_layout/boards': typeof AuthenticatedLayoutBoardsRouteRoute
+  '/_authenticated/_layout/user-settings': typeof AuthenticatedLayoutUserSettingsRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
   '/_authenticated/_layout/boards_/$boardUrl': typeof AuthenticatedLayoutBoardsBoardUrlRouteRoute
 }
@@ -243,6 +264,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/new-organization'
     | '/boards'
+    | '/user-settings'
     | '/'
     | '/boards/$boardUrl'
   fileRoutesByTo: FileRoutesByTo
@@ -254,6 +276,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/new-organization'
     | '/boards'
+    | '/user-settings'
     | '/'
     | '/boards/$boardUrl'
   id:
@@ -266,6 +289,7 @@ export interface FileRouteTypes {
     | '/_authenticated/new-organization'
     | '/_authenticated/_layout'
     | '/_authenticated/_layout/boards'
+    | '/_authenticated/_layout/user-settings'
     | '/_authenticated/_layout/'
     | '/_authenticated/_layout/boards_/$boardUrl'
   fileRoutesById: FileRoutesById
@@ -332,12 +356,17 @@ export const routeTree = rootRoute
       "parent": "/_authenticated",
       "children": [
         "/_authenticated/_layout/boards",
+        "/_authenticated/_layout/user-settings",
         "/_authenticated/_layout/",
         "/_authenticated/_layout/boards_/$boardUrl"
       ]
     },
     "/_authenticated/_layout/boards": {
       "filePath": "_authenticated/_layout/boards/route.tsx",
+      "parent": "/_authenticated/_layout"
+    },
+    "/_authenticated/_layout/user-settings": {
+      "filePath": "_authenticated/_layout/user-settings/route.tsx",
       "parent": "/_authenticated/_layout"
     },
     "/_authenticated/_layout/": {

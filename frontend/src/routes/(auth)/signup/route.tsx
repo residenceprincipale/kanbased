@@ -1,36 +1,70 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { X } from "lucide-react";
 import { authClient } from "@/lib/auth";
 import { toast } from "sonner";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
 import { getOrigin } from "@/lib/constants";
 import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
+import { useMutation } from "@tanstack/react-query";
+import { handleAuthResponse } from "@/lib/utils";
+import { useGoogleLoginMutation } from "@/queries/authentication";
+import { useGithubLoginMutation } from "@/queries/authentication";
+import { GithubIcon, GoogleIcon } from "@/components/icons";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
 });
 
 function SignUp() {
-  const [image, setImage] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const [isRegistering, setIsRegistering] = useState(false);
   const router = useRouter();
-
+  const callbackURL = getOrigin();
   useLoggedInRedirect();
+
+  const signUpMutation = useMutation({
+    mutationFn: async (data: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      password: string;
+      image?: string;
+    }) => {
+      const response = await authClient.signUp.email({
+        email: data.email,
+        password: data.password,
+        name: `${data.firstName} ${data.lastName}`,
+        callbackURL,
+      });
+
+      return handleAuthResponse(response);
+    },
+    onSuccess: async () => {
+      toast("A verification email has been sent to your email address.", {
+        description: "Please verify your email.",
+      });
+
+      router.navigate({ to: "/" });
+    },
+  });
+
+  const googleLoginMutation = useGoogleLoginMutation({
+    callbackURL,
+  });
+
+  const githubLoginMutation = useGithubLoginMutation({
+    callbackURL,
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -46,40 +80,20 @@ function SignUp() {
       return;
     }
 
-    setIsRegistering(true);
-    const imageBase64 = image ? await convertImageToBase64(image) : "";
-
-    await authClient.signUp.email({
+    signUpMutation.mutate({
+      firstName,
+      lastName,
       email,
       password,
-      name: `${firstName} ${lastName}`,
-      image: imageBase64,
-      callbackURL: getOrigin(),
-      fetchOptions: {
-        onError: (ctx) => {
-          toast.error(ctx.error.message);
-        },
-        onSuccess: async () => {
-          toast("A verification email has been sent to your email address.", {
-            description: "Please verify your email.",
-          });
-          router.navigate({ to: "/" });
-        },
-      },
     });
-    setIsRegistering(false);
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleGoogleLogin = async () => {
+    googleLoginMutation.mutate();
+  };
+
+  const handleGithubLogin = async () => {
+    githubLoginMutation.mutate();
   };
 
   return (
@@ -101,21 +115,24 @@ function SignUp() {
                 <Label htmlFor="first-name">First name</Label>
                 <Input
                   id="first-name"
-                  placeholder="Max"
+                  placeholder="John"
                   required
                   name="firstName"
+                  autoFocus
                 />
               </div>
+
               <div className="grid gap-2">
                 <Label htmlFor="last-name">Last name</Label>
                 <Input
                   id="last-name"
-                  placeholder="Robinson"
+                  placeholder="Snow"
                   required
                   name="lastName"
                 />
               </div>
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
               <Input
@@ -126,6 +143,7 @@ function SignUp() {
                 name="email"
               />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="password">Password</Label>
               <Input
@@ -134,8 +152,10 @@ function SignUp() {
                 autoComplete="new-password"
                 placeholder="Password"
                 name="password"
+                required
               />
             </div>
+
             <div className="grid gap-2">
               <Label htmlFor="password">Confirm Password</Label>
               <Input
@@ -144,56 +164,54 @@ function SignUp() {
                 name="passwordConfirmation"
                 autoComplete="new-password"
                 placeholder="Confirm Password"
+                required
               />
             </div>
-            <div className="grid gap-2">
-              <Label htmlFor="image">Profile Image (optional)</Label>
-              <div className="flex items-end gap-4">
-                {imagePreview && (
-                  <div className="relative w-16 h-16 rounded-sm overflow-hidden">
-                    <img
-                      src={imagePreview}
-                      alt="Profile preview"
-                      // layout="fill"
-                      // objectFit="cover"
-                    />
-                  </div>
-                )}
-                <div className="flex items-center gap-2 w-full">
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full"
-                  />
-                  {imagePreview && (
-                    <X
-                      className="cursor-pointer"
-                      onClick={() => {
-                        setImage(null);
-                        setImagePreview(null);
-                      }}
-                    />
-                  )}
-                </div>
-              </div>
-            </div>
-            <Button type="submit" className="w-full" disabled={isRegistering}>
-              {isRegistering ? <Spinner /> : "Create an account"}
+
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={signUpMutation.isPending}
+            >
+              {signUpMutation.isPending && <Spinner />}
+              Create an account
+            </Button>
+          </div>
+
+          <Link
+            to="/login"
+            className={buttonVariants({
+              variant: "link",
+              className: "text-left pl-0 w-fit my-2.5",
+            })}
+          >
+            Already have an account? Sign in
+          </Link>
+
+          <div className="space-y-2">
+            <Button
+              variant="outline"
+              className={cn("w-full gap-2")}
+              type="button"
+              onClick={handleGoogleLogin}
+              disabled={googleLoginMutation.isPending}
+            >
+              {googleLoginMutation.isPending ? <Spinner /> : <GoogleIcon />}
+              Sign up with Google
+            </Button>
+            <Button
+              variant="outline"
+              className={cn("w-full gap-2")}
+              type="button"
+              onClick={handleGithubLogin}
+              disabled={githubLoginMutation.isPending}
+            >
+              {githubLoginMutation.isPending ? <Spinner /> : <GithubIcon />}
+              Sign up with Github
             </Button>
           </div>
         </CardContent>
       </Card>
     </form>
   );
-}
-
-async function convertImageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result as string);
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 }

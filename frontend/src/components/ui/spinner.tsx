@@ -24,7 +24,7 @@ export interface SpinnerProps
 }
 
 const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
-  ({ size, asChild = false, children, ...props }, ref) => {
+  ({ size, asChild = false, children, className, ...props }, ref) => {
     const Comp = asChild ? Slot : "span";
 
     const renderSpinnerIcon = (
