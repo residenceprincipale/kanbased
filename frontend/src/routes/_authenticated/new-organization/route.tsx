@@ -109,7 +109,7 @@ function Welcome() {
             >
               {createOrgMutation.isPending ? (
                 <>
-                  <Spinner className="mr-2" />
+                  <Spinner />
                   Creating your workspace...
                 </>
               ) : (
