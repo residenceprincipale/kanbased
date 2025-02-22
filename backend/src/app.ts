@@ -5,6 +5,7 @@ import columnsRouter from "./api/columns/columns.index.js";
 import tasksRouter from "./api/tasks/tasks.index.js";
 import createApp from "./lib/create-app.js";
 import packageJSON from "../package.json" with { type: "json" };
+import storageRouter from "./api/storage/storage.index.js";
 
 const app = createApp();
 
@@ -76,6 +77,7 @@ const routes = [
   boardsRouter,
   columnsRouter,
   tasksRouter,
+  storageRouter,
 ];
 
 
