@@ -2,7 +2,7 @@ import { RefObject, useEffect } from "react";
 
 type Handler = (event: MouseEvent | TouchEvent) => void;
 
-export function useInteractiveOutside<T extends HTMLElement = HTMLElement>(
+export function useInteractiveOutside<T extends HTMLElement | null = HTMLElement>(
   ref: RefObject<T>,
   handler: Handler,
   mouseEvent: "mousedown" | "mouseup" = "mousedown"
