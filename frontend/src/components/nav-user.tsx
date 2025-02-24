@@ -68,7 +68,7 @@ export function NavUser() {
     mutationFn: async () => {
       const res = await authClient.forgetPassword({
         email: user.email,
-        redirectTo: `${getOrigin()}/auth/reset-password`,
+        redirectTo: `${getOrigin()}/reset-password`,
       });
       return handleAuthResponse(res);
     },

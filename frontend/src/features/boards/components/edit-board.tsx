@@ -19,7 +19,7 @@ import { EditBoardModal } from "@/features/boards/state/board";
 
 export function EditBoard(props: EditBoardModal) {
   const { board } = props;
-  const [boardName, setBoardName] = useState("");
+  const [boardName, setBoardName] = useState(board.name);
   const boardUrl = boardName.toLowerCase().split(" ").join("-");
   const { mutate, isPending } = api.useMutation(
     "patch",
