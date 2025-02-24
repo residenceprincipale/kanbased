@@ -80,3 +80,12 @@ export class AuthError {
   }
 }
 
+
+
+export function getSidebarStateFromCookie(): boolean {
+  const cookies = document.cookie.split(";");
+  const sidebarCookie = cookies.find((cookie) =>
+    cookie.trim().startsWith("sidebar:state=")
+  );
+  return sidebarCookie ? sidebarCookie.split("=")[1] === "true" : false;
+}

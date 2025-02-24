@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import {
@@ -5,7 +6,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { cn } from "@/lib/utils";
+import { cn, getSidebarStateFromCookie } from "@/lib/utils";
 import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
@@ -13,8 +14,10 @@ export const Route = createFileRoute("/_authenticated/_layout")({
 });
 
 function RouteComponent() {
+  const defaultSidebarState = useMemo(getSidebarStateFromCookie, []);
+
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={defaultSidebarState}>
       <AppSidebar />
       <MainLayoutWrapper>
         <div className="shrink-0 sticky top-0 z-10 bg-background py-2">
