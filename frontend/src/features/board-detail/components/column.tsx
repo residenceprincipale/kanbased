@@ -49,13 +49,12 @@ export function Column({
             )}
           >
             <div className="flex items-center justify-between shrink-0 pt-1">
-              <button
+              <div
                 className="cursor-grab text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-gray-a-4 active:bg-gray-a-4 rounded-lg active:cursor-grabbing mr-1.5"
                 {...provided.dragHandleProps}
-                type="button"
               >
                 <GripVertical size={16} />
-              </button>
+              </div>
 
               <EditableColumnName
                 columnName={column.name}

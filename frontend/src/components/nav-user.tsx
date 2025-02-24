@@ -122,7 +122,10 @@ export function NavUser() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="w-full justify-between px-4 py-2">
+        <Button
+          variant="ghost"
+          className="w-full justify-between py-2 px-2 overflow-hidden"
+        >
           <div className="flex items-center gap-3">
             <Avatar className="h-8 w-8">
               <AvatarImage src={user.image || ""} alt={user.name || "User"} />
