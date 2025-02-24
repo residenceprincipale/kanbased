@@ -8,7 +8,6 @@ import {
   Building2,
   Settings,
 } from "lucide-react";
-import { useEffect } from "react";
 import { handleAuthResponse } from "@/lib/utils";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -26,7 +25,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { useSession } from "@/queries/session";
-import { useAppContext } from "@/state/app-state";
 import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
@@ -42,7 +40,6 @@ export function NavUser() {
   const { user, session } = useSession();
   const organizationQuery = useActiveOrganizationQuery();
   const organizationListQuery = useOrganizationsListQuery();
-  const { theme, updateTheme } = useAppContext();
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -85,19 +82,6 @@ export function NavUser() {
       window.location.reload();
     },
   });
-
-  // Handle system theme changes
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    const handleChange = () => {
-      if (theme === "system") {
-        updateTheme(mediaQuery.matches ? "dark" : "light");
-      }
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [theme, updateTheme]);
 
   const handleLogout = () => {
     toast.promise(() => logoutMutation.mutateAsync(), {
@@ -163,26 +147,6 @@ export function NavUser() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="start" side="right">
-        {/* <DropdownMenuSub>
-          <DropdownMenuSubTrigger>
-            <Sun className="mr-2 h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute mr-2 h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span>Theme</span>
-          </DropdownMenuSubTrigger>
-          <DropdownMenuSubContent>
-            <DropdownMenuRadioGroup
-              value={theme}
-              onValueChange={(value) => updateTheme(value as any)}
-            >
-              <DropdownMenuRadioItem value="light">Light</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="dark">Dark</DropdownMenuRadioItem>
-              <DropdownMenuRadioItem value="system">
-                System
-              </DropdownMenuRadioItem>
-            </DropdownMenuRadioGroup>
-          </DropdownMenuSubContent>
-        </DropdownMenuSub> */}
-
         <DropdownMenuLabel>Organization</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuSub>

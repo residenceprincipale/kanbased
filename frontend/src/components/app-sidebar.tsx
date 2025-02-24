@@ -9,6 +9,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { NavBoards } from "@/components/nav-boards";
+import { ThemeToggle } from "./theme-toggle";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
@@ -20,6 +21,9 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <NavBoards />
       </SidebarContent>
+      <div className="mt-auto p-2">
+        <ThemeToggle />
+      </div>
       <SidebarRail />
     </Sidebar>
   );
