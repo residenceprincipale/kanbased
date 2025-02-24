@@ -7,13 +7,16 @@ export function transformColumnsQuery(data: ColumnsWithTasksResponse) {
   const columnWithTasksMap = new Map<string, ColumnWithTasks>();
 
   for (let column of data.columns) {
-    columnWithTasksMap.set(column.id, Object.assign(column, { tasks: [] }));
+    columnWithTasksMap.set(column.id, { ...column, tasks: [] });
   }
 
   for (let task of data.tasks) {
     if (columnWithTasksMap.has(task.columnId)) {
-      const tasks = columnWithTasksMap.get(task.columnId)!.tasks;
-      tasks.push(task);
+      const column = columnWithTasksMap.get(task.columnId)!
+      columnWithTasksMap.set(column.id, {
+        ...column,
+        tasks: [...column.tasks, task],
+      })
     }
   }
 

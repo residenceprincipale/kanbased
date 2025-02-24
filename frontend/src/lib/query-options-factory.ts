@@ -4,8 +4,10 @@ import { handleAuthResponse } from "@/lib/utils";
 import { queryOptions } from "@tanstack/react-query";
 
 export function columnsQueryOptions(boardUrl: string) {
-  return api.queryOptions("get", "/api/v1/columns", {
-    params: { query: { boardUrl } },
+  return queryOptions({
+    ...api.queryOptions("get", "/api/v1/columns", {
+      params: { query: { boardUrl } },
+    }),
   });
 }
 
