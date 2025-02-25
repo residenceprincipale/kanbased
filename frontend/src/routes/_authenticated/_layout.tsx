@@ -14,6 +14,7 @@ import {
   useLocation,
 } from "@tanstack/react-router";
 import { BreadcrumbsData, TsrBreadcrumbs } from "@/components/tsr-breadcrumbs";
+import { BackButton } from "@/components/back-button";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
@@ -34,13 +35,15 @@ function RouteComponent() {
     <SidebarProvider defaultOpen={defaultSidebarState}>
       <AppSidebar />
       <MainLayoutWrapper>
-        <div className="shrink-0 sticky top-0 z-10 bg-background py-2 flex items-center gap-4">
+        <div className="shrink-0 sticky top-0 z-10 bg-background py-2 flex items-center gap-2 border-b">
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
               <SidebarTrigger />
             </TooltipTrigger>
             <TooltipContent>Toggle sidebar (⌘+B)</TooltipContent>
           </Tooltip>
+
+          <BackButton />
 
           <TsrBreadcrumbs />
         </div>

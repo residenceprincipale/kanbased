@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -27,21 +28,21 @@ export function TsrBreadcrumbs() {
 
           if (isTail) {
             return (
-              <BreadcrumbItem key={linkProps.to}>
+              <BreadcrumbItem key={label}>
                 <BreadcrumbPage>{label}</BreadcrumbPage>
               </BreadcrumbItem>
             );
           }
 
           return (
-            <>
-              <BreadcrumbItem key={linkProps.to}>
+            <Fragment key={linkProps.to}>
+              <BreadcrumbItem>
                 <BreadcrumbLink asChild>
                   <Link {...linkProps}>{label}</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
-            </>
+            </Fragment>
           );
         })}
       </BreadcrumbList>
