@@ -1,20 +1,36 @@
 "use client";
 import { Columns } from "@/features/board-detail/components/columns";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, linkOptions } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
 import { columnsQueryOptions } from "@/lib/query-options-factory";
 import { ModalProvider } from "@/state/modals";
 import { CreateColumnButton } from "@/features/board-detail/components/create-column-button";
 import { useColumnsSuspenseQuery } from "@/features/board-detail/queries/columns";
-
+import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardUrl"
 )({
   component: BoardPage,
-  loader: async (ctx) => {
+  loader: async (ctx): Promise<BreadcrumbsData> => {
     const { boardUrl } = ctx.params;
-    await queryClient.prefetchQuery(columnsQueryOptions(boardUrl));
+    const { boardName } = await queryClient.ensureQueryData(
+      columnsQueryOptions(boardUrl)
+    );
+
+    return {
+      breadcrumbs: linkOptions([
+        {
+          label: "Boards",
+          to: "/boards",
+        },
+        {
+          label: boardName,
+          to: "/boards/$boardUrl",
+          params: { boardUrl },
+        },
+      ]),
+    };
   },
   errorComponent: (error) => {
     return <ErrorComponent message={error.error?.message} />;

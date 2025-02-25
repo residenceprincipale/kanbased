@@ -1,7 +1,7 @@
 "use client";
 import { queryClient } from "@/lib/query-client";
 
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, linkOptions } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
 import { BoardList } from "@/features/boards/components/board-list";
@@ -9,12 +9,21 @@ import { BoardActions } from "@/features/boards/components/board-actions";
 import { ModalProvider } from "@/state/modals";
 import { CreateBoardButton } from "@/features/boards/components/create-board-button";
 import { OtherActions } from "@/features/boards/components/other-boards-actions";
+import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
   loader: async () => {
     await queryClient.prefetchQuery(boardsQueryOptions);
   },
+  context: (): BreadcrumbsData => ({
+    breadcrumbs: linkOptions([
+      {
+        label: "Boards",
+        to: "/boards",
+      },
+    ]),
+  }),
 });
 
 function BoardsPage() {

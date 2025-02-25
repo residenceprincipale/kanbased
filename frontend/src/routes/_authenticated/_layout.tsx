@@ -7,10 +7,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn, getSidebarStateFromCookie } from "@/lib/utils";
-import { createFileRoute, Outlet, useLocation } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  linkOptions,
+  Outlet,
+  useLocation,
+} from "@tanstack/react-router";
+import { BreadcrumbsData, TsrBreadcrumbs } from "@/components/tsr-breadcrumbs";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
+  loader: (): BreadcrumbsData => ({
+    breadcrumbs: linkOptions([
+      {
+        to: "/",
+        label: "Home",
+      },
+    ]),
+  }),
 });
 
 function RouteComponent() {
@@ -20,13 +34,15 @@ function RouteComponent() {
     <SidebarProvider defaultOpen={defaultSidebarState}>
       <AppSidebar />
       <MainLayoutWrapper>
-        <div className="shrink-0 sticky top-0 z-10 bg-background py-2">
+        <div className="shrink-0 sticky top-0 z-10 bg-background py-2 flex items-center gap-4">
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
               <SidebarTrigger />
             </TooltipTrigger>
             <TooltipContent>Toggle sidebar (⌘+B)</TooltipContent>
           </Tooltip>
+
+          <TsrBreadcrumbs />
         </div>
         <div className="flex-1 min-h-0">
           <Outlet />
