@@ -13,17 +13,18 @@ import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
-  loader: async () => {
+  loader: async (): Promise<BreadcrumbsData> => {
     await queryClient.prefetchQuery(boardsQueryOptions);
+
+    return {
+      breadcrumbs: linkOptions([
+        {
+          label: "Boards",
+          to: "/boards",
+        },
+      ]),
+    };
   },
-  context: (): BreadcrumbsData => ({
-    breadcrumbs: linkOptions([
-      {
-        label: "Boards",
-        to: "/boards",
-      },
-    ]),
-  }),
 });
 
 function BoardsPage() {
