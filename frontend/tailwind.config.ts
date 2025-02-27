@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import tailwindAnimate from 'tailwindcss-animate';
+import typography from '@tailwindcss/typography';
 
 const createColorScale = (prefix: string, isAlpha: boolean = false) => {
 	return Object.fromEntries(Array.from({ length: 12 }, (_, i) => [
@@ -85,5 +86,5 @@ export default {
 			}
 		}
 	},
-	plugins: [tailwindAnimate],
+	plugins: [tailwindAnimate, typography],
 } satisfies Config;
