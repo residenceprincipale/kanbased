@@ -8,12 +8,18 @@ importers:
 
   .:
     dependencies:
+      '@codemirror/commands':
+        specifier: ^6.8.0
+        version: 6.8.0
       '@codemirror/lang-markdown':
         specifier: ^6.3.2
         version: 6.3.2
       '@codemirror/state':
         specifier: ^6.5.2
         version: 6.5.2
+      '@codemirror/view':
+        specifier: ^6.36.3
+        version: 6.36.3
       '@hello-pangea/dnd':
         specifier: ^17.0.0
         version: 17.0.0(@types/react@19.0.10)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)

@@ -12,8 +12,10 @@
     "gen:api": "npx openapi-typescript http://localhost:5000/doc -o ./src/types/api-schema.d.ts"
   },
   "dependencies": {
+    "@codemirror/commands": "^6.8.0",
     "@codemirror/lang-markdown": "^6.3.2",
     "@codemirror/state": "^6.5.2",
+    "@codemirror/view": "^6.36.3",
     "@hello-pangea/dnd": "^17.0.0",
     "@radix-ui/colors": "^3.0.0",
     "@radix-ui/react-alert-dialog": "^1.1.4",

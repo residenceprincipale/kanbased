@@ -1,75 +1,45 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { EditorView, basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
-import { vim, Vim } from "@replit/codemirror-vim";
-import { marked } from "marked";
+import { Vim, vim, getCM } from "@replit/codemirror-vim";
+import { indentWithTab } from "@codemirror/commands";
+import { keymap } from "@codemirror/view";
 
 interface CodeMirrorEditorProps {
-  value: string;
-  onChange: (value: string) => void;
-  onPreviewUpdate: (html: string) => void;
+  ref: React.RefObject<{
+    editor: EditorView;
+    state: EditorState;
+    view: EditorView;
+  }>;
+  onChange?: (value: string) => void;
 }
 
-const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
-  value,
-  onChange,
-  onPreviewUpdate,
-}) => {
+export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
   const [vimMode, setVimMode] = useState("normal");
 
   useEffect(() => {
-    // Only initialize the editor once
     if (initializedRef.current || !editorRef.current) return;
     initializedRef.current = true;
 
-    // Parse initial markdown for preview
-    const initialHtml = marked.parse(value) as string;
-    onPreviewUpdate(initialHtml);
+    const updateListenerExtension = EditorView.updateListener.of((update) => {
+      if (update.docChanged) {
+        const newValue = update.state.doc.toString();
+        props.onChange?.(newValue);
+      }
+    });
 
-    // Create the editor
     const state = EditorState.create({
-      doc: value,
+      doc: "Start document",
       extensions: [
         vim(),
         basicSetup,
+        keymap.of([indentWithTab]),
         markdown(),
-        EditorView.updateListener.of((update) => {
-          if (update.docChanged) {
-            const newValue = update.state.doc.toString();
-            onChange(newValue);
-
-            // Update preview
-            const html = marked.parse(newValue) as string;
-            onPreviewUpdate(html);
-          }
-        }),
-        EditorView.theme({
-          "&": {
-            height: "100%",
-            fontSize: "16px",
-          },
-          ".cm-scroller": {
-            fontFamily: "monospace",
-            overflow: "auto",
-          },
-          ".cm-content": {
-            caretColor: "#0e9",
-            padding: "10px",
-          },
-          ".cm-cursor": {
-            borderLeftColor: "#0e9",
-          },
-          "&.cm-focused .cm-cursor": {
-            borderLeftWidth: "2px",
-          },
-          ".cm-line": {
-            padding: "0 4px",
-          },
-        }),
+        updateListenerExtension,
       ],
     });
 
@@ -80,55 +50,24 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
 
     viewRef.current = view;
 
-    // Set up some helpful Vim keybindings
-    const cm = Vim.cm;
-    if (cm) {
-      // Add some common Vim mappings
-      Vim.map("jj", "<Esc>", "insert");
+    // Set up initial mode
+    const cm = getCM(view);
 
-      // Define a command to save (can be triggered with :w)
-      Vim.defineEx("write", "w", () => {
-        console.log("Save command triggered");
-        // You could implement actual saving functionality here
-      });
-
-      // Track Vim mode changes
-      const originalSetOption = Vim.setOption;
-      // @ts-ignore - We're monkey patching the Vim API
-      Vim.setOption = function (...args: any[]) {
-        if (args[0] === "keyMap") {
-          const mode = args[1].toLowerCase();
-          if (mode.includes("insert")) {
-            setVimMode("insert");
-          } else if (mode.includes("visual")) {
-            setVimMode("visual");
-          } else {
-            setVimMode("normal");
-          }
-        }
-        return originalSetOption.apply(this, args);
-      };
-    }
+    cm?.on(
+      "vim-mode-change",
+      (data: { mode: "insert" | "normal" | "visual" }) => {
+        console.log("mode: ", data.mode);
+        setVimMode(data.mode);
+      }
+    );
 
     return () => {
-      view.destroy();
+      if (view) {
+        view.destroy();
+      }
       initializedRef.current = false;
     };
   }, []);
-
-  // Update the editor content when the value prop changes
-  useEffect(() => {
-    const view = viewRef.current;
-    if (!view || view.state.doc.toString() === value) return;
-
-    view.dispatch({
-      changes: {
-        from: 0,
-        to: view.state.doc.length,
-        insert: value,
-      },
-    });
-  }, [value]);
 
   const getModeColor = () => {
     switch (vimMode) {
@@ -141,6 +80,8 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
     }
   };
 
+  console.log("vimMode", vimMode);
+
   return (
     <div className="h-full flex flex-col">
       <div
@@ -151,6 +92,4 @@ const CodeMirrorEditor: React.FC<CodeMirrorEditorProps> = ({
       <div ref={editorRef} className="flex-1" />
     </div>
   );
-};
-
-export default CodeMirrorEditor;
+}
