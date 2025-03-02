@@ -2,17 +2,18 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { EditorView, basicSetup } from "codemirror";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
-import { Vim, vim, getCM } from "@replit/codemirror-vim";
+import { vim, getCM } from "@replit/codemirror-vim";
 import { indentWithTab } from "@codemirror/commands";
 import { keymap } from "@codemirror/view";
 
+export type CodeMirrorEditorRef = {
+  getData: () => string;
+};
+
 interface CodeMirrorEditorProps {
-  ref: React.RefObject<{
-    editor: EditorView;
-    state: EditorState;
-    view: EditorView;
-  }>;
   onChange?: (value: string) => void;
+  defaultAutoFocus?: boolean;
+  ref: React.RefObject<CodeMirrorEditorRef | null>;
 }
 
 export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
@@ -20,6 +21,12 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
   const [vimMode, setVimMode] = useState("normal");
+
+  useImperativeHandle(props.ref, () => ({
+    getData: () => {
+      return viewRef.current?.state.doc.toString() || "";
+    },
+  }));
 
   useEffect(() => {
     if (initializedRef.current || !editorRef.current) return;
@@ -56,15 +63,16 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     cm?.on(
       "vim-mode-change",
       (data: { mode: "insert" | "normal" | "visual" }) => {
-        console.log("mode: ", data.mode);
         setVimMode(data.mode);
       }
     );
 
+    if (props.defaultAutoFocus) {
+      view.focus();
+    }
+
     return () => {
-      if (view) {
-        view.destroy();
-      }
+      view.destroy();
       initializedRef.current = false;
     };
   }, []);
@@ -80,7 +88,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     }
   };
 
-  console.log("vimMode", vimMode);
+  console.log("cm re-rendering");
 
   return (
     <div className="h-full flex flex-col">
