@@ -1,8 +1,12 @@
 import { useMemo } from "react";
 import DOMPurify from "dompurify";
 import { marked } from "marked";
+import { cn } from "@/lib/utils";
 
-export default function MdPreview(props: { content: string }) {
+export default function MdPreview(props: {
+  content: string;
+  wrapperClassName?: string;
+}) {
   const html = useMemo(() => {
     if (!props.content) return "";
 
@@ -18,9 +22,14 @@ export default function MdPreview(props: { content: string }) {
   }, [props.content]);
 
   return (
-    <div
-      className="prose dark:prose-invert p-4"
-      dangerouslySetInnerHTML={{ __html: html }}
-    ></div>
+    <div className="w-full h-full overflow-y-auto p-4 min-h-0">
+      <div
+        className={cn(
+          "prose dark:prose-invert h-full max-w-none",
+          props.wrapperClassName
+        )}
+        dangerouslySetInnerHTML={{ __html: html }}
+      ></div>
+    </div>
   );
 }

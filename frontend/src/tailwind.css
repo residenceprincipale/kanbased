@@ -158,3 +158,7 @@
   font-size: 1rem;
   color: var(--foreground);
 }
+
+* {
+  /* min-height: 0; */
+}

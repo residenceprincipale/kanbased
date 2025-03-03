@@ -3,15 +3,12 @@ import { EditorView, keymap } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { vim, getCM } from "@replit/codemirror-vim";
-import { useAppContext } from "@/state/app-state";
 import { basicExtensions } from "@/components/md-editor/helpers";
 import { indentWithTab } from "@codemirror/commands";
-import "./cm-editor-styles.css";
 
 const customTheme = EditorView.theme({
   "&": {
     fontSize: "16px",
-    lineHeight: "1.6",
     fontFamily: "'Manrope', system-ui, sans-serif",
     height: "100%",
   },
@@ -19,6 +16,8 @@ const customTheme = EditorView.theme({
     fontFamily: "'Manrope', system-ui, sans-serif",
     padding: "1rem",
     caretColor: "var(--foreground)",
+    maxWidth: "1000px",
+    margin: "0 auto",
   },
   ".cm-line": {
     padding: "0 4px",
@@ -124,7 +123,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
 
   return (
     <div className="h-full flex flex-col">
-      <div ref={editorRef} className="flex-1 h-full" />
+      <div ref={editorRef} className="flex-1 h-full min-h-0" />
       <div
         className={`px-3 py-1 text-xs shrink-0 text-white text-muted-foreground bg-muted uppercase font-bold w-fit`}
       >
