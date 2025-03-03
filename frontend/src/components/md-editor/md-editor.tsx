@@ -1,10 +1,48 @@
 import { useEffect, useImperativeHandle, useRef, useState } from "react";
-import { EditorView, basicSetup } from "codemirror";
+import { EditorView, keymap } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
 import { vim, getCM } from "@replit/codemirror-vim";
+import { useAppContext } from "@/state/app-state";
+import { basicExtensions } from "@/components/md-editor/helpers";
 import { indentWithTab } from "@codemirror/commands";
-import { keymap } from "@codemirror/view";
+import "./cm-editor-styles.css";
+
+const customTheme = EditorView.theme({
+  "&": {
+    fontSize: "16px",
+    lineHeight: "1.6",
+    fontFamily: "'Manrope', system-ui, sans-serif",
+    height: "100%",
+  },
+  ".cm-content": {
+    fontFamily: "'Manrope', system-ui, sans-serif",
+    padding: "1rem",
+    caretColor: "var(--foreground)",
+  },
+  ".cm-line": {
+    padding: "0 4px",
+  },
+  "&.cm-focused": {
+    outline: "none",
+  },
+  ".cm-activeLine": {
+    backgroundColor: "transparent",
+  },
+  ".cm-cursor": {
+    borderLeftColor: "var(--foreground)",
+  },
+  ".cm-scroller": {
+    fontFamily: "'Manrope', system-ui, sans-serif",
+    lineHeight: "1.6",
+  },
+  "&.cm-focused .cm-cursor": {
+    borderLeftColor: "var(--foreground)",
+  },
+  ".cm-selectionBackground": {
+    backgroundColor: "var(--gray-a4) !important",
+  },
+});
 
 export type CodeMirrorEditorRef = {
   getData: () => string;
@@ -21,6 +59,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
   const [vimMode, setVimMode] = useState("normal");
+  const { theme } = useAppContext();
 
   useImperativeHandle(props.ref, () => ({
     getData: () => {
@@ -43,9 +82,11 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
       doc: "Start document",
       extensions: [
         vim(),
-        basicSetup,
+        basicExtensions,
         keymap.of([indentWithTab]),
+        customTheme,
         markdown(),
+        EditorView.lineWrapping,
         updateListenerExtension,
       ],
     });
@@ -77,27 +118,14 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     };
   }, []);
 
-  const getModeColor = () => {
-    switch (vimMode) {
-      case "insert":
-        return "bg-green-600";
-      case "visual":
-        return "bg-purple-600";
-      default:
-        return "bg-blue-600";
-    }
-  };
-
-  console.log("cm re-rendering");
-
   return (
     <div className="h-full flex flex-col">
+      <div ref={editorRef} className="flex-1 h-full" />
       <div
-        className={`px-3 py-1 text-xs text-white ${getModeColor()} uppercase font-bold`}
+        className={`px-3 py-1 text-xs shrink-0 text-white text-muted-foreground bg-muted uppercase font-bold w-fit`}
       >
         {vimMode} Mode
       </div>
-      <div ref={editorRef} className="flex-1" />
     </div>
   );
 }
