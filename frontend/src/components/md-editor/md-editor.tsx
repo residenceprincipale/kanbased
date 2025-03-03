@@ -46,10 +46,12 @@ const customTheme = EditorView.theme({
 
 export type CodeMirrorEditorRef = {
   getData: () => string;
+  focus: () => void;
 };
 
 interface CodeMirrorEditorProps {
   onChange?: (value: string) => void;
+  defaultContent?: string;
   defaultAutoFocus?: boolean;
   ref: React.RefObject<CodeMirrorEditorRef | null>;
 }
@@ -59,11 +61,13 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
   const [vimMode, setVimMode] = useState("normal");
-  const { theme } = useAppContext();
 
   useImperativeHandle(props.ref, () => ({
     getData: () => {
       return viewRef.current?.state.doc.toString() || "";
+    },
+    focus: () => {
+      viewRef.current?.focus();
     },
   }));
 
@@ -79,7 +83,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     });
 
     const state = EditorState.create({
-      doc: "Start document",
+      doc: props.defaultContent,
       extensions: [
         vim(),
         basicExtensions,

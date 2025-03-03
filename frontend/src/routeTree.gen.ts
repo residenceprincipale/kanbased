@@ -11,7 +11,6 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as MarkdownImport } from './routes/markdown'
 import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
 import { Route as AuthenticatedNewOrganizationRouteImport } from './routes/_authenticated/new-organization/route'
@@ -25,12 +24,6 @@ import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authent
 import { Route as AuthenticatedLayoutBoardsBoardUrlRouteImport } from './routes/_authenticated/_layout/boards_.$boardUrl/route'
 
 // Create/Update Routes
-
-const MarkdownRoute = MarkdownImport.update({
-  id: '/markdown',
-  path: '/markdown',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const AuthenticatedRoute = AuthenticatedImport.update({
   id: '/_authenticated',
@@ -109,13 +102,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: ''
       preLoaderRoute: typeof AuthenticatedImport
-      parentRoute: typeof rootRoute
-    }
-    '/markdown': {
-      id: '/markdown'
-      path: '/markdown'
-      fullPath: '/markdown'
-      preLoaderRoute: typeof MarkdownImport
       parentRoute: typeof rootRoute
     }
     '/(auth)/forgot-password': {
@@ -229,7 +215,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '': typeof AuthenticatedLayoutRouteWithChildren
-  '/markdown': typeof MarkdownRoute
   '/forgot-password': typeof authForgotPasswordRouteRoute
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
@@ -243,7 +228,6 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '': typeof AuthenticatedRouteWithChildren
-  '/markdown': typeof MarkdownRoute
   '/forgot-password': typeof authForgotPasswordRouteRoute
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
@@ -258,7 +242,6 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
-  '/markdown': typeof MarkdownRoute
   '/(auth)/forgot-password': typeof authForgotPasswordRouteRoute
   '/(auth)/login': typeof authLoginRouteRoute
   '/(auth)/reset-password': typeof authResetPasswordRouteRoute
@@ -275,7 +258,6 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
-    | '/markdown'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
@@ -288,7 +270,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
-    | '/markdown'
     | '/forgot-password'
     | '/login'
     | '/reset-password'
@@ -301,7 +282,6 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/_authenticated'
-    | '/markdown'
     | '/(auth)/forgot-password'
     | '/(auth)/login'
     | '/(auth)/reset-password'
@@ -317,7 +297,6 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
-  MarkdownRoute: typeof MarkdownRoute
   authForgotPasswordRouteRoute: typeof authForgotPasswordRouteRoute
   authLoginRouteRoute: typeof authLoginRouteRoute
   authResetPasswordRouteRoute: typeof authResetPasswordRouteRoute
@@ -326,7 +305,6 @@ export interface RootRouteChildren {
 
 const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
-  MarkdownRoute: MarkdownRoute,
   authForgotPasswordRouteRoute: authForgotPasswordRouteRoute,
   authLoginRouteRoute: authLoginRouteRoute,
   authResetPasswordRouteRoute: authResetPasswordRouteRoute,
@@ -344,7 +322,6 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_authenticated",
-        "/markdown",
         "/(auth)/forgot-password",
         "/(auth)/login",
         "/(auth)/reset-password",
@@ -357,9 +334,6 @@ export const routeTree = rootRoute
         "/_authenticated/new-organization",
         "/_authenticated/_layout"
       ]
-    },
-    "/markdown": {
-      "filePath": "markdown.tsx"
     },
     "/(auth)/forgot-password": {
       "filePath": "(auth)/forgot-password/route.tsx"
