@@ -9,6 +9,7 @@ import {
   member as membersTable,
   invitation as invitationsTable,
 } from "./auth-schema.js";
+import { commonColumns } from "../helpers.js";
 
 export {
   organizationsTable,
@@ -95,3 +96,11 @@ export const boardPermissionsTable = pgTable(
     t.index("board_members_organization_idx").on(table.organizationId),
   ]
 );
+
+export const taskMarkdownTable = pgTable("task_markdown", {
+  id: t.uuid().primaryKey(),
+  taskId: t.uuid().references(() => tasksTable.id, { onDelete: "cascade" }).notNull(),
+  content: t.text().notNull(),
+  ...commonColumns,
+});
+
