@@ -1,11 +1,6 @@
 import { useMemo } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { cn, getSidebarStateFromCookie } from "@/lib/utils";
 import {
   createFileRoute,
@@ -36,13 +31,6 @@ function RouteComponent() {
       <AppSidebar />
       <MainLayoutWrapper>
         <div className="shrink-0 sticky top-0 z-[5] bg-background py-2 flex items-center gap-2 border-b">
-          <Tooltip delayDuration={300}>
-            <TooltipTrigger asChild>
-              <SidebarTrigger />
-            </TooltipTrigger>
-            <TooltipContent>Toggle sidebar (⌘+B)</TooltipContent>
-          </Tooltip>
-
           <BackButton />
 
           <TsrBreadcrumbs />
