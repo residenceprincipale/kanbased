@@ -8,10 +8,17 @@ import { ModalProvider } from "@/state/modals";
 import { CreateColumnButton } from "@/features/board-detail/components/create-column-button";
 import { useColumnsSuspenseQuery } from "@/features/board-detail/queries/columns";
 import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
+import { TaskDetailPage } from "./-actions";
+
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardUrl"
 )({
   component: BoardPage,
+  validateSearch: (search): { taskId?: string } => {
+    return {
+      taskId: typeof search.taskId === "string" ? search.taskId : undefined,
+    };
+  },
   loader: async (ctx): Promise<BreadcrumbsData> => {
     const { boardUrl } = ctx.params;
     const { boardName } = await queryClient.ensureQueryData(
@@ -63,6 +70,7 @@ function BoardPage() {
           />
         </div>
       </div>
+      <TaskDetailPage />
     </ModalProvider>
   );
 }

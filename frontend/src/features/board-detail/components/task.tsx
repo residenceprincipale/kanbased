@@ -13,6 +13,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Link } from "@tanstack/react-router";
 
 export type TaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
@@ -49,54 +50,56 @@ function TaskComp(props: TaskProps) {
               }}
             />
           ) : (
-            <div
-              className={cn(
-                "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1",
-                snapshot.isDragging
-                  ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
-                  : "dark:border-transparent bg-white dark:bg-gray-3"
-              )}
-            >
-              <span className="break-words">{task.name}</span>
+            <Link to="." search={{ taskId: task.id }}>
+              <div
+                className={cn(
+                  "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1",
+                  snapshot.isDragging
+                    ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
+                    : "dark:border-transparent bg-white dark:bg-gray-3"
+                )}
+              >
+                <span className="break-words">{task.name}</span>
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    onClick={(e) => e.stopPropagation()}
-                    className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5"
-                    variant="ghost"
-                    size="icon"
-                  >
-                    <MoreVertical className="w-4 h-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={() => {
-                      setIsEditing(true);
-                    }}
-                  >
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Edit Task
-                  </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => {
-                      deleteTaskMutation.mutate({
-                        params: {
-                          path: {
-                            taskId: task.id,
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      onClick={(e) => e.stopPropagation()}
+                      className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5"
+                      variant="ghost"
+                      size="icon"
+                    >
+                      <MoreVertical className="w-4 h-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setIsEditing(true);
+                      }}
+                    >
+                      <Pencil className="mr-2 h-4 w-4" />
+                      Edit Task
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        deleteTaskMutation.mutate({
+                          params: {
+                            path: {
+                              taskId: task.id,
+                            },
                           },
-                        },
-                      });
-                    }}
-                    className="text-destructive focus:text-destructive"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4" />
-                    Delete Task
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
+                        });
+                      }}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4" />
+                      Delete Task
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
+            </Link>
           )}
         </div>
       )}
