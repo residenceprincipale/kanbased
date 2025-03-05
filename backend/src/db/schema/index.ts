@@ -90,7 +90,9 @@ export const boardPermissionsTable = pgTable(
   },
   (table) => [
     // Ensure user can only have one role per board
-    t.unique("unique_board_member").on(table.boardId, table.userId, table.organizationId),
+    t
+      .unique("unique_board_member")
+      .on(table.boardId, table.userId, table.organizationId),
     t.index("board_members_user_idx").on(table.userId),
     t.index("board_members_board_idx").on(table.boardId),
     t.index("board_members_organization_idx").on(table.organizationId),
@@ -98,9 +100,10 @@ export const boardPermissionsTable = pgTable(
 );
 
 export const taskMarkdownTable = pgTable("task_markdown", {
-  id: t.uuid().primaryKey(),
-  taskId: t.uuid().references(() => tasksTable.id, { onDelete: "cascade" }).notNull(),
-  content: t.text().notNull(),
+  taskId: t
+    .uuid()
+    .references(() => tasksTable.id, { onDelete: "cascade" })
+    .primaryKey(),
+  content: t.text(),
   ...commonColumns,
 });
-

@@ -16,6 +16,10 @@ const updateTasksSchema = z.array(
   createTaskBodySchema.pick({ position: true, columnId: true, id: true })
 );
 
+const getTaskDetailSchema = zodDbSchema.tasksTable.select.extend({
+  content: z.string().nullable(),
+})
+
 const routes = {
   createTask: createRoute({
     method: "post",
@@ -61,6 +65,17 @@ const routes = {
     },
     responses: ResponseBuilder.withAuthAndValidation({
       [HTTP_STATUS_CODES.OK]: jsonContent(emptyResponse),
+    }),
+  }),
+
+  getTaskDetail: createRoute({
+    method: "get",
+    path: "/tasks/{taskId}",
+    request: {
+      params: z.object({ taskId: z.string() }),
+    },
+    responses: ResponseBuilder.withAuthAndValidation({
+      [HTTP_STATUS_CODES.OK]: jsonContent(getTaskDetailSchema),
     }),
   }),
 };

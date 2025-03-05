@@ -1,7 +1,9 @@
 import { authClient } from "@/lib/auth";
 import { api } from "@/lib/openapi-react-query";
+import { queryClient } from "@/lib/query-client";
 import { handleAuthResponse } from "@/lib/utils";
-import { queryOptions } from "@tanstack/react-query";
+import { ColumnsWithTasksResponse } from "@/types/api-response-types";
+import { QueryKey, queryOptions } from "@tanstack/react-query";
 
 export function columnsQueryOptions(boardUrl: string) {
   return queryOptions({
@@ -21,22 +23,51 @@ export const sessionQueryOptions = queryOptions({
   queryFn: () => authClient.getSession(),
 });
 
+export const activeOrganizationQueryOptions = (
+  organizationId: string | null | undefined,
+  userId: string
+) =>
+  queryOptions({
+    queryKey: [userId, "organizations", organizationId],
+    queryFn: async () => {
+      const res = await authClient.organization.getFullOrganization({
+        query: { organizationId: organizationId! },
+      });
+      return handleAuthResponse(res);
+    },
+    enabled: !!organizationId,
+  });
 
-export const activeOrganizationQueryOptions = (organizationId: string | null | undefined, userId: string) => queryOptions({
-  queryKey: [userId, "organizations", organizationId],
-  queryFn: async () => {
-    const res = await authClient.organization.getFullOrganization({ query: { organizationId: organizationId! } })
-    return handleAuthResponse(res);
-  },
-  enabled: !!organizationId
-});
+export const organizationsListQueryOptions = (userId: string) =>
+  queryOptions({
+    queryKey: [userId, "organizations"],
+    queryFn: async () => {
+      const res = await authClient.organization.list();
+      return handleAuthResponse(res);
+    },
+    enabled: !!userId,
+  });
 
+export function taskDetailQueryOptions(params: { taskId: string, columnsQueryKey: QueryKey }) {
+  return queryOptions({
+    ...api.queryOptions("get", "/api/v1/tasks/{taskId}", {
+      params: { path: { taskId: params.taskId } },
+    }),
 
-export const organizationsListQueryOptions = (userId: string) => queryOptions({
-  queryKey: [userId, "organizations"],
-  queryFn: async () => {
-    const res = await authClient.organization.list();
-    return handleAuthResponse(res);
-  },
-  enabled: !!userId
-});
+    placeholderData: () => {
+      const columns = queryClient.getQueryData(params.columnsQueryKey) as ColumnsWithTasksResponse;
+      const task = columns?.tasks?.find(task => task.id === params.taskId);
+
+      return {
+        columnId: task?.columnId ?? '',
+        content: '',
+        createdAt: '',
+        deletedAt: '',
+        id: task?.id ?? '',
+        name: task?.name ?? '',
+        position: task?.position ?? 0,
+        updatedAt: '',
+      }
+    },
+  });
+}

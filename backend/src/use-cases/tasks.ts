@@ -2,7 +2,7 @@ import { eq, inArray, sql, SQL } from "drizzle-orm";
 import type { InsertType } from "../db/table-types.js";
 import { db, type DbTypeOrTransaction } from "../db/index.js";
 import { db as database } from "../db/index.js";
-import { tasksTable } from "../db/schema/index.js";
+import { tasksTable, taskMarkdownTable } from "../db/schema/index.js";
 import { checkResourceAccess } from "./permissions.js";
 import type { AuthCtx } from "../lib/types.js";
 
@@ -68,4 +68,16 @@ export async function updateTasksPosition(
 export async function deleteTask(authCtx: AuthCtx, taskId: string) {
   await checkResourceAccess(authCtx, taskId, "task", "admin");
   await db.delete(tasksTable).where(eq(tasksTable.id, taskId));
+}
+
+export async function getTaskDetail(authCtx: AuthCtx, taskId: string) {
+  await checkResourceAccess(authCtx, taskId, "task", "viewer");
+
+  const task = await db
+    .select()
+    .from(tasksTable)
+    .leftJoin(taskMarkdownTable, eq(tasksTable.id, taskMarkdownTable.taskId))
+    .where(eq(tasksTable.id, taskId));
+
+  return task[0]!;
 }

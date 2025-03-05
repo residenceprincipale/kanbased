@@ -1,0 +1,1 @@
+ALTER TABLE "task_markdown" ADD PRIMARY KEY ("task_id");

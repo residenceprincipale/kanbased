@@ -1,10 +1,11 @@
 import { useRouter } from "@tanstack/react-router";
 import { getRouteApi } from "@tanstack/react-router";
 import { TaskDetail } from "@/features/board-detail/components/task-detail";
+import { QueryKey } from "@tanstack/react-query";
 
 const routeApi = getRouteApi("/_authenticated/_layout/boards_/$boardUrl");
 
-export function TaskDetailPage() {
+export function TaskDetailPage(props: { columnsQueryKey: QueryKey }) {
   const router = useRouter();
   const { taskId } = routeApi.useSearch();
 
@@ -19,5 +20,11 @@ export function TaskDetailPage() {
     });
   };
 
-  return <TaskDetail onClose={handleClose} />;
+  return (
+    <TaskDetail
+      onClose={handleClose}
+      taskId={taskId}
+      columnsQueryKey={props.columnsQueryKey}
+    />
+  );
 }

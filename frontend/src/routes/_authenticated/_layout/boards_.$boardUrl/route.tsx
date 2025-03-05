@@ -70,7 +70,9 @@ function BoardPage() {
           />
         </div>
       </div>
-      <TaskDetailPage />
+      <TaskDetailPage
+        columnsQueryKey={columnsQueryOptions(boardUrl).queryKey}
+      />
     </ModalProvider>
   );
 }

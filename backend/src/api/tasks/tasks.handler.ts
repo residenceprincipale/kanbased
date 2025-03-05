@@ -40,6 +40,18 @@ const handlers: InferHandlers<typeof routes> = {
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
+
+  getTaskDetail: async (c) => {
+    const authCtx = c.var.authCtx;
+    const { taskId } = c.req.valid("param");
+
+    const task = await tasksUseCases.getTaskDetail(authCtx, taskId);
+
+    return c.json(
+      { ...task.tasks, content: task.task_markdown?.content ?? null },
+      HTTP_STATUS_CODES.OK
+    );
+  },
 };
 
 export default handlers;
