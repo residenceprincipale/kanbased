@@ -125,7 +125,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     <div className="h-full flex flex-col">
       <div ref={editorRef} className="flex-1 h-full min-h-0" />
       <div
-        className={`px-3 py-1 text-xs shrink-0 text-muted-foreground bg-muted uppercase font-bold w-fit`}
+        className={`px-3 py-1 text-xs shrink-0 text-muted-foreground bg-muted uppercase font-bold w-fit rounded`}
       >
         {vimMode} Mode
       </div>

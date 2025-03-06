@@ -74,7 +74,8 @@ function TaskComp(props: TaskProps) {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
                     <DropdownMenuItem
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setIsEditing(true);
                       }}
                     >
@@ -82,7 +83,8 @@ function TaskComp(props: TaskProps) {
                       Edit Task
                     </DropdownMenuItem>
                     <DropdownMenuItem
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         deleteTaskMutation.mutate({
                           params: {
                             path: {
