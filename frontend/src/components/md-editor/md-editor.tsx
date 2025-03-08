@@ -102,9 +102,9 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     viewRef.current = view;
 
     // Set up initial mode
-    const cm = getCM(view);
+    const cm = getCM(view)!;
 
-    cm?.on(
+    cm.on(
       "vim-mode-change",
       (data: { mode: "insert" | "normal" | "visual" }) => {
         setVimMode(data.mode);

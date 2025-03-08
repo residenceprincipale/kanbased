@@ -18,6 +18,10 @@ export function TaskDetailPage(props: { columnsQueryKey: QueryKey }) {
       to: ".",
       search: { taskId: undefined },
     });
+
+    const el = document.querySelector(`#task-${taskId}`) as HTMLElement | null;
+
+    el?.focus();
   };
 
   return (

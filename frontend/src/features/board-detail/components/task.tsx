@@ -50,7 +50,7 @@ function TaskComp(props: TaskProps) {
               }}
             />
           ) : (
-            <Link to="." search={{ taskId: task.id }}>
+            <Link id={`task-${task.id}`} to="." search={{ taskId: task.id }}>
               <div
                 className={cn(
                   "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1",
