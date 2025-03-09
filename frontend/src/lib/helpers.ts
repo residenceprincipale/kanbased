@@ -47,3 +47,10 @@ export function markdownToHtml(markdown: string): string {
   return marked.parse(escapedContent) as string;
 
 }
+
+
+export function removeUndefinedKeys<T extends Record<string, any>>(obj: T): Partial<T> {
+  return Object.fromEntries(
+    Object.entries(obj).filter(([_, value]) => value !== undefined)
+  ) as Partial<T>;
+}

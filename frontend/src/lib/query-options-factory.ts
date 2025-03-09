@@ -58,6 +58,7 @@ export function taskDetailQueryOptions(params: { taskId: string, columnsQueryKey
       const columns = queryClient.getQueryData(params.columnsQueryKey) as ColumnsWithTasksResponse;
       const task = columns?.tasks?.find(task => task.id === params.taskId);
 
+
       return {
         columnId: task?.columnId ?? '',
         content: '',

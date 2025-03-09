@@ -32,12 +32,23 @@ const routes = {
     }),
   }),
 
-  updateTaskName: createRoute({
+  updateTask: createRoute({
     method: "patch",
     path: "/tasks/{taskId}",
     request: {
       body: jsonContentRequired(
-        createTaskBodySchema.pick({ name: true, updatedAt: true })
+        z.object({
+          name: z.string().optional(),
+          content: z.string().nullable().optional(),
+          updatedAt: z.string(),
+        }).refine((data) => {
+          if (data.name === undefined && data.content === undefined) {
+            return false;
+          }
+          return true;
+        }, {
+          message: "At least one field must be provided for update",
+        })
       ),
       params: z.object({ taskId: z.string() }),
     },

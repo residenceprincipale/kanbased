@@ -3,6 +3,7 @@ import { api } from "@/lib/openapi-react-query";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { useForceUpdate } from "@/hooks/use-force-update";
 import { toast } from "sonner";
+import { removeUndefinedKeys } from "@/lib/helpers";
 
 export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey, onOptimisticUpdate?: () => void }) {
   const queryClient = useQueryClient();
@@ -123,9 +124,10 @@ export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, after
 
       const previousData = queryClient.getQueryData(queryKey);
       queryClient.setQueryData(queryKey, (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+        const updated = removeUndefinedKeys(variables.body);
         return {
           ...oldData,
-          tasks: oldData.tasks.map((task) => task.id === variables.params.path.taskId ? { ...task, name: variables.body.name } : task)
+          tasks: oldData.tasks.map((task) => task.id === variables.params.path.taskId ? { ...task, ...updated } : task)
         }
       })
 

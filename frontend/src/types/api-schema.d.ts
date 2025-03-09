@@ -1191,7 +1191,8 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
-                        name: string;
+                        name?: string;
+                        content?: string | null;
                         updatedAt: string;
                     };
                 };

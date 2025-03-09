@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,17 +14,25 @@ import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import MdPreview from "@/components/md-preview/md-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMarkdownEditorPreviewToggle } from "@/hooks/use-markdown-editor";
+import { Button } from "@/components/ui/button";
+import { SaveIcon } from "lucide-react";
+import { api } from "@/lib/openapi-react-query";
+import { Spinner } from "@/components/ui/spinner";
 
 export function TaskDetail(props: {
   onClose: () => void;
   taskId: string;
   columnsQueryKey: QueryKey;
 }) {
-  const { data, isPlaceholderData, error, isError } = useQuery(
+  const { data, isPlaceholderData, isFetching, error, isError } = useQuery(
     taskDetailQueryOptions({
       taskId: props.taskId,
       columnsQueryKey: props.columnsQueryKey,
     })
+  );
+  const updateContentMutation = api.useMutation(
+    "patch",
+    "/api/v1/tasks/{taskId}"
   );
 
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
@@ -36,6 +44,20 @@ export function TaskDetail(props: {
       editorRef,
     });
 
+  const handleSave = () => {
+    updateContentMutation.mutate({
+      body: {
+        updatedAt: new Date().toISOString(),
+        content: editorRef.current?.getData(),
+      },
+      params: {
+        path: {
+          taskId: props.taskId,
+        },
+      },
+    });
+  };
+
   return (
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
@@ -46,7 +68,7 @@ export function TaskDetail(props: {
           // Always prevent Dialog from closing on Escape
           e.preventDefault();
 
-          if (vimMode === "normal") {
+          if (!vimMode || vimMode === "normal") {
             props.onClose();
           } else {
             // the prevent default is to prevent the dialog from closing
@@ -73,51 +95,75 @@ export function TaskDetail(props: {
 
             <div className="min-h-0 flex-1 h-full mt-4">
               <div className="w-full h-full relative min-h-0 border rounded-lg">
-                <Tabs
-                  className="w-full h-full flex flex-col"
-                  value={mode}
-                  onValueChange={(value) =>
-                    handleModeChange(value as "write" | "preview")
-                  }
-                >
-                  <div className="flex shrink-0">
-                    <TabsList className="shrink-0 self-start flex items-center gap-2">
-                      <TabsTrigger value="write">Write</TabsTrigger>
-                      <TabsTrigger value="preview">Preview</TabsTrigger>
-                    </TabsList>
-
-                    <div className="flex items-center text-xs text-muted-foreground rounded px-1.5 py-1 w-fit h-fit self-center ml-2">
-                      <span>Toggle: </span>
-                      <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono font-medium">
-                        {toggleModeShortcutKey}
-                      </kbd>
-                    </div>
+                {isFetching ? (
+                  <div className="w-full h-full flex items-center justify-center gap-2">
+                    <Spinner /> <span>Getting task details...</span>
                   </div>
-                  <TabsContent
-                    value="write"
-                    className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
-                    forceMount
+                ) : (
+                  <Tabs
+                    className="w-full h-full flex flex-col"
+                    value={mode}
+                    onValueChange={(value) =>
+                      handleModeChange(value as "write" | "preview")
+                    }
                   >
-                    <div className="min-h-0 h-full">
-                      <CodeMirrorEditor
-                        defaultAutoFocus={mode === "write"}
-                        ref={editorRef}
-                        defaultContent={defaultContent}
-                      />
-                    </div>
-                  </TabsContent>
+                    <div className="flex shrink-0 justify-between">
+                      <div className="flex items-center gap-2">
+                        <TabsList className="shrink-0 self-start flex items-center gap-2">
+                          <TabsTrigger value="write">Write</TabsTrigger>
+                          <TabsTrigger value="preview">Preview</TabsTrigger>
+                        </TabsList>
 
-                  <TabsContent
-                    value="preview"
-                    className="h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden"
-                    forceMount
-                  >
-                    <MdPreview
-                      html={parsedHtml}
-                      wrapperClassName="max-w-[1000px] mx-auto"
-                    />
-                  </TabsContent>
-                </Tabs>
+                        <div className="flex items-center text-xs text-muted-foreground rounded px-1.5 py-1 w-fit h-fit self-center">
+                          <span>Toggle: </span>
+                          <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono font-medium">
+                            {toggleModeShortcutKey}
+                          </kbd>
+                        </div>
+                      </div>
+
+                      <div className="pr-1.5 pt-1.5">
+                        <Button
+                          onClick={handleSave}
+                          type="button"
+                          size="sm"
+                          disabled={updateContentMutation.isPending}
+                        >
+                          {updateContentMutation.isPending ? (
+                            <Spinner />
+                          ) : (
+                            <SaveIcon className="w-4 h-4" />
+                          )}
+                          Save
+                        </Button>
+                      </div>
+                    </div>
+                    <TabsContent
+                      value="write"
+                      className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
+                      forceMount
+                    >
+                      <div className="min-h-0 h-full">
+                        <CodeMirrorEditor
+                          defaultAutoFocus={mode === "write"}
+                          ref={editorRef}
+                          defaultContent={defaultContent}
+                        />
+                      </div>
+                    </TabsContent>
+
+                    <TabsContent
+                      value="preview"
+                      className="h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden"
+                      forceMount
+                    >
+                      <MdPreview
+                        html={parsedHtml}
+                        wrapperClassName="max-w-[1000px] mx-auto"
+                      />
+                    </TabsContent>
+                  </Tabs>
+                )}
               </div>
             </div>
           </>

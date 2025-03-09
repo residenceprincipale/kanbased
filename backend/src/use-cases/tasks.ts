@@ -18,14 +18,39 @@ export async function createTask(
   return newTask!;
 }
 
-export async function updateTaskName(
+export async function updateTask(
   authCtx: AuthCtx,
   taskId: string,
-  task: Pick<InsertType<"tasksTable">, "name" | "updatedAt">
+  task: {
+    content?: string | null;
+    name?: string;
+    updatedAt: string;
+  }
 ) {
+  const { content, name, updatedAt } = task;
   await checkResourceAccess(authCtx, taskId, "task", "editor");
 
-  await db.update(tasksTable).set(task).where(eq(tasksTable.id, taskId));
+  if (content !== undefined) {
+    await db.insert(taskMarkdownTable).values({
+      taskId,
+      content,
+      updatedAt,
+      createdAt: new Date().toISOString(),
+    }).onConflictDoUpdate({
+      target: taskMarkdownTable.taskId,
+      set: {
+        content,
+        updatedAt,
+      },
+    });
+  }
+
+  if (name !== undefined) {
+    await db.update(tasksTable).set({
+      name,
+    }).where(eq(tasksTable.id, taskId));
+  }
+
 }
 
 export async function updateTasksPosition(
