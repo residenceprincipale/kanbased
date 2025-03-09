@@ -9,6 +9,7 @@ export type EditTaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
   onComplete: () => void;
   columnsQueryKey: QueryKey;
+  className?: string;
 };
 
 export function EditTask(props: EditTaskProps) {
@@ -44,7 +45,7 @@ export function EditTask(props: EditTaskProps) {
   };
 
   return (
-    <div>
+    <div className={props.className}>
       <form>
         <CustomizedTextarea
           name="task"

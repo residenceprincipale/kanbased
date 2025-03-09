@@ -10,7 +10,7 @@ import {
 } from "@hello-pangea/dnd";
 import { QueryKey } from "@tanstack/react-query";
 import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { memo, useCallback, useRef, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,19 +48,17 @@ function CreateTask(props: {
       ref={linkRef}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
-      className="group/link mb-3 block !cursor-default group overflow-x-hidden !ring-0"
+      className={cn(
+        "group mb-2.5 block !cursor-default overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 focus-visible:ring outline-none",
+        snapshot.isDragging
+          ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
+          : "dark:border-transparent bg-white dark:bg-gray-3"
+      )}
       id={`task-${task.id}`}
       to="."
       search={{ taskId: task.id }}
     >
-      <div
-        className={cn(
-          "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1 group-focus/link:ring group-focus/link:ring-inset",
-          snapshot.isDragging
-            ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
-            : "dark:border-transparent bg-white dark:bg-gray-3"
-        )}
-      >
+      <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
         <span className="break-words">{task.name}</span>
 
         <DropdownMenu>
@@ -122,6 +120,7 @@ function TaskComp(props: TaskProps) {
               onComplete={() => {
                 setIsEditing(false);
               }}
+              className="mb-2.5"
             />
           ) : (
             <CreateTask

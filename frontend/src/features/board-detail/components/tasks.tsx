@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useRef, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Droppable } from "@hello-pangea/dnd";
@@ -42,23 +42,25 @@ const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const mountedRef = useRef(false);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
+
+  useEffect(() => {
+    mountedRef.current = true;
+
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   function scrollList() {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
   }
 
-  const containerCbRef = useCallback((node: HTMLDivElement | null) => {
-    if (!node) return;
-    containerRef.current = node;
-  }, []);
-
   const lastTaskRef = useCallback((node: HTMLElement | null) => {
-    if (!node) return;
-    /**
-     * How is this not running on app mount?
-     *  - Well it runs on app mount but `containerRef` will be null because it's a parent so does nothing.
-     */
+    if (!node || !mountedRef.current) return;
+    // Whenever new task is added, this ref is called.
+    // This is a hack to scroll the list to the bottom.
     scrollList();
   }, []);
 
@@ -77,9 +79,12 @@ export function Tasks(props: TasksProps) {
                 "custom-scrollbar flex-grow min-h-0 overflow-y-auto overflow-x-hidden"
               )}
               {...droppableProvided.droppableProps}
-              ref={containerCbRef}
+              ref={containerRef}
             >
-              <div ref={droppableProvided.innerRef} className="min-h-8 px-2">
+              <div
+                ref={droppableProvided.innerRef}
+                className="min-h-8 px-2 mt-1"
+              >
                 <MemoizedTaskList
                   columnId={props.columnId}
                   lastTaskRef={lastTaskRef}

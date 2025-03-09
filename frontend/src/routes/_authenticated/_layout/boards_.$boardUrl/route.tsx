@@ -9,6 +9,7 @@ import { CreateColumnButton } from "@/features/board-detail/components/create-co
 import { useColumnsSuspenseQuery } from "@/features/board-detail/queries/columns";
 import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 import { TaskDetailPage } from "./-actions";
+import { useMemo } from "react";
 
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardUrl"
@@ -48,6 +49,10 @@ function BoardPage() {
   const { boardUrl } = Route.useParams();
   const { data, error } = useColumnsSuspenseQuery({ boardUrl });
   const boardName = data.boardName;
+  const columnsQueryKey = useMemo(
+    () => columnsQueryOptions(boardUrl).queryKey,
+    [boardUrl]
+  );
 
   // Not sure why. The error component is not being rendered when there is an error.
   // Hence, we are checking the error status code manually.
@@ -64,15 +69,10 @@ function BoardPage() {
         </div>
 
         <div className="flex-1 h-full min-h-0">
-          <Columns
-            boardUrl={boardUrl}
-            columnsQueryKey={columnsQueryOptions(boardUrl).queryKey}
-          />
+          <Columns boardUrl={boardUrl} columnsQueryKey={columnsQueryKey} />
         </div>
       </div>
-      <TaskDetailPage
-        columnsQueryKey={columnsQueryOptions(boardUrl).queryKey}
-      />
+      <TaskDetailPage columnsQueryKey={columnsQueryKey} />
     </ModalProvider>
   );
 }

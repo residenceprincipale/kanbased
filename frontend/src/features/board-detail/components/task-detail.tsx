@@ -39,6 +39,7 @@ export function TaskDetail(props: {
   return (
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
+        onCloseAutoFocus={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => {
           const vimMode = editorRef.current?.getVimMode();
 
