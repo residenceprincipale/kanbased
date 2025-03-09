@@ -50,10 +50,15 @@ function TaskComp(props: TaskProps) {
               }}
             />
           ) : (
-            <Link id={`task-${task.id}`} to="." search={{ taskId: task.id }}>
+            <Link
+              className="group/link"
+              id={`task-${task.id}`}
+              to="."
+              search={{ taskId: task.id }}
+            >
               <div
                 className={cn(
-                  "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1",
+                  "text-foreground p-2 rounded-lg min-h-16 border dark:hover:bg-gray-4 hover:bg-gray-3 flex justify-between gap-1 group-focus-visible/link:ring group-focus-visible/link:ring-inset",
                   snapshot.isDragging
                     ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
                     : "dark:border-transparent bg-white dark:bg-gray-3"

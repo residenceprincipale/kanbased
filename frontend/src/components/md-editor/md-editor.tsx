@@ -2,7 +2,7 @@ import { useEffect, useImperativeHandle, useRef, useState } from "react";
 import { EditorView, keymap } from "@codemirror/view";
 import { EditorState } from "@codemirror/state";
 import { markdown } from "@codemirror/lang-markdown";
-import { vim, getCM } from "@replit/codemirror-vim";
+import { vim, getCM, Vim } from "@replit/codemirror-vim";
 import { basicExtensions } from "@/components/md-editor/helpers";
 import { indentWithTab } from "@codemirror/commands";
 
@@ -43,16 +43,20 @@ const customTheme = EditorView.theme({
   },
 });
 
-export type CodeMirrorEditorRef = {
+export type CodeMirrorEditorRefData = {
   getData: () => string;
   focus: () => void;
+  handleEscapeForVim: () => void;
 };
+
+export type CodeMirrorEditorRef =
+  React.RefObject<CodeMirrorEditorRefData | null>;
 
 interface CodeMirrorEditorProps {
   onChange?: (value: string) => void;
   defaultContent?: string;
   defaultAutoFocus?: boolean;
-  ref: React.RefObject<CodeMirrorEditorRef | null>;
+  ref: CodeMirrorEditorRef;
 }
 
 export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
@@ -67,6 +71,15 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     },
     focus: () => {
       viewRef.current?.focus();
+    },
+    handleEscapeForVim: () => {
+      if (viewRef.current) {
+        viewRef.current.focus();
+        const cm = getCM(viewRef.current);
+        if (cm) {
+          Vim.handleKey(cm, "<Esc>");
+        }
+      }
     },
   }));
 
