@@ -43,10 +43,12 @@ const customTheme = EditorView.theme({
   },
 });
 
+type VimMode = "insert" | "normal" | "visual";
 export type CodeMirrorEditorRefData = {
   getData: () => string;
   focus: () => void;
   handleEscapeForVim: () => void;
+  getVimMode: () => VimMode;
 };
 
 export type CodeMirrorEditorRef =
@@ -63,7 +65,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
-  const [vimMode, setVimMode] = useState("normal");
+  const [vimMode, setVimMode] = useState<VimMode>("normal");
 
   useImperativeHandle(props.ref, () => ({
     getData: () => {
@@ -81,6 +83,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
         }
       }
     },
+    getVimMode: () => vimMode,
   }));
 
   useEffect(() => {
@@ -117,12 +120,9 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     // Set up initial mode
     const cm = getCM(view)!;
 
-    cm.on(
-      "vim-mode-change",
-      (data: { mode: "insert" | "normal" | "visual" }) => {
-        setVimMode(data.mode);
-      }
-    );
+    cm.on("vim-mode-change", (data: { mode: VimMode }) => {
+      setVimMode(data.mode);
+    });
 
     if (props.defaultAutoFocus) {
       view.focus();

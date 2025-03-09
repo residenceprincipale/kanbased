@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 import { QueryKey, useQuery } from "@tanstack/react-query";
 import { taskDetailQueryOptions } from "@/lib/query-options-factory";
@@ -39,13 +40,19 @@ export function TaskDetail(props: {
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
         onEscapeKeyDown={(e) => {
+          const vimMode = editorRef.current?.getVimMode();
+
           // Always prevent Dialog from closing on Escape
           e.preventDefault();
 
-          // the prevent default is to prevent the dialog from closing
-          // but codemirror vim mode checking defaultPrevented for escape which is not what we want
-          // so we are manually handling the escape for vim
-          editorRef.current?.handleEscapeForVim();
+          if (vimMode === "normal") {
+            props.onClose();
+          } else {
+            // the prevent default is to prevent the dialog from closing
+            // but codemirror vim mode checking defaultPrevented for escape which is not what we want
+            // so we are manually handling the escape for vim
+            editorRef.current?.handleEscapeForVim();
+          }
         }}
         className="min-w-[90%] h-[90%] px-0 pl-5 flex flex-col"
       >
@@ -58,6 +65,9 @@ export function TaskDetail(props: {
           <>
             <DialogHeader className="shrink-0">
               <DialogTitle>{data?.name}</DialogTitle>
+              <DialogDescription className="sr-only">
+                Task detail for {data?.name}
+              </DialogDescription>
             </DialogHeader>
 
             <div className="min-h-0 flex-1 h-full mt-4">
