@@ -2,7 +2,7 @@ import { eq, inArray, sql, SQL } from "drizzle-orm";
 import type { InsertType } from "../db/table-types.js";
 import { db, type DbTypeOrTransaction } from "../db/index.js";
 import { db as database } from "../db/index.js";
-import { tasksTable } from "../db/schema/index.js";
+import { tasksTable, taskMarkdownTable } from "../db/schema/index.js";
 import { checkResourceAccess } from "./permissions.js";
 import type { AuthCtx } from "../lib/types.js";
 
@@ -18,14 +18,39 @@ export async function createTask(
   return newTask!;
 }
 
-export async function updateTaskName(
+export async function updateTask(
   authCtx: AuthCtx,
   taskId: string,
-  task: Pick<InsertType<"tasksTable">, "name" | "updatedAt">
+  task: {
+    content?: string | null;
+    name?: string;
+    updatedAt: string;
+  }
 ) {
+  const { content, name, updatedAt } = task;
   await checkResourceAccess(authCtx, taskId, "task", "editor");
 
-  await db.update(tasksTable).set(task).where(eq(tasksTable.id, taskId));
+  if (content !== undefined) {
+    await db.insert(taskMarkdownTable).values({
+      taskId,
+      content,
+      updatedAt,
+      createdAt: new Date().toISOString(),
+    }).onConflictDoUpdate({
+      target: taskMarkdownTable.taskId,
+      set: {
+        content,
+        updatedAt,
+      },
+    });
+  }
+
+  if (name !== undefined) {
+    await db.update(tasksTable).set({
+      name,
+    }).where(eq(tasksTable.id, taskId));
+  }
+
 }
 
 export async function updateTasksPosition(
@@ -68,4 +93,16 @@ export async function updateTasksPosition(
 export async function deleteTask(authCtx: AuthCtx, taskId: string) {
   await checkResourceAccess(authCtx, taskId, "task", "admin");
   await db.delete(tasksTable).where(eq(tasksTable.id, taskId));
+}
+
+export async function getTaskDetail(authCtx: AuthCtx, taskId: string) {
+  await checkResourceAccess(authCtx, taskId, "task", "viewer");
+
+  const task = await db
+    .select()
+    .from(tasksTable)
+    .leftJoin(taskMarkdownTable, eq(tasksTable.id, taskMarkdownTable.taskId))
+    .where(eq(tasksTable.id, taskId));
+
+  return task[0]!;
 }

@@ -13,12 +13,12 @@ const handlers: InferHandlers<typeof routes> = {
     return c.json(task, HTTP_STATUS_CODES.OK);
   },
 
-  updateTaskName: async (c) => {
+  updateTask: async (c) => {
     const authCtx = c.var.authCtx;
     const { taskId } = c.req.valid("param");
     const body = c.req.valid("json");
 
-    await tasksUseCases.updateTaskName(authCtx, taskId, body);
+    await tasksUseCases.updateTask(authCtx, taskId, body);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
   },
@@ -39,6 +39,18 @@ const handlers: InferHandlers<typeof routes> = {
     await tasksUseCases.deleteTask(authCtx, taskId);
 
     return c.json({}, HTTP_STATUS_CODES.OK);
+  },
+
+  getTaskDetail: async (c) => {
+    const authCtx = c.var.authCtx;
+    const { taskId } = c.req.valid("param");
+
+    const task = await tasksUseCases.getTaskDetail(authCtx, taskId);
+
+    return c.json(
+      { ...task.tasks, content: task.task_markdown?.content ?? null },
+      HTTP_STATUS_CODES.OK
+    );
   },
 };
 

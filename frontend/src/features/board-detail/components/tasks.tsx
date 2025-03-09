@@ -1,11 +1,11 @@
-import React, { memo, useCallback, useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
 import { Task } from "@/features/board-detail/components/task";
-import { CreateCard } from "@/features/board-detail/components/create-task";
+import { CreateTask } from "@/features/board-detail/components/create-task";
 import { QueryKey } from "@tanstack/react-query";
 
 type TasksProps = {
@@ -14,20 +14,16 @@ type TasksProps = {
   columnsQueryKey: QueryKey;
 };
 
-function TaskList(
-  props: TasksProps & { lastTaskRef: (node: HTMLElement | null) => void }
-) {
+function TaskList(props: TasksProps) {
   return (
     <>
       {[...props.tasks]
         .sort((a, b) => a.position - b.position)
         .map((task, i, arr) => {
-          const isLastEl = arr.length - 1 === i;
           return (
             <Task
               task={task}
               key={task.id}
-              taskRef={isLastEl ? props.lastTaskRef : undefined}
               index={i}
               columnsQueryKey={props.columnsQueryKey}
             />
@@ -44,23 +40,9 @@ export function Tasks(props: TasksProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
 
-  function scrollList() {
+  const scrollList = () => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
-  }
-
-  const containerCbRef = useCallback((node: HTMLDivElement | null) => {
-    if (!node) return;
-    containerRef.current = node;
-  }, []);
-
-  const lastTaskRef = useCallback((node: HTMLElement | null) => {
-    if (!node) return;
-    /**
-     * How is this not running on app mount?
-     *  - Well it runs on app mount but `containerRef` will be null because it's a parent so does nothing.
-     */
-    scrollList();
-  }, []);
+  };
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -77,12 +59,15 @@ export function Tasks(props: TasksProps) {
                 "custom-scrollbar flex-grow min-h-0 overflow-y-auto overflow-x-hidden"
               )}
               {...droppableProvided.droppableProps}
-              ref={containerCbRef}
+              ref={containerRef}
+              id={`col-${props.columnId}`}
             >
-              <div ref={droppableProvided.innerRef} className="min-h-8 px-2">
+              <div
+                ref={droppableProvided.innerRef}
+                className="min-h-8 px-2 mt-1"
+              >
                 <MemoizedTaskList
                   columnId={props.columnId}
-                  lastTaskRef={lastTaskRef}
                   tasks={props.tasks}
                   columnsQueryKey={props.columnsQueryKey}
                 />
@@ -96,7 +81,7 @@ export function Tasks(props: TasksProps) {
 
       <div className="shrink-0 mx-2 mt-3">
         {showAddTask ? (
-          <CreateCard
+          <CreateTask
             columnId={props.columnId}
             nextPosition={
               sortedTasks.length
@@ -107,6 +92,11 @@ export function Tasks(props: TasksProps) {
               setShowAddTask(false);
             }}
             columnsQueryKey={props.columnsQueryKey}
+            onOptimisticTaskCreated={() => {
+              setTimeout(() => {
+                scrollList();
+              }, 0);
+            }}
           />
         ) : (
           <Button
