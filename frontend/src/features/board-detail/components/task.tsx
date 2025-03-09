@@ -22,16 +22,15 @@ import { Link } from "@tanstack/react-router";
 export type TaskProps = {
   task: ColumnsWithTasksResponse["tasks"][number];
   index: number;
-  taskRef?: (node: HTMLElement | null) => void;
   columnsQueryKey: QueryKey;
 };
 
-function CreateTask(props: {
+function ViewTask(props: {
   taskProps: TaskProps;
   dndProps: { provided: DraggableProvided; snapshot: DraggableStateSnapshot };
   onEdit: () => void;
 }) {
-  const { task, columnsQueryKey, taskRef } = props.taskProps;
+  const { task, columnsQueryKey } = props.taskProps;
   const { provided, snapshot } = props.dndProps;
 
   const deleteTaskMutation = useDeleteTaskMutation({
@@ -40,7 +39,6 @@ function CreateTask(props: {
 
   const linkRef = useCallback((node: HTMLAnchorElement | null) => {
     provided.innerRef(node);
-    taskRef?.(node);
   }, []);
 
   return (
@@ -123,7 +121,7 @@ function TaskComp(props: TaskProps) {
               className="mb-2.5"
             />
           ) : (
-            <CreateTask
+            <ViewTask
               taskProps={props}
               dndProps={{ provided, snapshot }}
               onEdit={() => setIsEditing(true)}

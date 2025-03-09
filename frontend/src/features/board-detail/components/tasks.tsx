@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from "react";
+import React, { memo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Button } from "@/components/ui/button";
 import { Droppable } from "@hello-pangea/dnd";
@@ -14,20 +14,16 @@ type TasksProps = {
   columnsQueryKey: QueryKey;
 };
 
-function TaskList(
-  props: TasksProps & { lastTaskRef: (node: HTMLElement | null) => void }
-) {
+function TaskList(props: TasksProps) {
   return (
     <>
       {[...props.tasks]
         .sort((a, b) => a.position - b.position)
         .map((task, i, arr) => {
-          const isLastEl = arr.length - 1 === i;
           return (
             <Task
               task={task}
               key={task.id}
-              taskRef={isLastEl ? props.lastTaskRef : undefined}
               index={i}
               columnsQueryKey={props.columnsQueryKey}
             />
@@ -42,27 +38,33 @@ const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const mountedRef = useRef(false);
+  const prevTaskCountRef = useRef(props.tasks.length);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
 
-  useEffect(() => {
-    mountedRef.current = true;
-
-    return () => {
-      mountedRef.current = false;
-    };
-  }, []);
-
-  function scrollList() {
+  const scrollList = () => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
-  }
+  };
 
-  const lastTaskRef = useCallback((node: HTMLElement | null) => {
-    if (!node || !mountedRef.current) return;
-    // Whenever new task is added, this ref is called.
-    // This is a hack to scroll the list to the bottom.
-    scrollList();
-  }, []);
+  const autoScrollForNewTask = () => {
+    // I went with this approach instead of using useEffect
+    // because I see there is a delay in the scrolling when using useEffect
+    // making it janky. I might refactor this in the future.
+    if (props.tasks.length === prevTaskCountRef.current) return;
+
+    const isNewTaskAdded = props.tasks.length > prevTaskCountRef.current;
+
+    if (isNewTaskAdded) {
+      requestAnimationFrame(() => {
+        scrollList();
+      });
+      prevTaskCountRef.current = props.tasks.length;
+    } else {
+      // Update the ref if tasks were removed
+      prevTaskCountRef.current = props.tasks.length;
+    }
+  };
+
+  autoScrollForNewTask();
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -80,6 +82,7 @@ export function Tasks(props: TasksProps) {
               )}
               {...droppableProvided.droppableProps}
               ref={containerRef}
+              id={`col-${props.columnId}`}
             >
               <div
                 ref={droppableProvided.innerRef}
@@ -87,7 +90,6 @@ export function Tasks(props: TasksProps) {
               >
                 <MemoizedTaskList
                   columnId={props.columnId}
-                  lastTaskRef={lastTaskRef}
                   tasks={props.tasks}
                   columnsQueryKey={props.columnsQueryKey}
                 />
