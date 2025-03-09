@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import {
   Dialog,
   DialogContent,
@@ -18,21 +18,28 @@ import { Button } from "@/components/ui/button";
 import { SaveIcon } from "lucide-react";
 import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
+import { toast } from "sonner";
 
 export function TaskDetail(props: {
   onClose: () => void;
   taskId: string;
   columnsQueryKey: QueryKey;
 }) {
-  const { data, isPlaceholderData, isFetching, error, isError } = useQuery(
-    taskDetailQueryOptions({
-      taskId: props.taskId,
-      columnsQueryKey: props.columnsQueryKey,
-    })
-  );
+  const taskDetailQueryOpt = taskDetailQueryOptions({
+    taskId: props.taskId,
+    columnsQueryKey: props.columnsQueryKey,
+  });
+
+  const { data, isPlaceholderData, isFetching, error, isError } =
+    useQuery(taskDetailQueryOpt);
   const updateContentMutation = api.useMutation(
     "patch",
-    "/api/v1/tasks/{taskId}"
+    "/api/v1/tasks/{taskId}",
+    {
+      onSuccess: () => {
+        // TODO: need to invalidate the query here, will do that later.
+      },
+    }
   );
 
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
@@ -45,17 +52,24 @@ export function TaskDetail(props: {
     });
 
   const handleSave = () => {
-    updateContentMutation.mutate({
-      body: {
-        updatedAt: new Date().toISOString(),
-        content: editorRef.current?.getData(),
-      },
-      params: {
-        path: {
-          taskId: props.taskId,
+    updateContentMutation.mutate(
+      {
+        body: {
+          updatedAt: new Date().toISOString(),
+          content: editorRef.current?.getData(),
+        },
+        params: {
+          path: {
+            taskId: props.taskId,
+          },
         },
       },
-    });
+      {
+        onSuccess: () => {
+          toast.success("Task updated");
+        },
+      }
+    );
   };
 
   return (
@@ -95,7 +109,7 @@ export function TaskDetail(props: {
 
             <div className="min-h-0 flex-1 h-full mt-4">
               <div className="w-full h-full relative min-h-0 border rounded-lg">
-                {isFetching ? (
+                {isFetching || isPlaceholderData ? (
                   <div className="w-full h-full flex items-center justify-center gap-2">
                     <Spinner /> <span>Getting task details...</span>
                   </div>
