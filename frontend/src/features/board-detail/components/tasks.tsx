@@ -5,7 +5,7 @@ import { Droppable } from "@hello-pangea/dnd";
 import { cn } from "@/lib/utils";
 import { ColumnsWithTasksQueryData } from "@/features/board-detail/queries/columns";
 import { Task } from "@/features/board-detail/components/task";
-import { CreateCard } from "@/features/board-detail/components/create-task";
+import { CreateTask } from "@/features/board-detail/components/create-task";
 import { QueryKey } from "@tanstack/react-query";
 
 type TasksProps = {
@@ -38,33 +38,11 @@ const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const prevTaskCountRef = useRef(props.tasks.length);
   const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
 
   const scrollList = () => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
   };
-
-  const autoScrollForNewTask = () => {
-    // I went with this approach instead of using useEffect
-    // because I see there is a delay in the scrolling when using useEffect
-    // making it janky. I might refactor this in the future.
-    if (props.tasks.length === prevTaskCountRef.current) return;
-
-    const isNewTaskAdded = props.tasks.length > prevTaskCountRef.current;
-
-    if (isNewTaskAdded) {
-      requestAnimationFrame(() => {
-        scrollList();
-      });
-      prevTaskCountRef.current = props.tasks.length;
-    } else {
-      // Update the ref if tasks were removed
-      prevTaskCountRef.current = props.tasks.length;
-    }
-  };
-
-  autoScrollForNewTask();
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -103,7 +81,7 @@ export function Tasks(props: TasksProps) {
 
       <div className="shrink-0 mx-2 mt-3">
         {showAddTask ? (
-          <CreateCard
+          <CreateTask
             columnId={props.columnId}
             nextPosition={
               sortedTasks.length
@@ -114,6 +92,11 @@ export function Tasks(props: TasksProps) {
               setShowAddTask(false);
             }}
             columnsQueryKey={props.columnsQueryKey}
+            onOptimisticTaskCreated={() => {
+              setTimeout(() => {
+                scrollList();
+              }, 0);
+            }}
           />
         ) : (
           <Button

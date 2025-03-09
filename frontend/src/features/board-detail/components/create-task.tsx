@@ -10,16 +10,18 @@ export type CreateCardProps = {
   columnId: string;
   nextPosition: number;
   onComplete: () => void;
+  onOptimisticTaskCreated: () => void;
   columnsQueryKey: QueryKey;
 };
 
-export function CreateCard(props: CreateCardProps) {
+export function CreateTask(props: CreateCardProps) {
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const createTaskMutation = useCreateTaskMutation({
     columnsQueryKey: props.columnsQueryKey,
+    onOptimisticUpdate: props.onOptimisticTaskCreated,
   });
 
   useInteractiveOutside(wrapperRef, () => {

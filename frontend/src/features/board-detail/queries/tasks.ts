@@ -2,10 +2,9 @@ import { QueryKey, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/openapi-react-query";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { useForceUpdate } from "@/hooks/use-force-update";
-import { flushSync } from "react-dom";
 import { toast } from "sonner";
 
-export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
+export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey, onOptimisticUpdate?: () => void }) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
   const mutationKey = ["post", "/api/v1/tasks"] as const;
@@ -34,6 +33,8 @@ export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey }) {
           };
         }
       );
+
+      params.onOptimisticUpdate?.();
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
