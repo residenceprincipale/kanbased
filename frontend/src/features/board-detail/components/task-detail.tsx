@@ -55,7 +55,7 @@ export function TaskDetail(props: {
             editorRef.current?.handleEscapeForVim();
           }
         }}
-        className="min-w-[90%] h-[90%] px-0 pl-5 flex flex-col"
+        className="min-w-[90%] h-[90%] flex flex-col"
       >
         {isError ? (
           <FullScreenError
@@ -73,15 +73,6 @@ export function TaskDetail(props: {
 
             <div className="min-h-0 flex-1 h-full mt-4">
               <div className="w-full h-full relative min-h-0 border rounded-lg">
-                <div className="absolute top-2 right-5 z-10">
-                  <div className="flex items-center text-xs text-muted-foreground bg-muted rounded px-2 py-1">
-                    <span>Toggle: </span>
-                    <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono text-[10px] font-medium">
-                      <span>{toggleModeShortcutKey}</span>
-                    </kbd>
-                  </div>
-                </div>
-
                 <Tabs
                   className="w-full h-full flex flex-col"
                   value={mode}
@@ -89,10 +80,19 @@ export function TaskDetail(props: {
                     handleModeChange(value as "write" | "preview")
                   }
                 >
-                  <TabsList className="shrink-0 self-start flex items-center gap-2">
-                    <TabsTrigger value="write">Write</TabsTrigger>
-                    <TabsTrigger value="preview">Preview</TabsTrigger>
-                  </TabsList>
+                  <div className="flex shrink-0">
+                    <TabsList className="shrink-0 self-start flex items-center gap-2">
+                      <TabsTrigger value="write">Write</TabsTrigger>
+                      <TabsTrigger value="preview">Preview</TabsTrigger>
+                    </TabsList>
+
+                    <div className="flex items-center text-xs text-muted-foreground rounded px-1.5 py-1 w-fit h-fit self-center ml-2">
+                      <span>Toggle: </span>
+                      <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono font-medium">
+                        {toggleModeShortcutKey}
+                      </kbd>
+                    </div>
+                  </div>
                   <TabsContent
                     value="write"
                     className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
