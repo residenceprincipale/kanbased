@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -19,13 +19,13 @@ import MdPreview from "@/components/md-preview/md-preview";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useMarkdownEditorPreviewToggle } from "@/hooks/use-markdown-editor";
 import { Button } from "@/components/ui/button";
-import { SaveIcon } from "lucide-react";
 import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useLocalStorage } from "@/hooks/use-local-storage";
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import { ctrlKeyLabel } from "@/lib/constants";
+import { useBlocker } from "@tanstack/react-router";
 
 export function TaskDetail(props: {
   onClose: () => void;
@@ -108,6 +108,14 @@ function EditTaskContent(props: {
     "preferred-editor-mode",
     "standard"
   );
+  const [isDirty, setIsDirty] = useState(false);
+
+  const hasChanges = () => {
+    const currentContent = props.editorRef.current?.getData();
+    const defaultContent = props.defaultContent;
+
+    return currentContent !== defaultContent;
+  };
 
   // Add keyboard shortcut handler
   useEffect(() => {
@@ -140,6 +148,18 @@ function EditTaskContent(props: {
       editorRef: props.editorRef,
     });
 
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!hasChanges()) return false;
+
+      const shouldLeave = confirm(
+        "There are unsaved changes. Are you sure you want to leave?"
+      );
+      return !shouldLeave;
+    },
+    enableBeforeUnload: hasChanges,
+  });
+
   const handleSave = (closeAfterSave: boolean = false) => {
     updateContentMutation.mutate(
       {
@@ -171,6 +191,11 @@ function EditTaskContent(props: {
     });
   };
 
+  const handleContentChange = (value: string) => {
+    defaultContent.current = value;
+    setIsDirty(true);
+  };
+
   return (
     <Tabs
       className="w-full h-full flex flex-col"
@@ -195,7 +220,7 @@ function EditTaskContent(props: {
             type="button"
             size="sm"
             className="flex items-center gap-2"
-            disabled={updateContentMutation.isPending}
+            disabled={updateContentMutation.isPending || !isDirty}
           >
             {updateContentMutation.isPending ? (
               <>
@@ -225,9 +250,7 @@ function EditTaskContent(props: {
             defaultContent={defaultContent.current}
             defaultMode={editorMode}
             onModeChange={handleEditorModeChange}
-            onChange={(value) => {
-              defaultContent.current = value;
-            }}
+            onChange={handleContentChange}
             key={editorMode}
             onSave={() => handleSave(false)}
             onSaveAndQuit={() => handleSave(true)}
