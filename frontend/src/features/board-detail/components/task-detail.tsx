@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +24,8 @@ import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { useLocalStorage } from "@/hooks/use-local-storage";
+import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
+import { ctrlKeyLabel } from "@/lib/constants";
 
 export function TaskDetail(props: {
   onClose: () => void;
@@ -107,6 +109,19 @@ function EditTaskContent(props: {
     "standard"
   );
 
+  // Add keyboard shortcut handler
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+        e.preventDefault();
+        handleSave(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
   const updateContentMutation = api.useMutation(
     "patch",
     "/api/v1/tasks/{taskId}",
@@ -169,12 +184,9 @@ function EditTaskContent(props: {
             <TabsTrigger value="preview">Preview</TabsTrigger>
           </TabsList>
 
-          <div className="flex items-center text-xs text-muted-foreground rounded px-1.5 py-1 w-fit h-fit self-center">
-            <span>Toggle: </span>
-            <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono font-medium">
-              {toggleModeShortcutKey}
-            </kbd>
-          </div>
+          <KeyboardShortcutIndicator label="Toggle">
+            {toggleModeShortcutKey}
+          </KeyboardShortcutIndicator>
         </div>
 
         <div className="pr-1.5 pt-1.5">
@@ -182,14 +194,22 @@ function EditTaskContent(props: {
             onClick={() => handleSave(false)}
             type="button"
             size="sm"
+            className="flex items-center gap-2"
             disabled={updateContentMutation.isPending}
           >
             {updateContentMutation.isPending ? (
-              <Spinner />
+              <>
+                <Spinner className="mr-1" />
+                <span className="w-20">Saving...</span>
+              </>
             ) : (
-              <SaveIcon className="w-4 h-4" />
+              <>
+                <span>Save</span>
+                <KeyboardShortcutIndicator>
+                  {ctrlKeyLabel} + S
+                </KeyboardShortcutIndicator>
+              </>
             )}
-            Save
           </Button>
         </div>
       </div>

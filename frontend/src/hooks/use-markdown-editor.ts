@@ -1,12 +1,10 @@
 import { CodeMirrorEditorRef } from "@/components/md-editor/md-editor";
+import { ctrlKeyLabel } from "@/lib/constants";
 import { markdownToHtml } from "@/lib/helpers";
 import { useEffect } from "react";
 import { useState } from "react";
 
 
-const isMac =
-  typeof window !== "undefined" &&
-  navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
 
 
@@ -21,9 +19,8 @@ export function useMarkdownEditorPreviewToggle({
 }) {
   const [parsedHtml, setParsedHtml] = useState(() => markdownToHtml(defaultContent));
   const [mode, setMode] = useState<Mode>("write");
-  const toggleModeModifierKey = isMac ? "⌘" : "Ctrl";
   const toggleModeKey = "M";
-  const toggleModeShortcutKey = `${toggleModeModifierKey} + ${toggleModeKey}` as const;
+  const toggleModeShortcutKey = `${ctrlKeyLabel} + ${toggleModeKey}` as const;
 
   const getMarkdown = () => {
     return editorRef.current?.getData() ?? "";
