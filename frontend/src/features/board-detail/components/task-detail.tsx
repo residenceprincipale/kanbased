@@ -104,18 +104,7 @@ function EditTaskContent(props: {
   taskId: string;
   onClose: () => void;
 }) {
-  const [editorMode, setEditorMode] = useLocalStorage<EditorMode>(
-    "preferred-editor-mode",
-    "standard"
-  );
   const [isDirty, setIsDirty] = useState(false);
-
-  const hasChanges = () => {
-    const currentContent = props.editorRef.current?.getData();
-    const defaultContent = props.defaultContent;
-
-    return currentContent !== defaultContent;
-  };
 
   // Add keyboard shortcut handler
   useEffect(() => {
@@ -140,25 +129,19 @@ function EditTaskContent(props: {
     }
   );
 
-  const defaultContent = useRef(props.defaultContent);
-
-  const { parsedHtml, mode, handleModeChange, toggleModeShortcutKey } =
-    useMarkdownEditorPreviewToggle({
-      defaultContent: defaultContent.current,
-      editorRef: props.editorRef,
-    });
-
-  useBlocker({
-    shouldBlockFn: () => {
-      if (!hasChanges()) return false;
-
-      const shouldLeave = confirm(
-        "There are unsaved changes. Are you sure you want to leave?"
-      );
-      return !shouldLeave;
-    },
-    enableBeforeUnload: hasChanges,
+  const {
+    parsedHtml,
+    mode,
+    handleModeChange,
+    toggleModeShortcutKey,
+    editorMode,
+    setEditorMode,
+  } = useMarkdownEditorPreviewToggle({
+    defaultContent: props.defaultContent,
+    editorRef: props.editorRef,
   });
+
+  const content = useRef(props.defaultContent);
 
   const handleSave = (closeAfterSave: boolean = false) => {
     updateContentMutation.mutate(
@@ -186,13 +169,14 @@ function EditTaskContent(props: {
 
   const handleEditorModeChange = (mode: EditorMode) => {
     setEditorMode(mode);
+
     toast.info(`Editor mode changed to ${mode}`, {
       position: "bottom-center",
     });
   };
 
   const handleContentChange = (value: string) => {
-    defaultContent.current = value;
+    content.current = value;
     setIsDirty(true);
   };
 
@@ -247,7 +231,7 @@ function EditTaskContent(props: {
           <CodeMirrorEditor
             defaultAutoFocus={mode === "write"}
             ref={props.editorRef}
-            defaultContent={defaultContent.current}
+            defaultContent={content.current}
             defaultMode={editorMode}
             onModeChange={handleEditorModeChange}
             onChange={handleContentChange}

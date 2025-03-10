@@ -1,6 +1,8 @@
-import { CodeMirrorEditorRef } from "@/components/md-editor/md-editor";
+import { CodeMirrorEditorRef, EditorMode } from "@/components/md-editor/md-editor";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 import { ctrlKeyLabel } from "@/lib/constants";
 import { markdownToHtml } from "@/lib/helpers";
+import { useBlocker } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useState } from "react";
 
@@ -14,11 +16,15 @@ export function useMarkdownEditorPreviewToggle({
   defaultContent = "",
   editorRef,
 }: {
-  defaultContent?: string;
+  defaultContent: string;
   editorRef: CodeMirrorEditorRef;
 }) {
   const [parsedHtml, setParsedHtml] = useState(() => markdownToHtml(defaultContent));
   const [mode, setMode] = useState<Mode>("write");
+  const [editorMode, setEditorMode] = useLocalStorage<EditorMode>(
+    "preferred-editor-mode",
+    "standard"
+  );
   const toggleModeKey = "M";
   const toggleModeShortcutKey = `${ctrlKeyLabel} + ${toggleModeKey}` as const;
 
@@ -63,6 +69,24 @@ export function useMarkdownEditorPreviewToggle({
     }
   };
 
+  const hasChanges = () => {
+    const currentContent = editorRef.current?.getData();
+
+    return currentContent !== defaultContent;
+  };
+
+  useBlocker({
+    shouldBlockFn: () => {
+      if (!hasChanges()) return false;
+
+      const shouldLeave = confirm(
+        "There are unsaved changes. Are you sure you want to leave?"
+      );
+      return !shouldLeave;
+    },
+    enableBeforeUnload: hasChanges,
+  });
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === toggleModeKey.toLowerCase()) {
@@ -81,5 +105,7 @@ export function useMarkdownEditorPreviewToggle({
     mode,
     handleModeChange,
     toggleModeShortcutKey,
+    editorMode,
+    setEditorMode,
   };
 }
