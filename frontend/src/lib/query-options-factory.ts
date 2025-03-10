@@ -22,7 +22,7 @@ export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
   queryFn: () => authClient.getSession(),
   // TODO: Need to revisit this later.
-  staleTime: Infinity,
+  staleTime: 0,
 });
 
 export const activeOrganizationQueryOptions = (
