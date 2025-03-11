@@ -13,6 +13,7 @@ import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import { ctrlKeyLabel } from "@/lib/constants";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
+import { useKeyDown } from "@/hooks/use-keydown";
 
 export default function EditTaskContent(props: {
   defaultContent: string;
@@ -22,18 +23,14 @@ export default function EditTaskContent(props: {
 }) {
   const [isDirty, setIsDirty] = useState(false);
 
-  // Add keyboard shortcut handler
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-        e.preventDefault();
-        handleSave();
-      }
-    };
+  useKeyDown((e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === "s") {
+      e.preventDefault();
+      if (!isDirty) return;
 
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, []);
+      handleSave();
+    }
+  });
 
   const updateContentMutation = api.useMutation(
     "patch",
@@ -95,76 +92,80 @@ export default function EditTaskContent(props: {
   };
 
   return (
-    <Tabs
-      className="w-full h-full flex flex-col"
-      value={mode}
-      onValueChange={(value) => handleModeChange(value as "write" | "preview")}
-    >
-      <div className="flex shrink-0 justify-between">
-        <div className="flex items-center gap-2">
-          <TabsList className="shrink-0 self-start flex items-center gap-2">
-            <TabsTrigger value="write">Write</TabsTrigger>
-            <TabsTrigger value="preview">Preview</TabsTrigger>
-          </TabsList>
-
-          <KeyboardShortcutIndicator label="Toggle">
-            {toggleModeShortcutKey}
-          </KeyboardShortcutIndicator>
-        </div>
-
-        <div className="pr-1.5 pt-1.5">
-          <Button
-            onClick={handleSave}
-            type="button"
-            size="sm"
-            className="flex items-center gap-2"
-            disabled={updateContentMutation.isPending || !isDirty}
-          >
-            {updateContentMutation.isPending ? (
-              <>
-                <Spinner className="mr-1" />
-                <span className="w-20">Saving...</span>
-              </>
-            ) : (
-              <>
-                <span>Save</span>
-                <KeyboardShortcutIndicator>
-                  {ctrlKeyLabel} + S
-                </KeyboardShortcutIndicator>
-              </>
-            )}
-          </Button>
-        </div>
-      </div>
-      <TabsContent
-        value="write"
-        className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
-        forceMount
+    <div className="w-full h-full relative min-h-0">
+      <Tabs
+        className="w-full h-full flex flex-col"
+        value={mode}
+        onValueChange={(value) =>
+          handleModeChange(value as "write" | "preview")
+        }
       >
-        <div className="min-h-0 h-full">
-          <CodeMirrorEditor
-            defaultAutoFocus={mode === "write"}
-            ref={props.editorRef}
-            defaultContent={content.current}
-            defaultMode={editorMode}
-            onModeChange={handleEditorModeChange}
-            onChange={handleContentChange}
-            key={editorMode}
-            onSave={handleSave}
+        <div className="flex shrink-0 justify-between">
+          <div className="flex items-center gap-2">
+            <TabsList className="shrink-0 self-start flex items-center gap-2">
+              <TabsTrigger value="write">Write</TabsTrigger>
+              <TabsTrigger value="preview">Preview</TabsTrigger>
+            </TabsList>
+
+            <KeyboardShortcutIndicator label="Toggle">
+              {toggleModeShortcutKey}
+            </KeyboardShortcutIndicator>
+          </div>
+
+          <div>
+            <Button
+              onClick={handleSave}
+              type="button"
+              size="sm"
+              className="flex items-center gap-2"
+              disabled={updateContentMutation.isPending || !isDirty}
+            >
+              {updateContentMutation.isPending ? (
+                <>
+                  <Spinner className="mr-1" />
+                  <span className="w-20">Saving...</span>
+                </>
+              ) : (
+                <>
+                  <span>Save</span>
+                  <KeyboardShortcutIndicator>
+                    {ctrlKeyLabel} + S
+                  </KeyboardShortcutIndicator>
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+        <TabsContent
+          value="write"
+          className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
+          forceMount
+        >
+          <div className="min-h-0 h-full">
+            <CodeMirrorEditor
+              defaultAutoFocus={mode === "write"}
+              ref={props.editorRef}
+              defaultContent={content.current}
+              defaultMode={editorMode}
+              onModeChange={handleEditorModeChange}
+              onChange={handleContentChange}
+              key={editorMode}
+              onSave={handleSave}
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent
+          value="preview"
+          className="h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden"
+          forceMount
+        >
+          <MdPreview
+            html={parsedHtml}
+            wrapperClassName="max-w-[1000px] mx-auto"
           />
-        </div>
-      </TabsContent>
-
-      <TabsContent
-        value="preview"
-        className="h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden"
-        forceMount
-      >
-        <MdPreview
-          html={parsedHtml}
-          wrapperClassName="max-w-[1000px] mx-auto"
-        />
-      </TabsContent>
-    </Tabs>
+        </TabsContent>
+      </Tabs>
+    </div>
   );
 }

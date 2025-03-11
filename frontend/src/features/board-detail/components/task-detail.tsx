@@ -11,9 +11,6 @@ import { taskDetailQueryOptions } from "@/lib/query-options-factory";
 import { FullScreenError } from "@/components/errors";
 import { CodeMirrorEditorRefData } from "@/components/md-editor/md-editor";
 import { Spinner } from "@/components/ui/spinner";
-import { Button } from "@/components/ui/button";
-import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { ctrlKeyLabel } from "@/lib/constants";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/components/edit-task-content")
@@ -56,7 +53,7 @@ export function TaskDetail(props: {
             editorRef.current?.handleEscapeForVim();
           }
         }}
-        className="min-w-[90%] h-[90%] flex flex-col gap-2"
+        className="min-w-[90%] h-[90%] flex flex-col"
       >
         {isError ? (
           <FullScreenError
@@ -83,37 +80,20 @@ export function TaskDetail(props: {
                 data !== undefined &&
                 (isEditing ? (
                   <Suspense fallback="Loading editor...">
-                    {" "}
-                    <div className="w-full h-full relative min-h-0 pt-2 rounded-lg">
-                      <EditTaskContentLazy
-                        defaultContent={data.content ?? ""}
-                        editorRef={editorRef}
-                        taskId={props.taskId}
-                        afterSave={() => setIsEditing(false)}
-                      />
-                    </div>
+                    <EditTaskContentLazy
+                      defaultContent={data.content ?? ""}
+                      editorRef={editorRef}
+                      taskId={props.taskId}
+                      afterSave={() => setIsEditing(false)}
+                    />
                   </Suspense>
                 ) : (
                   <Suspense fallback="Loading content...">
-                    <div className="w-full h-full flex flex-col gap-2">
-                      <Button
-                        className="ml-auto shrink-0"
-                        size="sm"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        Edit
-                        <KeyboardShortcutIndicator>
-                          {ctrlKeyLabel} + E
-                        </KeyboardShortcutIndicator>
-                      </Button>
-
-                      <div className="flex-1 h-full overflow-y-auto">
-                        <ViewTaskContentLazy
-                          content={data.content ?? ""}
-                          wrapperClassName="p-0"
-                        />
-                      </div>
-                    </div>
+                    <ViewTaskContentLazy
+                      content={data.content ?? ""}
+                      wrapperClassName="p-0"
+                      onEdit={() => setIsEditing(true)}
+                    />
                   </Suspense>
                 ))}
             </div>
