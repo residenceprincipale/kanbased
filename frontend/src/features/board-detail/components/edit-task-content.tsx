@@ -18,7 +18,7 @@ export default function EditTaskContent(props: {
   defaultContent: string;
   editorRef: CodeMirrorEditorRef;
   taskId: string;
-  onClose: () => void;
+  afterSave: () => void;
 }) {
   const [isDirty, setIsDirty] = useState(false);
 
@@ -27,7 +27,7 @@ export default function EditTaskContent(props: {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "s") {
         e.preventDefault();
-        handleSave(false);
+        handleSave();
       }
     };
 
@@ -59,7 +59,7 @@ export default function EditTaskContent(props: {
 
   const content = useRef(props.defaultContent);
 
-  const handleSave = (closeAfterSave: boolean = false) => {
+  const handleSave = () => {
     updateContentMutation.mutate(
       {
         body: {
@@ -75,9 +75,7 @@ export default function EditTaskContent(props: {
       {
         onSuccess: () => {
           toast.success("Task updated");
-          if (closeAfterSave) {
-            props.onClose();
-          }
+          props.afterSave();
         },
       }
     );
@@ -116,7 +114,7 @@ export default function EditTaskContent(props: {
 
         <div className="pr-1.5 pt-1.5">
           <Button
-            onClick={() => handleSave(false)}
+            onClick={handleSave}
             type="button"
             size="sm"
             className="flex items-center gap-2"
@@ -152,8 +150,7 @@ export default function EditTaskContent(props: {
             onModeChange={handleEditorModeChange}
             onChange={handleContentChange}
             key={editorMode}
-            onSave={() => handleSave(false)}
-            onSaveAndQuit={() => handleSave(true)}
+            onSave={handleSave}
           />
         </div>
       </TabsContent>

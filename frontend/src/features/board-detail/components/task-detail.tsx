@@ -12,7 +12,6 @@ import { FullScreenError } from "@/components/errors";
 import { CodeMirrorEditorRefData } from "@/components/md-editor/md-editor";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { Pencil } from "lucide-react";
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import { ctrlKeyLabel } from "@/lib/constants";
 
@@ -90,7 +89,7 @@ export function TaskDetail(props: {
                         defaultContent={data.content ?? ""}
                         editorRef={editorRef}
                         taskId={props.taskId}
-                        onClose={props.onClose}
+                        afterSave={() => setIsEditing(false)}
                       />
                     </div>
                   </Suspense>
