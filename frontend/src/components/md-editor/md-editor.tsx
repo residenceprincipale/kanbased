@@ -68,8 +68,7 @@ interface CodeMirrorEditorProps {
   onChange?: (value: string) => void;
   onModeChange: (mode: EditorMode) => void;
   onSave: () => void;
-  onSaveAndQuit?: () => void;
-  onQuit?: () => void;
+  onExitEditorWithoutSaving?: () => void;
 }
 
 export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
@@ -158,11 +157,11 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
       });
 
       Vim.defineEx("wq", "wq", function () {
-        props.onSaveAndQuit?.();
+        props.onSave();
       });
 
       Vim.defineEx("q", "q", function () {
-        props.onQuit?.();
+        props.onExitEditorWithoutSaving?.();
       });
     }
 

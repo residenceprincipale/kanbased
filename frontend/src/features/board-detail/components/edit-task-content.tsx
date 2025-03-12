@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState } from "react";
 import {
   CodeMirrorEditorRef,
   EditorMode,
@@ -13,31 +13,36 @@ import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import { useKeyDown } from "@/hooks/use-keydown";
+import { Undo2 } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { QueryKey, useQueryClient } from "@tanstack/react-query";
 
 export default function EditTaskContent(props: {
   defaultContent: string;
   editorRef: CodeMirrorEditorRef;
   taskId: string;
   afterSave: () => void;
-  onClose: () => void;
+  exitEditorWithoutSaving: () => void;
+  taskDetailQueryKey: QueryKey;
 }) {
   const [isDirty, setIsDirty] = useState(false);
-
-  useKeyDown((e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "s") {
-      e.preventDefault();
-      if (!isDirty) return;
-
-      handleSave();
-    }
-  });
+  const queryClient = useQueryClient();
 
   const updateContentMutation = api.useMutation(
     "patch",
     "/api/v1/tasks/{taskId}",
     {
-      onSuccess: () => {
-        // TODO: need to invalidate the query here, will do that later.
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: props.taskDetailQueryKey,
+        });
+
+        toast.success("Task updated");
+        props.afterSave();
       },
     }
   );
@@ -56,26 +61,33 @@ export default function EditTaskContent(props: {
 
   const content = useRef(props.defaultContent);
 
+  useKeyDown((e) => {
+    const isCtrlKey = e.metaKey || e.ctrlKey;
+    if (isCtrlKey && e.key === "s") {
+      e.preventDefault();
+      if (!isDirty) return;
+
+      handleSave();
+    }
+
+    if (isCtrlKey && e.shiftKey && e.key === "e") {
+      e.preventDefault();
+      props.exitEditorWithoutSaving();
+    }
+  });
+
   const handleSave = () => {
-    updateContentMutation.mutate(
-      {
-        body: {
-          updatedAt: new Date().toISOString(),
-          content: props.editorRef.current?.getData(),
-        },
-        params: {
-          path: {
-            taskId: props.taskId,
-          },
+    updateContentMutation.mutate({
+      body: {
+        updatedAt: new Date().toISOString(),
+        content: props.editorRef.current?.getData(),
+      },
+      params: {
+        path: {
+          taskId: props.taskId,
         },
       },
-      {
-        onSuccess: () => {
-          toast.success("Task updated");
-          props.afterSave();
-        },
-      }
-    );
+    });
   };
 
   const handleEditorModeChange = (mode: EditorMode) => {
@@ -112,7 +124,25 @@ export default function EditTaskContent(props: {
             </KeyboardShortcutIndicator>
           </div>
 
-          <div>
+          <div className="flex items-center gap-3">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  size="icon"
+                  className="h-9"
+                >
+                  <Undo2 />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                Exit editor mode with unsaved changes
+                <KeyboardShortcutIndicator commandOrCtrlKey>
+                  Shift E
+                </KeyboardShortcutIndicator>
+              </TooltipContent>
+            </Tooltip>
             <Button
               onClick={handleSave}
               type="button"
@@ -151,7 +181,7 @@ export default function EditTaskContent(props: {
               onChange={handleContentChange}
               key={editorMode}
               onSave={handleSave}
-              onQuit={props.onClose}
+              onExitEditorWithoutSaving={props.exitEditorWithoutSaving}
             />
           </div>
         </TabsContent>

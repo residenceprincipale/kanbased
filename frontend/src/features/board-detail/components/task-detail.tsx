@@ -84,8 +84,11 @@ export function TaskDetail(props: {
                       defaultContent={data.content ?? ""}
                       editorRef={editorRef}
                       taskId={props.taskId}
-                      afterSave={() => setIsEditing(false)}
-                      onClose={props.onClose}
+                      afterSave={() => {
+                        setIsEditing(false);
+                      }}
+                      exitEditorWithoutSaving={() => setIsEditing(false)}
+                      taskDetailQueryKey={taskDetailQueryOpt.queryKey}
                     />
                   </Suspense>
                 ) : (
