@@ -4,6 +4,20 @@ import { queryClient } from "@/lib/query-client";
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
+  errorComponent: (error) => {
+    return (
+      <div className="h-screen flex items-center justify-center">
+        <div className="max-w-96">
+          <p className="text-destructive text-2xl font-bold mb-2">
+            {error?.error?.message}
+          </p>
+          <p className="text-destructive">
+            Something went wrong, Try refreshing the page.
+          </p>
+        </div>
+      </div>
+    );
+  },
   beforeLoad: async ({ location }) => {
     const { error, data } = await queryClient.fetchQuery(sessionQueryOptions);
 
