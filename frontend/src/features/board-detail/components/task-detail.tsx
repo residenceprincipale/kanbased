@@ -44,7 +44,7 @@ export function TaskDetail(props: {
           // Always prevent Dialog from closing on Escape
           e.preventDefault();
 
-          if (!vimMode || vimMode === "normal") {
+          if (!vimMode) {
             props.onClose();
           } else {
             // the prevent default is to prevent the dialog from closing
@@ -85,6 +85,7 @@ export function TaskDetail(props: {
                       editorRef={editorRef}
                       taskId={props.taskId}
                       afterSave={() => setIsEditing(false)}
+                      onClose={props.onClose}
                     />
                   </Suspense>
                 ) : (

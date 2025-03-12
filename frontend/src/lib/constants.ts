@@ -6,11 +6,9 @@ export const routeMap = {
   register: "/auth/register",
 } as const;
 
-
-
 export enum QueryParamState {
   CreateColumn = "create-column",
-  UpdateBoard = "update-board"
+  UpdateBoard = "update-board",
 }
 
 export function getOrigin() {
@@ -25,10 +23,7 @@ export function getOrigin() {
   return origin;
 }
 
-
-
 export const isMac =
   typeof window !== "undefined" &&
   navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
-export const ctrlKeyLabel = isMac ? "Cmd" : "Ctrl";

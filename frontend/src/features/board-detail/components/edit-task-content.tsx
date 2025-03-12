@@ -10,7 +10,6 @@ import { api } from "@/lib/openapi-react-query";
 import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { ctrlKeyLabel } from "@/lib/constants";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import { useKeyDown } from "@/hooks/use-keydown";
@@ -20,6 +19,7 @@ export default function EditTaskContent(props: {
   editorRef: CodeMirrorEditorRef;
   taskId: string;
   afterSave: () => void;
+  onClose: () => void;
 }) {
   const [isDirty, setIsDirty] = useState(false);
 
@@ -46,7 +46,7 @@ export default function EditTaskContent(props: {
     parsedHtml,
     mode,
     handleModeChange,
-    toggleModeShortcutKey,
+    toggleModeKey,
     editorMode,
     setEditorMode,
   } = useMarkdownEditorPreviewToggle({
@@ -107,8 +107,8 @@ export default function EditTaskContent(props: {
               <TabsTrigger value="preview">Preview</TabsTrigger>
             </TabsList>
 
-            <KeyboardShortcutIndicator label="Toggle">
-              {toggleModeShortcutKey}
+            <KeyboardShortcutIndicator label="Toggle mode" commandOrCtrlKey>
+              {toggleModeKey}
             </KeyboardShortcutIndicator>
           </div>
 
@@ -128,8 +128,8 @@ export default function EditTaskContent(props: {
               ) : (
                 <>
                   <span>Save</span>
-                  <KeyboardShortcutIndicator>
-                    {ctrlKeyLabel} + S
+                  <KeyboardShortcutIndicator commandOrCtrlKey>
+                    S
                   </KeyboardShortcutIndicator>
                 </>
               )}
@@ -151,6 +151,7 @@ export default function EditTaskContent(props: {
               onChange={handleContentChange}
               key={editorMode}
               onSave={handleSave}
+              onQuit={props.onClose}
             />
           </div>
         </TabsContent>

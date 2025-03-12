@@ -1,6 +1,5 @@
 import { CodeMirrorEditorRef, EditorMode } from "@/components/md-editor/md-editor";
 import { useLocalStorage } from "@/hooks/use-local-storage";
-import { ctrlKeyLabel } from "@/lib/constants";
 import { markdownToHtml } from "@/lib/helpers";
 import { useBlocker } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -26,7 +25,6 @@ export function useMarkdownEditorPreviewToggle({
     "standard"
   );
   const toggleModeKey = "M";
-  const toggleModeShortcutKey = `${ctrlKeyLabel} + ${toggleModeKey}` as const;
 
   const getMarkdown = () => {
     return editorRef.current?.getData() ?? "";
@@ -104,8 +102,8 @@ export function useMarkdownEditorPreviewToggle({
     parsedHtml,
     mode,
     handleModeChange,
-    toggleModeShortcutKey,
     editorMode,
+    toggleModeKey,
     setEditorMode,
   };
 }

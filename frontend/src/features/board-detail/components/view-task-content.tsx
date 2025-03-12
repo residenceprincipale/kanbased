@@ -1,7 +1,6 @@
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import { Button } from "@/components/ui/button";
 import { useKeyDown } from "@/hooks/use-keydown";
-import { ctrlKeyLabel } from "@/lib/constants";
 import { markdownToHtml } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import { useMemo } from "react";
@@ -14,7 +13,7 @@ export default function ViewTaskContent(props: {
   const html = useMemo(() => markdownToHtml(props.content), [props.content]);
 
   useKeyDown((e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key === "e") {
+    if (e.key === "e") {
       e.preventDefault();
       props.onEdit();
     }
@@ -24,9 +23,7 @@ export default function ViewTaskContent(props: {
     <div className="w-full h-full flex flex-col gap-2">
       <Button className="ml-auto shrink-0" size="sm" onClick={props.onEdit}>
         Edit
-        <KeyboardShortcutIndicator>
-          {ctrlKeyLabel} + E
-        </KeyboardShortcutIndicator>
+        <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>
       </Button>
 
       <div className="flex-1 h-full overflow-y-auto">
