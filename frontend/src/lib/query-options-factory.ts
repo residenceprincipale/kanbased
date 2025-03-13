@@ -56,6 +56,8 @@ export function taskDetailQueryOptions(params: { taskId: string, columnsQueryKey
       params: { path: { taskId: params.taskId } },
       staleTime: 0,
     }),
+    // TODO: Need to revisit this later.
+    refetchOnWindowFocus: false,
 
     placeholderData: () => {
       const columns = queryClient.getQueryData(params.columnsQueryKey) as ColumnsWithTasksResponse;
