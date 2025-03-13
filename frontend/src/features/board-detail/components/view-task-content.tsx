@@ -20,7 +20,12 @@ export default function ViewTaskContent(props: {
   });
 
   return (
-    <div className="w-full h-full flex flex-col gap-2">
+    <div
+      className={cn(
+        "w-full h-full flex flex-col gap-2",
+        props.wrapperClassName
+      )}
+    >
       <Button className="ml-auto shrink-0" size="sm" onClick={props.onEdit}>
         Edit
         <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>

@@ -11,6 +11,8 @@ import { taskDetailQueryOptions } from "@/lib/query-options-factory";
 import { FullScreenError } from "@/components/errors";
 import { CodeMirrorEditorRefData } from "@/components/md-editor/md-editor";
 import { Spinner } from "@/components/ui/spinner";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/components/edit-task-content")
@@ -30,9 +32,32 @@ export function TaskDetail(props: {
     columnsQueryKey: props.columnsQueryKey,
   });
 
-  const { data, isFetching, error, isError } = useQuery(taskDetailQueryOpt);
+  const {
+    data,
+    isLoading,
+    isPlaceholderData,
+    error,
+    isError,
+    isFetchedAfterMount,
+  } = useQuery(taskDetailQueryOpt);
+
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
   const [isEditing, setIsEditing] = useState(false);
+
+  const isTaskContentLoading = isLoading || isPlaceholderData;
+
+  const loadingSkeleton = (
+    <div className="w-full h-full flex items-center justify-center">
+      <Skeleton className="w-full h-full" />
+    </div>
+  );
+
+  const editorLoading = (
+    <div className="w-full h-full flex items-center justify-center gap-2">
+      <Spinner />
+      Loading editor...
+    </div>
+  );
 
   return (
     <Dialog open onOpenChange={props.onClose}>
@@ -70,16 +95,30 @@ export function TaskDetail(props: {
             </DialogHeader>
 
             <div className="min-h-0 flex-1 h-full">
-              {isFetching && (
-                <div className="w-full h-full flex items-center justify-center gap-2">
-                  <Spinner /> <span>Getting task details...</span>
-                </div>
+              {!isEditing && (
+                <Suspense fallback={loadingSkeleton}>
+                  <div
+                    className={cn(
+                      "w-full h-full flex items-center justify-center",
+                      !isTaskContentLoading && "hidden"
+                    )}
+                  >
+                    <Skeleton className="w-full h-full" />
+                  </div>
+
+                  <ViewTaskContentLazy
+                    content={data?.content ?? ""}
+                    wrapperClassName={cn(isTaskContentLoading && "hidden")}
+                    onEdit={() => setIsEditing(true)}
+                  />
+                </Suspense>
               )}
 
-              {!isFetching &&
-                data !== undefined &&
-                (isEditing ? (
-                  <Suspense fallback="Loading editor...">
+              {isEditing &&
+                (!isFetchedAfterMount ? (
+                  editorLoading
+                ) : isFetchedAfterMount && data !== undefined ? (
+                  <Suspense fallback={editorLoading}>
                     <EditTaskContentLazy
                       defaultContent={data.content ?? ""}
                       editorRef={editorRef}
@@ -91,15 +130,7 @@ export function TaskDetail(props: {
                       taskDetailQueryKey={taskDetailQueryOpt.queryKey}
                     />
                   </Suspense>
-                ) : (
-                  <Suspense fallback="Loading content...">
-                    <ViewTaskContentLazy
-                      content={data.content ?? ""}
-                      wrapperClassName="p-0"
-                      onEdit={() => setIsEditing(true)}
-                    />
-                  </Suspense>
-                ))}
+                ) : null)}
             </div>
           </>
         )}
