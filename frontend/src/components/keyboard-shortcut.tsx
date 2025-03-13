@@ -1,5 +1,6 @@
 import { useIsMobile } from "@/hooks/use-mobile";
 import { isMac } from "@/lib/constants";
+import { cn } from "@/lib/utils";
 
 export function KeyboardShortcutIndicator(
   props: React.PropsWithChildren<{
@@ -14,7 +15,7 @@ export function KeyboardShortcutIndicator(
   }
 
   const commandOrCtrlLabel = props.commandOrCtrlKey && (
-    <span className="text-base">{isMac ? "⌘" : "Ctrl"}</span>
+    <span className={cn(isMac && "text-base")}>{isMac ? "⌘" : "Ctrl"}</span>
   );
 
   if (props.label) {
