@@ -96,7 +96,7 @@ export interface paths {
                         name: string;
                         color?: string | null;
                         createdAt?: string | null;
-                        updatedAt: string;
+                        updatedAt: string | null;
                         deletedAt?: string | null;
                         boardUrl: string;
                     };
@@ -289,7 +289,7 @@ export interface paths {
                     "application/json": {
                         name: string;
                         color?: string | null;
-                        updatedAt: string;
+                        updatedAt: string | null;
                         deletedAt?: string | null;
                         boardUrl: string;
                     };
@@ -574,7 +574,7 @@ export interface paths {
                         boardId: string;
                         position: number;
                         createdAt?: string | null;
-                        updatedAt: string;
+                        updatedAt: string | null;
                     };
                 };
             };
@@ -966,8 +966,8 @@ export interface paths {
                         /** Format: uuid */
                         columnId: string;
                         position: number;
-                        createdAt: string;
-                        updatedAt: string;
+                        createdAt: string | null;
+                        updatedAt: string | null;
                         deletedAt?: string | null;
                     };
                 };
@@ -1061,8 +1061,8 @@ export interface paths {
                             /** Format: uuid */
                             columnId: string;
                             position: number;
-                            createdAt: string;
-                            updatedAt: string;
+                            createdAt: string | null;
+                            updatedAt: string | null;
                             deletedAt: string | null;
                             content: string | null;
                         };
@@ -1365,11 +1365,7 @@ export interface paths {
                                 /** Format: uuid */
                                 id: string;
                                 name: string;
-                                content: string;
-                                createdAt: string | null;
-                                updatedAt: string;
-                                deletedAt: string | null;
-                                organizationId: string;
+                                updatedAt: string | null;
                             }[];
                         };
                     };
@@ -1449,7 +1445,7 @@ export interface paths {
                             name: string;
                             content: string;
                             createdAt: string | null;
-                            updatedAt: string;
+                            updatedAt: string | null;
                             deletedAt: string | null;
                             organizationId: string;
                         };
@@ -1534,7 +1530,7 @@ export interface paths {
                             name: string;
                             content: string;
                             createdAt: string | null;
-                            updatedAt: string;
+                            updatedAt: string | null;
                             deletedAt: string | null;
                             organizationId: string;
                         };
@@ -1602,7 +1598,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         content: string;
-                        updatedAt: string;
+                        updatedAt: string | null;
                         name: string;
                     };
                 };
@@ -1619,7 +1615,7 @@ export interface paths {
                             name: string;
                             content: string;
                             createdAt: string | null;
-                            updatedAt: string;
+                            updatedAt: string | null;
                             deletedAt: string | null;
                             organizationId: string;
                         };

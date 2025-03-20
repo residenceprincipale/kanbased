@@ -60,7 +60,7 @@ const handlers: InferHandlers<typeof routes> = {
   importBoards: async (c) => {
     const authCtx = c.var.authCtx;
     const { boards } = c.req.valid("json");
-    const nowDate = new Date().toISOString();
+    const nowDate = new Date();
 
     await db.transaction(async (tx) => {
       for (let board of boards) {

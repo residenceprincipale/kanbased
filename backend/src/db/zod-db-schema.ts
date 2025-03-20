@@ -1,5 +1,11 @@
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
+import { createSchemaFactory } from "drizzle-zod";
 import * as schema from "./schema/index.js";
+
+const { createInsertSchema, createSelectSchema } = createSchemaFactory({
+  coerce: {
+    date: true
+  }
+});
 
 export const zodDbSchema = {
   tasksTable: {
@@ -13,5 +19,13 @@ export const zodDbSchema = {
   notesTable: {
     insert: createInsertSchema(schema.notesTable),
     select: createSelectSchema(schema.notesTable),
+  },
+  boardsTable: {
+    insert: createInsertSchema(schema.boardsTable),
+    select: createSelectSchema(schema.boardsTable),
+  },
+  columnsTable: {
+    insert: createInsertSchema(schema.columnsTable),
+    select: createSelectSchema(schema.columnsTable),
   },
 } as const;

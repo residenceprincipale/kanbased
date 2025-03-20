@@ -38,7 +38,7 @@ export async function createBoard(
       organizationId: authCtx.session.activeOrganizationId,
       permission: "owner",
       userId: authCtx.user.id,
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
     });
 
     return createdBoard;
@@ -101,7 +101,7 @@ export async function toggleBoardDelete(
 
   const [updatedBoard] = await db
     .update(boardsTable)
-    .set({ deletedAt: deleted ? new Date().toISOString() : null })
+    .set({ deletedAt: deleted ? new Date() : null })
     .where(eq(boardsTable.id, boardId))
     .returning();
 

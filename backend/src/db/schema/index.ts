@@ -25,9 +25,9 @@ export const boardsTable = pgTable("boards", {
   id: t.uuid().primaryKey(),
   name: t.varchar({ length: 255 }).notNull(),
   color: t.varchar({ length: 255 }),
-  createdAt: t.timestamp({ mode: "string" }),
-  updatedAt: t.timestamp({ mode: "string" }).notNull(),
-  deletedAt: t.timestamp({ mode: "string" }),
+  createdAt: t.timestamp(),
+  updatedAt: t.timestamp().notNull(),
+  deletedAt: t.timestamp(),
   boardUrl: t.text().notNull(),
   organizationId: t
     .text()
@@ -45,9 +45,9 @@ export const columnsTable = pgTable(
       .references(() => boardsTable.id, { onDelete: "cascade" })
       .notNull(),
     position: t.integer().notNull(),
-    createdAt: t.timestamp({ mode: "string" }),
-    updatedAt: t.timestamp({ mode: "string" }).notNull(),
-    deletedAt: t.timestamp({ mode: "string" }),
+    createdAt: t.timestamp(),
+    updatedAt: t.timestamp().notNull(),
+    deletedAt: t.timestamp(),
   },
   (table) => [t.index("column_board_idx").on(table.boardId)]
 );
@@ -62,9 +62,9 @@ export const tasksTable = pgTable(
       .references(() => columnsTable.id, { onDelete: "cascade" })
       .notNull(),
     position: t.doublePrecision().notNull(),
-    createdAt: t.timestamp({ mode: "string" }).notNull(),
-    updatedAt: t.timestamp({ mode: "string" }).notNull(),
-    deletedAt: t.timestamp({ mode: "string" }),
+    createdAt: t.timestamp().notNull(),
+    updatedAt: t.timestamp().notNull(),
+    deletedAt: t.timestamp(),
   },
   (table) => [t.index("column_id_idx").on(table.columnId)]
 );
@@ -86,7 +86,7 @@ export const boardPermissionsTable = pgTable(
       .references(() => organizationsTable.id, { onDelete: "cascade" })
       .notNull(),
     permission: t.varchar({ length: 255 }).notNull(),
-    createdAt: t.timestamp({ mode: "string" }).notNull().defaultNow(),
+    createdAt: t.timestamp().notNull().defaultNow(),
   },
   (table) => [
     // Ensure user can only have one role per board
@@ -115,9 +115,9 @@ export const notesTable = pgTable("notes", {
   id: t.uuid().primaryKey(),
   name: t.varchar({ length: 255 }).notNull(),
   content: t.text().notNull(),
-  createdAt: t.timestamp({ mode: "string" }),
-  updatedAt: t.timestamp({ mode: "string" }).notNull(),
-  deletedAt: t.timestamp({ mode: "string" }),
+  createdAt: t.timestamp(),
+  updatedAt: t.timestamp().notNull(),
+  deletedAt: t.timestamp(),
   organizationId: t
     .text()
     .references(() => organizationsTable.id, { onDelete: "cascade" })
@@ -142,7 +142,7 @@ export const notePermissionsTable = pgTable(
       .references(() => organizationsTable.id, { onDelete: "cascade" })
       .notNull(),
     permission: t.varchar({ length: 255, enum: ["owner", "editor", "viewer"] }).notNull(),
-    createdAt: t.timestamp({ mode: "string" }).notNull().defaultNow(),
+    createdAt: t.timestamp().notNull().defaultNow(),
   },
   (table) => [
     // Ensure user can only have one role per board

@@ -6,16 +6,14 @@ import {
   jsonContentRequired,
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import { columnsTable } from "../../db/schema/index.js";
 import z from "zod";
 import { ResponseBuilder } from "../../lib/response-builder.js";
 import { zodDbSchema } from "../../db/zod-db-schema.js";
 
-const columnsInsertSchema = createInsertSchema(columnsTable).omit({
+const columnsInsertSchema = zodDbSchema.columnsTable.insert.omit({
   deletedAt: true,
 });
-const columnsSelectSchema = createSelectSchema(columnsTable).omit({
+const columnsSelectSchema = zodDbSchema.columnsTable.select.omit({
   createdAt: true,
   updatedAt: true,
   deletedAt: true,

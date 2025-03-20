@@ -7,19 +7,14 @@ import {
   jsonContentRequired,
 } from "../../lib/schema-helpers.js";
 import { HTTP_STATUS_CODES } from "../../lib/constants.js";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
-import {
-  boardsTable,
-  columnsTable,
-  tasksTable,
-} from "../../db/schema/index.js";
 import { ResponseBuilder } from "../../lib/response-builder.js";
+import { zodDbSchema } from "../../db/zod-db-schema.js";
 
-const createBoardParamsSchema = createInsertSchema(boardsTable).omit({
+const createBoardParamsSchema = zodDbSchema.boardsTable.insert.omit({
   organizationId: true,
 });
 
-const createBoardResponse = createSelectSchema(boardsTable).omit({
+const createBoardResponse = zodDbSchema.boardsTable.select.omit({
   organizationId: true,
   createdAt: true,
   updatedAt: true,
@@ -31,11 +26,10 @@ const importBoardsBodySchema = z.object({
     boardName: z.string(),
     boardUrl: z.string(),
     columns: z.array(
-      createInsertSchema(columnsTable)
-        .pick({ name: true, position: true })
+      zodDbSchema.columnsTable.insert.pick({ name: true, position: true })
         .extend({
           tasks: z.array(
-            createInsertSchema(tasksTable).pick({
+            zodDbSchema.tasksTable.insert.pick({
               columnId: true,
               name: true,
               position: true,

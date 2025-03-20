@@ -72,7 +72,7 @@ export const createNote = async (
   data: Pick<InsertType<"notesTable">, "content" | "name" | "createdAt" | "id">
 ) => {
   await checkNotePermission(authCtx, { action: "create" });
-  const createdAt = data.createdAt ?? new Date().toISOString();
+  const createdAt = data.createdAt ? data.createdAt : new Date();
 
   const createdNote = db.transaction(async (tx) => {
     const result = await db
