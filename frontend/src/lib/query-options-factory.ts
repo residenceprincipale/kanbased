@@ -4,6 +4,7 @@ import { queryClient } from "@/lib/query-client";
 import { handleAuthResponse } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { QueryKey, queryOptions } from "@tanstack/react-query";
+import { setSessionLoaded } from "@/lib/constants";
 
 export function columnsQueryOptions(boardUrl: string) {
   return queryOptions({
@@ -20,9 +21,21 @@ export const boardsQueryOptions = queryOptions({
 
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
-  queryFn: () => authClient.getSession(),
-  // TODO: Need to revisit this later.
-  staleTime: 0,
+  queryFn: async () => {
+    const { error, data } = await authClient.getSession();
+
+    if (error) {
+      throw error;
+    }
+
+    if (data?.user) {
+      setSessionLoaded();
+    }
+
+    return data;
+  },
+  staleTime: Infinity,
+  refetchOnMount: false,
 });
 
 export const activeOrganizationQueryOptions = (
@@ -50,27 +63,31 @@ export const organizationsListQueryOptions = (userId: string) =>
     enabled: !!userId,
   });
 
-export function taskDetailQueryOptions(params: { taskId: string, columnsQueryKey: QueryKey }) {
+export function taskDetailQueryOptions(params: {
+  taskId: string;
+  columnsQueryKey: QueryKey;
+}) {
   return queryOptions({
     ...api.queryOptions("get", "/api/v1/tasks/{taskId}", {
       params: { path: { taskId: params.taskId } },
       staleTime: 0,
     }),
     placeholderData: () => {
-      const columns = queryClient.getQueryData(params.columnsQueryKey) as ColumnsWithTasksResponse;
-      const task = columns?.tasks?.find(task => task.id === params.taskId);
-
+      const columns = queryClient.getQueryData(
+        params.columnsQueryKey
+      ) as ColumnsWithTasksResponse;
+      const task = columns?.tasks?.find((task) => task.id === params.taskId);
 
       return {
-        columnId: task?.columnId ?? '',
-        content: '',
-        createdAt: '',
-        deletedAt: '',
-        id: task?.id ?? '',
-        name: task?.name ?? '',
+        columnId: task?.columnId ?? "",
+        content: "",
+        createdAt: "",
+        deletedAt: "",
+        id: task?.id ?? "",
+        name: task?.name ?? "",
         position: task?.position ?? 0,
-        updatedAt: '',
-      }
+        updatedAt: "",
+      };
     },
   });
 }

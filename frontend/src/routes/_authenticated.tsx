@@ -1,6 +1,7 @@
 import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
+import { isSessionLoaded } from "@/lib/constants";
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
@@ -19,10 +20,10 @@ export const Route = createFileRoute("/_authenticated")({
     );
   },
   beforeLoad: async ({ location }) => {
-    const { error, data } = await queryClient.fetchQuery(sessionQueryOptions);
+    const data = await queryClient.ensureQueryData(sessionQueryOptions);
 
-    if (error) {
-      throw error;
+    if (!isSessionLoaded()) {
+      queryClient.invalidateQueries(sessionQueryOptions);
     }
 
     if (data === null) {

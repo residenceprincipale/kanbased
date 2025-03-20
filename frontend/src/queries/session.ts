@@ -4,15 +4,11 @@ import { useRouter } from "@tanstack/react-router";
 
 export function useSession() {
   const router = useRouter();
-  const { data } = useSuspenseQuery({ ...sessionQueryOptions, refetchOnMount: false, });
+  const { data } = useSuspenseQuery(sessionQueryOptions);
 
-  if (data?.error) {
-    throw data?.error;
-  }
-
-  if (data?.data === null || !data) {
+  if (!data) {
     router.navigate({ to: "/login" });
   }
 
-  return data.data;
+  return data;
 }

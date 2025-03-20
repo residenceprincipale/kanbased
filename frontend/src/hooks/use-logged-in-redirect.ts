@@ -4,9 +4,9 @@ import { useRouter } from "@tanstack/react-router";
 
 export function useLoggedInRedirect() {
   const router = useRouter();
-  const { data } = useQuery({ ...sessionQueryOptions, refetchOnMount: false });
+  const { data } = useQuery(sessionQueryOptions);
 
-  if (data?.data?.session) {
+  if (data?.session) {
     router.navigate({ to: "/" });
   }
 }
