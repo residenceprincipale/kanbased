@@ -35,7 +35,6 @@ export const sessionQueryOptions = queryOptions({
     return data;
   },
   staleTime: Infinity,
-  refetchOnMount: false,
 });
 
 export const activeOrganizationQueryOptions = (
