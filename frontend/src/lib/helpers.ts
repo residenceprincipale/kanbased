@@ -27,7 +27,7 @@ export function transformColumnsQuery(data: ColumnsWithTasksResponse) {
     boardId: data.boardId,
     boardName: data.boardName,
     columns: Array.from(columnWithTasksMap.values()).sort(
-      (a, b) => a.position - b.position
+      (a, b) => a.position - b.position,
     ),
   };
 }
@@ -38,17 +38,17 @@ export function markdownToHtml(markdown: string): string {
   const sanitizedContent = DOMPurify.sanitize(markdown);
   const escapedContent = sanitizedContent.replace(
     /^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/,
-    ""
+    "",
   );
 
   return marked.parse(escapedContent) as string;
 }
 
 export function removeUndefinedKeys<T extends Record<string, any>>(
-  obj: T
+  obj: T,
 ): Partial<T> {
   return Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => value !== undefined)
+    Object.entries(obj).filter(([_, value]) => value !== undefined),
   ) as Partial<T>;
 }
 

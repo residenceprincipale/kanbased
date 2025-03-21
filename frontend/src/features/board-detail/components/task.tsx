@@ -50,7 +50,7 @@ function ViewTask(props: {
         "group mb-2.5 block !cursor-default overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 focus:ring outline-none",
         snapshot.isDragging
           ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
-          : "dark:border-transparent bg-white dark:bg-gray-3"
+          : "dark:border-transparent bg-white dark:bg-gray-3",
       )}
       id={`task-${task.id}`}
       to="."

@@ -6,7 +6,7 @@ export function KeyboardShortcutIndicator(
   props: React.PropsWithChildren<{
     label?: string;
     commandOrCtrlKey?: boolean;
-  }>
+  }>,
 ) {
   const isMobile = useIsMobile();
 

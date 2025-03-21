@@ -30,7 +30,7 @@ export const TabsList = memo(function TabsList() {
                 key={tab.id}
                 className={cn(
                   "px-2.5 py-2 w-32 flex items-center justify-between gap-0.5 rounded-lg border group",
-                  isActiveBoard && "bg-secondary text-secondary-foreground"
+                  isActiveBoard && "bg-secondary text-secondary-foreground",
                 )}
               >
                 <Link
@@ -48,7 +48,7 @@ export const TabsList = memo(function TabsList() {
                   }}
                   className={cn(
                     "shrink-0 rounded-full p-0.5 hover:bg-secondary hover:text-secondary-foreground",
-                    isActiveBoard ? "visible" : "invisible group-hover:visible"
+                    isActiveBoard ? "visible" : "invisible group-hover:visible",
                   )}
                 >
                   <svg

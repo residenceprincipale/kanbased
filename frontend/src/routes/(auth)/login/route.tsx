@@ -64,7 +64,7 @@ function SignIn() {
   });
 
   const handleUserPasswordLogin = async (
-    e: React.FormEvent<HTMLFormElement>
+    e: React.FormEvent<HTMLFormElement>,
   ) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
@@ -165,7 +165,7 @@ function SignIn() {
           <div
             className={cn(
               "w-full gap-2 flex items-center",
-              "justify-between flex-col"
+              "justify-between flex-col",
             )}
           >
             <Button

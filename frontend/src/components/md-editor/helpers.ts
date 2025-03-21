@@ -5,7 +5,7 @@ import {
   highlightActiveLine,
   dropCursor,
   highlightActiveLineGutter,
-  placeholder
+  placeholder,
 } from "@codemirror/view";
 import { Extension, EditorState } from "@codemirror/state";
 import {
@@ -24,24 +24,24 @@ import {
 export const basicExtensions = (params: {
   placeholder: string;
 }): Extension[] => [
-    highlightActiveLineGutter(),
-    highlightSpecialChars(),
-    history(),
-    drawSelection(),
-    dropCursor(),
-    EditorState.allowMultipleSelections.of(true),
-    indentOnInput(),
-    bracketMatching(),
-    closeBrackets(),
-    highlightActiveLine(),
-    highlightSelectionMatches(),
-    placeholder(params.placeholder),
-    keymap.of([
-      ...closeBracketsKeymap,
-      ...defaultKeymap,
-      ...searchKeymap,
-      ...historyKeymap,
-      ...foldKeymap,
-      ...completionKeymap,
-    ]),
-  ];
+  highlightActiveLineGutter(),
+  highlightSpecialChars(),
+  history(),
+  drawSelection(),
+  dropCursor(),
+  EditorState.allowMultipleSelections.of(true),
+  indentOnInput(),
+  bracketMatching(),
+  closeBrackets(),
+  highlightActiveLine(),
+  highlightSelectionMatches(),
+  placeholder(params.placeholder),
+  keymap.of([
+    ...closeBracketsKeymap,
+    ...defaultKeymap,
+    ...searchKeymap,
+    ...historyKeymap,
+    ...foldKeymap,
+    ...completionKeymap,
+  ]),
+];

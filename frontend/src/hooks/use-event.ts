@@ -4,7 +4,7 @@ import { useRef, useCallback, useInsertionEffect } from "react";
 // This gives us a non-reactive effect event callback, it will always use the latest version of
 // the callback, rather than the one that was closed over.
 export function useEffectEvent<T extends (...args: any[]) => any>(
-  fn: T
+  fn: T,
 ): (...funcArgs: Parameters<T>) => ReturnType<T> {
   const ref = useRef(fn);
 

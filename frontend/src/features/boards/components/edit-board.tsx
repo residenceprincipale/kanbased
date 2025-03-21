@@ -23,7 +23,7 @@ export function EditBoard(props: EditBoardModal) {
   const boardUrl = boardName.toLowerCase().split(" ").join("-");
   const { mutate, isPending } = api.useMutation(
     "patch",
-    "/api/v1/boards/{boardId}"
+    "/api/v1/boards/{boardId}",
   );
 
   const handleSubmit: FormEventHandler = (e) => {
@@ -48,7 +48,7 @@ export function EditBoard(props: EditBoardModal) {
           toast.success("Board updated successfully");
           props.onClose();
         },
-      }
+      },
     );
   };
 

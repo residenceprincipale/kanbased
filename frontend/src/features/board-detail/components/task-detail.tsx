@@ -15,11 +15,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 const EditTaskContentLazy = lazy(
-  () => import("@/features/board-detail/components/edit-task-content")
+  () => import("@/features/board-detail/components/edit-task-content"),
 );
 
 const ViewTaskContentLazy = lazy(
-  () => import("@/features/board-detail/components/view-task-content")
+  () => import("@/features/board-detail/components/view-task-content"),
 );
 
 export function TaskDetail(props: {
@@ -100,7 +100,7 @@ export function TaskDetail(props: {
                   <div
                     className={cn(
                       "w-full h-full flex items-center justify-center",
-                      !isTaskContentLoading && "hidden"
+                      !isTaskContentLoading && "hidden",
                     )}
                   >
                     <Skeleton className="w-full h-full" />

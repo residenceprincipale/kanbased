@@ -90,7 +90,7 @@ export function Columns({
 
       // Find the destination column
       const column = columns.find(
-        (col) => col.id === e.destination!.droppableId
+        (col) => col.id === e.destination!.droppableId,
       )!;
 
       // Sort tasks by position

@@ -8,12 +8,11 @@ import { flushSync } from "react-dom";
 export function useForceUpdate() {
   const [_, setForceRender] = useState(false);
 
-
   const forceUpdate = () => {
     flushSync(() => {
       setForceRender((prev) => !prev);
     });
   };
 
-  return forceUpdate
+  return forceUpdate;
 }

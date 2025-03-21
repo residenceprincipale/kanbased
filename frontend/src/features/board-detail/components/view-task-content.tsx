@@ -23,7 +23,7 @@ export default function ViewTaskContent(props: {
     <div
       className={cn(
         "w-full h-full flex flex-col gap-2",
-        props.wrapperClassName
+        props.wrapperClassName,
       )}
     >
       <Button className="ml-auto shrink-0" size="sm" onClick={props.onEdit}>
@@ -36,7 +36,7 @@ export default function ViewTaskContent(props: {
           <div
             className={cn(
               "prose dark:prose-invert h-full max-w-none",
-              props.wrapperClassName
+              props.wrapperClassName,
             )}
             dangerouslySetInnerHTML={{ __html: html }}
           ></div>

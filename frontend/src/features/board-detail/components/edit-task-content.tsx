@@ -44,7 +44,7 @@ export default function EditTaskContent(props: {
         toast.success("Task updated");
         props.afterSave();
       },
-    }
+    },
   );
 
   const {

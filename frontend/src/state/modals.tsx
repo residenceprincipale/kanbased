@@ -46,7 +46,7 @@ export function ModalProvider<T>({ children }: ModalProviderProps<T>) {
       openModal,
       closeModal,
     }),
-    [openModal, closeModal]
+    [openModal, closeModal],
   );
 
   return (

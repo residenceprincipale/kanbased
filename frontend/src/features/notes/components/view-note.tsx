@@ -26,7 +26,7 @@ export function ViewNote(props: {
     <div
       className={cn(
         "w-full h-full flex flex-col gap-8",
-        props.wrapperClassName
+        props.wrapperClassName,
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -45,7 +45,7 @@ export function ViewNote(props: {
           <div
             className={cn(
               "prose dark:prose-invert h-full max-w-none",
-              props.wrapperClassName
+              props.wrapperClassName,
             )}
             dangerouslySetInnerHTML={{ __html: html }}
           ></div>

@@ -45,7 +45,7 @@ export function Column({
             id={`col-${column.id}`}
             className={cn(
               "mx-2",
-              snapshot.isDragging && "!border-gray-10 !shadow-xl"
+              snapshot.isDragging && "!border-gray-10 !shadow-xl",
             )}
           >
             <div className="flex items-center justify-between shrink-0 pt-1">

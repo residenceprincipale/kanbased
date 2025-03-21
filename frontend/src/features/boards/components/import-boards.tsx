@@ -34,7 +34,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
       onError: () => {
         toast.error("Error importing boards");
       },
-    }
+    },
   );
 
   const handleImport = (data: any) => {

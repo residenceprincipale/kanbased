@@ -55,9 +55,7 @@ function NoteItem({ note }: { note: Note }) {
 export function NoteList(props: { notes: NoteListResponse["notes"] }) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {props.notes?.map((note) => (
-        <NoteItem note={note} key={note.id} />
-      ))}
+      {props.notes?.map((note) => <NoteItem note={note} key={note.id} />)}
     </ul>
   );
 }

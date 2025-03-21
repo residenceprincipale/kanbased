@@ -12,7 +12,7 @@ import { TaskDetailPage } from "./-actions";
 import { useMemo } from "react";
 
 export const Route = createFileRoute(
-  "/_authenticated/_layout/boards_/$boardUrl"
+  "/_authenticated/_layout/boards_/$boardUrl",
 )({
   component: BoardPage,
   validateSearch: (search): { taskId?: string } => {
@@ -23,7 +23,7 @@ export const Route = createFileRoute(
   loader: async (ctx): Promise<BreadcrumbsData> => {
     const { boardUrl } = ctx.params;
     const { boardName } = await queryClient.ensureQueryData(
-      columnsQueryOptions(boardUrl)
+      columnsQueryOptions(boardUrl),
     );
 
     return {
@@ -51,7 +51,7 @@ function BoardPage() {
   const boardName = data.boardName;
   const columnsQueryKey = useMemo(
     () => columnsQueryOptions(boardUrl).queryKey,
-    [boardUrl]
+    [boardUrl],
   );
 
   // Not sure why. The error component is not being rendered when there is an error.

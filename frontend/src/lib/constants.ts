@@ -27,7 +27,6 @@ export const isMac =
   typeof window !== "undefined" &&
   navigator.platform.toUpperCase().indexOf("MAC") >= 0;
 
-
 let sessionLoaded = false;
 
 export function setSessionLoaded() {

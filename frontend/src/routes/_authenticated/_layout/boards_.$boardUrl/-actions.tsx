@@ -21,7 +21,7 @@ export function TaskDetailPage(props: { columnsQueryKey: QueryKey }) {
 
     setTimeout(() => {
       const el = document.querySelector(
-        `#task-${taskId}`
+        `#task-${taskId}`,
       ) as HTMLElement | null;
       el?.focus();
     }, 100);

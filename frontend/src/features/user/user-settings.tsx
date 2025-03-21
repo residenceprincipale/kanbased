@@ -33,7 +33,7 @@ export function UserSettings() {
         onSuccess: () => {
           toast.success("User updated successfully");
         },
-      }
+      },
     );
   };
 
@@ -61,7 +61,7 @@ export function UserSettings() {
         onSettled: () => {
           URL.revokeObjectURL(url);
         },
-      }
+      },
     );
   };
 

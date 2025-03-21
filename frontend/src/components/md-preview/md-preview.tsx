@@ -9,7 +9,7 @@ export default function MdPreview(props: {
       <div
         className={cn(
           "prose dark:prose-invert h-full max-w-none",
-          props.wrapperClassName
+          props.wrapperClassName,
         )}
         dangerouslySetInnerHTML={{ __html: props.html }}
       ></div>

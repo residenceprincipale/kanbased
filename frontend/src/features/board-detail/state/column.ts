@@ -1,7 +1,7 @@
-import { useModalControls, useModalState } from "@/state/modals"
+import { useModalControls, useModalState } from "@/state/modals";
 
 export interface CreateColumnModal {
-  type: 'create-column'
+  type: "create-column";
 }
 
 type ColumnModalState = CreateColumnModal | null;

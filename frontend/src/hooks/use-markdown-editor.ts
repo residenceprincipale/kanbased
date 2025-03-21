@@ -20,12 +20,12 @@ export function useMarkdownEditorPreviewToggle({
   isDirty: boolean;
 }) {
   const [parsedHtml, setParsedHtml] = useState(() =>
-    markdownToHtml(defaultContent)
+    markdownToHtml(defaultContent),
   );
   const [mode, setMode] = useState<Mode>("write");
   const [editorMode, setEditorMode] = useLocalStorage<EditorMode>(
     "preferred-editor-mode",
-    "standard"
+    "standard",
   );
   const toggleModeKey = "M";
 
@@ -79,7 +79,7 @@ export function useMarkdownEditorPreviewToggle({
       if (!hasChanges()) return false;
 
       const shouldLeave = confirm(
-        "There are unsaved changes. Are you sure you want to leave?"
+        "There are unsaved changes. Are you sure you want to leave?",
       );
       return !shouldLeave;
     },

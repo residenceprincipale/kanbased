@@ -1,4 +1,3 @@
-
 import { router } from "@/main";
 import { routeTree } from "@/routeTree.gen";
 import { getRouteApi, RouteIds } from "@tanstack/react-router";
@@ -12,7 +11,9 @@ type SearchParamResult<TPath> = UseSearchResult<
   unknown
 >;
 
-export class UrlState<TPath extends Constrain<string, RouteIds<typeof routeTree>>> {
+export class UrlState<
+  TPath extends Constrain<string, RouteIds<typeof routeTree>>,
+> {
   private route;
 
   constructor(path: TPath) {
@@ -37,7 +38,7 @@ export class UrlState<TPath extends Constrain<string, RouteIds<typeof routeTree>
   set<TKey extends keyof SearchParamResult<TPath>>(
     key: TKey,
     updatedValue: SearchParamResult<TPath>[TKey],
-    replace?: boolean
+    replace?: boolean,
   ) {
     router.navigate({
       // @ts-expect-error
@@ -51,7 +52,7 @@ export class UrlState<TPath extends Constrain<string, RouteIds<typeof routeTree>
 
   remove<TKey extends keyof SearchParamResult<TPath>>(
     key: TKey,
-    replace?: boolean
+    replace?: boolean,
   ) {
     router.navigate({
       // @ts-expect-error

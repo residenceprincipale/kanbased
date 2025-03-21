@@ -18,7 +18,7 @@ import { DeleteBoardModal } from "@/features/boards/state/board";
 export function DeleteBoard(props: DeleteBoardModal) {
   const deleteBoardMutation = api.useMutation(
     "patch",
-    "/api/v1/boards/{boardId}/toggle-delete"
+    "/api/v1/boards/{boardId}/toggle-delete",
   );
   const boardsQueryKey = boardsQueryOptions.queryKey;
 
@@ -33,13 +33,13 @@ export function DeleteBoard(props: DeleteBoardModal) {
           onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: boardsQueryKey });
           },
-        }
+        },
       ),
       {
         loading: "Restoring board...",
         success: "Board restored successfully",
         error: "Failed to restore board",
-      }
+      },
     );
   };
 
@@ -67,12 +67,12 @@ export function DeleteBoard(props: DeleteBoardModal) {
               >
                 Undo
               </button>
-            </div>
+            </div>,
           );
 
           props.onClose();
         },
-      }
+      },
     );
   };
 

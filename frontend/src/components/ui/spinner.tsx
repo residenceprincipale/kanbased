@@ -54,7 +54,7 @@ const Spinner = React.forwardRef<HTMLSpanElement, SpinnerProps>(
     }
 
     return renderSpinnerIcon;
-  }
+  },
 );
 
 Spinner.displayName = "Spinner";

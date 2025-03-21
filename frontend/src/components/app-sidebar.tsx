@@ -29,7 +29,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <div
         className={cn(
           "mt-auto p-2 flex flex-col gap-2",
-          !isCollapsed && "flex-row justify-between"
+          !isCollapsed && "flex-row justify-between",
         )}
       >
         <ThemeToggle />

@@ -192,7 +192,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
         <div
           className={cn(
             `px-3 py-1 text-xs shrink-0 text-muted-foreground bg-muted uppercase font-bold w-fit rounded`,
-            props.defaultMode !== "vim" && "invisible"
+            props.defaultMode !== "vim" && "invisible",
           )}
         >
           {vimMode} Mode

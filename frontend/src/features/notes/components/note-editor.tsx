@@ -77,7 +77,7 @@ export default function NoteEditor(props: NoteEditorProps) {
         toast.success("Note updated");
         props.afterSave({ noteId });
       },
-    }
+    },
   );
 
   const createNoteMutation = api.useMutation("post", "/api/v1/notes", {

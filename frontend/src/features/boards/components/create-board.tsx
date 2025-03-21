@@ -53,11 +53,11 @@ export function CreateBoard(props: CreateBoardModal) {
               >
                 View
               </Link>
-            </div>
+            </div>,
           );
           props.onClose();
         },
-      }
+      },
     );
   };
 

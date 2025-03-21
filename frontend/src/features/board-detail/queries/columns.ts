@@ -3,10 +3,16 @@ import { transformColumnsQuery } from "@/lib/helpers";
 import { api } from "@/lib/openapi-react-query";
 import { columnsQueryOptions } from "@/lib/query-options-factory";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
-import { QueryKey, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  QueryKey,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 
-export type ColumnsWithTasksQueryData = ReturnType<typeof transformColumnsQuery>;
+export type ColumnsWithTasksQueryData = ReturnType<
+  typeof transformColumnsQuery
+>;
 
 export function useColumnsSuspenseQuery(params: { boardUrl: string }) {
   return useSuspenseQuery({
@@ -42,12 +48,12 @@ export function useCreateColumnMutation(params: { columnsQueryKey: QueryKey }) {
               },
             ],
           };
-        }
+        },
       );
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
-      }
+      };
     },
     onError: (_err, _variables, rollback: any) => {
       rollback?.();
@@ -82,12 +88,12 @@ export function useMoveColumnsMutation(params: { columnsQueryKey: QueryKey }) {
             ...oldData,
             columns: oldData.columns.map((col) => {
               const updatedPosition = updatedColPositions.find(
-                (updatedCol) => updatedCol.id === col.id
+                (updatedCol) => updatedCol.id === col.id,
               )?.position;
               return { ...col, position: updatedPosition ?? col.position };
             }),
           };
-        }
+        },
       );
 
       // Don't know why, but the columns are not updated immediately after the move mutation.
@@ -96,7 +102,7 @@ export function useMoveColumnsMutation(params: { columnsQueryKey: QueryKey }) {
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
-      }
+      };
     },
 
     onError: (_err, _variables, rollback: any) => {
@@ -132,17 +138,17 @@ export function useEditColumnMutation(params: {
             columns: oldData.columns.map((column) =>
               column.id === variables.params.path.columnId
                 ? { ...column, name: variables.body.name }
-                : column
+                : column,
             ),
           };
-        }
+        },
       );
 
       params.afterOptimisticUpdate?.();
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
-      }
+      };
     },
 
     onError: (_err, _variables, rollback: any) => {
@@ -167,18 +173,18 @@ export function useDeleteColumnMutation(params: { columnsQueryKey: QueryKey }) {
           return {
             ...oldData,
             columns: oldData.columns.filter(
-              (column) => column.id !== variables.params.path.columnId
+              (column) => column.id !== variables.params.path.columnId,
             ),
             tasks: oldData.tasks.filter(
-              (task) => task.columnId !== variables.params.path.columnId
+              (task) => task.columnId !== variables.params.path.columnId,
             ),
           };
-        }
+        },
       );
 
       return () => {
         queryClient.setQueryData(queryKey, previousData);
-      }
+      };
     },
 
     onError: (_err, _variables, rollback: any) => {

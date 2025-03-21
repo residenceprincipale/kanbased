@@ -1,54 +1,54 @@
-import * as React from 'react'
-import { createFileRoute, Link } from '@tanstack/react-router'
-import { Button, buttonVariants } from '@/components/ui/button'
+import * as React from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
   CardDescription,
-} from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useRouter } from '@tanstack/react-router'
-import { Spinner } from '@/components/ui/spinner'
-import { authClient } from '@/lib/auth'
-import { toast } from 'sonner'
-import { useMutation } from '@tanstack/react-query'
-import { handleAuthResponse } from '@/lib/utils'
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useRouter } from "@tanstack/react-router";
+import { Spinner } from "@/components/ui/spinner";
+import { authClient } from "@/lib/auth";
+import { toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import { handleAuthResponse } from "@/lib/utils";
 
-export const Route = createFileRoute('/(auth)/reset-password')({
+export const Route = createFileRoute("/(auth)/reset-password")({
   component: ResetPassword,
-})
+});
 
 function ResetPassword() {
-  const router = useRouter()
+  const router = useRouter();
   const resetPasswordMutation = useMutation({
     mutationFn: async (data: { newPassword: string; token: string }) => {
-      const res = await authClient.resetPassword(data)
-      return handleAuthResponse(res)
+      const res = await authClient.resetPassword(data);
+      return handleAuthResponse(res);
     },
-  })
+  });
 
-  const token = new URLSearchParams(window.location.search).get('token')
+  const token = new URLSearchParams(window.location.search).get("token");
 
   if (!token) {
     return (
       <div className="flex h-svh w-full items-center justify-center">
         <div className="space-y-2">
           <p>Invalid Token</p>
-          <Link to="/" className={buttonVariants({ variant: 'outline' })}>
+          <Link to="/" className={buttonVariants({ variant: "outline" })}>
             Home
           </Link>
         </div>
       </div>
-    )
+    );
   }
 
   const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formData = new FormData(e.target as HTMLFormElement)
-    const newPassword = formData.get('password') as string
+    e.preventDefault();
+    const formData = new FormData(e.target as HTMLFormElement);
+    const newPassword = formData.get("password") as string;
 
     toast.promise(
       () =>
@@ -59,24 +59,24 @@ function ResetPassword() {
           },
           {
             onSuccess: () => {
-              toast.success('Password reset successfully')
-              router.navigate({ to: '/' })
+              toast.success("Password reset successfully");
+              router.navigate({ to: "/" });
             },
             onError: (error) => {
-              if ('message' in error) {
-                toast.error(error.message as string)
+              if ("message" in error) {
+                toast.error(error.message as string);
               }
             },
           },
         ),
       {
-        loading: 'Resetting password...',
-        success: 'Password reset successfully',
-        error: 'Failed to reset password',
-        position: 'bottom-center',
+        loading: "Resetting password...",
+        success: "Password reset successfully",
+        error: "Failed to reset password",
+        position: "bottom-center",
       },
-    )
-  }
+    );
+  };
 
   return (
     <form
@@ -112,5 +112,5 @@ function ResetPassword() {
         </CardContent>
       </Card>
     </form>
-  )
+  );
 }

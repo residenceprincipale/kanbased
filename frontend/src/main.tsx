@@ -48,7 +48,7 @@ if (!rootElement.innerHTML) {
       <AppWrapper>
         <App />
       </AppWrapper>
-    </PersistQueryClientProvider>
+    </PersistQueryClientProvider>,
   );
 }
 

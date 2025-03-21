@@ -2,10 +2,12 @@ import { RefObject, useEffect } from "react";
 
 type Handler = (event: MouseEvent | TouchEvent) => void;
 
-export function useInteractiveOutside<T extends HTMLElement | null = HTMLElement>(
+export function useInteractiveOutside<
+  T extends HTMLElement | null = HTMLElement,
+>(
   ref: RefObject<T>,
   handler: Handler,
-  mouseEvent: "mousedown" | "mouseup" = "mousedown"
+  mouseEvent: "mousedown" | "mouseup" = "mousedown",
 ): void {
   useEffect(() => {
     const listener = (event: MouseEvent | TouchEvent) => {
@@ -28,4 +30,4 @@ export function useInteractiveOutside<T extends HTMLElement | null = HTMLElement
       document.removeEventListener("touchstart", listener);
     };
   }, [ref, handler, mouseEvent]);
-} 
+}

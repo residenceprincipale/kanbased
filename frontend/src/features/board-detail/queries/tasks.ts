@@ -5,7 +5,10 @@ import { useForceUpdate } from "@/hooks/use-force-update";
 import { toast } from "sonner";
 import { removeUndefinedKeys } from "@/lib/helpers";
 
-export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey, onOptimisticUpdate?: () => void }) {
+export function useCreateTaskMutation(params: {
+  columnsQueryKey: QueryKey;
+  onOptimisticUpdate?: () => void;
+}) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
   const mutationKey = ["post", "/api/v1/tasks"] as const;
@@ -32,7 +35,7 @@ export function useCreateTaskMutation(params: { columnsQueryKey: QueryKey, onOpt
               },
             ],
           };
-        }
+        },
       );
 
       params.onOptimisticUpdate?.();
@@ -74,7 +77,7 @@ export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
         variables.body.map((task) => [
           task.id,
           { columnId: task.columnId, position: task.position },
-        ])
+        ]),
       );
 
       queryClient.setQueryData(
@@ -85,10 +88,10 @@ export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
             tasks: oldData.tasks.map((task) =>
               taskPositionMap.has(task.id)
                 ? { ...task, ...taskPositionMap.get(task.id) }
-                : task
+                : task,
             ),
           };
-        }
+        },
       );
 
       // Don't know why, but the columns are not updated immediately.
@@ -112,7 +115,10 @@ export function useMoveTasksMutation(params: { columnsQueryKey: QueryKey }) {
   });
 }
 
-export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, afterOptimisticUpdate?: () => void }) {
+export function useUpdateTaskMutation(params: {
+  columnsQueryKey: QueryKey;
+  afterOptimisticUpdate?: () => void;
+}) {
   const queryClient = useQueryClient();
   const queryKey = params.columnsQueryKey;
   const mutationKey = ["patch", "/api/v1/tasks/{taskId}"] as const;
@@ -123,13 +129,20 @@ export function useUpdateTaskMutation(params: { columnsQueryKey: QueryKey, after
       await queryClient.cancelQueries({ queryKey });
 
       const previousData = queryClient.getQueryData(queryKey);
-      queryClient.setQueryData(queryKey, (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
-        const updated = removeUndefinedKeys(variables.body);
-        return {
-          ...oldData,
-          tasks: oldData.tasks.map((task) => task.id === variables.params.path.taskId ? { ...task, ...updated } : task)
-        }
-      })
+      queryClient.setQueryData(
+        queryKey,
+        (oldData: ColumnsWithTasksResponse): ColumnsWithTasksResponse => {
+          const updated = removeUndefinedKeys(variables.body);
+          return {
+            ...oldData,
+            tasks: oldData.tasks.map((task) =>
+              task.id === variables.params.path.taskId
+                ? { ...task, ...updated }
+                : task,
+            ),
+          };
+        },
+      );
 
       forceUpdate();
       params.afterOptimisticUpdate?.();
@@ -167,10 +180,10 @@ export function useDeleteTaskMutation(params: { columnsQueryKey: QueryKey }) {
           return {
             ...oldData,
             tasks: oldData.tasks.filter(
-              (task) => task.id !== variables.params.path.taskId
+              (task) => task.id !== variables.params.path.taskId,
             ),
           };
-        }
+        },
       );
 
       return () => {

@@ -39,7 +39,7 @@ export const sessionQueryOptions = queryOptions({
 
 export const activeOrganizationQueryOptions = (
   organizationId: string | null | undefined,
-  userId: string
+  userId: string,
 ) =>
   queryOptions({
     queryKey: [userId, "organizations", organizationId],
@@ -73,7 +73,7 @@ export function taskDetailQueryOptions(params: {
     }),
     placeholderData: () => {
       const columns = queryClient.getQueryData(
-        params.columnsQueryKey
+        params.columnsQueryKey,
       ) as ColumnsWithTasksResponse;
       const task = columns?.tasks?.find((task) => task.id === params.taskId);
 

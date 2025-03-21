@@ -4,7 +4,6 @@ import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { handleAuthResponse, UserViewableError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-
 export function useUploadUserImageMutation() {
   return useMutation({
     mutationFn: async (body: { file: File }) => {
@@ -14,18 +13,28 @@ export function useUploadUserImageMutation() {
       }
 
       // Validate file type
-      const allowedTypes = ["image/jpeg", "image/png", "image/gif", "image/webp"];
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
 
       if (!allowedTypes.includes(body.file.type)) {
-        throw new UserViewableError("Please upload a valid image file (JPEG, PNG, GIF, or WebP)");
+        throw new UserViewableError(
+          "Please upload a valid image file (JPEG, PNG, GIF, or WebP)",
+        );
       }
 
-      const res = await fetchClient.POST("/api/v1/storage/user-image-presigned-url", {
-        body: {
-          fileName: body.file.name,
-          contentType: body.file.type,
+      const res = await fetchClient.POST(
+        "/api/v1/storage/user-image-presigned-url",
+        {
+          body: {
+            fileName: body.file.name,
+            contentType: body.file.type,
+          },
         },
-      });
+      );
 
       if (res.error) {
         throw new UserViewableError("Failed to upload image");
@@ -47,15 +56,17 @@ export function useUploadUserImageMutation() {
 
       return { imageUrl: res.data.imageUrl };
     },
-
   });
 }
 
 export function useUpdateUserMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: { name: string, image?: string }) => {
-      const res = await authClient.updateUser({ name: body.name, image: body.image });
+    mutationFn: async (body: { name: string; image?: string }) => {
+      const res = await authClient.updateUser({
+        name: body.name,
+        image: body.image,
+      });
       return handleAuthResponse(res);
     },
 
