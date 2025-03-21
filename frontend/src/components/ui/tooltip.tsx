@@ -44,3 +44,33 @@ export function TooltipRoot({
 }
 
 export { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider };
+
+export function WrappedTooltip({
+  children,
+  tooltipProps = {},
+  providerProps,
+  tooltipContentProps = {},
+  asChild = true,
+}: React.PropsWithChildren<{
+  tooltipProps?: React.ComponentProps<typeof Tooltip>;
+  providerProps?: React.ComponentProps<typeof TooltipProvider>;
+  tooltipContentProps?: React.ComponentProps<typeof TooltipContent>;
+  asChild?: boolean;
+}>) {
+  const [trigger, content] = React.Children.toArray(children);
+
+  if (!trigger || !content) {
+    throw new Error("WrappedTooltip must have a trigger and content");
+  }
+
+  return (
+    <TooltipProvider {...(providerProps ?? {})}>
+      <Tooltip {...tooltipProps}>
+        {asChild ? <TooltipTrigger asChild>{trigger}</TooltipTrigger> : trigger}
+        <TooltipContent {...tooltipContentProps}>{content}</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+WrappedTooltip.displayName = "WrappedTooltip";

@@ -11,12 +11,6 @@ import {
 } from "@/components/ui/sidebar";
 import { NavBoards } from "@/components/nav-boards";
 import { ThemeToggle } from "./theme-toggle";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
@@ -39,12 +33,6 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         )}
       >
         <ThemeToggle />
-        <Tooltip delayDuration={300}>
-          <TooltipTrigger asChild>
-            <SidebarTrigger className="self-center" />
-          </TooltipTrigger>
-          <TooltipContent>Toggle sidebar (⌘+B)</TooltipContent>
-        </Tooltip>
       </div>
       <SidebarRail />
     </Sidebar>
