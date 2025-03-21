@@ -19,7 +19,9 @@ export const CustomizedTextarea = React.forwardRef<
     input.style.alignSelf = "start";
     input.style.height = "auto";
     // offsetHeight - clientHeight accounts for the border/padding.
-    input.style.height = `${input.scrollHeight + (input.offsetHeight - input.clientHeight)}px`;
+    input.style.height = `${
+      input.scrollHeight + (input.offsetHeight - input.clientHeight)
+    }px`;
     input.style.overflow = prevOverflow;
     input.style.alignSelf = prevAlignment;
   };
@@ -27,9 +29,22 @@ export const CustomizedTextarea = React.forwardRef<
   const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === "Enter" && event.shiftKey) {
       event.preventDefault();
-      event.currentTarget.value += "\n";
-      onHeightChange(event.currentTarget);
-      event.currentTarget.scrollIntoView({
+      const textarea = event.currentTarget;
+      const selectionStart = textarea.selectionStart;
+      const selectionEnd = textarea.selectionEnd;
+      const value = textarea.value;
+
+      // Insert newline at cursor position
+      textarea.value =
+        value.substring(0, selectionStart) +
+        "\n" +
+        value.substring(selectionEnd);
+
+      // Move cursor position after the inserted newline
+      textarea.selectionStart = textarea.selectionEnd = selectionStart + 1;
+
+      onHeightChange(textarea);
+      textarea.scrollIntoView({
         block: "nearest",
       });
     }
