@@ -13,7 +13,7 @@ import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import { useKeyDown } from "@/hooks/use-keydown";
-import { Undo2 } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -133,8 +133,9 @@ export default function EditTaskContent(props: {
                   variant="secondary"
                   size="icon"
                   className="h-9"
+                  onClick={props.exitEditorWithoutSaving}
                 >
-                  <Undo2 />
+                  <ArrowLeft />
                 </Button>
               </TooltipTrigger>
               <TooltipContent side="bottom">

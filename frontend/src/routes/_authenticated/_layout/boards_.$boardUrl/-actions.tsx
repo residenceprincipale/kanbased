@@ -17,6 +17,7 @@ export function TaskDetailPage(props: { columnsQueryKey: QueryKey }) {
     router.navigate({
       to: ".",
       search: { taskId: undefined },
+      replace: true,
     });
 
     setTimeout(() => {
