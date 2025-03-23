@@ -1,17 +1,17 @@
 import { getRouteApi, useRouter } from "@tanstack/react-router";
 import NoteEditor from "@/features/notes/components/note-editor";
-import { NoteListResponse } from "@/types/api-response-types";
+import { NoteResponse } from "@/types/api-response-types";
+import { focusElementWithDelay } from "@/lib/helpers";
 
 const routeApi = getRouteApi("/_authenticated/_layout/notes_/$noteId");
 
-export function Actions(props: { note: NoteListResponse["notes"][number] }) {
+export function Actions(props: { note: NoteResponse }) {
   const router = useRouter();
   const { editNoteId } = routeApi.useSearch();
 
-  if (!editNoteId) return null;
-
-  const clearParams = () => {
-    router.navigate({ to: ".", search: undefined });
+  const handleClose = () => {
+    router.navigate({ to: ".", search: undefined, replace: true });
+    focusElementWithDelay(document.getElementById("edit-note-button"));
   };
 
   if (editNoteId) {
@@ -21,9 +21,8 @@ export function Actions(props: { note: NoteListResponse["notes"][number] }) {
         noteId={editNoteId}
         content={props.note.content}
         title={props.note.name}
-        exitEditorWithoutSaving={clearParams}
-        afterSave={clearParams}
-        onClose={clearParams}
+        afterSave={handleClose}
+        onClose={handleClose}
       />
     );
   }

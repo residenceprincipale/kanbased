@@ -42,18 +42,12 @@ export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
 
 function RouteComponent() {
   const { noteQueryOptions } = Route.useLoaderData();
+  const { editNoteId } = Route.useSearch();
   const { data } = useSuspenseQuery(noteQueryOptions);
-  const router = useRouter();
 
   return (
     <div className="py-4 px-6">
-      <ViewNote
-        name={data.name}
-        content={data.content}
-        onEdit={() => {
-          router.navigate({ to: ".", search: { editNoteId: data.id } });
-        }}
-      />
+      <ViewNote note={data} isEditing={!!editNoteId} />
 
       <Actions note={data} />
     </div>

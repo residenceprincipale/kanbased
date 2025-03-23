@@ -1,26 +1,37 @@
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { Button } from "@/components/ui/button";
-import { useKeyDown } from "@/hooks/use-keydown";
+import { buttonVariants } from "@/components/ui/button";
 import { markdownToHtml } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
-import { useMemo } from "react";
+import { NoteResponse } from "@/types/api-response-types";
+import { Link, useRouter } from "@tanstack/react-router";
+import { useEffect, useMemo } from "react";
 
 export function ViewNote(props: {
-  name: string;
-  content: string;
+  note: NoteResponse;
   wrapperClassName?: string;
-  onEdit: () => void;
+  isEditing: boolean;
 }) {
-  const html = useMemo(() => markdownToHtml(props.content), [props.content]);
+  const router = useRouter();
 
-  useKeyDown((e) => {
-    const isCtrlKey = e.metaKey || e.ctrlKey;
+  const html = useMemo(
+    () => markdownToHtml(props.note.content),
+    [props.note.content],
+  );
 
-    if (isCtrlKey && e.key === "e") {
-      e.preventDefault();
-      props.onEdit();
-    }
-  });
+  useEffect(() => {
+    if (props.isEditing) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "e") {
+        e.preventDefault();
+        router.navigate({ to: ".", search: { editNoteId: props.note.id } });
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [props.isEditing]);
 
   return (
     <div
@@ -30,14 +41,18 @@ export function ViewNote(props: {
       )}
     >
       <div className="flex items-center justify-between gap-2">
-        <h1 className="text-2xl font-bold">{props.name}</h1>
+        <h1 className="text-2xl font-bold">{props.note.name}</h1>
 
-        <Button className="shrink-0" size="sm" onClick={props.onEdit}>
+        <Link
+          to="."
+          search={{ editNoteId: props.note.id }}
+          className={buttonVariants({ size: "sm" })}
+          replace
+          id="edit-note-button"
+        >
           Edit
-          <KeyboardShortcutIndicator commandOrCtrlKey>
-            E
-          </KeyboardShortcutIndicator>
-        </Button>
+          <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>
+        </Link>
       </div>
 
       <div className="flex-1 h-full overflow-y-auto">

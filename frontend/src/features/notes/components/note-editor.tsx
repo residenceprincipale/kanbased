@@ -1,6 +1,5 @@
-import { useImperativeHandle, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import {
-  CodeMirrorEditorRef,
   CodeMirrorEditorRefData,
   EditorMode,
 } from "@/components/md-editor/md-editor";
@@ -14,12 +13,6 @@ import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import { useKeyDown } from "@/hooks/use-keydown";
-import { Undo2 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useQueryClient } from "@tanstack/react-query";
 import { getId } from "@/lib/utils";
 import { flushSync } from "react-dom";
@@ -31,12 +24,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Suspense } from "react";
-import { Input } from "@/components/ui/input";
 import { EditableText } from "@/components/editable-text";
 import { getNoteQueryOptions } from "@/lib/query-options-factory";
 
 type CommonProps = {
-  exitEditorWithoutSaving: () => void;
   afterSave: (data: { noteId: string }) => void;
   onClose: () => void;
 };
@@ -126,7 +117,7 @@ export default function NoteEditor(props: NoteEditorProps) {
 
     if (isCtrlKey && e.shiftKey && e.key === "e") {
       e.preventDefault();
-      props.exitEditorWithoutSaving();
+      props.onClose();
     }
   });
 
@@ -174,6 +165,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
         onOpenAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => {
           const vimMode = editorRef.current?.getVimMode();
 
@@ -281,7 +273,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                       onChange={handleContentChange}
                       key={editorMode}
                       onSave={handleSave}
-                      onExitEditorWithoutSaving={props.exitEditorWithoutSaving}
+                      onExitEditorWithoutSaving={props.onClose}
                       placeholder="Write your note here. The first line will be used as the title"
                     />
                   </div>
