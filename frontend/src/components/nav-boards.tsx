@@ -53,6 +53,7 @@ export function NavBoards() {
                     <SidebarMenuSubItem key={board.id}>
                       <SidebarMenuSubButton asChild>
                         <Link
+                          activeProps={{ className: "!bg-accent" }}
                           to="/boards/$boardUrl"
                           params={{ boardUrl: board.boardUrl }}
                         >

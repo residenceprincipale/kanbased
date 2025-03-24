@@ -12,10 +12,23 @@ import {
 import { NavBoards } from "@/components/nav-boards";
 import { ThemeToggle } from "./theme-toggle";
 import { cn } from "@/lib/utils";
+import { NavNotes } from "@/components/nav-notes";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   const { state } = useSidebar();
   const isCollapsed = state === "collapsed";
+
+  React.useEffect(() => {
+    const activeSidebarButton = document.querySelector(
+      '[data-sidebar="menu-sub-button"][data-status="active"]',
+    );
+
+    if (activeSidebarButton) {
+      activeSidebarButton.scrollIntoView({
+        block: "nearest",
+      });
+    }
+  }, []);
 
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -23,12 +36,13 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         <NavUser />
         <Separator />
       </SidebarHeader>
-      <SidebarContent>
+      <SidebarContent className="!gap-0">
         <NavBoards />
+        <NavNotes />
       </SidebarContent>
       <div
         className={cn(
-          "mt-auto p-2 flex flex-col gap-2",
+          "mt-auto p-2 flex flex-col gap-2 shrink-0",
           !isCollapsed && "flex-row justify-between",
         )}
       >

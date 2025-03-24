@@ -79,9 +79,22 @@ export default {
             opacity: "1",
           },
         },
+
+        "collapsible-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-collapsible-content-height)" },
+        },
+        "collapsible-up": {
+          from: { height: "var(--radix-collapsible-content-height)" },
+          to: { height: "0" },
+        },
       },
       animation: {
         "spinner-leaf-fade": "spinner-leaf-fade 800ms linear infinite",
+        "collapsible-down":
+          "collapsible-down 200ms cubic-bezier(0.16, 1, 0.3, 1)",
+        "collapsible-up":
+          "collapsible-up 200ms cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },
