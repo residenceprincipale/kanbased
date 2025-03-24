@@ -14,6 +14,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
   const { theme, updateTheme } = useAppContext();
@@ -28,8 +29,7 @@ export function ThemeToggle() {
             <DropdownMenuTrigger asChild>
               <Button
                 variant="ghost"
-                size="icon"
-                className="w-full justify-start px-4 py-2"
+                className={cn("w-full justify-start", isCollapsed && "px-3")}
               >
                 <div className="flex items-center">
                   <div className="relative flex h-5 w-5 shrink-0 items-center">

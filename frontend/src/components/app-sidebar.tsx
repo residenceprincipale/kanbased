@@ -5,6 +5,7 @@ import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
   useSidebar,
@@ -32,7 +33,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
   return (
     <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader className="flex flex-col gap-2">
+      <SidebarHeader>
         <NavUser />
         <Separator />
       </SidebarHeader>
@@ -40,14 +41,10 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
         <NavBoards />
         <NavNotes />
       </SidebarContent>
-      <div
-        className={cn(
-          "mt-auto p-2 flex flex-col gap-2 shrink-0",
-          !isCollapsed && "flex-row justify-between",
-        )}
-      >
+
+      <SidebarFooter>
         <ThemeToggle />
-      </div>
+      </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
