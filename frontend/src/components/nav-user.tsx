@@ -131,21 +131,23 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground !py-0"
             >
               <Avatar className="h-8 w-8">
                 <AvatarImage src={user.image!} alt={user.name} />
                 <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="font-semibold truncate">{user.name}</span>
+                <span className="font-medium truncate">{user.name}</span>
 
                 {organizationQuery.isLoading ? (
                   <div className="animate-pulse bg-gray-4 w-32 h-4 rounded-md" />
                 ) : (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Building2 className="h-4 w-4" />
-                    <span>{organizationQuery?.data?.name}</span>
+                    <Building2 className="h-3 w-3 shrink-0" />
+                    <span className="truncate">
+                      {organizationQuery?.data?.name}
+                    </span>
                   </div>
                 )}
               </div>
