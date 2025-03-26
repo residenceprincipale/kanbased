@@ -11,6 +11,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { Separator } from "@/components/ui/separator";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
@@ -39,8 +40,7 @@ function RouteComponent() {
             <TooltipContent side="right">Toggle sidebar (⌘+B)</TooltipContent>
           </Tooltip>
 
-          <BackButton />
-
+          <Separator orientation="vertical" className="mr-2 h-4" />
           <TsrBreadcrumbs />
         </div>
         <div className="flex-1 min-h-0">

@@ -1,72 +1,36 @@
 "use client";
 
-import { ChevronRight, KanbanSquare } from "lucide-react";
-import { useState } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+import { KanbanSquare } from "lucide-react";
+import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@/components/ui/spinner";
-import { Link } from "@tanstack/react-router";
+import { linkOptions } from "@tanstack/react-router";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
+import { NavGroupType } from "@/components/nav-group";
+import { NavGroup } from "@/components/nav-group";
 
 export function NavBoards() {
-  const [open, setOpen] = useState(true);
-  const { data: boards, isLoading, isError } = useQuery(boardsQueryOptions);
+  const { data: boards, isLoading } = useQuery(boardsQueryOptions);
+
+  const navGroup: NavGroupType = {
+    title: "Boards",
+    linkProps: linkOptions({ to: "/boards" }),
+    icon: KanbanSquare,
+    isItemsLoading: isLoading,
+    items: boards?.map((board) => ({
+      title: board.name,
+      linkProps: linkOptions({
+        to: "/boards/$boardUrl",
+        params: {
+          boardUrl: board.boardUrl,
+        },
+      }),
+    })),
+  };
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="py-1">
       <SidebarMenu>
-        <Collapsible
-          asChild
-          className="group/collapsible"
-          open={open}
-          onOpenChange={setOpen}
-        >
-          <SidebarMenuItem>
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton tooltip="Boards">
-                <KanbanSquare />
-                <span>Boards</span>
-                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="">
-              <SidebarMenuSub>
-                {isLoading ? (
-                  <Spinner />
-                ) : isError ? (
-                  <div>Error</div>
-                ) : (
-                  boards?.map((board) => (
-                    <SidebarMenuSubItem key={board.id}>
-                      <SidebarMenuSubButton asChild>
-                        <Link
-                          activeProps={{ className: "!bg-accent" }}
-                          to="/boards/$boardUrl"
-                          params={{ boardUrl: board.boardUrl }}
-                        >
-                          <span>{board.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))
-                )}
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          </SidebarMenuItem>
-        </Collapsible>
+        <NavGroup {...navGroup} />
       </SidebarMenu>
     </SidebarGroup>
   );

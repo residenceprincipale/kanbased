@@ -9,8 +9,8 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { NavBoards } from "@/components/nav-boards";
 import { ThemeToggle } from "./theme-toggle";
+import { NavBoards } from "@/components/nav-boards";
 import { NavNotes } from "@/components/nav-notes";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
@@ -31,7 +31,8 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <NavUser />
       </SidebarHeader>
-      <SidebarContent className="!gap-0">
+
+      <SidebarContent className="!gap-0 mt-3">
         <NavBoards />
         <NavNotes />
       </SidebarContent>

@@ -1,72 +1,34 @@
 "use client";
 
-import { ChevronRight, FileText, KanbanSquare } from "lucide-react";
-import { useState } from "react";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-} from "@/components/ui/sidebar";
+import { FileText } from "lucide-react";
+import { SidebarGroup, SidebarMenu } from "@/components/ui/sidebar";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@/components/ui/spinner";
-import { Link } from "@tanstack/react-router";
+import { linkOptions } from "@tanstack/react-router";
 import { getAllNotesQueryOptions } from "@/lib/query-options-factory";
+import { NavGroupType } from "@/components/nav-group";
+import { NavGroup } from "@/components/nav-group";
 
 export function NavNotes() {
-  const [open, setOpen] = useState(true);
-  const { data, isLoading, isError } = useQuery(getAllNotesQueryOptions);
+  const { data, isLoading } = useQuery(getAllNotesQueryOptions);
+
+  const navGroup: NavGroupType = {
+    title: "Notes",
+    linkProps: linkOptions({ to: "/notes" }),
+    icon: FileText,
+    isItemsLoading: isLoading,
+    items: data?.notes.map((note) => ({
+      title: note.name,
+      linkProps: linkOptions({
+        to: "/notes/$noteId",
+        params: { noteId: note.id },
+      }),
+    })),
+  };
 
   return (
-    <SidebarGroup>
+    <SidebarGroup className="py-1">
       <SidebarMenu>
-        <Collapsible
-          asChild
-          className="group/collapsible"
-          open={open}
-          onOpenChange={setOpen}
-        >
-          <SidebarMenuItem>
-            <CollapsibleTrigger asChild>
-              <SidebarMenuButton tooltip="Notes">
-                <FileText />
-                <span>Notes</span>
-                <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-              </SidebarMenuButton>
-            </CollapsibleTrigger>
-            <CollapsibleContent>
-              <SidebarMenuSub>
-                {isLoading ? (
-                  <Spinner />
-                ) : isError ? (
-                  <div>Error</div>
-                ) : (
-                  data?.notes.map((note) => (
-                    <SidebarMenuSubItem key={note.id}>
-                      <SidebarMenuSubButton asChild>
-                        <Link
-                          activeProps={{ className: "!bg-accent" }}
-                          to="/notes/$noteId"
-                          params={{ noteId: note.id }}
-                        >
-                          <span>{note.name}</span>
-                        </Link>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))
-                )}
-              </SidebarMenuSub>
-            </CollapsibleContent>
-          </SidebarMenuItem>
-        </Collapsible>
+        <NavGroup {...navGroup} />
       </SidebarMenu>
     </SidebarGroup>
   );
