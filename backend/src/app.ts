@@ -7,6 +7,7 @@ import createApp from "./lib/create-app.js";
 import packageJSON from "../package.json" with { type: "json" };
 import storageRouter from "./api/storage/storage.index.js";
 import notesRouter from "./api/notes/notes.index.js";
+import { Hono } from "hono";
 const app = createApp();
 
 app.get("/", (c) => {
