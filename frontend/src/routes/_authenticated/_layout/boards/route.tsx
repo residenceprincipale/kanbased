@@ -32,7 +32,7 @@ function BoardsPage() {
 
   return (
     <ModalProvider>
-      <div className="container mx-auto px-4 py-8 w-full">
+      <div className="container mx-auto px-6 py-8 w-full">
         <div className="flex flex-col gap-8">
           <div className="flex items-center justify-between">
             <div>

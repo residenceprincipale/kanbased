@@ -23,7 +23,7 @@ export function TopSection() {
       className="sticky top-0 right-0 z-[5] flex items-center gap-2 justify-between py-1 px-2 border-b bg-background shrink-0"
       style={{
         left: getSidebarWidth(),
-        width: `calc(100vw - ${getSidebarWidth()})`,
+        width: `calc(100vw - ${getSidebarWidth()} - 1rem)`,
       }}
     >
       <div className="flex items-center gap-2">
