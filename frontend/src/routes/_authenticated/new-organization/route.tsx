@@ -18,6 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { handleAuthResponse } from "@/lib/utils";
 import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { queryClient } from "@/lib/query-client";
+import { BackButton } from "@/components/back-button";
 
 export const Route = createFileRoute("/_authenticated/new-organization")({
   component: Welcome,
@@ -74,6 +75,9 @@ function Welcome() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="absolute top-4 left-4">
+        <BackButton>Go back</BackButton>
+      </div>
       <Card className="w-full max-w-md">
         <CardHeader className="space-y-3">
           <CardTitle className="text-2xl text-center">Welcome! 👋</CardTitle>

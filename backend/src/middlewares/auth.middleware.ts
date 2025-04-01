@@ -6,8 +6,7 @@ export const verifySessionMiddleware = createMiddleware(async (c, next) => {
   const session = await auth.api.getSession({ headers: c.req.raw.headers });
 
   if (!session) {
-    c.set("user", null);
-    c.set("session", null);
+    c.set("authCtx", null);
     return next();
   }
 
@@ -22,7 +21,7 @@ export const verifySessionMiddleware = createMiddleware(async (c, next) => {
 export const authenticatedMiddleware = createMiddleware(async (c, next) => {
   const authCtx = c.get("authCtx");
 
-  if (!authCtx.session) {
+  if (!authCtx?.session) {
     return c.json({ message: "Un-authorized access", statusCode: HTTP_STATUS_CODES.UNAUTHORIZED }, HTTP_STATUS_CODES.UNAUTHORIZED);
   }
 

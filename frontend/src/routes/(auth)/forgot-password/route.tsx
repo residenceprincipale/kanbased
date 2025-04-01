@@ -39,7 +39,7 @@ function RouteComponent() {
       () =>
         forgotPasswordMutation.mutateAsync({
           email,
-          redirectTo: `${getOrigin()}/auth/reset-password`,
+          redirectTo: `${getOrigin()}/reset-password`,
         }),
       {
         loading: "Sending reset link...",

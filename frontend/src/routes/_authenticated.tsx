@@ -2,16 +2,20 @@ import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
 import { isSessionLoaded } from "@/lib/constants";
+import { tryCatch } from "@/lib/utils";
+import { AuthError } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
-    const data = await queryClient.ensureQueryData(sessionQueryOptions);
+    const { data, error } = await tryCatch(
+      queryClient.ensureQueryData(sessionQueryOptions),
+    );
 
     if (!isSessionLoaded()) {
       queryClient.invalidateQueries(sessionQueryOptions);
     }
 
-    if (data === null) {
+    if (error instanceof AuthError) {
       throw redirect({
         to: "/login",
         search: {
@@ -20,8 +24,11 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
 
+    const hasNoActiveOrganization =
+      data?.session && !data.session.activeOrganizationId;
+
     if (
-      !data?.session.activeOrganizationId &&
+      hasNoActiveOrganization &&
       !location.pathname?.includes("/new-organization")
     ) {
       throw redirect({
@@ -29,7 +36,9 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
   },
+
   component: RouteComponent,
+
   errorComponent: (error) => {
     return (
       <div className="h-screen flex items-center justify-center">

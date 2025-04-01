@@ -1,7 +1,7 @@
 import { authClient } from "@/lib/auth";
 import { api } from "@/lib/openapi-react-query";
 import { queryClient } from "@/lib/query-client";
-import { handleAuthResponse } from "@/lib/utils";
+import { AuthError, handleAuthResponse } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { QueryKey, queryOptions } from "@tanstack/react-query";
 import { setSessionLoaded } from "@/lib/constants";
@@ -19,21 +19,28 @@ export const boardsQueryOptions = queryOptions({
   staleTime: 2000,
 });
 
+export async function fetchSession() {
+  const { error, data } = await authClient.getSession();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new AuthError({
+      status: 401,
+      statusText: "Unauthorized",
+    });
+  }
+
+  setSessionLoaded();
+
+  return data;
+}
+
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
-  queryFn: async () => {
-    const { error, data } = await authClient.getSession();
-
-    if (error) {
-      throw error;
-    }
-
-    if (data?.user) {
-      setSessionLoaded();
-    }
-
-    return data;
-  },
+  queryFn: async () => fetchSession(),
   staleTime: Infinity,
 });
 

@@ -23,7 +23,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
 import { useSession } from "@/queries/session";
 import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
@@ -40,6 +39,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
+import { queryClient } from "@/lib/query-client";
 
 export function NavUser() {
   const { user, session } = useSession();
@@ -52,6 +53,9 @@ export function NavUser() {
       return handleAuthResponse(res);
     },
     onSuccess: () => {
+      queryClient.setQueryDefaults(sessionQueryOptions.queryKey, {
+        staleTime: 0,
+      });
       router.navigate({ to: "/login" });
     },
   });

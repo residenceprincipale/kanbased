@@ -32,7 +32,7 @@ export const queryClient = new QueryClient({
   mutationCache: new MutationCache({
     onError: (error, _variables, _context, mutation) => {
       if (mutation.meta?.showToastOnMutationError) {
-        if (error instanceof UserViewableError || error instanceof AuthError) {
+        if (error instanceof AuthError || error instanceof UserViewableError) {
           toast.error(error.message);
         } else {
           // TODO: Probably not a good idea to give my email here.
@@ -47,6 +47,7 @@ export const queryClient = new QueryClient({
     },
   }),
 });
+
 export const idbPersister = createIDBPersister();
 
 export function createIDBPersister() {
@@ -73,5 +74,6 @@ declare module "@tanstack/react-query" {
   interface Register {
     queryMeta: MyMeta;
     mutationMeta: MyMeta;
+    defaultError: Error | UserViewableError | AuthError;
   }
 }
