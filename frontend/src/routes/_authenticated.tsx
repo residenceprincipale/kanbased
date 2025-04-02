@@ -15,7 +15,11 @@ export const Route = createFileRoute("/_authenticated")({
       queryClient.ensureQueryData(updatedSessionQueryOptions),
     );
 
-    if (error instanceof AuthError) {
+    const isSessionExpired = data?.session.expiresAt
+      ? new Date(data.session.expiresAt) < new Date()
+      : false;
+
+    if (error instanceof AuthError || isSessionExpired) {
       throw redirect({
         to: "/login",
         search: {

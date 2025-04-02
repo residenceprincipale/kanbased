@@ -6,7 +6,11 @@ export function useSession() {
   const router = useRouter();
   const { data } = useQuery(sessionQueryOptions);
 
-  if (!data) {
+  const isSessionExpired = data?.session.expiresAt
+    ? new Date(data.session.expiresAt) < new Date()
+    : false;
+
+  if (!data || isSessionExpired) {
     router.navigate({ to: "/login" });
   }
 
