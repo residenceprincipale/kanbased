@@ -4,7 +4,7 @@ import { queryClient } from "@/lib/query-client";
 import { AuthError, handleAuthResponse } from "@/lib/utils";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import { QueryKey, queryOptions } from "@tanstack/react-query";
-import { setSessionLoaded } from "@/lib/constants";
+import { isSessionLoaded, setSessionLoaded } from "@/lib/constants";
 
 export function columnsQueryOptions(boardUrl: string) {
   return queryOptions({
@@ -41,7 +41,7 @@ export async function fetchSession() {
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
   queryFn: async () => fetchSession(),
-  staleTime: Infinity,
+  staleTime: () => (isSessionLoaded() ? Infinity : 0),
 });
 
 export const activeOrganizationQueryOptions = (

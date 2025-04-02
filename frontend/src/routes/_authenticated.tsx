@@ -1,19 +1,19 @@
 import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
-import { isSessionLoaded } from "@/lib/constants";
 import { tryCatch } from "@/lib/utils";
 import { AuthError } from "@/lib/utils";
+
+const updatedSessionQueryOptions = {
+  ...sessionQueryOptions,
+  revalidateIfStale: true,
+};
 
 export const Route = createFileRoute("/_authenticated")({
   beforeLoad: async ({ location }) => {
     const { data, error } = await tryCatch(
-      queryClient.ensureQueryData(sessionQueryOptions),
+      queryClient.ensureQueryData(updatedSessionQueryOptions),
     );
-
-    if (!isSessionLoaded()) {
-      queryClient.invalidateQueries(sessionQueryOptions);
-    }
 
     if (error instanceof AuthError) {
       throw redirect({
