@@ -7,6 +7,8 @@ import {
   Lock,
   Building2,
   Settings,
+  Plus,
+  UserRound,
 } from "lucide-react";
 import { handleAuthResponse } from "@/lib/utils";
 
@@ -162,8 +164,15 @@ export function NavUser() {
           <DropdownMenuContent className="w-56" align="start" side="right">
             <DropdownMenuLabel>Organization</DropdownMenuLabel>
             <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link to="/new-organization">
+                <Plus className="mr-2 h-4 w-4" />
+                Create new organization
+              </Link>
+            </DropdownMenuItem>
             <DropdownMenuSub>
               <DropdownMenuSubTrigger>
+                <UserRound className="mr-2 h-4 w-4" />
                 Switch organization
               </DropdownMenuSubTrigger>
               <DropdownMenuSubContent>
