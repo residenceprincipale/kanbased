@@ -19,7 +19,11 @@ export const boardsQueryOptions = queryOptions({
   staleTime: 2000,
 });
 
-export async function fetchSession() {
+export async function fetchSession({
+  shouldSetSessionLoaded = false,
+}: {
+  shouldSetSessionLoaded?: boolean;
+} = {}) {
   const { error, data } = await authClient.getSession();
 
   if (error) {
@@ -33,14 +37,14 @@ export async function fetchSession() {
     });
   }
 
-  setSessionLoaded();
+  shouldSetSessionLoaded && setSessionLoaded();
 
   return data;
 }
 
 export const sessionQueryOptions = queryOptions({
   queryKey: ["session"],
-  queryFn: async () => fetchSession(),
+  queryFn: async () => fetchSession({ shouldSetSessionLoaded: true }),
   staleTime: () => (isSessionLoaded() ? Infinity : 0),
 });
 
