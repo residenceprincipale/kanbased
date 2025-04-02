@@ -15,7 +15,7 @@ import { cn, handleAuthResponse } from "@/lib/utils";
 import { authClient } from "@/lib/auth";
 import { createFileRoute } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
@@ -23,6 +23,7 @@ import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: SignIn,
@@ -38,8 +39,15 @@ function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const search = Route.useSearch();
+  const queryClient = useQueryClient();
 
   useLoggedInRedirect();
+
+  const clearSessionQueryCache = async () => {
+    return queryClient.resetQueries({
+      queryKey: sessionQueryOptions.queryKey,
+    });
+  };
 
   const callbackURL = search?.redirect
     ? `${getOrigin()}${search.redirect}`
@@ -71,17 +79,21 @@ function SignIn() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
+    clearSessionQueryCache();
+
     userPasswordLoginMutation.mutate({
       email,
       password,
     });
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
+    clearSessionQueryCache();
     googleLoginMutation.mutate();
   };
 
-  const handleGithubLogin = async () => {
+  const handleGithubLogin = () => {
+    clearSessionQueryCache();
     githubLoginMutation.mutate();
   };
 
