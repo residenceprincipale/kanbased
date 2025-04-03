@@ -16,12 +16,13 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { Spinner } from "@/components/ui/spinner";
 import { getOrigin } from "@/lib/constants";
 import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { handleAuthResponse } from "@/lib/utils";
 import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
+import { clearSessionQueryCache } from "@/lib/helpers";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
@@ -30,6 +31,8 @@ export const Route = createFileRoute("/(auth)/signup")({
 function SignUp() {
   const router = useRouter();
   const callbackURL = getOrigin();
+  const queryClient = useQueryClient();
+
   useLoggedInRedirect();
 
   const signUpMutation = useMutation({
@@ -80,6 +83,8 @@ function SignUp() {
       return;
     }
 
+    clearSessionQueryCache(queryClient);
+
     signUpMutation.mutate({
       firstName,
       lastName,
@@ -89,10 +94,12 @@ function SignUp() {
   };
 
   const handleGoogleLogin = async () => {
+    clearSessionQueryCache(queryClient);
     googleLoginMutation.mutate();
   };
 
   const handleGithubLogin = async () => {
+    clearSessionQueryCache(queryClient);
     githubLoginMutation.mutate();
   };
 

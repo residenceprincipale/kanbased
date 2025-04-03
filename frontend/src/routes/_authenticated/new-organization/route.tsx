@@ -55,8 +55,11 @@ function Welcome() {
         organizationId: res!.id,
       });
 
+      await queryClient.invalidateQueries({
+        queryKey: sessionQueryOptions.queryKey,
+      });
+
       toast.success("Organization created successfully!");
-      queryClient.invalidateQueries({ queryKey: sessionQueryOptions.queryKey });
 
       router.navigate({ to: "/" });
     },

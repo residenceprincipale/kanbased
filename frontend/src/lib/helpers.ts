@@ -2,6 +2,8 @@ import DOMPurify from "dompurify";
 import { marked } from "marked";
 
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
+import { sessionQueryOptions } from "@/lib/query-options-factory";
+import { QueryClient } from "@tanstack/react-query";
 
 export function transformColumnsQuery(data: ColumnsWithTasksResponse) {
   type ColumnWithTasks = (typeof data.columns)[number] & {
@@ -58,4 +60,10 @@ export function focusElementWithDelay(element: HTMLElement | null) {
   setTimeout(() => {
     element.focus();
   }, 100);
+}
+
+export function clearSessionQueryCache(queryClient: QueryClient) {
+  return queryClient.resetQueries({
+    queryKey: sessionQueryOptions.queryKey,
+  });
 }
