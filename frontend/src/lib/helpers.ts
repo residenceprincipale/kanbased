@@ -62,7 +62,7 @@ export function focusElementWithDelay(element: HTMLElement | null) {
   }, 100);
 }
 
-export function clearSessionQueryCache(queryClient: QueryClient) {
+export function clearAndResetSessionQueryCache(queryClient: QueryClient) {
   return queryClient.resetQueries({
     queryKey: sessionQueryOptions.queryKey,
   });

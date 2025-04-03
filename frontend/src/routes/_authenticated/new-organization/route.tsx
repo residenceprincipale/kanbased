@@ -19,6 +19,7 @@ import { handleAuthResponse } from "@/lib/utils";
 import { sessionQueryOptions } from "@/lib/query-options-factory";
 import { queryClient } from "@/lib/query-client";
 import { BackButton } from "@/components/back-button";
+import { clearAndResetSessionQueryCache } from "@/lib/helpers";
 
 export const Route = createFileRoute("/_authenticated/new-organization")({
   component: Welcome,
@@ -55,9 +56,7 @@ function Welcome() {
         organizationId: res!.id,
       });
 
-      await queryClient.invalidateQueries({
-        queryKey: sessionQueryOptions.queryKey,
-      });
+      await clearAndResetSessionQueryCache(queryClient);
 
       toast.success("Organization created successfully!");
 

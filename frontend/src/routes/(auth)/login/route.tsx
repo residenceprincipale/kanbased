@@ -23,7 +23,7 @@ import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
-import { clearSessionQueryCache } from "@/lib/helpers";
+import { clearAndResetSessionQueryCache } from "@/lib/helpers";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: SignIn,
@@ -73,7 +73,7 @@ function SignIn() {
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
 
     userPasswordLoginMutation.mutate({
       email,
@@ -82,12 +82,12 @@ function SignIn() {
   };
 
   const handleGoogleLogin = () => {
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
     googleLoginMutation.mutate();
   };
 
   const handleGithubLogin = () => {
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
     githubLoginMutation.mutate();
   };
 

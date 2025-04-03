@@ -22,7 +22,7 @@ import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import { clearSessionQueryCache } from "@/lib/helpers";
+import { clearAndResetSessionQueryCache } from "@/lib/helpers";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
@@ -83,7 +83,7 @@ function SignUp() {
       return;
     }
 
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
 
     signUpMutation.mutate({
       firstName,
@@ -94,12 +94,12 @@ function SignUp() {
   };
 
   const handleGoogleLogin = async () => {
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
     googleLoginMutation.mutate();
   };
 
   const handleGithubLogin = async () => {
-    clearSessionQueryCache(queryClient);
+    clearAndResetSessionQueryCache(queryClient);
     githubLoginMutation.mutate();
   };
 

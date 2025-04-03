@@ -28,6 +28,10 @@ export const Route = createFileRoute("/_authenticated")({
       });
     }
 
+    if (error) {
+      throw error;
+    }
+
     const hasNoActiveOrganization =
       data?.session && !data.session.activeOrganizationId;
 
