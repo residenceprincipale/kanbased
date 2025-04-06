@@ -14,13 +14,15 @@ import { queryClient } from "@/lib/query-client";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
 import { toast } from "sonner";
 import { DeleteBoardModal } from "@/features/boards/state/board";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function DeleteBoard(props: DeleteBoardModal) {
   const deleteBoardMutation = api.useMutation(
     "patch",
     "/api/v1/boards/{boardId}/toggle-delete",
   );
-  const boardsQueryKey = boardsQueryOptions.queryKey;
+  const orgId = useActiveOrganizationId();
+  const boardsQueryKey = boardsQueryOptions({ orgId }).queryKey;
 
   const handleUndoDelete = (boardId: string) => {
     toast.promise(
@@ -51,7 +53,7 @@ export function DeleteBoard(props: DeleteBoardModal) {
       },
       {
         onSuccess: (result) => {
-          queryClient.invalidateQueries(boardsQueryOptions);
+          queryClient.invalidateQueries({ queryKey: boardsQueryKey });
 
           toast.success(
             <div className="flex items-center justify-between w-full">

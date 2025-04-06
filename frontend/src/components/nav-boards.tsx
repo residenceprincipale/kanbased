@@ -7,9 +7,11 @@ import { linkOptions } from "@tanstack/react-router";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
 import { NavGroupType } from "@/components/nav-group";
 import { NavGroup } from "@/components/nav-group";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function NavBoards() {
-  const { data: boards, isLoading } = useQuery(boardsQueryOptions);
+  const orgId = useActiveOrganizationId();
+  const { data: boards, isLoading } = useQuery(boardsQueryOptions({ orgId }));
 
   const navGroup: NavGroupType = {
     title: "Boards",

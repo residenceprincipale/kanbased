@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Suspense } from "react";
 import { transformColumnsQuery } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function ExportBoards({ onClose }: ExportBoardsModal) {
   return (
@@ -35,7 +36,8 @@ export function ExportBoards({ onClose }: ExportBoardsModal) {
 
 function Content() {
   const qc = useQueryClient();
-  const boards = qc.getQueryData(boardsQueryOptions.queryKey);
+  const orgId = useActiveOrganizationId();
+  const boards = qc.getQueryData(boardsQueryOptions({ orgId }).queryKey);
 
   const { data } = useSuspenseQuery({
     queryKey: ["export", "boards"],
@@ -43,7 +45,7 @@ function Content() {
       const allBoardsPromise =
         boards?.map(async (board) => {
           const boardData = await qc.ensureQueryData(
-            columnsQueryOptions(board.boardUrl),
+            columnsQueryOptions({ orgId, boardUrl: board.boardUrl }),
           );
           return transformColumnsQuery(boardData);
         }) ?? [];

@@ -10,12 +10,16 @@ import { queryClient } from "@/lib/query-client";
 import { getAllNotesQueryOptions } from "@/lib/query-options-factory";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { NoteList } from "@/features/notes/components/note-list";
+import { getActiveOrganizationId } from "@/queries/session";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
 
   loader: async () => {
-    await queryClient.ensureQueryData(getAllNotesQueryOptions);
+    const orgId = getActiveOrganizationId(queryClient);
+    const notesQueryOptions = getAllNotesQueryOptions({ orgId });
+
+    await queryClient.prefetchQuery(notesQueryOptions);
 
     return {
       breadcrumbs: linkOptions([
@@ -24,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
           to: "/notes",
         },
       ]),
-      notesQueryOptions: getAllNotesQueryOptions,
+      notesQueryOptions,
     };
   },
 

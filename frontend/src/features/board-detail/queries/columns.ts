@@ -2,6 +2,7 @@ import { useForceUpdate } from "@/hooks/use-force-update";
 import { transformColumnsQuery } from "@/lib/helpers";
 import { api } from "@/lib/openapi-react-query";
 import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { useActiveOrganizationId } from "@/queries/session";
 import { ColumnsWithTasksResponse } from "@/types/api-response-types";
 import {
   QueryKey,
@@ -15,8 +16,9 @@ export type ColumnsWithTasksQueryData = ReturnType<
 >;
 
 export function useColumnsSuspenseQuery(params: { boardUrl: string }) {
+  const orgId = useActiveOrganizationId();
   return useSuspenseQuery({
-    ...columnsQueryOptions(params.boardUrl),
+    ...columnsQueryOptions({ orgId, boardUrl: params.boardUrl }),
     select: transformColumnsQuery,
   });
 }

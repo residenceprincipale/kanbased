@@ -13,6 +13,7 @@ import { CodeMirrorEditorRefData } from "@/components/md-editor/md-editor";
 import { Spinner } from "@/components/ui/spinner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { useActiveOrganizationId } from "@/queries/session";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/components/edit-task-content"),
@@ -27,9 +28,11 @@ export function TaskDetail(props: {
   taskId: string;
   columnsQueryKey: QueryKey;
 }) {
+  const orgId = useActiveOrganizationId();
   const taskDetailQueryOpt = taskDetailQueryOptions({
     taskId: props.taskId,
     columnsQueryKey: props.columnsQueryKey,
+    orgId,
   });
 
   const {

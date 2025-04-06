@@ -3,13 +3,12 @@ import { Columns } from "@/features/board-detail/components/columns";
 
 import { createFileRoute, linkOptions } from "@tanstack/react-router";
 import { queryClient } from "@/lib/query-client";
-import { columnsQueryOptions } from "@/lib/query-options-factory";
+import { columnsQueryOptions as getColumnsQueryOptions } from "@/lib/query-options-factory";
 import { ModalProvider } from "@/state/modals";
 import { CreateColumnButton } from "@/features/board-detail/components/create-column-button";
 import { useColumnsSuspenseQuery } from "@/features/board-detail/queries/columns";
-import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 import { TaskDetailPage } from "./-actions";
-import { useMemo } from "react";
+import { getActiveOrganizationId } from "@/queries/session";
 
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardUrl",
@@ -20,11 +19,15 @@ export const Route = createFileRoute(
       taskId: typeof search.taskId === "string" ? search.taskId : undefined,
     };
   },
-  loader: async (ctx): Promise<BreadcrumbsData> => {
+  loader: async (ctx) => {
     const { boardUrl } = ctx.params;
-    const { boardName } = await queryClient.ensureQueryData(
-      columnsQueryOptions(boardUrl),
-    );
+    const orgId = getActiveOrganizationId(queryClient);
+    const columnsQueryOptions = getColumnsQueryOptions({ orgId, boardUrl });
+
+    await queryClient.prefetchQuery(columnsQueryOptions);
+
+    const { boardName } =
+      await queryClient.ensureQueryData(columnsQueryOptions);
 
     return {
       breadcrumbs: linkOptions([
@@ -38,6 +41,7 @@ export const Route = createFileRoute(
           params: { boardUrl },
         },
       ]),
+      columnsQueryOptions,
     };
   },
   errorComponent: (error) => {
@@ -49,10 +53,8 @@ function BoardPage() {
   const { boardUrl } = Route.useParams();
   const { data, error } = useColumnsSuspenseQuery({ boardUrl });
   const boardName = data.boardName;
-  const columnsQueryKey = useMemo(
-    () => columnsQueryOptions(boardUrl).queryKey,
-    [boardUrl],
-  );
+  const { columnsQueryOptions } = Route.useLoaderData();
+  const columnsQueryKey = columnsQueryOptions.queryKey;
 
   // Not sure why. The error component is not being rendered when there is an error.
   // Hence, we are checking the error status code manually.

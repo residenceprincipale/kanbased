@@ -16,11 +16,13 @@ import { useState, type FormEventHandler } from "react";
 import { toast } from "sonner";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
 import { EditBoardModal } from "@/features/boards/state/board";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function EditBoard(props: EditBoardModal) {
   const { board } = props;
   const [boardName, setBoardName] = useState(board.name);
   const boardUrl = boardName.toLowerCase().split(" ").join("-");
+  const orgId = useActiveOrganizationId();
   const { mutate, isPending } = api.useMutation(
     "patch",
     "/api/v1/boards/{boardId}",
@@ -29,7 +31,7 @@ export function EditBoard(props: EditBoardModal) {
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
     const currentDate = new Date().toISOString();
-    const boardsQueryKey = boardsQueryOptions.queryKey;
+    const boardsQueryKey = boardsQueryOptions({ orgId }).queryKey;
 
     mutate(
       {

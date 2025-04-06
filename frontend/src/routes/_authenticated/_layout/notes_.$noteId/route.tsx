@@ -8,12 +8,17 @@ import { getNoteQueryOptions } from "@/lib/query-options-factory";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ViewNote } from "@/features/notes/components/view-note";
 import { Actions } from "./-actions";
+import { getSession } from "@/queries/session";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
   component: RouteComponent,
 
   loader: async (ctx) => {
-    const noteQueryOptions = getNoteQueryOptions({ noteId: ctx.params.noteId });
+    const orgId = getSession(queryClient).session.activeOrganizationId!;
+    const noteQueryOptions = getNoteQueryOptions({
+      noteId: ctx.params.noteId,
+      orgId,
+    });
     const note = await queryClient.ensureQueryData(noteQueryOptions);
 
     return {

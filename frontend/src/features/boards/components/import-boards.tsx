@@ -15,9 +15,11 @@ import { Button } from "@/components/ui/button";
 import { ImportIcon, CheckCircle } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import { boardsQueryOptions } from "@/lib/query-options-factory";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function ImportBoards({ onClose }: ImportBoardsModal) {
   const queryClient = useQueryClient();
+  const orgId = useActiveOrganizationId();
   const importBoardsMutation = api.useMutation(
     "post",
     "/api/v1/boards/import",
@@ -28,7 +30,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
       onSuccess: () => {
         toast.success("Boards imported successfully");
         queryClient.invalidateQueries({
-          queryKey: boardsQueryOptions.queryKey,
+          queryKey: boardsQueryOptions({ orgId }).queryKey,
         });
       },
       onError: () => {

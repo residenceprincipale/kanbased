@@ -7,9 +7,11 @@ import { linkOptions } from "@tanstack/react-router";
 import { getAllNotesQueryOptions } from "@/lib/query-options-factory";
 import { NavGroupType } from "@/components/nav-group";
 import { NavGroup } from "@/components/nav-group";
+import { useActiveOrganizationId } from "@/queries/session";
 
 export function NavNotes() {
-  const { data, isLoading } = useQuery(getAllNotesQueryOptions);
+  const orgId = useActiveOrganizationId();
+  const { data, isLoading } = useQuery(getAllNotesQueryOptions({ orgId }));
 
   const navGroup: NavGroupType = {
     title: "Notes",

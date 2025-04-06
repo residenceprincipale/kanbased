@@ -26,6 +26,7 @@ import {
 import { Suspense } from "react";
 import { EditableText } from "@/components/editable-text";
 import { getNoteQueryOptions } from "@/lib/query-options-factory";
+import { useActiveOrganizationId } from "@/queries/session";
 
 type CommonProps = {
   afterSave: (data: { noteId: string }) => void;
@@ -48,6 +49,7 @@ export default function NoteEditor(props: NoteEditorProps) {
   const queryClient = useQueryClient();
   const isCreate = props.mode === "create";
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
+  const orgId = useActiveOrganizationId();
 
   const updateNoteMutation = api.useMutation(
     "patch",
@@ -55,7 +57,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     {
       onSuccess: async () => {
         const noteId = !isCreate ? props.noteId : undefined!;
-        const queryKey = getNoteQueryOptions({ noteId }).queryKey;
+        const queryKey = getNoteQueryOptions({ noteId, orgId }).queryKey;
 
         await queryClient.invalidateQueries({
           queryKey,
