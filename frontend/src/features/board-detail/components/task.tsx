@@ -56,6 +56,7 @@ function ViewTask(props: {
       to="."
       search={{ taskId: task.id }}
       replace
+      preload={false}
     >
       <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
         <span className="break-words">{task.name}</span>
