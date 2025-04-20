@@ -1,4 +1,4 @@
-import { fetchSession } from "@/lib/query-options-factory";
+import { fetchSession } from "@/queries/session";
 import { useRouter } from "@tanstack/react-router";
 import { useEffect } from "react";
 

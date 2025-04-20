@@ -1,34 +1,21 @@
 import { Zero } from "@rocicorp/zero";
 import { useZero } from "@rocicorp/zero/react";
 import { schema, type Schema } from "../../../backend/zero-schema.gen";
-import { authClient } from "@/lib/auth";
-import { getToken, setToken } from "@/lib/utils";
+import { queryClient } from "@/lib/query-client";
+import { authQueryOptions } from "@/lib/query-options-factory";
+import { getAuthData } from "@/queries/session";
 
 export function createZeroCache({ userId }: { userId: string }) {
   return new Zero({
     userID: userId,
     auth: async (status) => {
-      const token = getToken();
+      const authData = getAuthData(queryClient);
 
-      if (!token || status === "invalid-token") {
-        const { data, error } = await authClient.$fetch<{ token: string }>(
-          "/token",
-        );
-
-        if (!data || error) {
-          console.warn("Cannot get token: Unauthenticated");
-          if (!location.pathname.includes("/login")) {
-            location.href = "/login";
-          }
-          return;
-        }
-
-        setToken(data.token);
-
-        return data.token;
+      if (!authData?.encodedToken || status === "invalid-token") {
+        await queryClient.invalidateQueries(authQueryOptions);
       }
 
-      return token;
+      return getAuthData(queryClient)?.encodedToken;
     },
     server: import.meta.env.CLIENT_PUBLIC_SERVER,
     schema: schema,

@@ -6,7 +6,7 @@ import { createFileRoute, linkOptions, Outlet } from "@tanstack/react-router";
 import { BreadcrumbsData } from "@/components/tsr-breadcrumbs";
 import { TopSection } from "@/components/top-section";
 import { createZeroCache } from "@/lib/zero-cache";
-import { useSession } from "@/queries/session";
+import { useAuthData } from "@/queries/session";
 import { ZeroProvider } from "@rocicorp/zero/react";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
@@ -23,8 +23,8 @@ export const Route = createFileRoute("/_authenticated/_layout")({
 
 function RouteComponent() {
   const defaultSidebarState = useMemo(getSidebarStateFromCookie, []);
-  const session = useSession();
-  const z = useMemo(() => createZeroCache({ userId: session.user.id }), []);
+  const userData = useAuthData();
+  const z = useMemo(() => createZeroCache({ userId: userData.id }), []);
 
   return (
     <ZeroProvider zero={z}>

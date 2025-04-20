@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Card } from "@/components/ui/card";
-import { useSession } from "@/queries/session";
+import { useAuthData } from "@/queries/session";
 import {
   useUploadUserImageMutation,
   useUpdateUserMutation,
@@ -13,8 +13,8 @@ import { Spinner } from "@/components/ui/spinner";
 import { toast } from "sonner";
 
 export function UserSettings() {
-  const { user } = useSession();
-  const defaultUserImage = user.image ?? undefined;
+  const userData = useAuthData();
+  const defaultUserImage = userData.image ?? undefined;
   const [previewUrl, setPreviewUrl] = useState(defaultUserImage);
   const uploadImageMutation = useUploadUserImageMutation();
   const updateUserMutation = useUpdateUserMutation();
@@ -84,7 +84,7 @@ export function UserSettings() {
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={previewUrl} alt="Profile picture" />
                   <AvatarFallback>
-                    {user.name[0]} {user.name?.[1]}
+                    {userData.name[0]} {userData.name?.[1]}
                   </AvatarFallback>
                 </Avatar>
               </Label>
@@ -121,7 +121,7 @@ export function UserSettings() {
               <Input
                 id="name"
                 name="name"
-                defaultValue={user.name}
+                defaultValue={userData.name}
                 placeholder="Jon Snow"
                 required
               />

@@ -1,20 +1,54 @@
-import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useRouter,
+} from "@tanstack/react-router";
 import { AuthError } from "@/lib/utils";
-import { useSession } from "@/queries/session";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { authQueryOptions } from "@/lib/query-options-factory";
+import { queryClient } from "@/lib/query-client";
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
 
+  beforeLoad: async () => {
+    const { decodedData } = await queryClient.ensureQueryData(authQueryOptions);
+
+    const currentTime = Math.floor(Date.now() / 1000);
+    const isAuthExpired = currentTime >= decodedData.exp;
+
+    if (isAuthExpired) {
+      localStorage.removeItem("auth-token");
+      throw redirect({
+        to: "/login",
+        reloadDocument: true,
+      });
+    }
+
+    const hasNoActiveOrganization = !decodedData.activeOrganizationId;
+
+    if (
+      hasNoActiveOrganization &&
+      !location.pathname?.includes("/new-organization")
+    ) {
+      throw redirect({
+        to: "/new-organization",
+        reloadDocument: true,
+      });
+    }
+  },
+
   errorComponent: (error) => {
     const router = useRouter();
 
-    if (error instanceof AuthError) {
+    if (error.error instanceof AuthError) {
       router.navigate({
         to: "/login",
-        search: {
-          redirect: location.href,
-        },
+        reloadDocument: true,
       });
+
+      return null;
     }
 
     return (
@@ -33,25 +67,39 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function RouteComponent() {
+  const {
+    data: { decodedData },
+    isError,
+  } = useSuspenseQuery(authQueryOptions);
   const router = useRouter();
-  const data = useSession();
 
-  const isSessionExpired = data?.session.expiresAt
-    ? new Date(data.session.expiresAt) < new Date()
-    : false;
-
-  if (isSessionExpired) {
+  const redirectToLogin = () => {
+    localStorage.removeItem("auth-token");
     router.navigate({
       to: "/login",
-      search: {
-        redirect: location.href,
-      },
+      reloadDocument: true,
     });
+  };
+
+  // I have to make auth related checks on beforeLoad
+  // and also on component here becuase beforeLoad
+  // is not reactive and will not update when the query
+  // data is updated
+  if (isError) {
+    redirectToLogin();
     return null;
   }
 
-  const hasNoActiveOrganization =
-    data?.session && !data.session.activeOrganizationId;
+  const currentTime = Math.floor(Date.now() / 1000);
+  const isAuthExpired = currentTime >= decodedData.exp;
+
+  if (isAuthExpired) {
+    redirectToLogin();
+
+    return null;
+  }
+
+  const hasNoActiveOrganization = !decodedData.activeOrganizationId;
 
   if (
     hasNoActiveOrganization &&

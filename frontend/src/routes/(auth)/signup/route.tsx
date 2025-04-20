@@ -22,7 +22,6 @@ import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
 import { cn } from "@/lib/utils";
-import { useResetSessionQueryCache } from "@/queries/session";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
@@ -33,7 +32,6 @@ function SignUp() {
   const callbackURL = getOrigin();
 
   useLoggedInRedirect();
-  useResetSessionQueryCache();
 
   const signUpMutation = useMutation({
     mutationFn: async (data: {

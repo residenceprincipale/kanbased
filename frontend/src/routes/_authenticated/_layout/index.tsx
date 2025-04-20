@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useSession } from "@/queries/session";
+import { useAuthData } from "@/queries/session";
 import { Link } from "@tanstack/react-router";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,14 +8,14 @@ export const Route = createFileRoute("/_authenticated/_layout/")({
 });
 
 function HomeComponent() {
-  const session = useSession();
+  const userData = useAuthData();
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4 bg-gradient-to-b from-background to-secondary/20">
       <Card className="w-full max-w-3xl shadow-lg border-t-4 border-t-primary mt-8">
         <CardHeader className="pb-2">
           <CardTitle className="text-3xl text-center font-bold">
-            Welcome, {session.user.name}! 👋
+            Welcome, {userData.name}! 👋
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center pt-4">

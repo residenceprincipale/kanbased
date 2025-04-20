@@ -23,7 +23,6 @@ import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
 import { useGoogleLoginMutation } from "@/queries/authentication";
 import { useGithubLoginMutation } from "@/queries/authentication";
 import { GithubIcon, GoogleIcon } from "@/components/icons";
-import { useResetSessionQueryCache } from "@/queries/session";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: SignIn,
@@ -41,7 +40,6 @@ function SignIn() {
   const search = Route.useSearch();
 
   useLoggedInRedirect();
-  useResetSessionQueryCache();
 
   const callbackURL = search?.redirect
     ? `${getOrigin()}${search.redirect}`

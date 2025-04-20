@@ -1,41 +1,50 @@
-import { sessionQueryOptions } from "@/lib/query-options-factory";
+import { authClient } from "@/lib/auth";
+import { authQueryOptions } from "@/lib/query-options-factory";
+import { AuthError } from "@/lib/utils";
 import {
   QueryClient,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useEffect } from "react";
 
-export function getSession(queryClient: QueryClient) {
-  const queryData = queryClient.getQueryData(sessionQueryOptions.queryKey);
+export async function fetchSession() {
+  const { data, error } = await authClient.getSession();
+
+  if (error) {
+    throw error;
+  }
+
+  if (!data) {
+    throw new AuthError({
+      status: 401,
+      statusText: "Unauthorized",
+    });
+  }
+
+  return data;
+}
+
+export function getAuthData(queryClient: QueryClient) {
+  const queryData = queryClient.getQueryData(authQueryOptions.queryKey);
 
   if (!queryData) {
-    throw new Error("Session detail not found while calling getSessionDetail");
+    throw new Error("Auth detail not found while calling getAuthData");
   }
 
   return queryData;
 }
 
-export function useSession() {
-  const { data } = useSuspenseQuery(sessionQueryOptions);
-  return data;
+export function useAuthData() {
+  const { data } = useSuspenseQuery(authQueryOptions);
+  return data.decodedData;
 }
 
 export function getActiveOrganizationId(queryClient: QueryClient) {
-  const { session } = getSession(queryClient);
-  return session.activeOrganizationId!;
+  const { decodedData } = getAuthData(queryClient);
+  return decodedData.activeOrganizationId;
 }
 
 export function useActiveOrganizationId() {
   const queryClient = useQueryClient();
   return getActiveOrganizationId(queryClient);
-}
-
-export function useResetSessionQueryCache() {
-  const queryClient = useQueryClient();
-
-  useEffect(() => {
-    localStorage.removeItem("session-detail");
-    queryClient.invalidateQueries(sessionQueryOptions);
-  }, []);
 }

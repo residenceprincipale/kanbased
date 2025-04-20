@@ -18,7 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { handleAuthResponse } from "@/lib/utils";
 import { queryClient } from "@/lib/query-client";
 import { BackButton } from "@/components/back-button";
-import { sessionQueryOptions } from "@/lib/query-options-factory";
+import { authQueryOptions } from "@/lib/query-options-factory";
 
 export const Route = createFileRoute("/_authenticated/new-organization")({
   component: Welcome,
@@ -55,7 +55,9 @@ function Welcome() {
         organizationId: res!.id,
       });
 
-      await queryClient.invalidateQueries(sessionQueryOptions);
+      await queryClient.invalidateQueries(authQueryOptions, {
+        throwOnError: true,
+      });
 
       toast.success("Organization created successfully!");
 

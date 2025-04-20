@@ -1,6 +1,6 @@
 import { authClient } from "@/lib/auth";
 import { post } from "@/lib/fetch-client";
-import { sessionQueryOptions } from "@/lib/query-options-factory";
+import { authQueryOptions } from "@/lib/query-options-factory";
 import { handleAuthResponse, UserViewableError } from "@/lib/utils";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
@@ -67,7 +67,7 @@ export function useUpdateUserMutation() {
     },
 
     onSuccess: () => {
-      qc.invalidateQueries(sessionQueryOptions);
+      return qc.invalidateQueries(authQueryOptions, { throwOnError: true });
     },
   });
 }

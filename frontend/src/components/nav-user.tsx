@@ -25,7 +25,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useSession } from "@/queries/session";
+import { useAuthData } from "@/queries/session";
 import { authClient } from "@/lib/auth";
 import { useMutation } from "@tanstack/react-query";
 import { getOrigin } from "@/lib/constants";
@@ -37,18 +37,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { sessionQueryOptions } from "@/lib/query-options-factory";
-import { queryClient } from "@/lib/query-client";
 import { useQuery } from "@rocicorp/zero/react";
 import { getOrganizationListQuery } from "@/lib/zero-queries";
 import { useZ } from "@/lib/zero-cache";
 
 export function NavUser() {
-  const { user, session } = useSession();
+  const userData = useAuthData();
   const z = useZ();
   const [organizationsList] = useQuery(getOrganizationListQuery(z));
   const currentOrganization = organizationsList.find(
-    (org) => org.id === session.activeOrganizationId,
+    (org) => org.id === userData.activeOrganizationId,
   );
 
   const logoutMutation = useMutation({
@@ -57,22 +55,15 @@ export function NavUser() {
       return handleAuthResponse(res);
     },
     onSuccess: () => {
-      localStorage.removeItem("token");
-      localStorage.removeItem("session-detail");
-      queryClient.setQueryDefaults(sessionQueryOptions.queryKey, {
-        staleTime: 0,
-        meta: {
-          isFetchedOnce: false,
-        },
-      });
-      router.navigate({ to: "/login" });
+      localStorage.removeItem("auth-token");
+      router.navigate({ to: "/login", reloadDocument: true });
     },
   });
 
   const verifyEmailMutation = useMutation({
     mutationFn: async () => {
       const res = await authClient.sendVerificationEmail({
-        email: user.email,
+        email: userData.email,
         callbackURL: getOrigin(),
       });
       return handleAuthResponse(res);
@@ -82,7 +73,7 @@ export function NavUser() {
   const forgotPasswordMutation = useMutation({
     mutationFn: async () => {
       const res = await authClient.forgetPassword({
-        email: user.email,
+        email: userData.email,
         redirectTo: `${getOrigin()}/reset-password`,
       });
       return handleAuthResponse(res);
@@ -97,7 +88,7 @@ export function NavUser() {
       return handleAuthResponse(res);
     },
     onSuccess: () => {
-      localStorage.removeItem("token");
+      localStorage.removeItem("auth-token");
       window.location.href = "/";
     },
   });
@@ -148,11 +139,11 @@ export function NavUser() {
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground !py-0"
             >
               <Avatar className="h-8 w-8">
-                <AvatarImage src={user.image!} alt={user.name} />
-                <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
+                <AvatarImage src={userData.image!} alt={userData.name} />
+                <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="font-medium truncate">{user.name}</span>
+                <span className="font-medium truncate">{userData.name}</span>
 
                 {currentOrganization && (
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">
@@ -182,7 +173,7 @@ export function NavUser() {
               <DropdownMenuSubContent>
                 {organizationsList.map((org) => (
                   <DropdownMenuCheckboxItem
-                    checked={org.id === session.activeOrganizationId}
+                    checked={org.id === userData.activeOrganizationId}
                     key={org.id}
                     onCheckedChange={() => handleSwitchOrganization(org.id)}
                   >
@@ -193,7 +184,7 @@ export function NavUser() {
             </DropdownMenuSub>
             <DropdownMenuSeparator />
 
-            {!user.emailVerified && (
+            {!userData.emailVerified && (
               <DropdownMenuItem onClick={handleVerifyEmail}>
                 <MailWarning className="mr-2 h-4 w-4" />
                 Verify Email
