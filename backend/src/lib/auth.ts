@@ -51,9 +51,9 @@ export const auth = betterAuth({
     },
   },
   session: {
-    cookieCache: {
-      enabled: true,
-    },
+    expiresIn: 60 * 60 * 24 * 365, // 1 year
+    updateAge: 60 * 60 * 24 * 365, // 1 year
+    disableSessionRefresh: true,
   },
   databaseHooks: {
     session: {
@@ -75,6 +75,7 @@ export const auth = betterAuth({
   plugins: [
     jwt({
       jwt: {
+        expirationTime: "7d",
         definePayload: async (data) => {
           const { user, session } = data;
 
@@ -85,16 +86,21 @@ export const auth = betterAuth({
             },
           });
 
-          if (!s) {
-            throw new Error("User not found");
+          let activeOrganizationId = session.activeOrganizationId;
+
+          if (!activeOrganizationId) {
+            activeOrganizationId = await getActiveOrganization(user.id);
           }
 
           return {
             id: user.id,
+            name: user.name,
+            email: user.email,
             sub: user.id,
+            image: user.image,
             emailVerified: user.emailVerified,
-            role: s.role,
-            activeOrganizationId: session.activeOrganizationId,
+            role: s?.role,
+            activeOrganizationId,
           };
         },
       },
