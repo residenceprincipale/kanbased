@@ -45,6 +45,12 @@ app.get("/", (c) => {
     `);
 });
 
+app.get("/health", (c) => {
+  return c.json({
+    status: "ok",
+  });
+});
+
 app.doc("/doc", {
   openapi: "3.0.0",
   info: {
