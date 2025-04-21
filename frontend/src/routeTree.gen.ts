@@ -20,6 +20,7 @@ import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-pas
 import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password/route'
 import { Route as AuthenticatedLayoutIndexImport } from './routes/_authenticated/_layout/index'
+import { Route as AuthenticatedAcceptInvitationInvitationIdRouteImport } from './routes/_authenticated/accept-invitation/$invitationId/route'
 import { Route as AuthenticatedLayoutNotesRouteImport } from './routes/_authenticated/_layout/notes/route'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
 import { Route as AuthenticatedLayoutNotesNoteIdRouteImport } from './routes/_authenticated/_layout/notes_.$noteId/route'
@@ -80,6 +81,13 @@ const AuthenticatedLayoutIndexRoute = AuthenticatedLayoutIndexImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedLayoutRoute,
 } as any)
+
+const AuthenticatedAcceptInvitationInvitationIdRouteRoute =
+  AuthenticatedAcceptInvitationInvitationIdRouteImport.update({
+    id: '/accept-invitation/$invitationId',
+    path: '/accept-invitation/$invitationId',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedLayoutNotesRouteRoute =
   AuthenticatedLayoutNotesRouteImport.update({
@@ -183,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLayoutNotesRouteImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
+    '/_authenticated/accept-invitation/$invitationId': {
+      id: '/_authenticated/accept-invitation/$invitationId'
+      path: '/accept-invitation/$invitationId'
+      fullPath: '/accept-invitation/$invitationId'
+      preLoaderRoute: typeof AuthenticatedAcceptInvitationInvitationIdRouteImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/_layout/': {
       id: '/_authenticated/_layout/'
       path: '/'
@@ -234,6 +249,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedNewOrganizationRouteRoute: typeof AuthenticatedNewOrganizationRouteRoute
   AuthenticatedUserSettingsRouteRoute: typeof AuthenticatedUserSettingsRouteRoute
   AuthenticatedLayoutRoute: typeof AuthenticatedLayoutRouteWithChildren
+  AuthenticatedAcceptInvitationInvitationIdRouteRoute: typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -241,6 +257,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
     AuthenticatedNewOrganizationRouteRoute,
   AuthenticatedUserSettingsRouteRoute: AuthenticatedUserSettingsRouteRoute,
   AuthenticatedLayoutRoute: AuthenticatedLayoutRouteWithChildren,
+  AuthenticatedAcceptInvitationInvitationIdRouteRoute:
+    AuthenticatedAcceptInvitationInvitationIdRouteRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -257,6 +275,7 @@ export interface FileRoutesByFullPath {
   '/user-settings': typeof AuthenticatedUserSettingsRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/notes': typeof AuthenticatedLayoutNotesRouteRoute
+  '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -272,6 +291,7 @@ export interface FileRoutesByTo {
   '/user-settings': typeof AuthenticatedUserSettingsRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/notes': typeof AuthenticatedLayoutNotesRouteRoute
+  '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -289,6 +309,7 @@ export interface FileRoutesById {
   '/_authenticated/_layout': typeof AuthenticatedLayoutRouteWithChildren
   '/_authenticated/_layout/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/_authenticated/_layout/notes': typeof AuthenticatedLayoutNotesRouteRoute
+  '/_authenticated/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
   '/_authenticated/_layout/boards_/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/_authenticated/_layout/notes_/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -306,6 +327,7 @@ export interface FileRouteTypes {
     | '/user-settings'
     | '/boards'
     | '/notes'
+    | '/accept-invitation/$invitationId'
     | '/'
     | '/boards/$slug'
     | '/notes/$noteId'
@@ -320,6 +342,7 @@ export interface FileRouteTypes {
     | '/user-settings'
     | '/boards'
     | '/notes'
+    | '/accept-invitation/$invitationId'
     | '/'
     | '/boards/$slug'
     | '/notes/$noteId'
@@ -335,6 +358,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_layout'
     | '/_authenticated/_layout/boards'
     | '/_authenticated/_layout/notes'
+    | '/_authenticated/accept-invitation/$invitationId'
     | '/_authenticated/_layout/'
     | '/_authenticated/_layout/boards_/$slug'
     | '/_authenticated/_layout/notes_/$noteId'
@@ -379,7 +403,8 @@ export const routeTree = rootRoute
       "children": [
         "/_authenticated/new-organization",
         "/_authenticated/user-settings",
-        "/_authenticated/_layout"
+        "/_authenticated/_layout",
+        "/_authenticated/accept-invitation/$invitationId"
       ]
     },
     "/(auth)/forgot-password": {
@@ -420,6 +445,10 @@ export const routeTree = rootRoute
     "/_authenticated/_layout/notes": {
       "filePath": "_authenticated/_layout/notes/route.tsx",
       "parent": "/_authenticated/_layout"
+    },
+    "/_authenticated/accept-invitation/$invitationId": {
+      "filePath": "_authenticated/accept-invitation/$invitationId/route.tsx",
+      "parent": "/_authenticated"
     },
     "/_authenticated/_layout/": {
       "filePath": "_authenticated/_layout/index.tsx",

@@ -9,6 +9,7 @@ import {
   Settings,
   Plus,
   UserRound,
+  Mail,
 } from "lucide-react";
 import { handleAuthResponse } from "@/lib/utils";
 
@@ -40,6 +41,8 @@ import {
 import { useQuery } from "@rocicorp/zero/react";
 import { getOrganizationListQuery } from "@/lib/zero-queries";
 import { useZ } from "@/lib/zero-cache";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import { InviteMemberDialog } from "@/features/user/invite-member";
 
 export function NavUser() {
   const userData = useAuthData();
@@ -132,83 +135,97 @@ export function NavUser() {
   return (
     <SidebarMenu>
       <SidebarMenuItem>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <SidebarMenuButton
-              size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground !py-0"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={userData.image!} alt={userData.name} />
-                <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
-              </Avatar>
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="font-medium truncate">{userData.name}</span>
+        <Dialog>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <SidebarMenuButton
+                size="lg"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground !py-0"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={userData.image!} alt={userData.name} />
+                  <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
+                </Avatar>
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="font-medium truncate">{userData.name}</span>
 
-                {currentOrganization && (
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <Building2 className="h-3 w-3 shrink-0" />
-                    <span className="truncate">{currentOrganization.name}</span>
-                  </div>
-                )}
-              </div>
+                  {currentOrganization && (
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <Building2 className="h-3 w-3 shrink-0" />
+                      <span className="truncate">
+                        {currentOrganization.name}
+                      </span>
+                    </div>
+                  )}
+                </div>
 
-              <ChevronsUpDown className="ml-auto h-4 w-4" />
-            </SidebarMenuButton>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56" align="start" side="right">
-            <DropdownMenuLabel>Organization</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link to="/new-organization">
-                <Plus className="mr-2 h-4 w-4" />
-                Create new organization
-              </Link>
-            </DropdownMenuItem>
-            <DropdownMenuSub>
-              <DropdownMenuSubTrigger>
-                <UserRound className="mr-2 h-4 w-4" />
-                Switch organization
-              </DropdownMenuSubTrigger>
-              <DropdownMenuSubContent>
-                {organizationsList.map((org) => (
-                  <DropdownMenuCheckboxItem
-                    checked={org.id === userData.activeOrganizationId}
-                    key={org.id}
-                    onCheckedChange={() => handleSwitchOrganization(org.id)}
-                  >
-                    {org.name}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuSubContent>
-            </DropdownMenuSub>
-            <DropdownMenuSeparator />
-
-            {!userData.emailVerified && (
-              <DropdownMenuItem onClick={handleVerifyEmail}>
-                <MailWarning className="mr-2 h-4 w-4" />
-                Verify Email
+                <ChevronsUpDown className="ml-auto h-4 w-4" />
+              </SidebarMenuButton>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56" align="start" side="right">
+              <DropdownMenuLabel>Organization</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
+                <Link to="/new-organization">
+                  <Plus className="mr-2 h-4 w-4" />
+                  Create new organization
+                </Link>
               </DropdownMenuItem>
-            )}
 
-            <DropdownMenuItem onClick={handleResetPassword}>
-              <Lock className="mr-2 h-4 w-4" />
-              Reset Password
-            </DropdownMenuItem>
+              <DialogTrigger asChild>
+                <DropdownMenuItem className="w-full">
+                  <Mail className="mr-2 h-4 w-4" />
+                  Invite member
+                </DropdownMenuItem>
+              </DialogTrigger>
 
-            <DropdownMenuItem asChild>
-              <Link to="/user-settings">
-                <Settings className="mr-2 h-4 w-4" />
-                User Settings
-              </Link>
-            </DropdownMenuItem>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>
+                  <UserRound className="mr-2 h-4 w-4" />
+                  Switch organization
+                </DropdownMenuSubTrigger>
+                <DropdownMenuSubContent>
+                  {organizationsList.map((org) => (
+                    <DropdownMenuCheckboxItem
+                      checked={org.id === userData.activeOrganizationId}
+                      key={org.id}
+                      onCheckedChange={() => handleSwitchOrganization(org.id)}
+                    >
+                      {org.name}
+                    </DropdownMenuCheckboxItem>
+                  ))}
+                </DropdownMenuSubContent>
+              </DropdownMenuSub>
+              <DropdownMenuSeparator />
 
-            <DropdownMenuItem onClick={handleLogout}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              {!userData.emailVerified && (
+                <DropdownMenuItem onClick={handleVerifyEmail}>
+                  <MailWarning className="mr-2 h-4 w-4" />
+                  Verify Email
+                </DropdownMenuItem>
+              )}
+
+              <DropdownMenuItem onClick={handleResetPassword}>
+                <Lock className="mr-2 h-4 w-4" />
+                Reset Password
+              </DropdownMenuItem>
+
+              <DropdownMenuItem asChild>
+                <Link to="/user-settings">
+                  <Settings className="mr-2 h-4 w-4" />
+                  User Settings
+                </Link>
+              </DropdownMenuItem>
+
+              <DropdownMenuItem onClick={handleLogout}>
+                <LogOut className="mr-2 h-4 w-4" />
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <InviteMemberDialog />
+        </Dialog>
       </SidebarMenuItem>
     </SidebarMenu>
   );
