@@ -8,6 +8,7 @@ import resend from "./email.js";
 import { getActiveOrganization } from "../use-cases/organization.js";
 import { eq } from "drizzle-orm";
 import { membersTable } from "../db/schema/index.js";
+import { sendOrganizationInvitation } from "./email.js";
 
 export const auth = betterAuth({
   appName: "kanbased",
@@ -106,6 +107,17 @@ export const auth = betterAuth({
       },
     }),
     openAPI(),
-    organization(),
+    organization({
+      async sendInvitationEmail(data) {
+        const inviteLink = `${env.FE_ORIGIN}/accept-invitation/${data.id}`;
+        await sendOrganizationInvitation({
+          email: data.email,
+          invitedByUsername: data.inviter.user.name,
+          invitedByEmail: data.inviter.user.email,
+          teamName: data.organization.name,
+          inviteLink,
+        });
+      },
+    }),
   ],
 });
