@@ -11,6 +11,7 @@ import { toast } from "sonner";
 import { Suspense } from "react";
 import { useQuery } from "@rocicorp/zero/react";
 import { useZ } from "@/lib/zero-cache";
+import { allBoardsQuery } from "@/lib/zero-queries";
 
 export function ExportBoards({ onClose }: ExportBoardsModal) {
   return (
@@ -30,15 +31,7 @@ export function ExportBoards({ onClose }: ExportBoardsModal) {
 
 function Content() {
   const z = useZ();
-  const boardsQuery = z.query.boardsTable
-    .where("deletedAt", "IS", null)
-    .related("columns", (q) =>
-      q
-        .where("deletedAt", "IS", null)
-        .related("tasks", (q) => q.where("deletedAt", "IS", null)),
-    );
-
-  const [boards] = useQuery(boardsQuery);
+  const [boards] = useQuery(allBoardsQuery(z));
 
   if (!boards.length) {
     return <div>No boards found</div>;

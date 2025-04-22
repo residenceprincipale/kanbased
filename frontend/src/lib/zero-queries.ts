@@ -59,3 +59,15 @@ export function getOrganizationListQuery(z: Z) {
 export type GetOrganizationListQueryResult = ZeroQueryResult<
   typeof getOrganizationListQuery
 >[];
+
+export function allBoardsQuery(z: Z) {
+  return z.query.boardsTable
+    .where("deletedAt", "IS", null)
+    .related("columns", (q) =>
+      q
+        .where("deletedAt", "IS", null)
+        .related("tasks", (q) => q.where("deletedAt", "IS", null)),
+    );
+}
+
+export type AllBoardsQueryResult = ZeroQueryResult<typeof allBoardsQuery>[];

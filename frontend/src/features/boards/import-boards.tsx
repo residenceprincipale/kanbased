@@ -13,65 +13,78 @@ import { Button } from "@/components/ui/button";
 import { ImportIcon, InfoIcon } from "lucide-react";
 import { useActiveOrganizationId } from "@/queries/session";
 import { useZ } from "@/lib/zero-cache";
-import { createId } from "@/lib/utils";
+import { createId, tryCatch } from "@/lib/utils";
+import { AllBoardsQueryResult } from "@/lib/zero-queries";
 
 export function ImportBoards({ onClose }: ImportBoardsModal) {
   const z = useZ();
   const orgId = useActiveOrganizationId();
 
-  const handleImport = async (data: any) => {
+  const handleImport = async (data: AllBoardsQueryResult) => {
     if (!Array.isArray(data)) {
+      toast.error("Invalid JSON data");
       return;
     }
 
-    await z.mutateBatch(async (m) => {
-      const now = Date.now();
+    // TODO: probably have to validate the data first
+    // will do that later
+    const { error } = await tryCatch(
+      z.mutateBatch(async (m) => {
+        const now = Date.now();
 
-      for (let board of data) {
-        const boardId = createId();
+        for (let board of data) {
+          const boardId = createId();
 
-        await m.boardsTable.insert({
-          id: boardId,
-          name: board.boardName,
-          slug: board.boardName.toLowerCase().replace(/ /g, "-"),
-          organizationId: orgId,
-          creatorId: z.userID,
-          createdAt: now,
-        });
-
-        for (let column of board.columns) {
-          const columnId = createId();
-
-          await m.columnsTable.insert({
-            id: columnId,
-            boardId,
-            createdAt: now,
-            name: column.name,
-            position: column.position,
-            creatorId: z.userID,
+          await m.boardsTable.insert({
+            id: boardId + "irshath",
+            name: board.name,
+            slug: board.name.toLowerCase().replace(/ /g, "-"),
             organizationId: orgId,
+            creatorId: z.userID,
+            createdAt: now,
           });
 
-          for (let task of column.tasks) {
-            await m.tasksTable.insert({
-              id: createId(),
-              name: task.name,
+          for (let column of board.columns) {
+            const columnId = createId();
+
+            await m.columnsTable.insert({
+              id: columnId,
+              boardId,
               createdAt: now,
-              position: task.position,
-              columnId,
+              name: column.name,
+              position: column.position,
               creatorId: z.userID,
               organizationId: orgId,
             });
+
+            for (let task of column.tasks) {
+              await m.tasksTable.insert({
+                id: createId(),
+                name: task.name,
+                createdAt: now,
+                position: task.position,
+                columnId,
+                creatorId: z.userID,
+                organizationId: orgId,
+              });
+            }
           }
         }
-      }
-    });
+      }),
+    );
+
+    if (error) {
+      toast.error("Error importing boards");
+      return;
+    }
 
     toast.success("Boards imported successfully");
     onClose();
   };
 
-  const getJsonFromFile = async (file: File): Promise<string | undefined> => {
+  const getJsonFromFile = async (
+    file: File,
+  ): Promise<AllBoardsQueryResult | undefined> => {
     try {
       const data = await file.text();
       const json = JSON.parse(data);
@@ -87,17 +100,17 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
     const file = formData.get("json-file") as File;
     const jsonInput = formData.get("json-input") as string;
 
-    if (!file && !jsonInput) {
+    if (!file.name && !jsonInput) {
       toast.error("Please provide either a JSON file or paste JSON data");
       return;
     }
 
-    if (file && jsonInput) {
-      toast.error("Please provide either a JSON file or paste JSON data");
+    if (file.name && jsonInput) {
+      toast.error("Please only provide one of the options, not both.");
       return;
     }
 
-    if (file) {
+    if (file.name) {
       const json = await getJsonFromFile(file);
 
       if (!json) {
@@ -109,7 +122,13 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
     }
 
     if (jsonInput) {
-      await handleImport(jsonInput);
+      try {
+        const json = JSON.parse(jsonInput);
+        await handleImport(json);
+      } catch (error) {
+        toast.error("Invalid JSON data");
+        return;
+      }
     }
   };
 
@@ -122,7 +141,11 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
 
         <form onSubmit={handleSubmit}>
           <div className="space-y-3 relative">
-            <Textarea name="json-input" placeholder="Paste JSON data here" />
+            <Textarea
+              name="json-input"
+              placeholder="Paste JSON data here"
+              className="h-[300px]"
+            />
 
             <p className="text-sm text-muted-foreground text-center">Or</p>
 
@@ -144,7 +167,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
             </Button>
 
             <p className="text-sm text-muted-foreground text-left flex items-center gap-1">
-              <InfoIcon className="w-4 h-4" />
+              <InfoIcon className="w-4 h-4 self-start mt-1 shrink-0" />
               Please note that you will be the creator of the imported boards
               not the original creator of the boards that you are importing.
             </p>
