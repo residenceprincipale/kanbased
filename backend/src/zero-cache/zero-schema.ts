@@ -47,6 +47,19 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
     >,
   ) => eb.cmp("creatorId", "=", authData.sub);
 
+  const creatorBelongsToActiveOrg = (
+    authData: AuthData,
+    eb: ExpressionBuilder<
+      Schema,
+      "boardsTable" | "columnsTable" | "tasksTable" | "notesTable"
+    >,
+  ) =>
+    eb.exists("creator", (q) =>
+      q.whereExists("members", (q) =>
+        q.where("organizationId", "=", authData.activeOrganizationId),
+      ),
+    );
+
   const membersBelongToActiveOrg = (
     authData: AuthData,
     { exists }: ExpressionBuilder<Schema, "usersTable">,
@@ -167,7 +180,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
             userIsLoggedIn,
             userIsOwnerOrAdmin,
             itemsBelongToActiveOrg,
-            loggedInUserIsCreator,
+            creatorBelongsToActiveOrg,
           ),
         ],
         update: {
@@ -176,7 +189,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
           postMutation: [
@@ -184,7 +197,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
         },
@@ -207,7 +220,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
             userIsLoggedIn,
             userIsOwnerOrAdmin,
             itemsBelongToActiveOrg,
-            loggedInUserIsCreator,
+            creatorBelongsToActiveOrg,
           ),
         ],
         update: {
@@ -216,7 +229,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
           postMutation: [
@@ -224,7 +237,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
         },
@@ -247,7 +260,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
             userIsLoggedIn,
             userIsOwnerOrAdmin,
             itemsBelongToActiveOrg,
-            loggedInUserIsCreator,
+            creatorBelongsToActiveOrg,
           ),
         ],
         update: {
@@ -256,7 +269,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
           postMutation: [
@@ -264,7 +277,7 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
               userIsLoggedIn,
               userIsOwnerOrAdmin,
               itemsBelongToActiveOrg,
-              loggedInUserIsCreator,
+              creatorBelongsToActiveOrg,
             ),
           ],
         },
