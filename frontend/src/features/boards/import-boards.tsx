@@ -9,32 +9,66 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
-import { ImportIcon, CheckCircle } from "lucide-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ImportIcon } from "lucide-react";
 import { useActiveOrganizationId } from "@/queries/session";
+import { useZ } from "@/lib/zero-cache";
+import { createId } from "@/lib/utils";
 
 export function ImportBoards({ onClose }: ImportBoardsModal) {
-  const queryClient = useQueryClient();
+  const z = useZ();
   const orgId = useActiveOrganizationId();
-  const importBoardsMutation = useMutation("post", "/api/v1/boards/import", {
-    meta: {
-      showToastOnMutationError: false,
-    },
-    onSuccess: () => {
-      toast.success("Boards imported successfully");
-      queryClient.invalidateQueries({
-        // queryKey: boardsQueryOptions({ orgId }).queryKey,
-      });
-    },
-    onError: () => {
-      toast.error("Error importing boards");
-    },
-  });
 
-  const handleImport = (data: any) => {
-    importBoardsMutation.mutate({ body: { boards: data } });
+  const handleImport = async (data: any) => {
+    if (!Array.isArray(data)) {
+      return;
+    }
+
+    await z.mutateBatch(async (m) => {
+      const now = Date.now();
+
+      for (let board of data) {
+        const boardId = createId();
+
+        await m.boardsTable.insert({
+          id: boardId,
+          name: board.boardName,
+          slug: board.boardName.toLowerCase().replace(/ /g, "-"),
+          organizationId: orgId,
+          creatorId: z.userID,
+          createdAt: now,
+        });
+
+        for (let column of board.columns) {
+          const columnId = createId();
+
+          await m.columnsTable.insert({
+            id: columnId,
+            boardId,
+            createdAt: now,
+            name: column.name,
+            position: column.position,
+            creatorId: z.userID,
+            organizationId: orgId,
+          });
+
+          for (let task of column.tasks) {
+            await m.tasksTable.insert({
+              id: createId(),
+              name: task.name,
+              createdAt: now,
+              position: task.position,
+              columnId,
+              creatorId: z.userID,
+              organizationId: orgId,
+            });
+          }
+        }
+      }
+    });
+
+    toast.success("Boards imported successfully");
+    onClose();
   };
 
   const getJsonFromFile = async (file: File): Promise<string | undefined> => {
@@ -71,11 +105,11 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
         return;
       }
 
-      handleImport(json);
+      await handleImport(json);
     }
 
     if (jsonInput) {
-      handleImport(jsonInput);
+      await handleImport(jsonInput);
     }
   };
 
@@ -86,51 +120,30 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
           <DialogTitle>Import Data</DialogTitle>
         </DialogHeader>
 
-        {importBoardsMutation.isSuccess ? (
-          <div className="flex flex-col gap-4 items-center justify-center">
-            <CheckCircle className="w-10 h-10 text-green-500" />
-            <p>Boards imported successfully</p>
-            <Button onClick={onClose}>Close</Button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit}>
-            <div className="space-y-3 relative">
-              {importBoardsMutation.isPending && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Spinner />
-                </div>
-              )}
-              <Textarea name="json-input" placeholder="Paste JSON data here" />
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-3 relative">
+            <Textarea name="json-input" placeholder="Paste JSON data here" />
 
-              <p className="text-sm text-muted-foreground text-center">Or</p>
+            <p className="text-sm text-muted-foreground text-center">Or</p>
 
-              <div className="grid gap-1.5">
-                <Label htmlFor="import-file" className="text-xs">
-                  Choose a JSON file to import
-                </Label>
-                <Input
-                  type="file"
-                  id="import-file"
-                  placeholder="Import data from JSON file"
-                  name="json-file"
-                />
-              </div>
-
-              <Button
-                type="submit"
-                className="w-full"
-                disabled={importBoardsMutation.isPending}
-              >
-                {importBoardsMutation.isPending ? (
-                  <Spinner />
-                ) : (
-                  <ImportIcon className="w-4 h-4" />
-                )}
-                Import
-              </Button>
+            <div className="grid gap-1.5">
+              <Label htmlFor="import-file" className="text-xs">
+                Choose a JSON file to import
+              </Label>
+              <Input
+                type="file"
+                id="import-file"
+                placeholder="Import data from JSON file"
+                name="json-file"
+              />
             </div>
-          </form>
-        )}
+
+            <Button type="submit" className="w-full">
+              {<ImportIcon className="w-4 h-4" />}
+              Import
+            </Button>
+          </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
