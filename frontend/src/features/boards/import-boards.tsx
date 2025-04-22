@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ImportIcon } from "lucide-react";
+import { ImportIcon, InfoIcon } from "lucide-react";
 import { useActiveOrganizationId } from "@/queries/session";
 import { useZ } from "@/lib/zero-cache";
 import { createId } from "@/lib/utils";
@@ -142,6 +142,12 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
               {<ImportIcon className="w-4 h-4" />}
               Import
             </Button>
+
+            <p className="text-sm text-muted-foreground text-left flex items-center gap-1">
+              <InfoIcon className="w-4 h-4" />
+              Please note that you will be the creator of the imported boards
+              not the original creator of the boards that you are importing.
+            </p>
           </div>
         </form>
       </DialogContent>

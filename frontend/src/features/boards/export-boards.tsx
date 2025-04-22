@@ -5,12 +5,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { ExportBoardsModal } from "@/features/boards/board.state";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Copy, Download } from "lucide-react";
 import { toast } from "sonner";
 import { Suspense } from "react";
-import { useActiveOrganizationId } from "@/queries/session";
+import { useQuery } from "@rocicorp/zero/react";
+import { useZ } from "@/lib/zero-cache";
 
 export function ExportBoards({ onClose }: ExportBoardsModal) {
   return (
@@ -29,30 +29,22 @@ export function ExportBoards({ onClose }: ExportBoardsModal) {
 }
 
 function Content() {
-  const qc = useQueryClient();
-  const orgId = useActiveOrganizationId();
-  // const boards = qc.getQueryData(boardsQueryOptions({ orgId }).queryKey);
+  const z = useZ();
+  const boardsQuery = z.query.boardsTable
+    .where("deletedAt", "IS", null)
+    .related("columns", (q) =>
+      q
+        .where("deletedAt", "IS", null)
+        .related("tasks", (q) => q.where("deletedAt", "IS", null)),
+    );
 
-  // const { data } = useSuspenseQuery({
-  //   queryKey: ["export", "boards"],
-  //   queryFn: async () => {
-  //     const allBoardsPromise =
-  //       boards?.map(async (board) => {
-  //         const boardData = await qc.ensureQueryData(
-  //           columnsQueryOptions({ orgId, boardUrl: board.boardUrl }),
-  //         );
-  //         return transformColumnsQuery(boardData);
-  //       }) ?? [];
+  const [boards] = useQuery(boardsQuery);
 
-  //     const allBoards = await Promise.all(allBoardsPromise);
+  if (!boards.length) {
+    return <div>No boards found</div>;
+  }
 
-  //     return JSON.stringify(allBoards, null, 2);
-  //   },
-  // });
-
-  // if (!boards?.length) {
-  //   return <div>No boards found</div>;
-  // }
+  const data = JSON.stringify(boards, null, 2);
 
   const handleCopy = (jsonData: string) => {
     navigator.clipboard
@@ -84,7 +76,7 @@ function Content() {
           size="sm"
           variant="outline"
           className="absolute right-4 top-4"
-          // onClick={() => handleCopy(data)}
+          onClick={() => handleCopy(data)}
         >
           <Copy className="h-4 w-4 mr-2" />
           Copy
@@ -94,14 +86,14 @@ function Content() {
           size="sm"
           variant="outline"
           className="absolute right-28 top-4"
-          // onClick={() => handleDownload(data)}
+          onClick={() => handleDownload(data)}
         >
           <Download className="h-4 w-4 mr-2" />
           Download
         </Button>
       </div>
       <pre className="bg-muted p-4 rounded-lg overflow-auto max-h-[60vh] text-sm break-all w-full">
-        {/* {data} */}
+        {data}
       </pre>
     </div>
   );
