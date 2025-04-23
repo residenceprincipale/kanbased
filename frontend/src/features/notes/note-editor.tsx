@@ -12,7 +12,7 @@ import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import { useKeyDown } from "@/hooks/use-keydown";
-import { createId } from "@/lib/utils";
+import { cn, createId } from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,9 @@ import { EditableText } from "@/components/editable-text";
 import { useZ } from "@/lib/zero-cache";
 import { flushSync } from "react-dom";
 import { useActiveOrganizationId } from "@/queries/session";
+import { WrappedTooltip } from "@/components/ui/tooltip";
+import { Expand, Eye, Fullscreen, Minimize2, Pencil, Save } from "lucide-react";
+import { useLocalStorage } from "@/hooks/use-local-storage";
 type CommonProps = {
   afterSave: (data: { noteId: string }) => void;
   onClose: () => void;
@@ -36,6 +39,7 @@ type NoteEditorProps =
       title: string;
       mode: "edit";
       noteId: string;
+      defaultTab?: "write" | "preview";
     } & CommonProps)
   | ({
       mode: "create";
@@ -61,11 +65,16 @@ export default function NoteEditor(props: NoteEditorProps) {
     defaultContent,
     editorRef,
     isDirty,
+    defaultTab: !isCreate ? props.defaultTab : undefined,
   });
 
   const activeOrganizationId = useActiveOrganizationId();
   const [title, setTitle] = useState(defaultTitle);
   const content = useRef(defaultContent);
+  const [isFullscreen, setIsFullscreen] = useLocalStorage(
+    "note-editor-fullscreen",
+    false,
+  );
 
   useKeyDown((e) => {
     const isCtrlKey = e.metaKey || e.ctrlKey;
@@ -120,6 +129,12 @@ export default function NoteEditor(props: NoteEditorProps) {
   return (
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
+        className={cn(
+          "flex flex-col",
+          isFullscreen
+            ? "min-w-full h-screen p-4 gap-0"
+            : "min-w-[95%] h-[95%] gap-2",
+        )}
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => {
@@ -128,7 +143,7 @@ export default function NoteEditor(props: NoteEditorProps) {
           // Always prevent Dialog from closing on Escape
           e.preventDefault();
 
-          if (!vimMode || vimMode === "normal") {
+          if (!vimMode || vimMode === "normal" || mode !== "write") {
             props.onClose();
           } else {
             // the prevent default is to prevent the dialog from closing
@@ -137,7 +152,6 @@ export default function NoteEditor(props: NoteEditorProps) {
             editorRef.current?.handleEscapeForVim();
           }
         }}
-        className="min-w-[90%] h-[90%] flex flex-col"
       >
         <DialogHeader className="shrink-0">
           <DialogTitle className="min-w-80 max-w-fit">
@@ -160,6 +174,90 @@ export default function NoteEditor(props: NoteEditorProps) {
           <DialogDescription className="sr-only">Create Note</DialogDescription>
         </DialogHeader>
 
+        <div className="absolute right-10 top-1.5">
+          {mode === "write" ? (
+            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+              <Button
+                onClick={() => handleModeChange("preview")}
+                variant="ghost"
+                size="icon"
+              >
+                <Eye />
+              </Button>
+
+              <span>
+                See Preview
+                <KeyboardShortcutIndicator commandOrCtrlKey>
+                  M
+                </KeyboardShortcutIndicator>
+              </span>
+            </WrappedTooltip>
+          ) : (
+            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+              <Button
+                onClick={() => handleModeChange("write")}
+                variant="ghost"
+                size="icon"
+              >
+                <Pencil />
+              </Button>
+
+              <span>
+                Edit
+                <KeyboardShortcutIndicator commandOrCtrlKey>
+                  M
+                </KeyboardShortcutIndicator>
+              </span>
+            </WrappedTooltip>
+          )}
+
+          <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <Button
+              onClick={handleSave}
+              variant="ghost"
+              size="icon"
+              disabled={!isDirty}
+              className={!isFullscreen ? "hidden" : ""}
+            >
+              <Save />
+            </Button>
+
+            <span>
+              Save
+              <KeyboardShortcutIndicator commandOrCtrlKey>
+                S
+              </KeyboardShortcutIndicator>
+            </span>
+          </WrappedTooltip>
+
+          {isFullscreen ? (
+            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+              <Button
+                onClick={() => setIsFullscreen(false)}
+                variant="ghost"
+                size="icon"
+              >
+                <Minimize2 />
+              </Button>
+
+              <span>Exit Zen Mode</span>
+            </WrappedTooltip>
+          ) : (
+            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={() => setIsFullscreen(true)}
+              >
+                <Expand className="size-4" />
+              </Button>
+
+              <span>Toggle Zen Mode</span>
+            </WrappedTooltip>
+          )}
+        </div>
+
         <div className="min-h-0 flex-1 h-full">
           <Suspense
             fallback={
@@ -177,19 +275,26 @@ export default function NoteEditor(props: NoteEditorProps) {
                   handleModeChange(value as "write" | "preview")
                 }
               >
-                <div className="flex shrink-0 justify-between">
+                <div
+                  className={cn(
+                    "shrink-0 justify-between",
+                    isFullscreen ? "hidden" : "flex",
+                  )}
+                >
                   <div className="flex items-center gap-2">
-                    <TabsList className="shrink-0 self-start flex items-center gap-2">
-                      <TabsTrigger value="write">Write</TabsTrigger>
-                      <TabsTrigger value="preview">Preview</TabsTrigger>
-                    </TabsList>
+                    <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+                      <TabsList className="shrink-0 self-start flex items-center gap-2">
+                        <TabsTrigger value="write">Write</TabsTrigger>
+                        <TabsTrigger value="preview">Preview</TabsTrigger>
+                      </TabsList>
 
-                    <KeyboardShortcutIndicator
-                      label="Toggle mode"
-                      commandOrCtrlKey
-                    >
-                      {toggleModeKey}
-                    </KeyboardShortcutIndicator>
+                      <KeyboardShortcutIndicator
+                        label="Toggle mode"
+                        commandOrCtrlKey
+                      >
+                        {toggleModeKey}
+                      </KeyboardShortcutIndicator>
+                    </WrappedTooltip>
                   </div>
 
                   <div className="flex items-center gap-3">
@@ -211,7 +316,10 @@ export default function NoteEditor(props: NoteEditorProps) {
                 </div>
                 <TabsContent
                   value="write"
-                  className="h-full flex-1 data-[state=inactive]:hidden min-h-0"
+                  className={cn(
+                    "h-full flex-1 data-[state=inactive]:hidden min-h-0",
+                    isFullscreen && "mt-0",
+                  )}
                   forceMount
                 >
                   <div className="min-h-0 h-full">
@@ -226,13 +334,17 @@ export default function NoteEditor(props: NoteEditorProps) {
                       onSave={handleSave}
                       onExitEditorWithoutSaving={props.onClose}
                       placeholder="Write your note here"
+                      viewStyle={isFullscreen ? "zen" : "normal"}
                     />
                   </div>
                 </TabsContent>
 
                 <TabsContent
                   value="preview"
-                  className="h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden"
+                  className={cn(
+                    "h-full w-full flex-1 min-h-0 data-[state=inactive]:hidden",
+                    isFullscreen && "mt-0",
+                  )}
                   forceMount
                 >
                   <MdPreview

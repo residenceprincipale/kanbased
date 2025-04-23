@@ -5,6 +5,8 @@ import { cn } from "@/lib/utils";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { GetNoteQueryResult } from "@/lib/zero-queries";
+import { WrappedTooltip } from "@/components/ui/tooltip";
+import { Expand } from "lucide-react";
 
 export function ViewNote(props: {
   note: NonNullable<GetNoteQueryResult>;
@@ -43,16 +45,35 @@ export function ViewNote(props: {
       <div className="flex items-center justify-between gap-2">
         <h1 className="text-2xl font-bold">{props.note.name}</h1>
 
-        <Link
-          to="."
-          search={{ editNoteId: props.note.id }}
-          className={buttonVariants({ size: "sm" })}
-          replace
-          id="edit-note-button"
-        >
-          Edit
-          <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>
-        </Link>
+        <div className="flex items-center gap-3">
+          <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <Link
+              to="."
+              search={{ editNoteId: props.note.id, defaultTab: "preview" }}
+              className={buttonVariants({ size: "icon", variant: "ghost" })}
+              replace
+              onClick={() => {
+                localStorage.setItem("note-editor-fullscreen", "true");
+              }}
+              id="preview-note-button"
+            >
+              <Expand className="size-4" />
+            </Link>
+
+            <span>Enter Zen Mode</span>
+          </WrappedTooltip>
+
+          <Link
+            to="."
+            search={{ editNoteId: props.note.id }}
+            className={buttonVariants({ size: "sm" })}
+            replace
+            id="edit-note-button"
+          >
+            Edit
+            <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>
+          </Link>
+        </div>
       </div>
 
       <div className="flex-1 h-full overflow-y-auto">

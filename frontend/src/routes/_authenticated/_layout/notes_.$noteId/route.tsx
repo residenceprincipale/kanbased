@@ -26,10 +26,16 @@ export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
     };
   },
 
-  validateSearch: (search): { editNoteId?: string } => {
+  validateSearch: (
+    search,
+  ): { editNoteId?: string; defaultTab?: "write" | "preview" } => {
     return {
       editNoteId:
         typeof search.editNoteId === "string" ? search.editNoteId : undefined,
+      defaultTab:
+        typeof search.defaultTab === "string"
+          ? (search.defaultTab as "write" | "preview")
+          : undefined,
     };
   },
 });
@@ -39,8 +45,6 @@ function RouteComponent() {
   const { noteId } = Route.useParams();
   const z = useZ();
   const [note] = useQuery(getNoteQuery(z, noteId));
-
-  useEffect(() => {}, [note]);
 
   if (!note) {
     // TODO: Handle not found case

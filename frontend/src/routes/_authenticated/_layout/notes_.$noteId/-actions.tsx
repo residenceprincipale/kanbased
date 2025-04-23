@@ -7,11 +7,15 @@ const routeApi = getRouteApi("/_authenticated/_layout/notes_/$noteId");
 
 export function Actions(props: { note: NonNullable<GetNoteQueryResult> }) {
   const router = useRouter();
-  const { editNoteId } = routeApi.useSearch();
+  const { editNoteId, defaultTab } = routeApi.useSearch();
 
   const handleClose = () => {
     router.navigate({ to: ".", search: undefined, replace: true });
-    focusElementWithDelay(document.getElementById("edit-note-button"));
+    if (defaultTab !== "preview") {
+      focusElementWithDelay(document.getElementById("edit-note-button"));
+    } else {
+      focusElementWithDelay(document.getElementById("preview-note-button"));
+    }
   };
 
   if (editNoteId) {
@@ -23,6 +27,7 @@ export function Actions(props: { note: NonNullable<GetNoteQueryResult> }) {
         title={props.note.name}
         afterSave={handleClose}
         onClose={handleClose}
+        defaultTab={defaultTab}
       />
     );
   }

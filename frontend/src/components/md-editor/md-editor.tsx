@@ -70,9 +70,11 @@ interface CodeMirrorEditorProps {
   onSave: () => void;
   onExitEditorWithoutSaving?: () => void;
   placeholder?: string;
+  viewStyle: "zen" | "normal";
 }
 
 export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
+  const { viewStyle = "normal" } = props;
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
@@ -186,9 +188,13 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
 
   return (
     <div className="h-full flex flex-col relative">
-      <div className="absolute top-2 right-2 z-10"></div>
       <div ref={editorRef} className="flex-1 h-full min-h-0" />
-      <div className="flex justify-between items-center px-1.5 py-1.5 border-t">
+      <div
+        className={cn(
+          "flex justify-between items-center px-1.5 py-1.5 border-t",
+          viewStyle === "zen" && "hidden",
+        )}
+      >
         <div
           className={cn(
             `px-3 py-1 text-xs shrink-0 text-muted-foreground bg-muted uppercase font-bold w-fit rounded`,

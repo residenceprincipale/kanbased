@@ -14,15 +14,17 @@ export function useMarkdownEditorPreviewToggle({
   defaultContent = "",
   editorRef,
   isDirty,
+  defaultTab = "write",
 }: {
   defaultContent: string;
   editorRef: CodeMirrorEditorRef;
   isDirty: boolean;
+  defaultTab?: "write" | "preview";
 }) {
   const [parsedHtml, setParsedHtml] = useState(() =>
     markdownToHtml(defaultContent),
   );
-  const [mode, setMode] = useState<Mode>("write");
+  const [mode, setMode] = useState<Mode>(defaultTab);
   const [editorMode, setEditorMode] = useLocalStorage<EditorMode>(
     "preferred-editor-mode",
     "standard",
