@@ -1,13 +1,30 @@
 import { getRelativeTimeString } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { GetNotesListQueryResult } from "@/lib/zero-queries";
+import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { useZ } from "@/lib/zero-cache";
+import { toast } from "sonner";
 
-function NoteItem({ note }: { note: GetNotesListQueryResult[number] }) {
+function NoteItem({
+  note,
+  onDelete,
+}: {
+  note: GetNotesListQueryResult[number];
+  onDelete: () => void;
+}) {
   return (
     <Link
       to="/notes/$noteId"
       params={{ noteId: note.id }}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-sm transition-shadow hover:shadow-lg"
+      id={`note-item-${note.id}`}
     >
       <div className="relative p-6">
         {/* Decorative gradient background */}
@@ -19,6 +36,38 @@ function NoteItem({ note }: { note: GetNotesListQueryResult[number] }) {
             <h3 className="font-semibold text-xl tracking-tight line-clamp-1">
               {note.name}
             </h3>
+
+            <DropdownMenu modal={false}>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <MoreHorizontal className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="." search={{ editNoteId: note.id }} replace>
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                  </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem
+                  className="!text-red-10 focus:!bg-red-3 dark:focus:!bg-red-2"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onDelete();
+                  }}
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* Updated at */}
@@ -38,9 +87,25 @@ function NoteItem({ note }: { note: GetNotesListQueryResult[number] }) {
 }
 
 export function NoteList(props: { notes: GetNotesListQueryResult }) {
+  const z = useZ();
+
+  const handleDelete = (noteId: string) => {
+    z.mutate.notesTable.update({
+      id: noteId,
+      deletedAt: Date.now(),
+    });
+    toast.success("Note deleted");
+  };
+
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {props.notes?.map((note) => <NoteItem note={note} key={note.id} />)}
+      {props.notes?.map((note) => (
+        <NoteItem
+          note={note}
+          key={note.id}
+          onDelete={() => handleDelete(note.id)}
+        />
+      ))}
     </ul>
   );
 }

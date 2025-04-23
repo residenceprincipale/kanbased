@@ -25,10 +25,12 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
     };
   },
 
-  validateSearch: (search): { createNote?: boolean } => {
+  validateSearch: (search): { createNote?: boolean; editNoteId?: string } => {
     return {
       createNote:
         typeof search.createNote === "boolean" ? search.createNote : undefined,
+      editNoteId:
+        typeof search.editNoteId === "string" ? search.editNoteId : undefined,
     };
   },
 });
@@ -36,6 +38,7 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
 function RouteComponent() {
   const router = useRouter();
   const z = useZ();
+  const { editNoteId } = Route.useSearch();
   const [notes] = useQuery(getNotesListQuery(z));
 
   const handleCreateNote = () => {
@@ -76,7 +79,11 @@ function RouteComponent() {
         </div>
       </div>
 
-      <Actions />
+      <Actions
+        note={
+          editNoteId ? notes.find((note) => note.id === editNoteId) : undefined
+        }
+      />
     </ModalProvider>
   );
 }
