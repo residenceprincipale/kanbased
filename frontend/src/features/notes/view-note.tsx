@@ -1,12 +1,20 @@
 import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { markdownToHtml } from "@/lib/helpers";
 import { cn } from "@/lib/utils";
 import { Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useMemo } from "react";
 import { GetNoteQueryResult } from "@/lib/zero-queries";
 import { WrappedTooltip } from "@/components/ui/tooltip";
-import { Expand } from "lucide-react";
+import { Expand, EllipsisVertical, Trash } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useZ } from "@/lib/zero-cache";
+import { toast } from "sonner";
 
 export function ViewNote(props: {
   note: NonNullable<GetNoteQueryResult>;
@@ -14,6 +22,7 @@ export function ViewNote(props: {
   isEditing: boolean;
 }) {
   const router = useRouter();
+  const z = useZ();
 
   const html = useMemo(
     () => markdownToHtml(props.note.content),
@@ -34,6 +43,15 @@ export function ViewNote(props: {
 
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [props.isEditing]);
+
+  const handleDelete = async () => {
+    await z.mutate.notesTable.update({
+      id: props.note.id,
+      deletedAt: Date.now(),
+    });
+    toast.success("Note deleted");
+    router.navigate({ to: "/notes" });
+  };
 
   return (
     <div
@@ -73,6 +91,24 @@ export function ViewNote(props: {
             Edit
             <KeyboardShortcutIndicator>E</KeyboardShortcutIndicator>
           </Link>
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <EllipsisVertical className="size-4" />
+              </Button>
+            </DropdownMenuTrigger>
+
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={handleDelete}
+                className="!text-red-10 focus:!bg-red-3 dark:focus:!bg-red-2"
+              >
+                <Trash className="size-4 mr-2" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
