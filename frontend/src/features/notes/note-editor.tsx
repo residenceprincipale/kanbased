@@ -140,18 +140,20 @@ export default function NoteEditor(props: NoteEditorProps) {
         className="min-w-[90%] h-[90%] flex flex-col"
       >
         <DialogHeader className="shrink-0">
-          <DialogTitle className="max-w-80 w-full">
+          <DialogTitle className="min-w-80 max-w-fit">
             <EditableText
-              defaultEdit={isCreate}
               inputLabel="Title"
               fieldName="title"
-              value={title}
-              inputClassName="text-xl font-bold"
+              inputClassName="text-xl font-bold w-80"
               buttonClassName="text-xl font-bold"
-              buttonLabel="Edit title"
-              onSubmit={(value) => {
-                setTitle(value);
-                setIsDirty(true);
+              defaultValue={title}
+              defaultMode={isCreate ? "edit" : "view"}
+              onSubmit={(updatedTitle) => {
+                setTitle(updatedTitle);
+                if (updatedTitle !== title) {
+                  setIsDirty(true);
+                }
+                editorRef?.current?.focus();
               }}
             />
           </DialogTitle>
@@ -223,7 +225,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                       key={editorMode}
                       onSave={handleSave}
                       onExitEditorWithoutSaving={props.onClose}
-                      placeholder="Write your note here. The first line will be used as the title"
+                      placeholder="Write your note here"
                     />
                   </div>
                 </TabsContent>

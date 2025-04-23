@@ -1,37 +1,42 @@
+import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
+import { Button } from "@/components/ui/button";
+import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
 import { cn } from "@/lib/utils";
+import { CheckIcon, XIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 
 export function EditableText({
-  children,
   fieldName,
-  value,
   inputClassName,
   inputLabel,
   buttonClassName,
-  buttonLabel,
+  defaultValue,
+  defaultMode = "view",
   onSubmit,
-  defaultEdit = false,
 }: {
-  children?: React.ReactNode;
   fieldName: string;
-  value: string;
   inputClassName: string;
   inputLabel: string;
   buttonClassName: string;
-  buttonLabel: string;
+  defaultMode: "edit" | "view";
+  defaultValue: string;
   onSubmit: (value: string) => Promise<void> | void;
-  defaultEdit?: boolean;
 }) {
-  let [edit, setEdit] = useState(defaultEdit);
+  let [edit, setEdit] = useState(defaultMode === "edit");
   let inputRef = useRef<HTMLInputElement>(null);
   let buttonRef = useRef<HTMLButtonElement>(null);
+  let formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
-    if (defaultEdit) {
+    if (defaultMode === "edit") {
       inputRef.current?.select();
     }
   }, []);
+
+  useInteractiveOutside(formRef, () => {
+    setEdit(false);
+  });
 
   return edit ? (
     <form
@@ -42,36 +47,54 @@ export function EditableText({
         flushSync(() => {
           setEdit(false);
         });
-        buttonRef.current?.focus();
+        defaultMode !== "edit" && buttonRef.current?.focus();
       }}
-      onBlur={(e) => {
-        if (e.relatedTarget !== e.target) {
-          setEdit(false);
-        }
-      }}
+      className="flex gap-3 w-full"
+      ref={formRef}
     >
-      {children}
-      <input
-        required
-        ref={inputRef}
-        type="text"
-        aria-label={inputLabel}
-        name={fieldName}
-        defaultValue={value}
-        className={cn("w-full p-2 rounded-lg bg-muted", inputClassName)}
-        onKeyDown={(event) => {
-          if (event.key === "Escape") {
-            flushSync(() => {
-              setEdit(false);
-            });
-            buttonRef.current?.focus();
-          }
-        }}
-      />
+      <div className="flex-1">
+        <input
+          required
+          ref={inputRef}
+          type="text"
+          defaultValue={defaultValue}
+          aria-label={inputLabel}
+          name={fieldName}
+          className={cn("w-full p-2 rounded-lg bg-muted", inputClassName)}
+          onKeyDown={(event) => {
+            if (event.key === "Escape") {
+              flushSync(() => {
+                setEdit(false);
+              });
+              buttonRef.current?.focus();
+            }
+          }}
+        />
+      </div>
+
+      <div className="flex items-center gap-2 shrink-0">
+        <Button
+          size="icon"
+          type="button"
+          variant="outline"
+          className="hover:border-destructive hover:text-destructive hover:bg-red-100"
+          onClick={() => setEdit(false)}
+        >
+          <XIcon className="w-4 h-4" />
+        </Button>
+
+        <Button
+          size="icon"
+          type="submit"
+          variant="outline"
+          className="hover:border-green-500 hover:text-green-500 hover:bg-green-500/10"
+        >
+          <CheckIcon className="w-4 h-4" />
+        </Button>
+      </div>
     </form>
   ) : (
     <button
-      aria-label={buttonLabel}
       type="button"
       ref={buttonRef}
       onClick={() => {
@@ -82,7 +105,7 @@ export function EditableText({
       }}
       className={cn("w-full text-left p-2 rounded-lg", buttonClassName)}
     >
-      {value}
+      {defaultValue}
     </button>
   );
 }

@@ -6,6 +6,7 @@ export function KeyboardShortcutIndicator(
   props: React.PropsWithChildren<{
     label?: string;
     commandOrCtrlKey?: boolean;
+    className?: string;
   }>,
 ) {
   const isMobile = useIsMobile();
@@ -31,7 +32,12 @@ export function KeyboardShortcutIndicator(
   }
 
   return (
-    <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border px-1.5 font-mono uppercase font-medium text-[0.625rem]">
+    <kbd
+      className={cn(
+        "inline-flex ml-1 select-none items-center gap-1 rounded border px-1.5 font-mono uppercase font-medium text-[0.625rem]",
+        props.className,
+      )}
+    >
       {commandOrCtrlLabel}
       {props.children}
     </kbd>
