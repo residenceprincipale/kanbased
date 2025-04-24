@@ -36,7 +36,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
           const boardId = createId();
 
           await m.boardsTable.insert({
-            id: boardId + "irshath",
+            id: boardId,
             name: board.name,
             slug: board.name.toLowerCase().replace(/ /g, "-"),
             organizationId: orgId,
