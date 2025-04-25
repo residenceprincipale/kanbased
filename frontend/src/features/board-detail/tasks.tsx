@@ -15,11 +15,9 @@ type TasksProps = {
 function TaskList(props: TasksProps) {
   return (
     <>
-      {[...props.tasks]
-        .sort((a, b) => a.position - b.position)
-        .map((task, i, arr) => {
-          return <Task task={task} key={task.id} index={i} />;
-        })}
+      {props.tasks.map((task, i) => {
+        return <Task task={task} key={task.id} index={i} />;
+      })}
     </>
   );
 }
@@ -29,7 +27,7 @@ const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const sortedTasks = [...props.tasks].sort((a, b) => a.position - b.position);
+  const sortedTasks = props.tasks;
 
   const scrollList = () => {
     containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });

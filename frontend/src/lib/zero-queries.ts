@@ -31,7 +31,10 @@ export function getBoardWithColumnsAndTasksQuery(z: Z, slug: string) {
       q
         .where("deletedAt", "IS", null)
         .related("tasks", (q) =>
-          q.where("deletedAt", "IS", null).orderBy("position", "asc"),
+          q
+            .where("deletedAt", "IS", null)
+            .related("creator")
+            .orderBy("position", "asc"),
         )
         .orderBy("position", "asc"),
     )

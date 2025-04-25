@@ -21,7 +21,6 @@ export function Columns({
   columns: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"];
 }) {
   const z = useZ();
-  const columnsQueryKey: any[] = [];
   const containerRef = useRef<HTMLDivElement>(null);
   const { closeModal } = useColumnModalControls();
 
