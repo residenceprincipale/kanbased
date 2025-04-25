@@ -40,7 +40,6 @@ function BoardPage() {
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
 
   if (!board) {
-    // TODO: Show a loading state or figure out a better way to handle this
     return null;
   }
 

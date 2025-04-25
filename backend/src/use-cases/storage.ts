@@ -8,7 +8,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 export const getUserImagePresignedUrl = async (
   authCtx: AuthCtx,
   fileName: string,
-  contentType: string
+  contentType: string,
 ) => {
   const key = `users/${authCtx.session.userId}/${randomUUID()}-${fileName}`;
 

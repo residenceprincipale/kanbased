@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { getSidebarStateFromCookie } from "@/lib/utils";
@@ -8,6 +8,7 @@ import { TopSection } from "@/components/top-section";
 import { createZeroCache } from "@/lib/zero-cache";
 import { useAuthData } from "@/queries/session";
 import { ZeroProvider } from "@rocicorp/zero/react";
+import { allBoardsQuery } from "@/lib/zero-queries";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
@@ -25,6 +26,13 @@ function RouteComponent() {
   const defaultSidebarState = useMemo(getSidebarStateFromCookie, []);
   const userData = useAuthData();
   const z = useMemo(() => createZeroCache({ userId: userData.id }), []);
+
+  useEffect(() => {
+    const query = allBoardsQuery(z).preload({ ttl: "1d" });
+    return () => {
+      query.cleanup();
+    };
+  }, [z]);
 
   return (
     <ZeroProvider zero={z}>
