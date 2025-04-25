@@ -55,7 +55,7 @@ export function getSidebarStateFromCookie(): boolean {
   const sidebarCookie = cookies.find((cookie) =>
     cookie.trim().startsWith("sidebar:state="),
   );
-  return sidebarCookie ? sidebarCookie.split("=")[1] === "true" : false;
+  return sidebarCookie ? sidebarCookie.split("=")[1] === "true" : true;
 }
 
 // Types for the result object with discriminated union
