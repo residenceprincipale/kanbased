@@ -56,7 +56,7 @@ export function CreateColumn(props: CreateColumnProps) {
         <Input
           id="column-name"
           name="column-name"
-          placeholder="eg: work column"
+          placeholder="eg: To Do, In Progress, Done"
           required
           autoFocus
           onKeyDown={(event) => {

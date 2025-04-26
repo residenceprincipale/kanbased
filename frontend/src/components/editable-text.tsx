@@ -18,8 +18,8 @@ export function EditableText({
   fieldName: string;
   inputClassName: string;
   inputLabel: string;
-  buttonClassName: string;
-  defaultMode: "edit" | "view";
+  buttonClassName?: string;
+  defaultMode?: "edit" | "view";
   defaultValue: string;
   onSubmit: (value: string) => Promise<void> | void;
 }) {

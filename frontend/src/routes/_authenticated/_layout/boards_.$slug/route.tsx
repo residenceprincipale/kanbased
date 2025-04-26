@@ -1,6 +1,4 @@
-"use client";
 import { Columns } from "@/features/board-detail/columns";
-
 import { createFileRoute, linkOptions } from "@tanstack/react-router";
 import { ModalProvider } from "@/state/modals";
 import { CreateColumnButton } from "@/features/board-detail/create-column-button";
@@ -8,6 +6,8 @@ import { useQuery } from "@rocicorp/zero/react";
 import { getBoardWithColumnsAndTasksQuery } from "@/lib/zero-queries";
 import { useZ } from "@/lib/zero-cache";
 import { TaskDetailPage } from "./-actions";
+import { EditableText } from "@/components/editable-text";
+import { OtherActions } from "@/features/board-detail/other-actions";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
   component: BoardPage,
@@ -43,12 +43,29 @@ function BoardPage() {
     return null;
   }
 
+  const handleBoardNameChange = (updatedName: string) => {
+    z.mutate.boardsTable.update({
+      id: board.id,
+      name: updatedName,
+    });
+  };
+
   return (
     <ModalProvider>
       <div className="pt-4 flex-1 h-full min-h-0 flex flex-col gap-8">
-        <div className="flex gap-5 items-center shrink-0 px-8">
-          <h1 className="text-2xl font-bold">{board.name}</h1>
-          <CreateColumnButton />
+        <div className="flex gap-5 items-center shrink-0 px-8 w-fit">
+          <EditableText
+            inputLabel="Edit board name"
+            fieldName="boardName"
+            buttonClassName="text-2xl font-bold w-fit"
+            inputClassName="text-2xl font-bold w-56"
+            defaultValue={board.name}
+            onSubmit={handleBoardNameChange}
+          />
+          <div className="flex gap-3">
+            <CreateColumnButton />
+            <OtherActions board={board} />
+          </div>
         </div>
 
         <div className="flex-1 h-full min-h-0">
