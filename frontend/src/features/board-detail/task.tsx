@@ -69,7 +69,13 @@ function ViewTask(props: {
       preload={false}
     >
       <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
-        <span className="break-words">{task.name}</span>
+        <span
+          style={{
+            overflowWrap: "anywhere",
+          }}
+        >
+          {task.name}
+        </span>
 
         <div className="shrink-0 flex flex-col justify-between gap-1.5">
           <DropdownMenu>
