@@ -28,7 +28,7 @@ function RouteComponent() {
   const z = useMemo(() => createZeroCache({ userId: userData.id }), []);
 
   useEffect(() => {
-    const query = allBoardsQuery(z).preload({ ttl: "1d" });
+    const query = allBoardsQuery(z).preload({ ttl: "forever" });
     return () => {
       query.cleanup();
     };
