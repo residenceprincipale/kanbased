@@ -9,6 +9,7 @@ import { createZeroCache } from "@/lib/zero-cache";
 import { useAuthData } from "@/queries/session";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { allBoardsQuery } from "@/lib/zero-queries";
+import { CommandDialog } from "@/features/cmd-k/cmd-k";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
@@ -46,6 +47,8 @@ function RouteComponent() {
             <Outlet />
           </div>
         </main>
+
+        <CommandDialog />
       </SidebarProvider>
     </ZeroProvider>
   );

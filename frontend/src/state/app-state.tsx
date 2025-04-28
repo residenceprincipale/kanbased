@@ -4,6 +4,9 @@ type Theme = "light" | "dark" | "system";
 type AppContextValues = {
   theme: Theme;
   updateTheme: (theme: Theme) => void;
+  isSearchOpen: boolean;
+  openSearch: () => void;
+  closeSearch: () => void;
 };
 
 const AppContext = createContext<AppContextValues>({} as AppContextValues);
@@ -13,6 +16,8 @@ export function AppContextProvider(props: React.PropsWithChildren) {
     const savedTheme = localStorage.getItem("theme") as Theme;
     return savedTheme || "system";
   });
+
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const updateTheme = (value: Theme) => {
     const htmlElement = document.documentElement;
@@ -37,6 +42,14 @@ export function AppContextProvider(props: React.PropsWithChildren) {
     localStorage.setItem("theme", value);
   };
 
+  const openSearch = () => {
+    setIsSearchOpen(true);
+  };
+
+  const closeSearch = () => {
+    setIsSearchOpen(false);
+  };
+
   // Listen for system theme changes
   useEffect(() => {
     if (theme !== "system") return;
@@ -56,9 +69,11 @@ export function AppContextProvider(props: React.PropsWithChildren) {
   }, [theme]);
 
   return (
-    (<AppContext value={{ theme, updateTheme }}>
+    <AppContext.Provider
+      value={{ theme, updateTheme, isSearchOpen, openSearch, closeSearch }}
+    >
       {props.children}
-    </AppContext>)
+    </AppContext.Provider>
   );
 }
 

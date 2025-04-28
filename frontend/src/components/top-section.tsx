@@ -2,9 +2,13 @@ import { TsrBreadcrumbs } from "@/components/tsr-breadcrumbs";
 import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
 import { WrappedTooltip } from "@/components/ui/tooltip";
 import { Separator } from "@/components/ui/separator";
+import { SearchIcon } from "lucide-react";
+import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
+import { useAppContext } from "@/state/app-state";
 
 export function TopSection() {
   const { isMobile, state } = useSidebar();
+  const { openSearch } = useAppContext();
 
   const getSidebarWidth = () => {
     if (isMobile) {
@@ -41,7 +45,19 @@ export function TopSection() {
         <TsrBreadcrumbs />
       </div>
 
-      <div className="shrink-0">{/* TODO: Add CMD + K search bar */}</div>
+      <button
+        type="button"
+        className="shrink-0 flex items-center gap-10 text-sm font-medium cursor-pointer bg-muted text-muted-foreground px-2 py-1 rounded-md hover:text-foreground w-60 border border-transparent hover:border-accent justify-between"
+        onClick={openSearch}
+      >
+        <div className="shrink-0 flex items-center gap-1">
+          <SearchIcon className="size-4" />
+          Search
+        </div>
+        <KeyboardShortcutIndicator commandOrCtrlKey className="text-sm">
+          K
+        </KeyboardShortcutIndicator>
+      </button>
     </div>
   );
 }
