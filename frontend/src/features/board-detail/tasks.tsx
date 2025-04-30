@@ -27,6 +27,7 @@ const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 export function Tasks(props: TasksProps) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const addTaskButtonRef = useRef<HTMLButtonElement | null>(null);
   const sortedTasks = props.tasks;
 
   const scrollList = () => {
@@ -77,7 +78,11 @@ export function Tasks(props: TasksProps) {
                 : 1000
             }
             onComplete={() => {
-              setShowAddTask(false);
+              flushSync(() => {
+                setShowAddTask(false);
+              });
+
+              addTaskButtonRef.current?.focus();
             }}
             onAdd={() => {
               scrollList();
@@ -94,6 +99,7 @@ export function Tasks(props: TasksProps) {
             className="w-full"
             type="button"
             variant="secondary"
+            ref={addTaskButtonRef}
           >
             + Add a task
           </Button>
