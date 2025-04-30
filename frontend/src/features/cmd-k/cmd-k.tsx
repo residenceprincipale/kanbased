@@ -31,24 +31,6 @@ export function CommandDialog() {
   const z = useZ();
   const [boards] = useQuery(allBoardsQuery(z));
 
-  const allColumns = boards.reduce(
-    (
-      allColumns: { id: string; name: string; slug: string }[],
-      currentBoard,
-    ) => {
-      const columns = currentBoard.columns.map((column) => ({
-        id: column.id,
-        name: column.name,
-        slug: currentBoard.slug,
-      }));
-
-      allColumns.push(...columns);
-
-      return allColumns;
-    },
-    [],
-  );
-
   const allTasks = boards.reduce(
     (allTasks: { id: string; name: string; slug: string }[], currentBoard) => {
       const tasks = currentBoard.columns.flatMap((column) =>
@@ -140,27 +122,6 @@ export function CommandDialog() {
               <FileText />
               <span>{note.name}</span>
               <CommandSubtitle>Note</CommandSubtitle>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-
-        <CommandSeparator />
-
-        <CommandGroup heading="Columns">
-          {allColumns.map((column) => (
-            <CommandItem
-              key={column.id}
-              onSelect={() => {
-                router.navigate({
-                  to: "/boards/$slug",
-                  params: { slug: column.slug },
-                });
-                closeSearch();
-              }}
-            >
-              <Grid2x2Plus />
-              <span>{column.name}</span>
-              <CommandSubtitle>Column</CommandSubtitle>
             </CommandItem>
           ))}
         </CommandGroup>
