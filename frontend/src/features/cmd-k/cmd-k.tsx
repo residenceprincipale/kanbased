@@ -66,7 +66,7 @@ export function CommandDialog() {
 
   return (
     <CommandDialogComponent open={isSearchOpen} onOpenChange={closeSearch}>
-      <CommandInput placeholder="Search any board, column, or task..." />
+      <CommandInput placeholder="Search any board, task..." />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
         <CommandSeparator />
@@ -104,8 +104,8 @@ export function CommandDialog() {
               }}
             >
               <KanbanSquare />
-              <span>{board.name}</span>
-              <CommandSubtitle>Board</CommandSubtitle>
+              <span className="flex-1 truncate">{board.name}</span>
+              <CommandSubtitle className="shrink-0">Board</CommandSubtitle>
             </CommandItem>
           ))}
         </CommandGroup>
