@@ -147,8 +147,8 @@ export function CommandDialog() {
               }}
             >
               <SquareCheck />
-              <span>{task.name}</span>
-              <CommandSubtitle>Task</CommandSubtitle>
+              <span className="flex-1 truncate">{task.name}</span>
+              <CommandSubtitle className="shrink-0">Task</CommandSubtitle>
             </CommandItem>
           ))}
         </CommandGroup>
