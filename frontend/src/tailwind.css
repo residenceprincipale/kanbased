@@ -177,7 +177,7 @@
 
 @utility custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--muted) transparent;
+  /* scrollbar-color: var(--color-gray-8) transparent; */
 
   &::-webkit-scrollbar {
     width: 6px;
