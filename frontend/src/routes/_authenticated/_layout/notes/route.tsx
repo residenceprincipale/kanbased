@@ -1,15 +1,11 @@
-import { CreateNoteButton } from "@/features/notes/create-note-button";
-import { ModalProvider } from "@/state/modals";
-import {
-  createFileRoute,
-  linkOptions,
-  useRouter,
-} from "@tanstack/react-router";
-import { Actions } from "./-actions";
-import { useQuery } from "@rocicorp/zero/react";
-import { NoteList } from "@/features/notes/note-list";
-import { getNotesListQuery } from "@/lib/zero-queries";
-import { useZ } from "@/lib/zero-cache";
+import {CreateNoteButton} from "@/features/notes/create-note-button";
+import {ModalProvider} from "@/state/modals";
+import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
+import {Actions} from "./-actions";
+import {useQuery} from "@rocicorp/zero/react";
+import {NoteList} from "@/features/notes/note-list";
+import {getNotesListQuery} from "@/lib/zero-queries";
+import {useZ} from "@/lib/zero-cache";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
@@ -25,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
     };
   },
 
-  validateSearch: (search): { createNote?: boolean; editNoteId?: string } => {
+  validateSearch: (search): {createNote?: boolean; editNoteId?: string} => {
     return {
       createNote:
         typeof search.createNote === "boolean" ? search.createNote : undefined,
@@ -38,11 +34,11 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
 function RouteComponent() {
   const router = useRouter();
   const z = useZ();
-  const { editNoteId } = Route.useSearch();
+  const {editNoteId} = Route.useSearch();
   const [notes] = useQuery(getNotesListQuery(z));
 
   const handleCreateNote = () => {
-    router.navigate({ to: ".", search: { createNote: true } });
+    router.navigate({to: ".", search: {createNote: true}});
   };
 
   return (

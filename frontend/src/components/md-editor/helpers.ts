@@ -7,23 +7,17 @@ import {
   highlightActiveLineGutter,
   placeholder,
 } from "@codemirror/view";
-import { Extension, EditorState } from "@codemirror/state";
-import {
-  indentOnInput,
-  bracketMatching,
-  foldKeymap,
-} from "@codemirror/language";
-import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { searchKeymap, highlightSelectionMatches } from "@codemirror/search";
+import {Extension, EditorState} from "@codemirror/state";
+import {indentOnInput, bracketMatching, foldKeymap} from "@codemirror/language";
+import {defaultKeymap, history, historyKeymap} from "@codemirror/commands";
+import {searchKeymap, highlightSelectionMatches} from "@codemirror/search";
 import {
   completionKeymap,
   closeBrackets,
   closeBracketsKeymap,
 } from "@codemirror/autocomplete";
 
-export const basicExtensions = (params: {
-  placeholder: string;
-}): Extension[] => [
+export const basicExtensions = (params: {placeholder: string}): Extension[] => [
   highlightActiveLineGutter(),
   highlightSpecialChars(),
   history(),

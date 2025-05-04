@@ -1,6 +1,6 @@
-import { authClient } from "@/lib/auth";
-import { authQueryOptions } from "@/lib/query-options-factory";
-import { AuthError } from "@/lib/utils";
+import {authClient} from "@/lib/auth";
+import {authQueryOptions} from "@/lib/query-options-factory";
+import {AuthError} from "@/lib/utils";
 import {
   QueryClient,
   useQueryClient,
@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-query";
 
 export async function fetchSession() {
-  const { data, error } = await authClient.getSession();
+  const {data, error} = await authClient.getSession();
 
   if (error) {
     throw error;
@@ -35,12 +35,12 @@ export function getAuthData(queryClient: QueryClient) {
 }
 
 export function useAuthData() {
-  const { data } = useSuspenseQuery(authQueryOptions);
+  const {data} = useSuspenseQuery(authQueryOptions);
   return data.decodedData;
 }
 
 export function getActiveOrganizationId(queryClient: QueryClient) {
-  const { decodedData } = getAuthData(queryClient);
+  const {decodedData} = getAuthData(queryClient);
   return decodedData.activeOrganizationId;
 }
 

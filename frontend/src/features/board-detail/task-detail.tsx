@@ -1,4 +1,4 @@
-import { useRef, Suspense, lazy, useState } from "react";
+import {useRef, Suspense, lazy, useState} from "react";
 import {
   Dialog,
   DialogContent,
@@ -6,13 +6,13 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { getTaskQuery } from "@/lib/zero-queries";
-import { useQuery } from "@rocicorp/zero/react";
-import { CodeMirrorEditorRefData } from "@/components/md-editor/md-editor";
-import { Spinner } from "@/components/ui/spinner";
-import { useZ } from "@/lib/zero-cache";
-import { EditableText } from "@/components/editable-text";
-import { toast } from "sonner";
+import {getTaskQuery} from "@/lib/zero-queries";
+import {useQuery} from "@rocicorp/zero/react";
+import {CodeMirrorEditorRefData} from "@/components/md-editor/md-editor";
+import {Spinner} from "@/components/ui/spinner";
+import {useZ} from "@/lib/zero-cache";
+import {EditableText} from "@/components/editable-text";
+import {toast} from "sonner";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/edit-task-content"),
@@ -22,7 +22,7 @@ const ViewTaskContentLazy = lazy(
   () => import("@/features/board-detail/view-task-content"),
 );
 
-export function TaskDetail(props: { onClose: () => void; taskId: string }) {
+export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
   const [isEditing, setIsEditing] = useState(false);
 

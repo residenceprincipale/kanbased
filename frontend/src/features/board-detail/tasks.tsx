@@ -1,11 +1,11 @@
-import React, { memo, useRef, useState } from "react";
-import { flushSync } from "react-dom";
-import { Button } from "@/components/ui/button";
-import { Droppable } from "@hello-pangea/dnd";
-import { cn } from "@/lib/utils";
-import { Task } from "@/features/board-detail/task";
-import { CreateTask } from "@/features/board-detail/create-task";
-import { GetBoardWithColumnsAndTasksQueryResult } from "@/lib/zero-queries";
+import React, {memo, useRef, useState} from "react";
+import {flushSync} from "react-dom";
+import {Button} from "@/components/ui/button";
+import {Droppable} from "@hello-pangea/dnd";
+import {cn} from "@/lib/utils";
+import {Task} from "@/features/board-detail/task";
+import {CreateTask} from "@/features/board-detail/create-task";
+import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 
 type TasksProps = {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
@@ -31,7 +31,7 @@ export function Tasks(props: TasksProps) {
   const sortedTasks = props.tasks;
 
   const scrollList = () => {
-    containerRef.current?.scrollTo({ top: containerRef.current.scrollHeight });
+    containerRef.current?.scrollTo({top: containerRef.current.scrollHeight});
   };
 
   return (

@@ -1,14 +1,14 @@
-import { useEffect, useImperativeHandle, useRef, useState } from "react";
-import { EditorView, keymap } from "@codemirror/view";
-import { EditorState } from "@codemirror/state";
-import { markdown } from "@codemirror/lang-markdown";
-import { vim, getCM, Vim } from "@replit/codemirror-vim";
-import { basicExtensions } from "@/components/md-editor/helpers";
-import { indentWithTab } from "@codemirror/commands";
+import {useEffect, useImperativeHandle, useRef, useState} from "react";
+import {EditorView, keymap} from "@codemirror/view";
+import {EditorState} from "@codemirror/state";
+import {markdown} from "@codemirror/lang-markdown";
+import {vim, getCM, Vim} from "@replit/codemirror-vim";
+import {basicExtensions} from "@/components/md-editor/helpers";
+import {indentWithTab} from "@codemirror/commands";
 
 import "./theme.css";
-import { themeExtension } from "./theme";
-import { cn } from "@/lib/utils";
+import {themeExtension} from "./theme";
+import {cn} from "@/lib/utils";
 
 const customTheme = EditorView.theme({
   "&": {
@@ -74,7 +74,7 @@ interface CodeMirrorEditorProps {
 }
 
 export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
-  const { viewStyle = "normal" } = props;
+  const {viewStyle = "normal"} = props;
   const editorRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
   const initializedRef = useRef(false);
@@ -145,7 +145,7 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
     if (props.defaultMode === "vim") {
       const cm = getCM(view)!;
 
-      cm.on("vim-mode-change", (data: { mode: VimMode }) => {
+      cm.on("vim-mode-change", (data: {mode: VimMode}) => {
         setVimMode(data.mode);
       });
 

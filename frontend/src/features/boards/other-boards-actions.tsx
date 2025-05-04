@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { useBoardModalControls } from "@/features/boards/board.state";
-import { EllipsisVertical } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {useBoardModalControls} from "@/features/boards/board.state";
+import {EllipsisVertical} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,14 +8,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 export function OtherActions() {
-  const { openModal, closeModal } = useBoardModalControls();
+  const {openModal, closeModal} = useBoardModalControls();
 
   const handleExportAllBoards = () => {
-    openModal({ type: "export-boards", onClose: closeModal });
+    openModal({type: "export-boards", onClose: closeModal});
   };
 
   const handleImportAllBoards = () => {
-    openModal({ type: "import-boards", onClose: closeModal });
+    openModal({type: "import-boards", onClose: closeModal});
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import {Button} from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,17 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Spinner } from "@/components/ui/spinner";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
-import { handleAuthResponse } from "@/lib/utils";
-import { queryClient } from "@/lib/query-client";
-import { BackButton } from "@/components/back-button";
-import { authQueryOptions } from "@/lib/query-options-factory";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Spinner} from "@/components/ui/spinner";
+import {createFileRoute, useRouter} from "@tanstack/react-router";
+import {toast} from "sonner";
+import {authClient} from "@/lib/auth";
+import {useMutation} from "@tanstack/react-query";
+import {handleAuthResponse} from "@/lib/utils";
+import {queryClient} from "@/lib/query-client";
+import {BackButton} from "@/components/back-button";
+import {authQueryOptions} from "@/lib/query-options-factory";
 
 export const Route = createFileRoute("/_authenticated/new-organization")({
   component: Welcome,
@@ -28,7 +28,7 @@ function Welcome() {
   const router = useRouter();
 
   const activeOrgMutation = useMutation({
-    mutationFn: async ({ organizationId }: { organizationId: string }) => {
+    mutationFn: async ({organizationId}: {organizationId: string}) => {
       const res = await authClient.organization.setActive({
         organizationId,
       });
@@ -61,7 +61,7 @@ function Welcome() {
 
       toast.success("Organization created successfully!");
 
-      router.navigate({ to: "/" });
+      router.navigate({to: "/"});
     },
   });
 

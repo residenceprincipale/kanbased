@@ -1,13 +1,13 @@
-import { useZ } from "@/lib/zero-cache";
-import { Trash2 } from "lucide-react";
-import { cn } from "@/lib/utils";
+import {useZ} from "@/lib/zero-cache";
+import {Trash2} from "lucide-react";
+import {cn} from "@/lib/utils";
 
 export function DeleteColumn({
   columnId,
   onClick,
   className,
   ...rest
-}: React.ComponentProps<"button"> & { columnId: string }) {
+}: React.ComponentProps<"button"> & {columnId: string}) {
   const z = useZ();
 
   const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {

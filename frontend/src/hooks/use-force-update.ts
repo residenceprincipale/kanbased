@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { flushSync } from "react-dom";
+import {useState} from "react";
+import {flushSync} from "react-dom";
 
 /**
  * The main reason for creating this hook is because tanstack query doesn't work

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import {ChevronRight, type LucideIcon} from "lucide-react";
 
 import {
   Collapsible,
@@ -15,8 +15,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Link, LinkProps } from "@tanstack/react-router";
-import { Spinner } from "@/components/ui/spinner";
+import {Link, LinkProps} from "@tanstack/react-router";
+import {Spinner} from "@/components/ui/spinner";
 
 export type NavGroupType = {
   title: string;
@@ -34,7 +34,7 @@ export type NavItem = {
 };
 
 export function NavGroup(props: NavGroupType) {
-  const { items, linkProps, title, isItemsLoading, defaultOpen = true } = props;
+  const {items, linkProps, title, isItemsLoading, defaultOpen = true} = props;
 
   const savedOpen = localStorage.getItem(`nav-group-${title}-open`);
 

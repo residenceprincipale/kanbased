@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { ColumnWrapper } from "@/components/column-ui";
-import { Input } from "@/components/ui/input";
-import { FormEventHandler } from "react";
-import { createId } from "@/lib/utils";
-import { useZ } from "@/lib/zero-cache";
-import { useActiveOrganizationId } from "@/queries/session";
+import {Button} from "@/components/ui/button";
+import {ColumnWrapper} from "@/components/column-ui";
+import {Input} from "@/components/ui/input";
+import {FormEventHandler} from "react";
+import {createId} from "@/lib/utils";
+import {useZ} from "@/lib/zero-cache";
+import {useActiveOrganizationId} from "@/queries/session";
 
 export type CreateColumnProps = {
   data: {
@@ -15,7 +15,7 @@ export type CreateColumnProps = {
 };
 
 export function CreateColumn(props: CreateColumnProps) {
-  const { data } = props;
+  const {data} = props;
   const z = useZ();
   const orgId = useActiveOrganizationId();
 
@@ -37,7 +37,7 @@ export function CreateColumn(props: CreateColumnProps) {
 
     formEl.reset();
 
-    formEl.scrollIntoView({ inline: "start" });
+    formEl.scrollIntoView({inline: "start"});
   };
 
   const handleClose = () => {

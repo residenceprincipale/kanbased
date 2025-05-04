@@ -19,20 +19,20 @@ import {
   CommandSeparator,
   CommandSubtitle,
 } from "@/components/ui/command";
-import { useZ } from "@/lib/zero-cache";
-import { allBoardsQuery, getNotesListQuery } from "@/lib/zero-queries";
-import { useQuery } from "@rocicorp/zero/react";
-import { useRouter } from "@tanstack/react-router";
-import { useAppContext } from "@/state/app-state";
+import {useZ} from "@/lib/zero-cache";
+import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
+import {useQuery} from "@rocicorp/zero/react";
+import {useRouter} from "@tanstack/react-router";
+import {useAppContext} from "@/state/app-state";
 
 export function CommandDialog() {
-  const { isSearchOpen, openSearch, closeSearch } = useAppContext();
+  const {isSearchOpen, openSearch, closeSearch} = useAppContext();
   const router = useRouter();
   const z = useZ();
   const [boards] = useQuery(allBoardsQuery(z));
 
   const allTasks = boards.reduce(
-    (allTasks: { id: string; name: string; slug: string }[], currentBoard) => {
+    (allTasks: {id: string; name: string; slug: string}[], currentBoard) => {
       const tasks = currentBoard.columns.flatMap((column) =>
         column.tasks.map((task) => ({
           id: task.id,
@@ -70,7 +70,7 @@ export function CommandDialog() {
         <CommandGroup heading="Suggestions">
           <CommandItem
             onSelect={() => {
-              router.navigate({ to: "/boards" });
+              router.navigate({to: "/boards"});
               closeSearch();
             }}
           >
@@ -80,7 +80,7 @@ export function CommandDialog() {
 
           <CommandItem
             onSelect={() => {
-              router.navigate({ to: "/notes" });
+              router.navigate({to: "/notes"});
               closeSearch();
             }}
           >
@@ -95,7 +95,7 @@ export function CommandDialog() {
               onSelect={() => {
                 router.navigate({
                   to: "/boards/$slug",
-                  params: { slug: board.slug },
+                  params: {slug: board.slug},
                 });
                 closeSearch();
               }}
@@ -114,7 +114,7 @@ export function CommandDialog() {
               onSelect={() => {
                 router.navigate({
                   to: "/notes/$noteId",
-                  params: { noteId: note.id },
+                  params: {noteId: note.id},
                 });
                 closeSearch();
               }}
@@ -135,7 +135,7 @@ export function CommandDialog() {
               onSelect={() => {
                 router.navigate({
                   to: "/boards/$slug",
-                  params: { slug: task.slug },
+                  params: {slug: task.slug},
                   search: {
                     taskId: task.id,
                   },

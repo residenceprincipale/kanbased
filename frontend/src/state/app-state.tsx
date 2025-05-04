@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 
 type Theme = "light" | "dark" | "system";
 type AppContextValues = {
@@ -70,7 +70,7 @@ export function AppContextProvider(props: React.PropsWithChildren) {
 
   return (
     <AppContext.Provider
-      value={{ theme, updateTheme, isSearchOpen, openSearch, closeSearch }}
+      value={{theme, updateTheme, isSearchOpen, openSearch, closeSearch}}
     >
       {props.children}
     </AppContext.Provider>

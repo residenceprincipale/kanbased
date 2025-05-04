@@ -23,7 +23,7 @@ interface ModalProviderProps<T> {
   children: ReactNode;
 }
 
-export function ModalProvider<T>({ children }: ModalProviderProps<T>) {
+export function ModalProvider<T>({children}: ModalProviderProps<T>) {
   const [activeModal, setModal] = useState<T | null>(null);
 
   const openModal = useCallback((modal: T) => {
@@ -50,11 +50,9 @@ export function ModalProvider<T>({ children }: ModalProviderProps<T>) {
   );
 
   return (
-    (<ModalStateContext value={{ activeModal }}>
-      <ModalControlsContext value={controls}>
-        {children}
-      </ModalControlsContext>
-    </ModalStateContext>)
+    <ModalStateContext value={{activeModal}}>
+      <ModalControlsContext value={controls}>{children}</ModalControlsContext>
+    </ModalStateContext>
   );
 }
 

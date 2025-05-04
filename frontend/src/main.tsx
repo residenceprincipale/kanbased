@@ -4,12 +4,12 @@ import {
   RouterProvider,
   createRouter,
 } from "@tanstack/react-router";
-import { routeTree } from "./routeTree.gen";
-import { queryClient } from "@/lib/query-client";
-import { QueryClientProvider } from "@tanstack/react-query";
+import {routeTree} from "./routeTree.gen";
+import {queryClient} from "@/lib/query-client";
+import {QueryClientProvider} from "@tanstack/react-query";
 
 import "./tailwind.css";
-import { DefaultPendingComponent } from "@/components/default-loader";
+import {DefaultPendingComponent} from "@/components/default-loader";
 import reportWebVitals from "@/reportWebVitals";
 
 // Set up a Router instance
@@ -21,7 +21,7 @@ export const router = createRouter({
   defaultPreloadStaleTime: 0,
   defaultPendingMinMs: 0,
   defaultPendingMs: 0,
-  defaultErrorComponent: ({ error }) => <ErrorComponent error={error} />,
+  defaultErrorComponent: ({error}) => <ErrorComponent error={error} />,
   defaultPendingComponent: DefaultPendingComponent,
   scrollRestoration: true,
 });

@@ -1,12 +1,12 @@
-import { authClient } from "@/lib/auth";
-import { post } from "@/lib/fetch-client";
-import { authQueryOptions } from "@/lib/query-options-factory";
-import { handleAuthResponse, UserViewableError } from "@/lib/utils";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {authClient} from "@/lib/auth";
+import {post} from "@/lib/fetch-client";
+import {authQueryOptions} from "@/lib/query-options-factory";
+import {handleAuthResponse, UserViewableError} from "@/lib/utils";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 export function useUploadUserImageMutation() {
   return useMutation({
-    mutationFn: async (body: { file: File }) => {
+    mutationFn: async (body: {file: File}) => {
       const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
       if (body.file.size > MAX_FILE_SIZE) {
         throw new UserViewableError("File size must be less than 5MB");
@@ -50,7 +50,7 @@ export function useUploadUserImageMutation() {
         throw new UserViewableError("Failed to upload image");
       }
 
-      return { imageUrl: data.imageUrl };
+      return {imageUrl: data.imageUrl};
     },
   });
 }
@@ -58,7 +58,7 @@ export function useUploadUserImageMutation() {
 export function useUpdateUserMutation() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: async (body: { name: string; image?: string }) => {
+    mutationFn: async (body: {name: string; image?: string}) => {
       const res = await authClient.updateUser({
         name: body.name,
         image: body.image,
@@ -67,7 +67,7 @@ export function useUpdateUserMutation() {
     },
 
     onSuccess: () => {
-      return qc.invalidateQueries(authQueryOptions, { throwOnError: true });
+      return qc.invalidateQueries(authQueryOptions, {throwOnError: true});
     },
   });
 }

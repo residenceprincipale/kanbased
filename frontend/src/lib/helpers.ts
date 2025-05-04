@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import { marked } from "marked";
+import {marked} from "marked";
 
 export function markdownToHtml(markdown: string): string {
   if (!markdown) return "";

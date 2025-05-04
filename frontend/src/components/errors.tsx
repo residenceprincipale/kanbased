@@ -1,4 +1,4 @@
-export function FullScreenError(props: { title: string; message?: string }) {
+export function FullScreenError(props: {title: string; message?: string}) {
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <div className="max-w-96">

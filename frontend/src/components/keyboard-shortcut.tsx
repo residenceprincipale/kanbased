@@ -1,6 +1,6 @@
-import { useIsMobile } from "@/hooks/use-mobile";
-import { isMac } from "@/lib/constants";
-import { cn } from "@/lib/utils";
+import {useIsMobile} from "@/hooks/use-mobile";
+import {isMac} from "@/lib/constants";
+import {cn} from "@/lib/utils";
 
 export function KeyboardShortcutIndicator(
   props: React.PropsWithChildren<{

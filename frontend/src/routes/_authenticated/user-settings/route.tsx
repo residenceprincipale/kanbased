@@ -1,7 +1,7 @@
 import * as React from "react";
-import { createFileRoute } from "@tanstack/react-router";
-import { UserSettings } from "@/features/user/user-settings";
-import { BackButton } from "@/components/back-button";
+import {createFileRoute} from "@tanstack/react-router";
+import {UserSettings} from "@/features/user/user-settings";
+import {BackButton} from "@/components/back-button";
 
 export const Route = createFileRoute("/_authenticated/user-settings")({
   component: RouteComponent,

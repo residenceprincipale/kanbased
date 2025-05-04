@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button";
-import { EllipsisVertical, Trash2 } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {EllipsisVertical, Trash2} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,17 +10,17 @@ import {
   useColumnModalControls,
   useColumnModalState,
 } from "@/features/board-detail/column.state";
-import { GetBoardsListQueryResult } from "@/lib/zero-queries";
-import { DeleteBoard } from "@/features/boards/delete-board";
-import { useRouter } from "@tanstack/react-router";
+import {GetBoardsListQueryResult} from "@/lib/zero-queries";
+import {DeleteBoard} from "@/features/boards/delete-board";
+import {useRouter} from "@tanstack/react-router";
 
 export function OtherActions({
   board,
 }: {
   board: GetBoardsListQueryResult[number];
 }) {
-  const { activeModal } = useColumnModalState();
-  const { openModal, closeModal } = useColumnModalControls();
+  const {activeModal} = useColumnModalState();
+  const {openModal, closeModal} = useColumnModalControls();
   const router = useRouter();
 
   const handleBoardDelete = () => {

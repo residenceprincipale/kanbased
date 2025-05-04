@@ -1,5 +1,5 @@
-import { Moon, Sun } from "lucide-react";
-import { useAppContext } from "@/state/app-state";
+import {Moon, Sun} from "lucide-react";
+import {useAppContext} from "@/state/app-state";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +13,11 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 
 export function ThemeToggle() {
-  const { theme, updateTheme } = useAppContext();
-  const { state } = useSidebar();
+  const {theme, updateTheme} = useAppContext();
+  const {state} = useSidebar();
   const isCollapsed = state === "collapsed";
 
   return (

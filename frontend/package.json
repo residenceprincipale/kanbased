@@ -10,7 +10,7 @@
     "build": "vite build",
     "start": "vite",
     "lint": "eslint",
-    "format": "prettier",
+    "format": "prettier --write .",
     "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {

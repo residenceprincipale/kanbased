@@ -1,6 +1,6 @@
-import { type ClassValue, clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-import { ulid } from "ulid";
+import {type ClassValue, clsx} from "clsx";
+import {twMerge} from "tailwind-merge";
+import {ulid} from "ulid";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -77,9 +77,9 @@ export async function tryCatch<T, E = Error>(
 ): Promise<Result<T, E>> {
   try {
     const data = await promise;
-    return { data, error: null };
+    return {data, error: null};
   } catch (error) {
-    return { data: null, error: error as E };
+    return {data: null, error: error as E};
   }
 }
 
@@ -94,7 +94,7 @@ export function setToken(token: string) {
 }
 
 export function getRelativeTimeString(date: Date): string {
-  const formatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+  const formatter = new Intl.RelativeTimeFormat("en", {numeric: "auto"});
   const now = new Date();
   const diffInMs = date.getTime() - now.getTime();
   const diffInSecs = Math.round(diffInMs / 1000);

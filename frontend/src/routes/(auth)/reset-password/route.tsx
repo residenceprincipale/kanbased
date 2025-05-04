@@ -1,6 +1,6 @@
 import * as React from "react";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Button, buttonVariants } from "@/components/ui/button";
+import {createFileRoute, Link} from "@tanstack/react-router";
+import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,14 +8,14 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { useRouter } from "@tanstack/react-router";
-import { Spinner } from "@/components/ui/spinner";
-import { authClient } from "@/lib/auth";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { handleAuthResponse } from "@/lib/utils";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {useRouter} from "@tanstack/react-router";
+import {Spinner} from "@/components/ui/spinner";
+import {authClient} from "@/lib/auth";
+import {toast} from "sonner";
+import {useMutation} from "@tanstack/react-query";
+import {handleAuthResponse} from "@/lib/utils";
 
 export const Route = createFileRoute("/(auth)/reset-password")({
   component: ResetPassword,
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/(auth)/reset-password")({
 function ResetPassword() {
   const router = useRouter();
   const resetPasswordMutation = useMutation({
-    mutationFn: async (data: { newPassword: string; token: string }) => {
+    mutationFn: async (data: {newPassword: string; token: string}) => {
       const res = await authClient.resetPassword(data);
       return handleAuthResponse(res);
     },
@@ -37,7 +37,7 @@ function ResetPassword() {
       <div className="flex h-svh w-full items-center justify-center">
         <div className="space-y-2">
           <p>Invalid Token</p>
-          <Link to="/" className={buttonVariants({ variant: "outline" })}>
+          <Link to="/" className={buttonVariants({variant: "outline"})}>
             Home
           </Link>
         </div>
@@ -60,7 +60,7 @@ function ResetPassword() {
           {
             onSuccess: () => {
               toast.success("Password reset successfully");
-              router.navigate({ to: "/" });
+              router.navigate({to: "/"});
             },
             onError: (error) => {
               if ("message" in error) {

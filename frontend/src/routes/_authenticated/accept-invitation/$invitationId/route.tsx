@@ -1,8 +1,8 @@
-import { authClient } from "@/lib/auth";
-import { handleAuthResponse, getRelativeTimeString } from "@/lib/utils";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Button } from "@/components/ui/button";
+import {authClient} from "@/lib/auth";
+import {handleAuthResponse, getRelativeTimeString} from "@/lib/utils";
+import {useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import {createFileRoute, useRouter} from "@tanstack/react-router";
+import {Button} from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -11,12 +11,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { Check, X, Building2, User, Shield, Clock } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { authQueryOptions } from "@/lib/query-options-factory";
+import {Spinner} from "@/components/ui/spinner";
+import {toast} from "sonner";
+import {useMutation} from "@tanstack/react-query";
+import {Check, X, Building2, User, Shield, Clock} from "lucide-react";
+import {cn} from "@/lib/utils";
+import {authQueryOptions} from "@/lib/query-options-factory";
 
 export const Route = createFileRoute(
   "/_authenticated/accept-invitation/$invitationId",
@@ -25,11 +25,11 @@ export const Route = createFileRoute(
 });
 
 function RouteComponent() {
-  const { invitationId } = Route.useParams();
+  const {invitationId} = Route.useParams();
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const { data: invitation } = useSuspenseQuery({
+  const {data: invitation} = useSuspenseQuery({
     queryKey: ["invitation", invitationId],
     queryFn: async () => {
       const res = await authClient.organization.getInvitation({
@@ -51,7 +51,7 @@ function RouteComponent() {
     onSuccess: async () => {
       await queryClient.invalidateQueries(authQueryOptions);
       toast.success("Invitation accepted successfully!");
-      router.navigate({ to: "/" });
+      router.navigate({to: "/"});
     },
   });
 
@@ -64,7 +64,7 @@ function RouteComponent() {
     },
     onSuccess: () => {
       toast.success("Invitation declined");
-      router.navigate({ to: "/" });
+      router.navigate({to: "/"});
     },
   });
 

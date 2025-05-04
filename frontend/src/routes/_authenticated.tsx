@@ -4,16 +4,16 @@ import {
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import { AuthError } from "@/lib/utils";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { authQueryOptions } from "@/lib/query-options-factory";
-import { queryClient } from "@/lib/query-client";
+import {AuthError} from "@/lib/utils";
+import {useSuspenseQuery} from "@tanstack/react-query";
+import {authQueryOptions} from "@/lib/query-options-factory";
+import {queryClient} from "@/lib/query-client";
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
 
   beforeLoad: async () => {
-    const { decodedData } = await queryClient.ensureQueryData(authQueryOptions);
+    const {decodedData} = await queryClient.ensureQueryData(authQueryOptions);
 
     const currentTime = Math.floor(Date.now() / 1000);
     const isAuthExpired = currentTime >= decodedData.exp;
@@ -68,7 +68,7 @@ export const Route = createFileRoute("/_authenticated")({
 
 function RouteComponent() {
   const {
-    data: { decodedData },
+    data: {decodedData},
     isError,
   } = useSuspenseQuery(authQueryOptions);
   const router = useRouter();

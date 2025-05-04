@@ -1,12 +1,12 @@
-import { createFileRoute, linkOptions } from "@tanstack/react-router";
-import { BoardList } from "@/features/boards/board-list";
-import { BoardActions } from "@/features/boards/board-actions";
-import { ModalProvider } from "@/state/modals";
-import { CreateBoardButton } from "@/features/boards/create-board-button";
-import { OtherActions } from "@/features/boards/other-boards-actions";
-import { useZ } from "@/lib/zero-cache";
-import { useQuery } from "@rocicorp/zero/react";
-import { getBoardsListQuery } from "@/lib/zero-queries";
+import {createFileRoute, linkOptions} from "@tanstack/react-router";
+import {BoardList} from "@/features/boards/board-list";
+import {BoardActions} from "@/features/boards/board-actions";
+import {ModalProvider} from "@/state/modals";
+import {CreateBoardButton} from "@/features/boards/create-board-button";
+import {OtherActions} from "@/features/boards/other-boards-actions";
+import {useZ} from "@/lib/zero-cache";
+import {useQuery} from "@rocicorp/zero/react";
+import {getBoardsListQuery} from "@/lib/zero-queries";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,

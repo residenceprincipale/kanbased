@@ -1,12 +1,12 @@
-import { Button, ButtonVariant } from "@/components/ui/button";
+import {Button, ButtonVariant} from "@/components/ui/button";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { useCanGoBack, useRouter } from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import {useCanGoBack, useRouter} from "@tanstack/react-router";
+import {ArrowLeft} from "lucide-react";
 
 export function BackButton(
   props: React.PropsWithChildren<{

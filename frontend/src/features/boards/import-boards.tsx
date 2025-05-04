@@ -4,19 +4,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ImportBoardsModal } from "@/features/boards/board.state";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
-import { ImportIcon, InfoIcon } from "lucide-react";
-import { useActiveOrganizationId } from "@/queries/session";
-import { useZ } from "@/lib/zero-cache";
-import { createId, tryCatch } from "@/lib/utils";
-import { AllBoardsQueryResult } from "@/lib/zero-queries";
+import {ImportBoardsModal} from "@/features/boards/board.state";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Textarea} from "@/components/ui/textarea";
+import {toast} from "sonner";
+import {Button} from "@/components/ui/button";
+import {ImportIcon, InfoIcon} from "lucide-react";
+import {useActiveOrganizationId} from "@/queries/session";
+import {useZ} from "@/lib/zero-cache";
+import {createId, tryCatch} from "@/lib/utils";
+import {AllBoardsQueryResult} from "@/lib/zero-queries";
 
-export function ImportBoards({ onClose }: ImportBoardsModal) {
+export function ImportBoards({onClose}: ImportBoardsModal) {
   const z = useZ();
   const orgId = useActiveOrganizationId();
 
@@ -28,7 +28,7 @@ export function ImportBoards({ onClose }: ImportBoardsModal) {
 
     // TODO: probably have to validate the data first
     // will do that later
-    const { error } = await tryCatch(
+    const {error} = await tryCatch(
       z.mutateBatch(async (m) => {
         const now = Date.now();
 

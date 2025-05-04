@@ -4,16 +4,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { ExportBoardsModal } from "@/features/boards/board.state";
-import { Button } from "@/components/ui/button";
-import { Copy, Download } from "lucide-react";
-import { toast } from "sonner";
-import { Suspense } from "react";
-import { useQuery } from "@rocicorp/zero/react";
-import { useZ } from "@/lib/zero-cache";
-import { allBoardsQuery } from "@/lib/zero-queries";
+import {ExportBoardsModal} from "@/features/boards/board.state";
+import {Button} from "@/components/ui/button";
+import {Copy, Download} from "lucide-react";
+import {toast} from "sonner";
+import {Suspense} from "react";
+import {useQuery} from "@rocicorp/zero/react";
+import {useZ} from "@/lib/zero-cache";
+import {allBoardsQuery} from "@/lib/zero-queries";
 
-export function ExportBoards({ onClose }: ExportBoardsModal) {
+export function ExportBoards({onClose}: ExportBoardsModal) {
   return (
     <Dialog open onOpenChange={onClose}>
       <DialogContent className="max-w-3xl! flex flex-col">
@@ -51,7 +51,7 @@ function Content() {
   };
 
   const handleDownload = (jsonData: string) => {
-    const blob = new Blob([jsonData], { type: "application/json" });
+    const blob = new Blob([jsonData], {type: "application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;

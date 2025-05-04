@@ -1,22 +1,22 @@
-import { Button } from "@/components/ui/button";
-import { EditTask } from "@/features/board-detail/edit-task";
-import { cn } from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import {EditTask} from "@/features/board-detail/edit-task";
+import {cn} from "@/lib/utils";
 import {
   Draggable,
   DraggableProvided,
   DraggableStateSnapshot,
 } from "@hello-pangea/dnd";
-import { MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { memo, useCallback, useState } from "react";
+import {MoreVertical, Pencil, Trash2} from "lucide-react";
+import {memo, useCallback, useState} from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "@tanstack/react-router";
-import { GetBoardWithColumnsAndTasksQueryResult } from "@/lib/zero-queries";
-import { useZ } from "@/lib/zero-cache";
+import {Link} from "@tanstack/react-router";
+import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import {useZ} from "@/lib/zero-cache";
 import UserAvatar from "@/components/user-avatar";
 import {
   Tooltip,
@@ -32,11 +32,11 @@ export type TaskProps = {
 
 function ViewTask(props: {
   taskProps: TaskProps;
-  dndProps: { provided: DraggableProvided; snapshot: DraggableStateSnapshot };
+  dndProps: {provided: DraggableProvided; snapshot: DraggableStateSnapshot};
   onEdit: () => void;
 }) {
-  const { task } = props.taskProps;
-  const { provided, snapshot } = props.dndProps;
+  const {task} = props.taskProps;
+  const {provided, snapshot} = props.dndProps;
   const z = useZ();
 
   const handleDeleteTask = () => {
@@ -59,7 +59,7 @@ function ViewTask(props: {
       )}
       id={`task-${task.id}`}
       to="."
-      search={{ taskId: task.id }}
+      search={{taskId: task.id}}
       replace
       preload={false}
     >
@@ -129,7 +129,7 @@ function ViewTask(props: {
 }
 
 function TaskComp(props: TaskProps) {
-  const { task } = props;
+  const {task} = props;
   const [isEditing, setIsEditing] = useState(false);
 
   return (
@@ -147,7 +147,7 @@ function TaskComp(props: TaskProps) {
           ) : (
             <ViewTask
               taskProps={props}
-              dndProps={{ provided, snapshot }}
+              dndProps={{provided, snapshot}}
               onEdit={() => setIsEditing(true)}
             />
           )}

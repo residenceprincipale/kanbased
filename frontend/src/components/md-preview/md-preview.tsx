@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 
 export default function MdPreview(props: {
   html: string;
@@ -11,7 +11,7 @@ export default function MdPreview(props: {
           "prose dark:prose-invert h-full max-w-none",
           props.wrapperClassName,
         )}
-        dangerouslySetInnerHTML={{ __html: props.html }}
+        dangerouslySetInnerHTML={{__html: props.html}}
       ></div>
     </div>
   );

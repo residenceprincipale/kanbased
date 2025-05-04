@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {createFileRoute} from "@tanstack/react-router";
 import {
   Card,
   CardContent,
@@ -6,16 +6,16 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
-import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { Spinner } from "@/components/ui/spinner";
-import { getOrigin } from "@/lib/constants";
-import { handleAuthResponse } from "@/lib/utils";
-import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
+import {Input} from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Label} from "@/components/ui/label";
+import {authClient} from "@/lib/auth";
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {Spinner} from "@/components/ui/spinner";
+import {getOrigin} from "@/lib/constants";
+import {handleAuthResponse} from "@/lib/utils";
+import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
 
 export const Route = createFileRoute("/(auth)/forgot-password")({
   component: RouteComponent,
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/(auth)/forgot-password")({
 function RouteComponent() {
   useLoggedInRedirect();
   const forgotPasswordMutation = useMutation({
-    mutationFn: async (data: { email: string; redirectTo: string }) => {
+    mutationFn: async (data: {email: string; redirectTo: string}) => {
       const res = await authClient.forgetPassword(data);
       return handleAuthResponse(res);
     },

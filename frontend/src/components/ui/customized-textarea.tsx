@@ -1,6 +1,6 @@
-import { Textarea } from "@/components/ui/textarea";
+import {Textarea} from "@/components/ui/textarea";
 import * as React from "react";
-import { useCallback } from "react";
+import {useCallback} from "react";
 
 export const CustomizedTextarea = ({
   ref,

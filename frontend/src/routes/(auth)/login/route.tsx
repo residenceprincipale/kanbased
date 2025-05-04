@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -8,25 +8,25 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Link, useRouter } from "@tanstack/react-router";
-import { cn, handleAuthResponse } from "@/lib/utils";
-import { authClient } from "@/lib/auth";
-import { createFileRoute } from "@tanstack/react-router";
-import { Spinner } from "@/components/ui/spinner";
-import { useMutation } from "@tanstack/react-query";
-import { getOrigin } from "@/lib/constants";
-import { useState } from "react";
-import { Eye, EyeOff } from "lucide-react";
-import { useLoggedInRedirect } from "@/hooks/use-logged-in-redirect";
-import { useGoogleLoginMutation } from "@/queries/authentication";
-import { useGithubLoginMutation } from "@/queries/authentication";
-import { GithubIcon, GoogleIcon } from "@/components/icons";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Link, useRouter} from "@tanstack/react-router";
+import {cn, handleAuthResponse} from "@/lib/utils";
+import {authClient} from "@/lib/auth";
+import {createFileRoute} from "@tanstack/react-router";
+import {Spinner} from "@/components/ui/spinner";
+import {useMutation} from "@tanstack/react-query";
+import {getOrigin} from "@/lib/constants";
+import {useState} from "react";
+import {Eye, EyeOff} from "lucide-react";
+import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
+import {useGoogleLoginMutation} from "@/queries/authentication";
+import {useGithubLoginMutation} from "@/queries/authentication";
+import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/login")({
   component: SignIn,
-  validateSearch: (search): { redirect?: string } => {
+  validateSearch: (search): {redirect?: string} => {
     return {
       redirect:
         typeof search.redirect === "string" ? search.redirect : undefined,
@@ -46,7 +46,7 @@ function SignIn() {
     : getOrigin();
 
   const userPasswordLoginMutation = useMutation({
-    mutationFn: async (data: { email: string; password: string }) => {
+    mutationFn: async (data: {email: string; password: string}) => {
       const res = await authClient.signIn.email(data);
       return handleAuthResponse(res);
     },

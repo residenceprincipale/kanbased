@@ -1,19 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { WrappedTooltip } from "@/components/ui/tooltip";
-import { useColumnModalControls } from "@/features/board-detail/column.state";
-import { Grid2x2Plus } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {useColumnModalControls} from "@/features/board-detail/column.state";
+import {Grid2x2Plus} from "lucide-react";
 
 export function CreateColumnButton() {
-  const { openModal } = useColumnModalControls();
+  const {openModal} = useColumnModalControls();
 
   return (
     <WrappedTooltip
       asChild
-      tooltipContentProps={{ side: "bottom" }}
-      tooltipProps={{ delayDuration: 0 }}
+      tooltipContentProps={{side: "bottom"}}
+      tooltipProps={{delayDuration: 0}}
     >
       <Button
-        onClick={() => openModal({ type: "create-column" })}
+        onClick={() => openModal({type: "create-column"})}
         size="icon"
         className="w-8 h-8 shrink-0"
         aria-label="Add column"

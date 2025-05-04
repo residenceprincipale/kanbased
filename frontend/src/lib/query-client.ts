@@ -1,6 +1,6 @@
-import { QueryClient, MutationCache } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { AuthError, UserViewableError } from "@/lib/utils";
+import {QueryClient, MutationCache} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {AuthError, UserViewableError} from "@/lib/utils";
 
 export const queryClient = new QueryClient({
   defaultOptions: {

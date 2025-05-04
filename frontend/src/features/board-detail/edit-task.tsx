@@ -1,8 +1,8 @@
-import { CustomizedTextarea } from "@/components/ui/customized-textarea";
-import { useInteractiveOutside } from "@/hooks/use-interactive-outside";
-import { useZ } from "@/lib/zero-cache";
-import { useCallback, useRef } from "react";
-import { GetTaskQueryResult } from "@/lib/zero-queries";
+import {CustomizedTextarea} from "@/components/ui/customized-textarea";
+import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
+import {useZ} from "@/lib/zero-cache";
+import {useCallback, useRef} from "react";
+import {GetTaskQueryResult} from "@/lib/zero-queries";
 
 export type EditTaskProps = {
   task: NonNullable<GetTaskQueryResult>;
@@ -39,7 +39,7 @@ export function EditTask(props: EditTaskProps) {
             if (node) {
               node.focus();
               node.setSelectionRange(node.value.length, node.value.length);
-              node.scrollIntoView({ block: "nearest", behavior: "smooth" });
+              node.scrollIntoView({block: "nearest", behavior: "smooth"});
             }
           }, [])}
           defaultValue={props.task.name}

@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
-import { Slot } from "radix-ui";
-import { cva, type VariantProps } from "class-variance-authority";
+import {cn} from "@/lib/utils";
+import {Slot} from "radix-ui";
+import {cva, type VariantProps} from "class-variance-authority";
 import * as React from "react";
 
 const spinnerVariants = cva("relative block", {
@@ -36,8 +36,8 @@ const Spinner = ({
   const Comp = asChild ? Slot.Slot : "span";
 
   const renderSpinnerIcon = (
-    <Comp className={cn(spinnerVariants({ size }))} ref={ref} {...props}>
-      {Array.from({ length: 8 }).map((_, i) => (
+    <Comp className={cn(spinnerVariants({size}))} ref={ref} {...props}>
+      {Array.from({length: 8}).map((_, i) => (
         <span
           key={i}
           className="absolute top-0 left-1/2 w-[12.5%] h-full animate-spinner-leaf-fade"
@@ -66,4 +66,4 @@ const Spinner = ({
 
 Spinner.displayName = "Spinner";
 
-export { Spinner };
+export {Spinner};

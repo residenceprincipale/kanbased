@@ -1,12 +1,8 @@
-import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
-import { handleAuthResponse } from "@/lib/utils";
+import {authClient} from "@/lib/auth";
+import {useMutation} from "@tanstack/react-query";
+import {handleAuthResponse} from "@/lib/utils";
 
-export function useGoogleLoginMutation({
-  callbackURL,
-}: {
-  callbackURL: string;
-}) {
+export function useGoogleLoginMutation({callbackURL}: {callbackURL: string}) {
   return useMutation({
     mutationFn: async () => {
       const res = await authClient.signIn.social({
@@ -18,11 +14,7 @@ export function useGoogleLoginMutation({
   });
 }
 
-export function useGithubLoginMutation({
-  callbackURL,
-}: {
-  callbackURL: string;
-}) {
+export function useGithubLoginMutation({callbackURL}: {callbackURL: string}) {
   return useMutation({
     mutationFn: async () => {
       const res = await authClient.signIn.social({

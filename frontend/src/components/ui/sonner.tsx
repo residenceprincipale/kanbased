@@ -1,10 +1,10 @@
 "use client";
 
-import { useAppContext } from "@/state/app-state";
-import { Toaster as Sonner, ToasterProps } from "sonner";
+import {useAppContext} from "@/state/app-state";
+import {Toaster as Sonner, ToasterProps} from "sonner";
 
-const Toaster = ({ ...props }: ToasterProps) => {
-  const { theme } = useAppContext();
+const Toaster = ({...props}: ToasterProps) => {
+  const {theme} = useAppContext();
 
   return (
     <Sonner
@@ -22,4 +22,4 @@ const Toaster = ({ ...props }: ToasterProps) => {
   );
 };
 
-export { Toaster };
+export {Toaster};

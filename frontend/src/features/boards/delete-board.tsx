@@ -7,10 +7,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { DeleteBoardModal } from "@/features/boards/board.state";
-import { useZ } from "@/lib/zero-cache";
+import {Button} from "@/components/ui/button";
+import {toast} from "sonner";
+import {DeleteBoardModal} from "@/features/boards/board.state";
+import {useZ} from "@/lib/zero-cache";
 
 export function DeleteBoard(props: DeleteBoardModal) {
   const z = useZ();

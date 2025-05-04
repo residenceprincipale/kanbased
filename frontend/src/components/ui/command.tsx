@@ -1,8 +1,8 @@
 import * as React from "react";
-import { Command as CommandPrimitive } from "cmdk";
-import { SearchIcon } from "lucide-react";
+import {Command as CommandPrimitive} from "cmdk";
+import {SearchIcon} from "lucide-react";
 
-import { cn } from "@/lib/utils";
+import {cn} from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -146,10 +146,7 @@ function CommandItem({
   );
 }
 
-function CommandShortcut({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function CommandShortcut({className, ...props}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="command-shortcut"
@@ -162,10 +159,7 @@ function CommandShortcut({
   );
 }
 
-function CommandSubtitle({
-  className,
-  ...props
-}: React.ComponentProps<"span">) {
+function CommandSubtitle({className, ...props}: React.ComponentProps<"span">) {
   return (
     <span
       data-slot="command-shortcut"

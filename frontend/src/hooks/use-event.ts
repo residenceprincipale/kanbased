@@ -1,4 +1,4 @@
-import { useRef, useCallback, useInsertionEffect } from "react";
+import {useRef, useCallback, useInsertionEffect} from "react";
 
 // Approximation of React's upcoming useEffectEvent hook
 // This gives us a non-reactive effect event callback, it will always use the latest version of

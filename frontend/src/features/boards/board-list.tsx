@@ -1,23 +1,23 @@
-import { Button } from "@/components/ui/button";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {Button} from "@/components/ui/button";
+import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link } from "@tanstack/react-router";
-import { useBoardModalControls } from "@/features/boards/board.state";
-import { GetBoardsListQueryResult } from "@/lib/zero-queries";
-import { getRelativeTimeString } from "@/lib/utils";
+import {Link} from "@tanstack/react-router";
+import {useBoardModalControls} from "@/features/boards/board.state";
+import {GetBoardsListQueryResult} from "@/lib/zero-queries";
+import {getRelativeTimeString} from "@/lib/utils";
 
-function BoardItem({ board }: { board: GetBoardsListQueryResult[number] }) {
-  const { openModal, closeModal } = useBoardModalControls();
+function BoardItem({board}: {board: GetBoardsListQueryResult[number]}) {
+  const {openModal, closeModal} = useBoardModalControls();
 
   return (
     <Link
       to="/boards/$slug"
-      params={{ slug: board.slug }}
+      params={{slug: board.slug}}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
     >
       <div className="relative p-6">
@@ -94,7 +94,7 @@ function BoardItem({ board }: { board: GetBoardsListQueryResult[number] }) {
   );
 }
 
-export function BoardList(props: { boards: GetBoardsListQueryResult }) {
+export function BoardList(props: {boards: GetBoardsListQueryResult}) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {props.boards?.map((board) => <BoardItem board={board} key={board.id} />)}

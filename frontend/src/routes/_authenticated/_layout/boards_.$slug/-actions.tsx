@@ -1,12 +1,12 @@
-import { useRouter } from "@tanstack/react-router";
-import { getRouteApi } from "@tanstack/react-router";
-import { TaskDetail } from "@/features/board-detail/task-detail";
+import {useRouter} from "@tanstack/react-router";
+import {getRouteApi} from "@tanstack/react-router";
+import {TaskDetail} from "@/features/board-detail/task-detail";
 
 const routeApi = getRouteApi("/_authenticated/_layout/boards_/$slug");
 
 export function TaskDetailPage() {
   const router = useRouter();
-  const { taskId } = routeApi.useSearch();
+  const {taskId} = routeApi.useSearch();
 
   if (!taskId) {
     return null;
@@ -15,7 +15,7 @@ export function TaskDetailPage() {
   const handleClose = () => {
     router.navigate({
       to: ".",
-      search: { taskId: undefined },
+      search: {taskId: undefined},
       replace: true,
     });
 

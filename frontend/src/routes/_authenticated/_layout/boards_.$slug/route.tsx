@@ -1,17 +1,17 @@
-import { Columns } from "@/features/board-detail/columns";
-import { createFileRoute, linkOptions } from "@tanstack/react-router";
-import { ModalProvider } from "@/state/modals";
-import { CreateColumnButton } from "@/features/board-detail/create-column-button";
-import { useQuery } from "@rocicorp/zero/react";
-import { getBoardWithColumnsAndTasksQuery } from "@/lib/zero-queries";
-import { useZ } from "@/lib/zero-cache";
-import { TaskDetailPage } from "./-actions";
-import { EditableText } from "@/components/editable-text";
-import { OtherActions } from "@/features/board-detail/other-actions";
+import {Columns} from "@/features/board-detail/columns";
+import {createFileRoute, linkOptions} from "@tanstack/react-router";
+import {ModalProvider} from "@/state/modals";
+import {CreateColumnButton} from "@/features/board-detail/create-column-button";
+import {useQuery} from "@rocicorp/zero/react";
+import {getBoardWithColumnsAndTasksQuery} from "@/lib/zero-queries";
+import {useZ} from "@/lib/zero-cache";
+import {TaskDetailPage} from "./-actions";
+import {EditableText} from "@/components/editable-text";
+import {OtherActions} from "@/features/board-detail/other-actions";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
   component: BoardPage,
-  validateSearch: (search): { taskId?: string } => {
+  validateSearch: (search): {taskId?: string} => {
     return {
       taskId: typeof search.taskId === "string" ? search.taskId : undefined,
     };
@@ -27,7 +27,7 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
           // TODO: Use the board name instead of the slug
           label: ctx.params.slug,
           to: "/boards/$slug",
-          params: { slug: ctx.params.slug },
+          params: {slug: ctx.params.slug},
         },
       ]),
     };
@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
 });
 
 function BoardPage() {
-  const { slug } = Route.useParams();
+  const {slug} = Route.useParams();
   const z = useZ();
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
 

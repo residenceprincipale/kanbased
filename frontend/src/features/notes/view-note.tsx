@@ -1,20 +1,20 @@
-import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { markdownToHtml } from "@/lib/helpers";
-import { cn } from "@/lib/utils";
-import { Link, useRouter } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
-import { GetNoteQueryResult } from "@/lib/zero-queries";
-import { WrappedTooltip } from "@/components/ui/tooltip";
-import { Expand, EllipsisVertical, Trash } from "lucide-react";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
+import {Button, buttonVariants} from "@/components/ui/button";
+import {markdownToHtml} from "@/lib/helpers";
+import {cn} from "@/lib/utils";
+import {Link, useRouter} from "@tanstack/react-router";
+import {useEffect, useMemo} from "react";
+import {GetNoteQueryResult} from "@/lib/zero-queries";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {Expand, EllipsisVertical, Trash} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useZ } from "@/lib/zero-cache";
-import { toast } from "sonner";
+import {useZ} from "@/lib/zero-cache";
+import {toast} from "sonner";
 
 export function ViewNote(props: {
   note: NonNullable<GetNoteQueryResult>;
@@ -35,7 +35,7 @@ export function ViewNote(props: {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "e") {
         e.preventDefault();
-        router.navigate({ to: ".", search: { editNoteId: props.note.id } });
+        router.navigate({to: ".", search: {editNoteId: props.note.id}});
       }
     };
 
@@ -50,7 +50,7 @@ export function ViewNote(props: {
       deletedAt: Date.now(),
     });
     toast.success("Note deleted");
-    router.navigate({ to: "/notes" });
+    router.navigate({to: "/notes"});
   };
 
   return (
@@ -64,11 +64,11 @@ export function ViewNote(props: {
         <h1 className="text-2xl font-bold">{props.note.name}</h1>
 
         <div className="flex items-center gap-3">
-          <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+          <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
             <Link
               to="."
-              search={{ editNoteId: props.note.id, defaultTab: "preview" }}
-              className={buttonVariants({ size: "icon", variant: "ghost" })}
+              search={{editNoteId: props.note.id, defaultTab: "preview"}}
+              className={buttonVariants({size: "icon", variant: "ghost"})}
               replace
               onClick={() => {
                 localStorage.setItem("note-editor-fullscreen", "true");
@@ -83,8 +83,8 @@ export function ViewNote(props: {
 
           <Link
             to="."
-            search={{ editNoteId: props.note.id }}
-            className={buttonVariants({ size: "sm" })}
+            search={{editNoteId: props.note.id}}
+            className={buttonVariants({size: "sm"})}
             replace
             id="edit-note-button"
           >
@@ -119,7 +119,7 @@ export function ViewNote(props: {
               "prose dark:prose-invert h-full max-w-none",
               props.wrapperClassName,
             )}
-            dangerouslySetInnerHTML={{ __html: html }}
+            dangerouslySetInnerHTML={{__html: html}}
           ></div>
         </div>
       </div>

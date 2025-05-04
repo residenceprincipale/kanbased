@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import {Fragment} from "react";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -7,10 +7,10 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { isMatch, Link, LinkProps, useMatches } from "@tanstack/react-router";
+import {isMatch, Link, LinkProps, useMatches} from "@tanstack/react-router";
 
 export interface BreadcrumbsData {
-  breadcrumbs: (LinkProps & { label: string })[];
+  breadcrumbs: (LinkProps & {label: string})[];
 }
 
 export function TsrBreadcrumbs() {
@@ -23,7 +23,7 @@ export function TsrBreadcrumbs() {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        {breadcrumbs.map(({ label, ...linkProps }, index, arr) => {
+        {breadcrumbs.map(({label, ...linkProps}, index, arr) => {
           const isTail = index === arr.length - 1;
 
           if (isTail) {

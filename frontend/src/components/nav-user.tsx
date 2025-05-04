@@ -11,9 +11,9 @@ import {
   UserRound,
   Mail,
 } from "lucide-react";
-import { handleAuthResponse } from "@/lib/utils";
+import {handleAuthResponse} from "@/lib/utils";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -26,23 +26,23 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useAuthData } from "@/queries/session";
-import { authClient } from "@/lib/auth";
-import { useMutation } from "@tanstack/react-query";
-import { getOrigin } from "@/lib/constants";
-import { router } from "@/main";
-import { toast } from "sonner";
-import { Link } from "@tanstack/react-router";
+import {useAuthData} from "@/queries/session";
+import {authClient} from "@/lib/auth";
+import {useMutation} from "@tanstack/react-query";
+import {getOrigin} from "@/lib/constants";
+import {router} from "@/main";
+import {toast} from "sonner";
+import {Link} from "@tanstack/react-router";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { useQuery } from "@rocicorp/zero/react";
-import { getOrganizationListQuery } from "@/lib/zero-queries";
-import { useZ } from "@/lib/zero-cache";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
-import { InviteMemberDialog } from "@/features/user/invite-member";
+import {useQuery} from "@rocicorp/zero/react";
+import {getOrganizationListQuery} from "@/lib/zero-queries";
+import {useZ} from "@/lib/zero-cache";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
+import {InviteMemberDialog} from "@/features/user/invite-member";
 
 export function NavUser() {
   const userData = useAuthData();
@@ -59,7 +59,7 @@ export function NavUser() {
     },
     onSuccess: () => {
       localStorage.removeItem("auth-token");
-      router.navigate({ to: "/login", reloadDocument: true });
+      router.navigate({to: "/login", reloadDocument: true});
     },
   });
 

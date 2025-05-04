@@ -1,10 +1,10 @@
-import { createFileRoute, linkOptions } from "@tanstack/react-router";
-import { ViewNote } from "@/features/notes/view-note";
-import { Actions } from "./-actions";
-import { useZ } from "@/lib/zero-cache";
-import { getNoteQuery } from "@/lib/zero-queries";
-import { useQuery } from "@rocicorp/zero/react";
-import { useEffect } from "react";
+import {createFileRoute, linkOptions} from "@tanstack/react-router";
+import {ViewNote} from "@/features/notes/view-note";
+import {Actions} from "./-actions";
+import {useZ} from "@/lib/zero-cache";
+import {getNoteQuery} from "@/lib/zero-queries";
+import {useQuery} from "@rocicorp/zero/react";
+import {useEffect} from "react";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
   component: RouteComponent,
@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
           // TODO: get note name
           label: "Note",
           to: "/notes/$noteId",
-          params: { noteId: ctx.params.noteId },
+          params: {noteId: ctx.params.noteId},
         },
       ]),
     };
@@ -28,7 +28,7 @@ export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
 
   validateSearch: (
     search,
-  ): { editNoteId?: string; defaultTab?: "write" | "preview" } => {
+  ): {editNoteId?: string; defaultTab?: "write" | "preview"} => {
     return {
       editNoteId:
         typeof search.editNoteId === "string" ? search.editNoteId : undefined,
@@ -41,8 +41,8 @@ export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
 });
 
 function RouteComponent() {
-  const { editNoteId } = Route.useSearch();
-  const { noteId } = Route.useParams();
+  const {editNoteId} = Route.useSearch();
+  const {noteId} = Route.useParams();
   const z = useZ();
   const [note] = useQuery(getNoteQuery(z, noteId));
 

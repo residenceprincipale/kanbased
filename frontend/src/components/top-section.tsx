@@ -1,14 +1,14 @@
-import { TsrBreadcrumbs } from "@/components/tsr-breadcrumbs";
-import { SidebarTrigger, useSidebar } from "@/components/ui/sidebar";
-import { WrappedTooltip } from "@/components/ui/tooltip";
-import { Separator } from "@/components/ui/separator";
-import { SearchIcon } from "lucide-react";
-import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
-import { useAppContext } from "@/state/app-state";
+import {TsrBreadcrumbs} from "@/components/tsr-breadcrumbs";
+import {SidebarTrigger, useSidebar} from "@/components/ui/sidebar";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {Separator} from "@/components/ui/separator";
+import {SearchIcon} from "lucide-react";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
+import {useAppContext} from "@/state/app-state";
 
 export function TopSection() {
-  const { isMobile, state } = useSidebar();
-  const { openSearch } = useAppContext();
+  const {isMobile, state} = useSidebar();
+  const {openSearch} = useAppContext();
 
   const getSidebarWidth = () => {
     if (isMobile) {
@@ -32,7 +32,7 @@ export function TopSection() {
     >
       <div className="flex items-center gap-2 py-1">
         <WrappedTooltip
-          tooltipProps={{ delayDuration: 300 }}
+          tooltipProps={{delayDuration: 300}}
           tooltipContentProps={{
             side: "right",
           }}

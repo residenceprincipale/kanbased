@@ -3,10 +3,9 @@
 /** @type {import('prettier').Config} */
 const config = {
   singleQuote: false,
-  trailingComma: 'all',
+  trailingComma: "all",
   bracketSpacing: false,
-  quoteProps: 'consistent'
-}
+  quoteProps: "consistent",
+};
 
-export default config
-
+export default config;

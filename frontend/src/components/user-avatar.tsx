@@ -1,5 +1,5 @@
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useMemo } from "react";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {useMemo} from "react";
 
 function UserAvatar({
   name,
@@ -22,7 +22,7 @@ function UserAvatar({
       />
       <AvatarFallback
         className="text-white text-xs"
-        style={{ backgroundColor: bgColor }}
+        style={{backgroundColor: bgColor}}
       >
         {initials}
       </AvatarFallback>

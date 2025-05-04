@@ -1,18 +1,18 @@
-import { useRef, useState } from "react";
+import {useRef, useState} from "react";
 import {
   CodeMirrorEditorRefData,
   EditorMode,
 } from "@/components/md-editor/md-editor";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useMarkdownEditorPreviewToggle } from "@/hooks/use-markdown-editor";
-import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
-import { KeyboardShortcutIndicator } from "@/components/keyboard-shortcut";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import {useMarkdownEditorPreviewToggle} from "@/hooks/use-markdown-editor";
+import {Button} from "@/components/ui/button";
+import {Spinner} from "@/components/ui/spinner";
+import {toast} from "sonner";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
-import { useKeyDown } from "@/hooks/use-keydown";
-import { cn, createId } from "@/lib/utils";
+import {useKeyDown} from "@/hooks/use-keydown";
+import {cn, createId} from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -20,16 +20,16 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { Suspense } from "react";
-import { EditableText } from "@/components/editable-text";
-import { useZ } from "@/lib/zero-cache";
-import { flushSync } from "react-dom";
-import { useActiveOrganizationId } from "@/queries/session";
-import { WrappedTooltip } from "@/components/ui/tooltip";
-import { Expand, Eye, Fullscreen, Minimize2, Pencil, Save } from "lucide-react";
-import { useLocalStorage } from "@/hooks/use-local-storage";
+import {Suspense} from "react";
+import {EditableText} from "@/components/editable-text";
+import {useZ} from "@/lib/zero-cache";
+import {flushSync} from "react-dom";
+import {useActiveOrganizationId} from "@/queries/session";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {Expand, Eye, Fullscreen, Minimize2, Pencil, Save} from "lucide-react";
+import {useLocalStorage} from "@/hooks/use-local-storage";
 type CommonProps = {
-  afterSave: (data: { noteId: string }) => void;
+  afterSave: (data: {noteId: string}) => void;
   onClose: () => void;
 };
 
@@ -110,7 +110,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     });
 
     toast.success(isCreate ? "Note created" : "Note updated");
-    props.afterSave({ noteId });
+    props.afterSave({noteId});
   };
 
   const handleEditorModeChange = (mode: EditorMode) => {
@@ -176,7 +176,7 @@ export default function NoteEditor(props: NoteEditorProps) {
 
         <div className="absolute right-10 top-1.5">
           {mode === "write" ? (
-            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
               <Button
                 onClick={() => handleModeChange("preview")}
                 variant="ghost"
@@ -193,7 +193,7 @@ export default function NoteEditor(props: NoteEditorProps) {
               </span>
             </WrappedTooltip>
           ) : (
-            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
               <Button
                 onClick={() => handleModeChange("write")}
                 variant="ghost"
@@ -211,7 +211,7 @@ export default function NoteEditor(props: NoteEditorProps) {
             </WrappedTooltip>
           )}
 
-          <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+          <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
             <Button
               onClick={handleSave}
               variant="ghost"
@@ -231,7 +231,7 @@ export default function NoteEditor(props: NoteEditorProps) {
           </WrappedTooltip>
 
           {isFullscreen ? (
-            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
               <Button
                 onClick={() => setIsFullscreen(false)}
                 variant="ghost"
@@ -243,7 +243,7 @@ export default function NoteEditor(props: NoteEditorProps) {
               <span>Exit Zen Mode</span>
             </WrappedTooltip>
           ) : (
-            <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
               <Button
                 type="button"
                 variant="ghost"
@@ -282,7 +282,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                   )}
                 >
                   <div className="flex items-center gap-2">
-                    <WrappedTooltip tooltipContentProps={{ side: "bottom" }}>
+                    <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
                       <TabsList className="shrink-0 self-start flex items-center gap-2">
                         <TabsTrigger value="write">Write</TabsTrigger>
                         <TabsTrigger value="preview">Preview</TabsTrigger>

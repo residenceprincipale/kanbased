@@ -1,6 +1,6 @@
-import { Column } from "@/features/board-detail/column";
-import { useCallback, useRef } from "react";
-import { CreateColumn } from "@/features/board-detail/create-column";
+import {Column} from "@/features/board-detail/column";
+import {useCallback, useRef} from "react";
+import {CreateColumn} from "@/features/board-detail/create-column";
 import {
   DragDropContext,
   Droppable,
@@ -10,8 +10,8 @@ import {
   useColumnModalControls,
   useColumnModalState,
 } from "@/features/board-detail/column.state";
-import { GetBoardWithColumnsAndTasksQueryResult } from "@/lib/zero-queries";
-import { useZ } from "@/lib/zero-cache";
+import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import {useZ} from "@/lib/zero-cache";
 
 export function Columns({
   boardId,
@@ -22,7 +22,7 @@ export function Columns({
 }) {
   const z = useZ();
   const containerRef = useRef<HTMLDivElement>(null);
-  const { closeModal } = useColumnModalControls();
+  const {closeModal} = useColumnModalControls();
 
   const lastColumnRef = useCallback((node: HTMLDivElement | null) => {
     /*
@@ -46,7 +46,7 @@ export function Columns({
       return;
     }
 
-    const { source, destination } = e;
+    const {source, destination} = e;
 
     // Did not move anywhere.
     if (
@@ -139,7 +139,7 @@ export function Columns({
 }
 
 function CreateColumnModalGate(props: React.PropsWithChildren) {
-  const { activeModal } = useColumnModalState();
+  const {activeModal} = useColumnModalState();
 
   if (activeModal?.type !== "create-column") {
     return null;

@@ -1,16 +1,16 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Card } from "@/components/ui/card";
-import { useAuthData } from "@/queries/session";
+import {useState} from "react";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Avatar, AvatarImage, AvatarFallback} from "@/components/ui/avatar";
+import {Card} from "@/components/ui/card";
+import {useAuthData} from "@/queries/session";
 import {
   useUploadUserImageMutation,
   useUpdateUserMutation,
 } from "@/queries/user";
-import { Spinner } from "@/components/ui/spinner";
-import { toast } from "sonner";
+import {Spinner} from "@/components/ui/spinner";
+import {toast} from "sonner";
 
 export function UserSettings() {
   const userData = useAuthData();
@@ -50,9 +50,9 @@ export function UserSettings() {
     setPreviewUrl(url);
 
     uploadImageMutation.mutate(
-      { file },
+      {file},
       {
-        onSuccess: ({ imageUrl }) => {
+        onSuccess: ({imageUrl}) => {
           setPreviewUrl(imageUrl);
         },
         onError: () => {

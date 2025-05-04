@@ -1,16 +1,16 @@
-import { getRelativeTimeString } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { GetNotesListQueryResult } from "@/lib/zero-queries";
-import { MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {getRelativeTimeString} from "@/lib/utils";
+import {Link} from "@tanstack/react-router";
+import {GetNotesListQueryResult} from "@/lib/zero-queries";
+import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { useZ } from "@/lib/zero-cache";
-import { toast } from "sonner";
+import {Button} from "@/components/ui/button";
+import {useZ} from "@/lib/zero-cache";
+import {toast} from "sonner";
 
 function NoteItem({
   note,
@@ -22,7 +22,7 @@ function NoteItem({
   return (
     <Link
       to="/notes/$noteId"
-      params={{ noteId: note.id }}
+      params={{noteId: note.id}}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
       id={`note-item-${note.id}`}
     >
@@ -50,7 +50,7 @@ function NoteItem({
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem asChild>
-                  <Link to="." search={{ editNoteId: note.id }} replace>
+                  <Link to="." search={{editNoteId: note.id}} replace>
                     <Pencil className="mr-2 h-4 w-4" />
                     Edit
                   </Link>
@@ -86,7 +86,7 @@ function NoteItem({
   );
 }
 
-export function NoteList(props: { notes: GetNotesListQueryResult }) {
+export function NoteList(props: {notes: GetNotesListQueryResult}) {
   const z = useZ();
 
   const handleDelete = (noteId: string) => {
