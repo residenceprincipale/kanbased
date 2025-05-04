@@ -1,15 +1,15 @@
+import {Copy, Download} from "lucide-react";
+import {toast} from "sonner";
+import {Suspense} from "react";
+import {useQuery} from "@rocicorp/zero/react";
+import type {ExportBoardsModal} from "@/features/boards/board.state";
+import {Button} from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {ExportBoardsModal} from "@/features/boards/board.state";
-import {Button} from "@/components/ui/button";
-import {Copy, Download} from "lucide-react";
-import {toast} from "sonner";
-import {Suspense} from "react";
-import {useQuery} from "@rocicorp/zero/react";
 import {useZ} from "@/lib/zero-cache";
 import {allBoardsQuery} from "@/lib/zero-queries";
 

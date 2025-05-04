@@ -1,20 +1,19 @@
 import * as React from "react";
-import {createFileRoute, Link} from "@tanstack/react-router";
+import {Link, createFileRoute,useRouter} from "@tanstack/react-router";
+import {toast} from "sonner";
+import {useMutation} from "@tanstack/react-query";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {useRouter} from "@tanstack/react-router";
 import {Spinner} from "@/components/ui/spinner";
 import {authClient} from "@/lib/auth";
-import {toast} from "sonner";
-import {useMutation} from "@tanstack/react-query";
 import {handleAuthResponse} from "@/lib/utils";
 
 export const Route = createFileRoute("/(auth)/reset-password")({
@@ -64,7 +63,7 @@ function ResetPassword() {
             },
             onError: (error) => {
               if ("message" in error) {
-                toast.error(error.message as string);
+                toast.error(error.message);
               }
             },
           },

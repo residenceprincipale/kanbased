@@ -1,4 +1,4 @@
-import {GetBoardsListQueryResult} from "@/lib/zero-queries";
+import type {GetBoardsListQueryResult} from "@/lib/zero-queries";
 import {useModalControls, useModalState} from "@/state/modals";
 
 export interface CreateColumnModal {

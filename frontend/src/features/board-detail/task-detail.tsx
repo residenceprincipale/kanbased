@@ -1,18 +1,18 @@
-import {useRef, Suspense, lazy, useState} from "react";
+import {Suspense, lazy, useRef, useState} from "react";
+import {useQuery} from "@rocicorp/zero/react";
+import {toast} from "sonner";
+import type {CodeMirrorEditorRefData} from "@/components/md-editor/md-editor";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
 import {getTaskQuery} from "@/lib/zero-queries";
-import {useQuery} from "@rocicorp/zero/react";
-import {CodeMirrorEditorRefData} from "@/components/md-editor/md-editor";
 import {Spinner} from "@/components/ui/spinner";
 import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
-import {toast} from "sonner";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/edit-task-content"),

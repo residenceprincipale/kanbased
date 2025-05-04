@@ -1,16 +1,17 @@
-import {Column} from "@/features/board-detail/column";
 import {useCallback, useRef} from "react";
-import {CreateColumn} from "@/features/board-detail/create-column";
 import {
   DragDropContext,
-  Droppable,
-  OnDragEndResponder,
+  Droppable
 } from "@hello-pangea/dnd";
+import type {
+  OnDragEndResponder} from "@hello-pangea/dnd";
+import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import {Column} from "@/features/board-detail/column";
+import {CreateColumn} from "@/features/board-detail/create-column";
 import {
   useColumnModalControls,
   useColumnModalState,
 } from "@/features/board-detail/column.state";
-import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 
 export function Columns({
@@ -37,7 +38,7 @@ export function Columns({
 
     if (!node) return;
     containerRef.current?.scrollTo({
-      left: containerRef.current!.scrollWidth,
+      left: containerRef.current.scrollWidth,
     });
   }, []);
 
@@ -68,7 +69,7 @@ export function Columns({
       }));
 
       z.mutateBatch(async (mutate) => {
-        for (let col of updatedColPositions) {
+        for (const col of updatedColPositions) {
           await mutate.columnsTable.update({
             id: col.id,
             position: col.position,
@@ -83,8 +84,8 @@ export function Columns({
       const updatedTask = reorderTask({
         sourceColumnId: e.source.droppableId,
         sourceTaskId: e.draggableId,
-        destinationColumnId: e.destination!.droppableId,
-        destinationTaskIndex: e.destination!.index,
+        destinationColumnId: e.destination.droppableId,
+        destinationTaskIndex: e.destination.index,
         columns,
       });
 

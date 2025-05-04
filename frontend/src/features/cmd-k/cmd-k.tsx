@@ -2,13 +2,15 @@
 
 import * as React from "react";
 import {
-  KanbanSquare,
-  Grid2x2Plus,
-  List,
   FileText,
+  Grid2x2Plus,
+  KanbanSquare,
+  List,
   SquareCheck,
 } from "lucide-react";
 
+import {useQuery} from "@rocicorp/zero/react";
+import {useRouter} from "@tanstack/react-router";
 import {
   CommandDialog as CommandDialogComponent,
   CommandEmpty,
@@ -21,8 +23,6 @@ import {
 } from "@/components/ui/command";
 import {useZ} from "@/lib/zero-cache";
 import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
-import {useQuery} from "@rocicorp/zero/react";
-import {useRouter} from "@tanstack/react-router";
 import {useAppContext} from "@/state/app-state";
 
 export function CommandDialog() {
@@ -32,7 +32,7 @@ export function CommandDialog() {
   const [boards] = useQuery(allBoardsQuery(z));
 
   const allTasks = boards.reduce(
-    (allTasks: {id: string; name: string; slug: string}[], currentBoard) => {
+    (allTasks: Array<{id: string; name: string; slug: string}>, currentBoard) => {
       const tasks = currentBoard.columns.flatMap((column) =>
         column.tasks.map((task) => ({
           id: task.id,

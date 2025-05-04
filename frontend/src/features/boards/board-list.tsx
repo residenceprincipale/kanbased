@@ -1,14 +1,14 @@
-import {Button} from "@/components/ui/button";
 import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
+import {Link} from "@tanstack/react-router";
+import type {GetBoardsListQueryResult} from "@/lib/zero-queries";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Link} from "@tanstack/react-router";
 import {useBoardModalControls} from "@/features/boards/board.state";
-import {GetBoardsListQueryResult} from "@/lib/zero-queries";
 import {getRelativeTimeString} from "@/lib/utils";
 
 function BoardItem({board}: {board: GetBoardsListQueryResult[number]}) {

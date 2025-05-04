@@ -1,5 +1,6 @@
+import { useEffect} from "react";
+import type {DependencyList} from "react";
 import {useEffectEvent} from "@/hooks/use-event";
-import {DependencyList, useEffect} from "react";
 
 export function useKeyDown(
   callback: (e: KeyboardEvent) => void,

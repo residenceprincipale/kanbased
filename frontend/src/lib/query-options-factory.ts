@@ -1,8 +1,8 @@
-import {authClient} from "@/lib/auth";
-import {AuthError} from "@/lib/utils";
-import {AuthJwtPayload} from "@/types/api-response-types";
 import {queryOptions} from "@tanstack/react-query";
 import {jwtDecode} from "jwt-decode";
+import type {AuthJwtPayload} from "@/types/api-response-types";
+import {authClient} from "@/lib/auth";
+import {AuthError} from "@/lib/utils";
 
 export const authQueryOptions = queryOptions({
   queryKey: ["auth"],
@@ -30,7 +30,7 @@ export const authQueryOptions = queryOptions({
     let decodedData: AuthJwtPayload;
 
     try {
-      decodedData = jwtDecode(encodedToken) as AuthJwtPayload;
+      decodedData = jwtDecode(encodedToken);
     } catch (err) {
       throw new AuthError({
         status: 401,

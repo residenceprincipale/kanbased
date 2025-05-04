@@ -1,7 +1,9 @@
-import {authClient} from "@/lib/auth";
-import {handleAuthResponse, getRelativeTimeString} from "@/lib/utils";
-import {useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import {useMutation, useQueryClient,useSuspenseQuery} from "@tanstack/react-query";
 import {createFileRoute, useRouter} from "@tanstack/react-router";
+import {toast} from "sonner";
+import {Building2, Check, Clock, Shield, User, X} from "lucide-react";
+import {authClient} from "@/lib/auth";
+import {cn, getRelativeTimeString,handleAuthResponse} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {
   Card,
@@ -12,10 +14,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import {Spinner} from "@/components/ui/spinner";
-import {toast} from "sonner";
-import {useMutation} from "@tanstack/react-query";
-import {Check, X, Building2, User, Shield, Clock} from "lucide-react";
-import {cn} from "@/lib/utils";
 import {authQueryOptions} from "@/lib/query-options-factory";
 
 export const Route = createFileRoute(

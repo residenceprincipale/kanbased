@@ -1,9 +1,9 @@
-import {useRef, useCallback, useInsertionEffect} from "react";
+import {useCallback, useInsertionEffect, useRef} from "react";
 
 // Approximation of React's upcoming useEffectEvent hook
 // This gives us a non-reactive effect event callback, it will always use the latest version of
 // the callback, rather than the one that was closed over.
-export function useEffectEvent<T extends (...args: any[]) => any>(
+export function useEffectEvent<T extends (...args: Array<any>) => any>(
   fn: T,
 ): (...funcArgs: Parameters<T>) => ReturnType<T> {
   const ref = useRef(fn);

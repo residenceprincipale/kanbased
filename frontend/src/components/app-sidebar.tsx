@@ -1,6 +1,7 @@
 import * as React from "react";
 import {useEffect} from "react";
 
+import {ThemeToggle} from "./theme-toggle";
 import {NavUser} from "@/components/nav-user";
 import {
   Sidebar,
@@ -9,7 +10,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import {ThemeToggle} from "./theme-toggle";
 import {NavBoards} from "@/components/nav-boards";
 import {NavNotes} from "@/components/nav-notes";
 

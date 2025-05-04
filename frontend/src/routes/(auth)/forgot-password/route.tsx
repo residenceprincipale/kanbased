@@ -1,4 +1,6 @@
 import {createFileRoute} from "@tanstack/react-router";
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
 import {
   Card,
   CardContent,
@@ -10,8 +12,6 @@ import {Input} from "@/components/ui/input";
 import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import {authClient} from "@/lib/auth";
-import {useMutation} from "@tanstack/react-query";
-import {toast} from "sonner";
 import {Spinner} from "@/components/ui/spinner";
 import {getOrigin} from "@/lib/constants";
 import {handleAuthResponse} from "@/lib/utils";

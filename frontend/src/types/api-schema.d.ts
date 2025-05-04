@@ -25,7 +25,7 @@ export interface paths {
             [name: string]: unknown;
           };
           content: {
-            "application/json": {
+            "application/json": Array<{
               /** Format: uuid */
               id: string;
               name: string;
@@ -33,7 +33,7 @@ export interface paths {
               boardUrl: string;
               tasksCount: number;
               columnsCount: number;
-            }[];
+            }>;
           };
         };
         403: {
@@ -56,11 +56,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -142,11 +142,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -236,11 +236,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -346,11 +346,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -391,20 +391,20 @@ export interface paths {
       requestBody: {
         content: {
           "application/json": {
-            boards: {
+            boards: Array<{
               boardName: string;
               boardUrl: string;
-              columns: {
+              columns: Array<{
                 name: string;
                 position: number;
-                tasks: {
+                tasks: Array<{
                   /** Format: uuid */
                   columnId: string;
                   name: string;
                   position: number;
-                }[];
-              }[];
-            }[];
+                }>;
+              }>;
+            }>;
           };
         };
       };
@@ -437,11 +437,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -493,22 +493,22 @@ export interface paths {
             "application/json": {
               boardId: string;
               boardName: string;
-              columns: {
+              columns: Array<{
                 /** Format: uuid */
                 id: string;
                 name: string;
                 /** Format: uuid */
                 boardId: string;
                 position: number;
-              }[];
-              tasks: {
+              }>;
+              tasks: Array<{
                 /** Format: uuid */
                 id: string;
                 name: string;
                 /** Format: uuid */
                 columnId: string;
                 position: number;
-              }[];
+              }>;
             };
           };
         };
@@ -532,11 +532,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -607,11 +607,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -659,11 +659,11 @@ export interface paths {
       };
       requestBody: {
         content: {
-          "application/json": {
+          "application/json": Array<{
             /** Format: uuid */
             id: string;
             position: number;
-          }[];
+          }>;
         };
       };
       responses: {
@@ -695,11 +695,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -770,11 +770,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -845,11 +845,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -888,13 +888,13 @@ export interface paths {
       };
       requestBody: {
         content: {
-          "application/json": {
+          "application/json": Array<{
             position: number;
             /** Format: uuid */
             columnId: string;
             /** Format: uuid */
             id: string;
-          }[];
+          }>;
         };
       };
       responses: {
@@ -926,11 +926,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1001,11 +1001,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1088,11 +1088,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1153,11 +1153,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1226,11 +1226,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1309,11 +1309,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1361,12 +1361,12 @@ export interface paths {
           };
           content: {
             "application/json": {
-              notes: {
+              notes: Array<{
                 /** Format: uuid */
                 id: string;
                 name: string;
                 updatedAt: string | null;
-              }[];
+              }>;
             };
           };
         };
@@ -1390,11 +1390,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1471,11 +1471,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1556,11 +1556,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;
@@ -1641,11 +1641,11 @@ export interface paths {
               /** @example false */
               success: boolean;
               error: {
-                issues: {
+                issues: Array<{
                   code: string;
-                  path: (string | number)[];
+                  path: Array<string | number>;
                   message?: string;
-                }[];
+                }>;
                 name: string;
               };
               statusCode: number;

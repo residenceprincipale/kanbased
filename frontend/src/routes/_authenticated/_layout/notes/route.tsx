@@ -1,8 +1,8 @@
+import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
+import {useQuery} from "@rocicorp/zero/react";
+import {Actions} from "./-actions";
 import {CreateNoteButton} from "@/features/notes/create-note-button";
 import {ModalProvider} from "@/state/modals";
-import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
-import {Actions} from "./-actions";
-import {useQuery} from "@rocicorp/zero/react";
 import {NoteList} from "@/features/notes/note-list";
 import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";

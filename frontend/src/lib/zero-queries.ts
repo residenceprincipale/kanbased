@@ -1,22 +1,22 @@
-import {Z} from "./zero-cache";
-import {ZeroQueryResult} from "@/types/type-helpers";
+import type {Z} from "./zero-cache";
+import type {ZeroQueryResult} from "@/types/type-helpers";
 
 export function getBoardsListQuery(z: Z) {
   const boardsQuery = z.query.boardsTable.where("deletedAt", "IS", null);
   return boardsQuery;
 }
 
-export type GetBoardsListQueryResult = ZeroQueryResult<
+export type GetBoardsListQueryResult = Array<ZeroQueryResult<
   typeof getBoardsListQuery
->[];
+>>;
 
 export function getNotesListQuery(z: Z) {
   return z.query.notesTable.where("deletedAt", "IS", null);
 }
 
-export type GetNotesListQueryResult = ZeroQueryResult<
+export type GetNotesListQueryResult = Array<ZeroQueryResult<
   typeof getNotesListQuery
->[];
+>>;
 
 export function getNoteQuery(z: Z, noteId: string) {
   return z.query.notesTable.where("id", noteId).one();
@@ -59,9 +59,9 @@ export function getOrganizationListQuery(z: Z) {
   return z.query.organizationsTable;
 }
 
-export type GetOrganizationListQueryResult = ZeroQueryResult<
+export type GetOrganizationListQueryResult = Array<ZeroQueryResult<
   typeof getOrganizationListQuery
->[];
+>>;
 
 export function allBoardsQuery(z: Z) {
   return z.query.boardsTable
@@ -73,4 +73,4 @@ export function allBoardsQuery(z: Z) {
     );
 }
 
-export type AllBoardsQueryResult = ZeroQueryResult<typeof allBoardsQuery>[];
+export type AllBoardsQueryResult = Array<ZeroQueryResult<typeof allBoardsQuery>>;

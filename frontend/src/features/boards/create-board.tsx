@@ -1,3 +1,8 @@
+import {Link} from "@tanstack/react-router";
+import { useState} from "react";
+import {toast} from "sonner";
+import type {FormEventHandler} from "react";
+import type {CreateBoardModal} from "@/features/boards/board.state";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Dialog,
@@ -9,13 +14,9 @@ import {
 } from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {CreateBoardModal} from "@/features/boards/board.state";
 import {createId} from "@/lib/utils";
 import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
-import {Link} from "@tanstack/react-router";
-import {useState, type FormEventHandler} from "react";
-import {toast} from "sonner";
 
 export function CreateBoard(props: CreateBoardModal) {
   const [boardName, setBoardName] = useState("");

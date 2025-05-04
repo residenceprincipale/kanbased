@@ -1,7 +1,8 @@
 "use client";
 
+import {Toaster as Sonner} from "sonner";
+import type { ToasterProps} from "sonner";
 import {useAppContext} from "@/state/app-state";
-import {Toaster as Sonner, ToasterProps} from "sonner";
 
 const Toaster = ({...props}: ToasterProps) => {
   const {theme} = useAppContext();

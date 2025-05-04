@@ -1,21 +1,22 @@
-import {Button} from "@/components/ui/button";
-import {EditTask} from "@/features/board-detail/edit-task";
-import {cn} from "@/lib/utils";
 import {
-  Draggable,
-  DraggableProvided,
-  DraggableStateSnapshot,
+  Draggable
 } from "@hello-pangea/dnd";
 import {MoreVertical, Pencil, Trash2} from "lucide-react";
 import {memo, useCallback, useState} from "react";
+import {Link} from "@tanstack/react-router";
+import type {
+  DraggableProvided,
+  DraggableStateSnapshot} from "@hello-pangea/dnd";
+import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import {Button} from "@/components/ui/button";
+import {EditTask} from "@/features/board-detail/edit-task";
+import {cn} from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Link} from "@tanstack/react-router";
-import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import UserAvatar from "@/components/user-avatar";
 import {

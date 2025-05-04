@@ -1,5 +1,5 @@
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {useMemo} from "react";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
 function UserAvatar({
   name,

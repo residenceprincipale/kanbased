@@ -1,11 +1,11 @@
 import {
-  createFileRoute,
   Outlet,
+  createFileRoute,
   redirect,
   useRouter,
 } from "@tanstack/react-router";
-import {AuthError} from "@/lib/utils";
 import {useSuspenseQuery} from "@tanstack/react-query";
+import {AuthError} from "@/lib/utils";
 import {authQueryOptions} from "@/lib/query-options-factory";
 import {queryClient} from "@/lib/query-client";
 

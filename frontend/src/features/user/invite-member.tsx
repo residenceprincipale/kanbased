@@ -1,11 +1,12 @@
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {useRef} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {useAuthData} from "@/queries/session";
 import {authClient} from "@/lib/auth";
-import {useMutation} from "@tanstack/react-query";
 import {handleAuthResponse} from "@/lib/utils";
-import {toast} from "sonner";
 import {Spinner} from "@/components/ui/spinner";
 import {
   DialogClose,
@@ -15,7 +16,6 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {useRef} from "react";
 
 export function InviteMemberDialog() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);

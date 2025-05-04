@@ -1,7 +1,8 @@
-import {ColumnWrapper} from "@/components/column-ui";
 import {Draggable} from "@hello-pangea/dnd";
 import {GripVertical, MoreVertical} from "lucide-react";
 import {useCallback} from "react";
+import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import {ColumnWrapper} from "@/components/column-ui";
 import {cn} from "@/lib/utils";
 import {EditableColumnName} from "@/features/board-detail/editable-column-name";
 import {Tasks} from "@/features/board-detail/tasks";
@@ -12,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {DeleteColumn} from "@/features/board-detail/delete-column";
-import {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 
 type ColumnProps = {
   column: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number];

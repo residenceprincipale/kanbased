@@ -1,8 +1,8 @@
+import {useCallback, useRef} from "react";
+import type {GetTaskQueryResult} from "@/lib/zero-queries";
 import {CustomizedTextarea} from "@/components/ui/customized-textarea";
 import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
 import {useZ} from "@/lib/zero-cache";
-import {useCallback, useRef} from "react";
-import {GetTaskQueryResult} from "@/lib/zero-queries";
 
 export type EditTaskProps = {
   task: NonNullable<GetTaskQueryResult>;

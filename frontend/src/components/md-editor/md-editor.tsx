@@ -2,7 +2,7 @@ import {useEffect, useImperativeHandle, useRef, useState} from "react";
 import {EditorView, keymap} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
 import {markdown} from "@codemirror/lang-markdown";
-import {vim, getCM, Vim} from "@replit/codemirror-vim";
+import {Vim, getCM, vim} from "@replit/codemirror-vim";
 import {basicExtensions} from "@/components/md-editor/helpers";
 import {indentWithTab} from "@codemirror/commands";
 

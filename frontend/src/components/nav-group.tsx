@@ -1,6 +1,9 @@
 "use client";
 
-import {ChevronRight, type LucideIcon} from "lucide-react";
+import {ChevronRight } from "lucide-react";
+import {Link} from "@tanstack/react-router";
+import type { LinkProps} from "@tanstack/react-router";
+import type {LucideIcon} from "lucide-react";
 
 import {
   Collapsible,
@@ -15,7 +18,6 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import {Link, LinkProps} from "@tanstack/react-router";
 import {Spinner} from "@/components/ui/spinner";
 
 export type NavGroupType = {
@@ -24,7 +26,7 @@ export type NavGroupType = {
   icon: LucideIcon;
   /** @default true */
   defaultOpen?: boolean;
-  items?: NavItem[];
+  items?: Array<NavItem>;
   isItemsLoading?: boolean;
 };
 

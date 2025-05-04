@@ -1,17 +1,17 @@
 import {useRef, useState} from "react";
-import {
+import {toast} from "sonner";
+import {ArrowLeft} from "lucide-react";
+import type {
   CodeMirrorEditorRef,
   EditorMode,
 } from "@/components/md-editor/md-editor";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {useMarkdownEditorPreviewToggle} from "@/hooks/use-markdown-editor";
 import {Button} from "@/components/ui/button";
-import {toast} from "sonner";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
 import {useKeyDown} from "@/hooks/use-keydown";
-import {ArrowLeft} from "lucide-react";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {useZ} from "@/lib/zero-cache";
 

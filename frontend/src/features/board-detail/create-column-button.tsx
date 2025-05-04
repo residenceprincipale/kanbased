@@ -1,7 +1,7 @@
+import {Grid2x2Plus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useColumnModalControls} from "@/features/board-detail/column.state";
-import {Grid2x2Plus} from "lucide-react";
 
 export function CreateColumnButton() {
   const {openModal} = useColumnModalControls();

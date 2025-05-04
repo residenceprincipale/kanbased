@@ -1,8 +1,8 @@
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {authClient} from "@/lib/auth";
 import {post} from "@/lib/fetch-client";
 import {authQueryOptions} from "@/lib/query-options-factory";
-import {handleAuthResponse, UserViewableError} from "@/lib/utils";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
+import {UserViewableError, handleAuthResponse} from "@/lib/utils";
 
 export function useUploadUserImageMutation() {
   return useMutation({

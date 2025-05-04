@@ -1,27 +1,25 @@
 "use client";
 
+import {Link, createFileRoute,useRouter} from "@tanstack/react-router";
+import {useMutation} from "@tanstack/react-query";
+import {useState} from "react";
+import {Eye, EyeOff} from "lucide-react";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {Link, useRouter} from "@tanstack/react-router";
 import {cn, handleAuthResponse} from "@/lib/utils";
 import {authClient} from "@/lib/auth";
-import {createFileRoute} from "@tanstack/react-router";
 import {Spinner} from "@/components/ui/spinner";
-import {useMutation} from "@tanstack/react-query";
 import {getOrigin} from "@/lib/constants";
-import {useState} from "react";
-import {Eye, EyeOff} from "lucide-react";
 import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
-import {useGoogleLoginMutation} from "@/queries/authentication";
-import {useGithubLoginMutation} from "@/queries/authentication";
+import {useGithubLoginMutation,useGoogleLoginMutation} from "@/queries/authentication";
 import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/login")({

@@ -1,12 +1,13 @@
+import {Link, useRouter} from "@tanstack/react-router";
+import {useEffect, useMemo} from "react";
+import {EllipsisVertical, Expand, Trash} from "lucide-react";
+import {toast} from "sonner";
+import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {markdownToHtml} from "@/lib/helpers";
 import {cn} from "@/lib/utils";
-import {Link, useRouter} from "@tanstack/react-router";
-import {useEffect, useMemo} from "react";
-import {GetNoteQueryResult} from "@/lib/zero-queries";
 import {WrappedTooltip} from "@/components/ui/tooltip";
-import {Expand, EllipsisVertical, Trash} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,7 +15,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {useZ} from "@/lib/zero-cache";
-import {toast} from "sonner";
 
 export function ViewNote(props: {
   note: NonNullable<GetNoteQueryResult>;

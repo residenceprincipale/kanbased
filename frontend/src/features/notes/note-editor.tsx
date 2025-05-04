@@ -1,5 +1,8 @@
-import {useRef, useState} from "react";
-import {
+import {Suspense, useRef,useState} from "react";
+import {toast} from "sonner";
+import {flushSync} from "react-dom";
+import {Expand, Eye, Fullscreen, Minimize2, Pencil, Save} from "lucide-react";
+import type {
   CodeMirrorEditorRefData,
   EditorMode,
 } from "@/components/md-editor/md-editor";
@@ -7,7 +10,6 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {useMarkdownEditorPreviewToggle} from "@/hooks/use-markdown-editor";
 import {Button} from "@/components/ui/button";
 import {Spinner} from "@/components/ui/spinner";
-import {toast} from "sonner";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import MdPreview from "@/components/md-preview/md-preview";
 import CodeMirrorEditor from "@/components/md-editor/md-editor";
@@ -16,18 +18,16 @@ import {cn, createId} from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
 } from "@/components/ui/dialog";
-import {Suspense} from "react";
 import {EditableText} from "@/components/editable-text";
 import {useZ} from "@/lib/zero-cache";
-import {flushSync} from "react-dom";
 import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
-import {Expand, Eye, Fullscreen, Minimize2, Pencil, Save} from "lucide-react";
 import {useLocalStorage} from "@/hooks/use-local-storage";
+
 type CommonProps = {
   afterSave: (data: {noteId: string}) => void;
   onClose: () => void;

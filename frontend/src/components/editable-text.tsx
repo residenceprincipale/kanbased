@@ -1,10 +1,10 @@
+import {CheckIcon, XIcon} from "lucide-react";
+import {useEffect, useRef, useState} from "react";
+import {flushSync} from "react-dom";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {Button} from "@/components/ui/button";
 import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
 import {cn} from "@/lib/utils";
-import {CheckIcon, XIcon} from "lucide-react";
-import {useEffect, useRef, useState} from "react";
-import {flushSync} from "react-dom";
 
 export function EditableText({
   fieldName,
@@ -23,10 +23,10 @@ export function EditableText({
   defaultValue: string;
   onSubmit: (value: string) => Promise<void> | void;
 }) {
-  let [edit, setEdit] = useState(defaultMode === "edit");
-  let inputRef = useRef<HTMLInputElement>(null);
-  let buttonRef = useRef<HTMLButtonElement>(null);
-  let formRef = useRef<HTMLFormElement>(null);
+  const [edit, setEdit] = useState(defaultMode === "edit");
+  const inputRef = useRef<HTMLInputElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   useEffect(() => {
     if (defaultMode === "edit") {

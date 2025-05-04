@@ -1,23 +1,24 @@
 import {
-  keymap,
-  highlightSpecialChars,
   drawSelection,
-  highlightActiveLine,
   dropCursor,
+  highlightActiveLine,
   highlightActiveLineGutter,
+  highlightSpecialChars,
+  keymap,
   placeholder,
 } from "@codemirror/view";
-import {Extension, EditorState} from "@codemirror/state";
-import {indentOnInput, bracketMatching, foldKeymap} from "@codemirror/language";
+import { EditorState} from "@codemirror/state";
+import {bracketMatching, foldKeymap, indentOnInput} from "@codemirror/language";
 import {defaultKeymap, history, historyKeymap} from "@codemirror/commands";
-import {searchKeymap, highlightSelectionMatches} from "@codemirror/search";
+import {highlightSelectionMatches, searchKeymap} from "@codemirror/search";
 import {
-  completionKeymap,
   closeBrackets,
   closeBracketsKeymap,
+  completionKeymap,
 } from "@codemirror/autocomplete";
+import type {Extension} from "@codemirror/state";
 
-export const basicExtensions = (params: {placeholder: string}): Extension[] => [
+export const basicExtensions = (params: {placeholder: string}): Array<Extension> => [
   highlightActiveLineGutter(),
   highlightSpecialChars(),
   history(),

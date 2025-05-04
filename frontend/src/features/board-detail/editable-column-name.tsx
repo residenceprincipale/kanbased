@@ -1,6 +1,6 @@
-import {useZ} from "@/lib/zero-cache";
 import {useRef, useState} from "react";
 import {flushSync} from "react-dom";
+import {useZ} from "@/lib/zero-cache";
 
 export function EditableColumnName(props: {
   columnName: string;

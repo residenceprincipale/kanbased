@@ -1,5 +1,7 @@
-import {Button} from "@/components/ui/button";
 import {EllipsisVertical, Trash2} from "lucide-react";
+import {useRouter} from "@tanstack/react-router";
+import type {GetBoardsListQueryResult} from "@/lib/zero-queries";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,9 +12,7 @@ import {
   useColumnModalControls,
   useColumnModalState,
 } from "@/features/board-detail/column.state";
-import {GetBoardsListQueryResult} from "@/lib/zero-queries";
 import {DeleteBoard} from "@/features/boards/delete-board";
-import {useRouter} from "@tanstack/react-router";
 
 export function OtherActions({
   board,

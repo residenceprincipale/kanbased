@@ -1,9 +1,8 @@
 import {FileText} from "lucide-react";
-import {SidebarGroup, SidebarMenu} from "@/components/ui/sidebar";
 import {linkOptions} from "@tanstack/react-router";
-import {NavGroupType} from "@/components/nav-group";
-import {NavGroup} from "@/components/nav-group";
 import {useQuery} from "@rocicorp/zero/react";
+import type {NavGroup,NavGroupType} from "@/components/nav-group";
+import {SidebarGroup, SidebarMenu} from "@/components/ui/sidebar";
 import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 

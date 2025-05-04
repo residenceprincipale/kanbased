@@ -1,5 +1,5 @@
-import {authClient} from "@/lib/auth";
 import {useMutation} from "@tanstack/react-query";
+import {authClient} from "@/lib/auth";
 import {handleAuthResponse} from "@/lib/utils";
 
 export function useGoogleLoginMutation({callbackURL}: {callbackURL: string}) {

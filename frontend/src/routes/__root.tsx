@@ -1,7 +1,7 @@
 import {Outlet, createRootRouteWithContext} from "@tanstack/react-router";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
-import {AppContextProvider} from "@/state/app-state";
 import {lazy} from "react";
+import {AppContextProvider} from "@/state/app-state";
 import {Toaster} from "@/components/ui/sonner";
 
 const TanStackRouterDevtools =

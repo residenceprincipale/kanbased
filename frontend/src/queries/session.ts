@@ -1,11 +1,12 @@
-import {authClient} from "@/lib/auth";
-import {authQueryOptions} from "@/lib/query-options-factory";
-import {AuthError} from "@/lib/utils";
 import {
-  QueryClient,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
+import type {
+  QueryClient} from "@tanstack/react-query";
+import {authClient} from "@/lib/auth";
+import {authQueryOptions} from "@/lib/query-options-factory";
+import {AuthError} from "@/lib/utils";
 
 export async function fetchSession() {
   const {data, error} = await authClient.getSession();

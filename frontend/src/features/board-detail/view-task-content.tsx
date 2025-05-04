@@ -1,16 +1,16 @@
+import {useMemo} from "react";
+import {EllipsisVertical, Plus, Trash2} from "lucide-react";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {Button} from "@/components/ui/button";
 import {useKeyDown} from "@/hooks/use-keydown";
 import {markdownToHtml} from "@/lib/helpers";
 import {cn} from "@/lib/utils";
-import {useMemo} from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {EllipsisVertical, Plus, Trash2} from "lucide-react";
 
 export default function ViewTaskContent(props: {
   content: string;

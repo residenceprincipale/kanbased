@@ -10,8 +10,9 @@
     "build": "vite build",
     "start": "vite",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "format": "prettier --write .",
-    "check": "prettier --write . && eslint --fix"
+    "fixall": "prettier --write . && eslint --fix"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.6",

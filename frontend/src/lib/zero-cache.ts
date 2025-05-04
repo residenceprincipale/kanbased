@@ -1,6 +1,7 @@
 import {Zero} from "@rocicorp/zero";
 import {useZero} from "@rocicorp/zero/react";
-import {schema, type Schema} from "../../../backend/zero-schema.gen";
+import { schema} from "../../../backend/zero-schema.gen";
+import type {Schema} from "../../../backend/zero-schema.gen";
 import {queryClient} from "@/lib/query-client";
 import {authQueryOptions} from "@/lib/query-options-factory";
 import {getAuthData} from "@/queries/session";

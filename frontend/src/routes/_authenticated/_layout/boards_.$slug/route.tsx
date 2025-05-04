@@ -1,11 +1,11 @@
-import {Columns} from "@/features/board-detail/columns";
 import {createFileRoute, linkOptions} from "@tanstack/react-router";
+import {useQuery} from "@rocicorp/zero/react";
+import {TaskDetailPage} from "./-actions";
+import {Columns} from "@/features/board-detail/columns";
 import {ModalProvider} from "@/state/modals";
 import {CreateColumnButton} from "@/features/board-detail/create-column-button";
-import {useQuery} from "@rocicorp/zero/react";
 import {getBoardWithColumnsAndTasksQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
-import {TaskDetailPage} from "./-actions";
 import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
 

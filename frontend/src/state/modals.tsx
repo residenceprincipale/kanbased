@@ -1,11 +1,12 @@
 import {
   createContext,
-  useContext,
-  ReactNode,
-  useState,
   useCallback,
+  useContext,
   useMemo,
+  useState,
 } from "react";
+import type {
+  ReactNode} from "react";
 
 interface ModalState<T> {
   activeModal: T | null;

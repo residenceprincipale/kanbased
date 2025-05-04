@@ -1,5 +1,8 @@
 "use client";
 
+import {toast} from "sonner";
+import {Link, createFileRoute, useRouter} from "@tanstack/react-router";
+import {useMutation} from "@tanstack/react-query";
 import {Button, buttonVariants} from "@/components/ui/button";
 import {
   Card,
@@ -11,17 +14,12 @@ import {
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {authClient} from "@/lib/auth";
-import {toast} from "sonner";
-import {createFileRoute, Link, useRouter} from "@tanstack/react-router";
 import {Spinner} from "@/components/ui/spinner";
 import {getOrigin} from "@/lib/constants";
 import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
-import {useMutation} from "@tanstack/react-query";
-import {handleAuthResponse} from "@/lib/utils";
-import {useGoogleLoginMutation} from "@/queries/authentication";
-import {useGithubLoginMutation} from "@/queries/authentication";
+import {cn,handleAuthResponse} from "@/lib/utils";
+import {useGithubLoginMutation,useGoogleLoginMutation} from "@/queries/authentication";
 import {GithubIcon, GoogleIcon} from "@/components/icons";
-import {cn} from "@/lib/utils";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,

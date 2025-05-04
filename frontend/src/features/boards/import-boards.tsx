@@ -1,20 +1,20 @@
+import {toast} from "sonner";
+import {ImportIcon, InfoIcon} from "lucide-react";
+import type {AllBoardsQueryResult} from "@/lib/zero-queries";
+import type {ImportBoardsModal} from "@/features/boards/board.state";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {ImportBoardsModal} from "@/features/boards/board.state";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {Textarea} from "@/components/ui/textarea";
-import {toast} from "sonner";
 import {Button} from "@/components/ui/button";
-import {ImportIcon, InfoIcon} from "lucide-react";
 import {useActiveOrganizationId} from "@/queries/session";
 import {useZ} from "@/lib/zero-cache";
 import {createId, tryCatch} from "@/lib/utils";
-import {AllBoardsQueryResult} from "@/lib/zero-queries";
 
 export function ImportBoards({onClose}: ImportBoardsModal) {
   const z = useZ();
@@ -32,7 +32,7 @@ export function ImportBoards({onClose}: ImportBoardsModal) {
       z.mutateBatch(async (m) => {
         const now = Date.now();
 
-        for (let board of data) {
+        for (const board of data) {
           const boardId = createId();
 
           await m.boardsTable.insert({
@@ -44,7 +44,7 @@ export function ImportBoards({onClose}: ImportBoardsModal) {
             createdAt: now,
           });
 
-          for (let column of board.columns) {
+          for (const column of board.columns) {
             const columnId = createId();
 
             await m.columnsTable.insert({
@@ -57,7 +57,7 @@ export function ImportBoards({onClose}: ImportBoardsModal) {
               organizationId: orgId,
             });
 
-            for (let task of column.tasks) {
+            for (const task of column.tasks) {
               await m.tasksTable.insert({
                 id: createId(),
                 name: task.name,

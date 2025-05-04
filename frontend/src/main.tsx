@@ -4,9 +4,9 @@ import {
   RouterProvider,
   createRouter,
 } from "@tanstack/react-router";
+import {QueryClientProvider} from "@tanstack/react-query";
 import {routeTree} from "./routeTree.gen";
 import {queryClient} from "@/lib/query-client";
-import {QueryClientProvider} from "@tanstack/react-query";
 
 import "./tailwind.css";
 import {DefaultPendingComponent} from "@/components/default-loader";

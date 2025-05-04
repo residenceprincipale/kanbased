@@ -1,13 +1,13 @@
 import {useEffect, useMemo} from "react";
+import {Outlet, createFileRoute, linkOptions} from "@tanstack/react-router";
+import {ZeroProvider} from "@rocicorp/zero/react";
+import type {BreadcrumbsData} from "@/components/tsr-breadcrumbs";
 import {AppSidebar} from "@/components/app-sidebar";
 import {SidebarProvider} from "@/components/ui/sidebar";
 import {getSidebarStateFromCookie} from "@/lib/utils";
-import {createFileRoute, linkOptions, Outlet} from "@tanstack/react-router";
-import {BreadcrumbsData} from "@/components/tsr-breadcrumbs";
 import {TopSection} from "@/components/top-section";
 import {createZeroCache} from "@/lib/zero-cache";
 import {useAuthData} from "@/queries/session";
-import {ZeroProvider} from "@rocicorp/zero/react";
 import {allBoardsQuery} from "@/lib/zero-queries";
 import {CommandDialog} from "@/features/cmd-k/cmd-k";
 

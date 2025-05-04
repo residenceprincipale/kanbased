@@ -1,6 +1,6 @@
-import {Textarea} from "@/components/ui/textarea";
 import * as React from "react";
 import {useCallback} from "react";
+import {Textarea} from "@/components/ui/textarea";
 
 export const CustomizedTextarea = ({
   ref,
@@ -9,12 +9,12 @@ export const CustomizedTextarea = ({
   ref: React.Ref<HTMLTextAreaElement | null>;
 }) => {
   const onHeightChange = (input: HTMLTextAreaElement) => {
-    let prevAlignment = input.style.alignSelf;
-    let prevOverflow = input.style.overflow;
+    const prevAlignment = input.style.alignSelf;
+    const prevOverflow = input.style.overflow;
     // Firefox scroll position is lost when overflow: 'hidden' is applied so we skip applying it.
     // The measure/applied height is also incorrect/reset if we turn on and off
     // overflow: hidden in Firefox https://bugzilla.mozilla.org/show_bug.cgi?id=1787062
-    let isFirefox = "MozAppearance" in input.style;
+    const isFirefox = "MozAppearance" in input.style;
     if (!isFirefox) {
       input.style.overflow = "hidden";
     }

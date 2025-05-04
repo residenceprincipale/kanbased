@@ -1,8 +1,8 @@
+import {getRouteApi,useRouter} from "@tanstack/react-router";
+import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import {focusElementWithDelay} from "@/lib/helpers";
-import {useRouter} from "@tanstack/react-router";
-import {getRouteApi} from "@tanstack/react-router";
 import NoteEditor from "@/features/notes/note-editor";
-import {GetNoteQueryResult} from "@/lib/zero-queries";
+
 const routeApi = getRouteApi("/_authenticated/_layout/notes");
 
 export function Actions(props: {note: GetNoteQueryResult}) {

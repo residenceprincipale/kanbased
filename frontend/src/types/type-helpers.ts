@@ -1,4 +1,4 @@
-import {Query, Row, Schema, TableSchema} from "@rocicorp/zero";
+import type {Query, Row, Schema, TableSchema} from "@rocicorp/zero";
 
 export type ZeroQueryResult<
   T extends (...args: any) => TableSchema | Query<Schema, string, any>,

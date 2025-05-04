@@ -1,8 +1,8 @@
+import {SearchIcon} from "lucide-react";
 import {TsrBreadcrumbs} from "@/components/tsr-breadcrumbs";
 import {SidebarTrigger, useSidebar} from "@/components/ui/sidebar";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {Separator} from "@/components/ui/separator";
-import {SearchIcon} from "lucide-react";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {useAppContext} from "@/state/app-state";
 

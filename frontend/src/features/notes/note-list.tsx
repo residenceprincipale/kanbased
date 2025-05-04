@@ -1,7 +1,8 @@
-import {getRelativeTimeString} from "@/lib/utils";
 import {Link} from "@tanstack/react-router";
-import {GetNotesListQueryResult} from "@/lib/zero-queries";
 import {MoreHorizontal, Pencil, Trash2} from "lucide-react";
+import {toast} from "sonner";
+import type {GetNotesListQueryResult} from "@/lib/zero-queries";
+import {getRelativeTimeString} from "@/lib/utils";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {useZ} from "@/lib/zero-cache";
-import {toast} from "sonner";
 
 function NoteItem({
   note,

@@ -1,12 +1,13 @@
+import {EllipsisVertical} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useBoardModalControls} from "@/features/boards/board.state";
-import {EllipsisVertical} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 export function OtherActions() {
   const {openModal, closeModal} = useBoardModalControls();
 

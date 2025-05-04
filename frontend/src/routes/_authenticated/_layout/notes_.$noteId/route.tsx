@@ -1,10 +1,10 @@
 import {createFileRoute, linkOptions} from "@tanstack/react-router";
-import {ViewNote} from "@/features/notes/view-note";
-import {Actions} from "./-actions";
-import {useZ} from "@/lib/zero-cache";
-import {getNoteQuery} from "@/lib/zero-queries";
 import {useQuery} from "@rocicorp/zero/react";
 import {useEffect} from "react";
+import {Actions} from "./-actions";
+import {ViewNote} from "@/features/notes/view-note";
+import {useZ} from "@/lib/zero-cache";
+import {getNoteQuery} from "@/lib/zero-queries";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
   component: RouteComponent,

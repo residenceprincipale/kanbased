@@ -1,6 +1,6 @@
 import {HighlightStyle, syntaxHighlighting} from "@codemirror/language";
-import type {Extension} from "@codemirror/state";
 import {tags} from "@lezer/highlight";
+import type {Extension} from "@codemirror/state";
 
 export const themeExtension = (): Extension => {
   const extension = syntaxHighlighting(

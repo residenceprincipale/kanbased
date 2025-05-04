@@ -1,16 +1,20 @@
 "use client";
 
 import {
-  ChevronsUpDown,
-  LogOut,
-  MailWarning,
-  Lock,
   Building2,
-  Settings,
-  Plus,
-  UserRound,
+  ChevronsUpDown,
+  Lock,
+  LogOut,
   Mail,
+  MailWarning,
+  Plus,
+  Settings,
+  UserRound,
 } from "lucide-react";
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {Link} from "@tanstack/react-router";
+import {useQuery} from "@rocicorp/zero/react";
 import {handleAuthResponse} from "@/lib/utils";
 
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -28,17 +32,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {useAuthData} from "@/queries/session";
 import {authClient} from "@/lib/auth";
-import {useMutation} from "@tanstack/react-query";
 import {getOrigin} from "@/lib/constants";
 import {router} from "@/main";
-import {toast} from "sonner";
-import {Link} from "@tanstack/react-router";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {useQuery} from "@rocicorp/zero/react";
 import {getOrganizationListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import {Dialog, DialogTrigger} from "@/components/ui/dialog";
@@ -143,7 +143,7 @@ export function NavUser() {
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-0!"
               >
                 <Avatar className="h-8 w-8">
-                  <AvatarImage src={userData.image!} alt={userData.name} />
+                  <AvatarImage src={userData.image} alt={userData.name} />
                   <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
