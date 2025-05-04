@@ -19,13 +19,13 @@ export function CreateColumn(props: CreateColumnProps) {
   const z = useZ();
   const orgId = useActiveOrganizationId();
 
-  const handleSubmit: FormEventHandler = (e) => {
+  const handleSubmit: FormEventHandler = async (e) => {
     e.preventDefault();
     const formEl = e.target as HTMLFormElement;
     const fd = new FormData(formEl);
     const name = fd.get("column-name") as string;
 
-    z.mutate.columnsTable.insert({
+    await z.mutate.columnsTable.insert({
       id: createId(),
       boardId: data.boardId,
       name,
@@ -36,6 +36,8 @@ export function CreateColumn(props: CreateColumnProps) {
     });
 
     formEl.reset();
+
+    formEl.scrollIntoView({ inline: "start" });
   };
 
   const handleClose = () => {
