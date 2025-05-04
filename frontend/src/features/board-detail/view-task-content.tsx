@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Plus } from "lucide-react";
 
 export default function ViewTaskContent(props: {
   content: string;
@@ -60,13 +60,22 @@ export default function ViewTaskContent(props: {
 
       <div className="flex-1 h-full overflow-y-auto">
         <div className="max-w-[1000px] mx-auto">
-          <div
-            className={cn(
-              "prose dark:prose-invert h-full max-w-none",
-              props.wrapperClassName,
-            )}
-            dangerouslySetInnerHTML={{ __html: html }}
-          ></div>
+          {props.content.trim() ? (
+            <div
+              className={cn(
+                "prose dark:prose-invert h-full max-w-none",
+                props.wrapperClassName,
+              )}
+              dangerouslySetInnerHTML={{ __html: html }}
+            ></div>
+          ) : (
+            <div>
+              <Button variant="ghost" onClick={props.onEdit}>
+                <Plus />
+                Add description
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
