@@ -8,7 +8,10 @@
     "typecheck": "tsc --noEmit",
     "dev": "vite",
     "build": "vite build",
-    "start": "vite"
+    "start": "vite",
+    "lint": "eslint",
+    "format": "prettier",
+    "check": "prettier --write . && eslint --fix"
   },
   "dependencies": {
     "@codemirror/autocomplete": "^6.18.6",
@@ -46,8 +49,8 @@
     "ulid": "^3.0.0"
   },
   "devDependencies": {
+    "@tanstack/eslint-config": "^0.1.0",
     "@tanstack/router-plugin": "^1.79.0",
-    "@types/marked": "^6.0.0",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
     "@vitejs/plugin-react": "^4.3.2",
@@ -55,7 +58,8 @@
     "tailwindcss": "^4.1.4",
     "typescript": "^5.6.3",
     "vite": "^5.4.8",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^4.3.2",
+    "web-vitals": "^4.2.4"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
