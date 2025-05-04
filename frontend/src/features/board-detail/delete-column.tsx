@@ -23,10 +23,13 @@ export function DeleteColumn({
     <button
       onClick={handleDelete}
       type="button"
-      className={cn(className, "text-destructive focus:text-destructive")}
+      className={cn(
+        className,
+        "!text-destructive focus:text-destructive focus:bg-destructive/10",
+      )}
       {...rest}
     >
-      <Trash2 className="mr-2 h-4 w-4" />
+      <Trash2 className="mr-2 h-4 w-4 text-destructive" />
       Delete Column
     </button>
   );
