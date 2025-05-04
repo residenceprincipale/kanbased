@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { EllipsisVertical } from "lucide-react";
+import { EllipsisVertical, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -51,8 +51,9 @@ export function OtherActions({
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             onClick={handleBoardDelete}
-            className="text-red-10! focus:bg-red-3! dark:focus:bg-red-2!"
+            className="!text-destructive focus:bg-destructive/10"
           >
+            <Trash2 className="mr-2 h-4 w-4 text-destructive" />
             Delete board
           </DropdownMenuItem>
         </DropdownMenuContent>

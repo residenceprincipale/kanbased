@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, Plus } from "lucide-react";
+import { EllipsisVertical, Plus, Trash2 } from "lucide-react";
 
 export default function ViewTaskContent(props: {
   content: string;
@@ -50,8 +50,9 @@ export default function ViewTaskContent(props: {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               onClick={props.onDelete}
-              className="text-red-10! focus:bg-red-3! dark:focus:bg-red-2!"
+              className="!text-destructive focus:bg-destructive/10"
             >
+              <Trash2 className="mr-2 h-4 w-4 text-destructive" />
               Delete task
             </DropdownMenuItem>
           </DropdownMenuContent>

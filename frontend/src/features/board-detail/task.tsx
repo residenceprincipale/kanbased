@@ -99,9 +99,9 @@ function ViewTask(props: {
                   e.stopPropagation();
                   handleDeleteTask();
                 }}
-                className="text-destructive focus:text-destructive"
+                className="!text-destructive focus:bg-destructive/10"
               >
-                <Trash2 className="mr-2 h-4 w-4" />
+                <Trash2 className="mr-2 h-4 w-4 text-destructive" />
                 Delete Task
               </DropdownMenuItem>
             </DropdownMenuContent>

@@ -56,7 +56,7 @@ function BoardItem({ board }: { board: GetBoardsListQueryResult[number] }) {
                   Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
-                  className="text-red-10! focus:bg-red-3! dark:focus:bg-red-2!"
+                  className="!text-destructive focus:bg-destructive/10"
                   onClick={(e) => {
                     e.preventDefault();
                     openModal({
@@ -67,7 +67,7 @@ function BoardItem({ board }: { board: GetBoardsListQueryResult[number] }) {
                     });
                   }}
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
+                  <Trash2 className="mr-2 h-4 w-4 text-destructive" />
                   Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
