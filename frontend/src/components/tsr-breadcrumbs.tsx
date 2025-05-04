@@ -1,6 +1,6 @@
 import {Fragment} from "react";
 import {Link, isMatch, useMatches} from "@tanstack/react-router";
-import type { LinkProps} from "@tanstack/react-router";
+import type {LinkProps} from "@tanstack/react-router";
 import {
   Breadcrumb,
   BreadcrumbItem,

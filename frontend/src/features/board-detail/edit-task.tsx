@@ -18,7 +18,7 @@ export function EditTask(props: EditTaskProps) {
     props.onComplete();
   });
 
-  const handleSubmit = async () => {
+  const handleSubmit = () => {
     z.mutate.tasksTable.update({
       id: props.task.id,
       name: textAreaRef.current!.value,

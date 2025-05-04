@@ -1,7 +1,7 @@
 "use client";
 
 import {Toaster as Sonner} from "sonner";
-import type { ToasterProps} from "sonner";
+import type {ToasterProps} from "sonner";
 import {useAppContext} from "@/state/app-state";
 
 const Toaster = ({...props}: ToasterProps) => {

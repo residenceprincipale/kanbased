@@ -32,7 +32,7 @@ export const queryClient = new QueryClient({
           // TODO: Probably not a good idea to give my email here.
           // TODO: Show only user viewable error messages. This needs to handled from backend.
           const message =
-            typeof error?.message === "string"
+            typeof error.message === "string"
               ? error.message
               : "An unexpected error occurred, please try again later or contact us at irshathv2@gmail.com";
           toast.error(message);

@@ -17,8 +17,11 @@ import {authClient} from "@/lib/auth";
 import {Spinner} from "@/components/ui/spinner";
 import {getOrigin} from "@/lib/constants";
 import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
-import {cn,handleAuthResponse} from "@/lib/utils";
-import {useGithubLoginMutation,useGoogleLoginMutation} from "@/queries/authentication";
+import {cn, handleAuthResponse} from "@/lib/utils";
+import {
+  useGithubLoginMutation,
+  useGoogleLoginMutation,
+} from "@/queries/authentication";
 import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/signup")({
@@ -48,7 +51,7 @@ function SignUp() {
 
       return handleAuthResponse(response);
     },
-    onSuccess: async () => {
+    onSuccess: () => {
       toast("A verification email has been sent to your email address.", {
         description: "Please verify your email.",
       });
@@ -65,7 +68,7 @@ function SignUp() {
     callbackURL,
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;
@@ -87,11 +90,11 @@ function SignUp() {
     });
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
     googleLoginMutation.mutate();
   };
 
-  const handleGithubLogin = async () => {
+  const handleGithubLogin = () => {
     githubLoginMutation.mutate();
   };
 

@@ -1,8 +1,8 @@
 "use client";
 
-import {ChevronRight } from "lucide-react";
+import {ChevronRight} from "lucide-react";
 import {Link} from "@tanstack/react-router";
-import type { LinkProps} from "@tanstack/react-router";
+import type {LinkProps} from "@tanstack/react-router";
 import type {LucideIcon} from "lucide-react";
 
 import {

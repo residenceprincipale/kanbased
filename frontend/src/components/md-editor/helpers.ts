@@ -7,7 +7,7 @@ import {
   keymap,
   placeholder,
 } from "@codemirror/view";
-import { EditorState} from "@codemirror/state";
+import {EditorState} from "@codemirror/state";
 import {bracketMatching, foldKeymap, indentOnInput} from "@codemirror/language";
 import {defaultKeymap, history, historyKeymap} from "@codemirror/commands";
 import {highlightSelectionMatches, searchKeymap} from "@codemirror/search";
@@ -18,7 +18,9 @@ import {
 } from "@codemirror/autocomplete";
 import type {Extension} from "@codemirror/state";
 
-export const basicExtensions = (params: {placeholder: string}): Array<Extension> => [
+export const basicExtensions = (params: {
+  placeholder: string;
+}): Array<Extension> => [
   highlightActiveLineGutter(),
   highlightSpecialChars(),
   history(),

@@ -52,7 +52,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
         onOpenAutoFocus={(e) => {
           e.preventDefault();
           const closeButton = document.querySelector("#dialog-close-button");
-          (closeButton as HTMLElement)?.focus();
+          (closeButton as HTMLElement | null)?.focus();
         }}
         onCloseAutoFocus={(e) => {
           e.preventDefault();

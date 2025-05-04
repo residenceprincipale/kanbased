@@ -1,9 +1,13 @@
-import {useMutation, useQueryClient,useSuspenseQuery} from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import {createFileRoute, useRouter} from "@tanstack/react-router";
 import {toast} from "sonner";
 import {Building2, Check, Clock, Shield, User, X} from "lucide-react";
 import {authClient} from "@/lib/auth";
-import {cn, getRelativeTimeString,handleAuthResponse} from "@/lib/utils";
+import {cn, getRelativeTimeString, handleAuthResponse} from "@/lib/utils";
 import {Button} from "@/components/ui/button";
 import {
   Card,

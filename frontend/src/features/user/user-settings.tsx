@@ -14,7 +14,7 @@ import {Spinner} from "@/components/ui/spinner";
 
 export function UserSettings() {
   const userData = useAuthData();
-  const defaultUserImage = userData.image ?? undefined;
+  const defaultUserImage = userData.image;
   const [previewUrl, setPreviewUrl] = useState(defaultUserImage);
   const uploadImageMutation = useUploadUserImageMutation();
   const updateUserMutation = useUpdateUserMutation();
@@ -84,7 +84,7 @@ export function UserSettings() {
                 <Avatar className="h-24 w-24">
                   <AvatarImage src={previewUrl} alt="Profile picture" />
                   <AvatarFallback>
-                    {userData.name[0]} {userData.name?.[1]}
+                    {userData.name[0]} {userData.name[1]}
                   </AvatarFallback>
                 </Avatar>
               </Label>

@@ -10,7 +10,7 @@ import {useZ} from "@/lib/zero-cache";
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
 
-  loader: async () => {
+  loader: () => {
     return {
       breadcrumbs: linkOptions([
         {

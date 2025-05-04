@@ -1,4 +1,4 @@
-import { useState} from "react";
+import {useState} from "react";
 import {toast} from "sonner";
 import type {FormEventHandler} from "react";
 import type {EditBoardModal} from "@/features/boards/board.state";
@@ -56,7 +56,7 @@ export function EditBoard(props: EditBoardModal) {
               placeholder="eg: work board"
               required
               value={boardName}
-              onChange={(e) => setBoardName(e.target.value ?? "")}
+              onChange={(e) => setBoardName(e.target.value)}
             />
             <DialogDescription className="text-xs!">
               Enter a unique name that reflects the purpose of this board.

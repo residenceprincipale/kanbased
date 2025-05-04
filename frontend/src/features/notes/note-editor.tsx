@@ -1,4 +1,4 @@
-import {Suspense, useRef,useState} from "react";
+import {Suspense, useRef, useState} from "react";
 import {toast} from "sonner";
 import {flushSync} from "react-dom";
 import {Expand, Eye, Fullscreen, Minimize2, Pencil, Save} from "lucide-react";
@@ -167,7 +167,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                 if (updatedTitle !== title) {
                   setIsDirty(true);
                 }
-                editorRef?.current?.focus();
+                editorRef.current?.focus();
               }}
             />
           </DialogTitle>

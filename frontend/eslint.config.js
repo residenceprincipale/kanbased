@@ -2,4 +2,12 @@
 
 import {tanstackConfig} from "@tanstack/eslint-config";
 
-export default [...tanstackConfig];
+const config = [
+  ...tanstackConfig,
+  {
+    rules: {
+      "no-shadow": "off",
+    },
+  },
+];
+export default config;

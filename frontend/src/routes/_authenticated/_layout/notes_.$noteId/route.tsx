@@ -9,7 +9,7 @@ import {getNoteQuery} from "@/lib/zero-queries";
 export const Route = createFileRoute("/_authenticated/_layout/notes_/$noteId")({
   component: RouteComponent,
 
-  loader: async (ctx) => {
+  loader: (ctx) => {
     return {
       breadcrumbs: linkOptions([
         {

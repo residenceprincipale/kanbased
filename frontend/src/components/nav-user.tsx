@@ -113,7 +113,7 @@ export function NavUser() {
     });
   };
 
-  const handleResetPassword = async () => {
+  const handleResetPassword = () => {
     toast.promise(() => forgotPasswordMutation.mutateAsync(), {
       loading: "Sending reset password email...",
       success:

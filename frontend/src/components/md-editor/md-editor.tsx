@@ -1,3 +1,5 @@
+import "./theme.css";
+
 import {useEffect, useImperativeHandle, useRef, useState} from "react";
 import {EditorView, keymap} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
@@ -6,7 +8,6 @@ import {Vim, getCM, vim} from "@replit/codemirror-vim";
 import {basicExtensions} from "@/components/md-editor/helpers";
 import {indentWithTab} from "@codemirror/commands";
 
-import "./theme.css";
 import {themeExtension} from "./theme";
 import {cn} from "@/lib/utils";
 
@@ -143,9 +144,9 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
 
     // Set up initial mode
     if (props.defaultMode === "vim") {
-      const cm = getCM(view)!;
+      const cm = getCM(view);
 
-      cm.on("vim-mode-change", (data: {mode: VimMode}) => {
+      cm?.on("vim-mode-change", (data: {mode: VimMode}) => {
         setVimMode(data.mode);
       });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import {Link, createFileRoute,useRouter} from "@tanstack/react-router";
+import {Link, createFileRoute, useRouter} from "@tanstack/react-router";
 import {useMutation} from "@tanstack/react-query";
 import {useState} from "react";
 import {Eye, EyeOff} from "lucide-react";
@@ -19,7 +19,10 @@ import {authClient} from "@/lib/auth";
 import {Spinner} from "@/components/ui/spinner";
 import {getOrigin} from "@/lib/constants";
 import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
-import {useGithubLoginMutation,useGoogleLoginMutation} from "@/queries/authentication";
+import {
+  useGithubLoginMutation,
+  useGoogleLoginMutation,
+} from "@/queries/authentication";
 import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/login")({
@@ -39,7 +42,7 @@ function SignIn() {
 
   useLoggedInRedirect();
 
-  const callbackURL = search?.redirect
+  const callbackURL = search.redirect
     ? `${getOrigin()}${search.redirect}`
     : getOrigin();
 
@@ -49,7 +52,7 @@ function SignIn() {
       return handleAuthResponse(res);
     },
     onSuccess: () => {
-      router.history.push(search?.redirect ?? "/");
+      router.history.push(search.redirect ?? "/");
     },
   });
 
@@ -61,9 +64,7 @@ function SignIn() {
     callbackURL,
   });
 
-  const handleUserPasswordLogin = async (
-    e: React.FormEvent<HTMLFormElement>,
-  ) => {
+  const handleUserPasswordLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const email = formData.get("email") as string;

@@ -1,6 +1,6 @@
 import {Zero} from "@rocicorp/zero";
 import {useZero} from "@rocicorp/zero/react";
-import { schema} from "../../../backend/zero-schema.gen";
+import {schema} from "../../../backend/zero-schema.gen";
 import type {Schema} from "../../../backend/zero-schema.gen";
 import {queryClient} from "@/lib/query-client";
 import {authQueryOptions} from "@/lib/query-options-factory";
@@ -12,10 +12,12 @@ export function createZeroCache({userId}: {userId: string}) {
     auth: async (status) => {
       const authData = getAuthData(queryClient);
 
+      // @typescript-eslint/no-unnecessary-condition
       if (!authData?.encodedToken || status === "invalid-token") {
         await queryClient.invalidateQueries(authQueryOptions);
       }
 
+      // @typescript-eslint/no-unnecessary-condition
       return getAuthData(queryClient)?.encodedToken;
     },
     server: import.meta.env.CLIENT_PUBLIC_SERVER,

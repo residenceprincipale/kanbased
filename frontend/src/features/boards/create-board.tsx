@@ -1,5 +1,5 @@
 import {Link} from "@tanstack/react-router";
-import { useState} from "react";
+import {useState} from "react";
 import {toast} from "sonner";
 import type {FormEventHandler} from "react";
 import type {CreateBoardModal} from "@/features/boards/board.state";
@@ -74,7 +74,7 @@ export function CreateBoard(props: CreateBoardModal) {
               placeholder="eg: work board"
               required
               value={boardName}
-              onChange={(e) => setBoardName(e.target.value ?? "")}
+              onChange={(e) => setBoardName(e.target.value)}
             />
             <DialogDescription className="text-xs!">
               Enter a unique name that reflects the purpose of this board.

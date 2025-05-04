@@ -1,4 +1,4 @@
-import {getRouteApi,useRouter} from "@tanstack/react-router";
+import {getRouteApi, useRouter} from "@tanstack/react-router";
 import {TaskDetail} from "@/features/board-detail/task-detail";
 
 const routeApi = getRouteApi("/_authenticated/_layout/boards_/$slug");
@@ -19,9 +19,7 @@ export function TaskDetailPage() {
     });
 
     setTimeout(() => {
-      const el = document.querySelector(
-        `#task-${taskId}`,
-      );
+      const el = document.querySelector(`#task-${taskId}`);
       el?.focus();
     }, 100);
   };

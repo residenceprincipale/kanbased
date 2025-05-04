@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
       taskId: typeof search.taskId === "string" ? search.taskId : undefined,
     };
   },
-  loader: async (ctx) => {
+  loader: (ctx) => {
     return {
       breadcrumbs: linkOptions([
         {

@@ -1,4 +1,4 @@
-import {getRouteApi,useRouter} from "@tanstack/react-router";
+import {getRouteApi, useRouter} from "@tanstack/react-router";
 import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import {focusElementWithDelay} from "@/lib/helpers";
 import NoteEditor from "@/features/notes/note-editor";

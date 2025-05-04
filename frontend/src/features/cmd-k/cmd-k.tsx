@@ -32,7 +32,10 @@ export function CommandDialog() {
   const [boards] = useQuery(allBoardsQuery(z));
 
   const allTasks = boards.reduce(
-    (allTasks: Array<{id: string; name: string; slug: string}>, currentBoard) => {
+    (
+      allTasks: Array<{id: string; name: string; slug: string}>,
+      currentBoard,
+    ) => {
       const tasks = currentBoard.columns.flatMap((column) =>
         column.tasks.map((task) => ({
           id: task.id,

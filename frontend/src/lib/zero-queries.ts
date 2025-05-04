@@ -6,17 +6,17 @@ export function getBoardsListQuery(z: Z) {
   return boardsQuery;
 }
 
-export type GetBoardsListQueryResult = Array<ZeroQueryResult<
-  typeof getBoardsListQuery
->>;
+export type GetBoardsListQueryResult = Array<
+  ZeroQueryResult<typeof getBoardsListQuery>
+>;
 
 export function getNotesListQuery(z: Z) {
   return z.query.notesTable.where("deletedAt", "IS", null);
 }
 
-export type GetNotesListQueryResult = Array<ZeroQueryResult<
-  typeof getNotesListQuery
->>;
+export type GetNotesListQueryResult = Array<
+  ZeroQueryResult<typeof getNotesListQuery>
+>;
 
 export function getNoteQuery(z: Z, noteId: string) {
   return z.query.notesTable.where("id", noteId).one();
@@ -59,9 +59,9 @@ export function getOrganizationListQuery(z: Z) {
   return z.query.organizationsTable;
 }
 
-export type GetOrganizationListQueryResult = Array<ZeroQueryResult<
-  typeof getOrganizationListQuery
->>;
+export type GetOrganizationListQueryResult = Array<
+  ZeroQueryResult<typeof getOrganizationListQuery>
+>;
 
 export function allBoardsQuery(z: Z) {
   return z.query.boardsTable
@@ -73,4 +73,6 @@ export function allBoardsQuery(z: Z) {
     );
 }
 
-export type AllBoardsQueryResult = Array<ZeroQueryResult<typeof allBoardsQuery>>;
+export type AllBoardsQueryResult = Array<
+  ZeroQueryResult<typeof allBoardsQuery>
+>;

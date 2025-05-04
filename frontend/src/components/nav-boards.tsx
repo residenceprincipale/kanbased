@@ -3,7 +3,7 @@
 import {KanbanSquare} from "lucide-react";
 import {linkOptions} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
-import type {NavGroup,NavGroupType} from "@/components/nav-group";
+import type {NavGroup, NavGroupType} from "@/components/nav-group";
 import {SidebarGroup, SidebarMenu} from "@/components/ui/sidebar";
 import {useZ} from "@/lib/zero-cache";
 import {getBoardsListQuery} from "@/lib/zero-queries";

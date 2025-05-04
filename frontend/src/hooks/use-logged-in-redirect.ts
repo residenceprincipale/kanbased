@@ -8,6 +8,7 @@ export function useLoggedInRedirect() {
   useEffect(() => {
     fetchSession()
       .then((data) => {
+        // @typescript-eslint/no-unnecessary-condition
         if (data?.session) {
           router.navigate({to: "/"});
         }

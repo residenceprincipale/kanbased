@@ -1,12 +1,11 @@
-import {
-  Draggable
-} from "@hello-pangea/dnd";
+import {Draggable} from "@hello-pangea/dnd";
 import {MoreVertical, Pencil, Trash2} from "lucide-react";
 import {memo, useCallback, useState} from "react";
 import {Link} from "@tanstack/react-router";
 import type {
   DraggableProvided,
-  DraggableStateSnapshot} from "@hello-pangea/dnd";
+  DraggableStateSnapshot,
+} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {Button} from "@/components/ui/button";
 import {EditTask} from "@/features/board-detail/edit-task";

@@ -6,6 +6,7 @@ export function markdownToHtml(markdown: string): string {
 
   const sanitizedContent = DOMPurify.sanitize(markdown);
   const escapedContent = sanitizedContent.replace(
+    // no-misleading-character-class
     /^[\u200B\u200C\u200D\u200E\u200F\uFEFF]/,
     "",
   );

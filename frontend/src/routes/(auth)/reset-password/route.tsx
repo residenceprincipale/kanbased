@@ -1,5 +1,5 @@
 import * as React from "react";
-import {Link, createFileRoute,useRouter} from "@tanstack/react-router";
+import {Link, createFileRoute, useRouter} from "@tanstack/react-router";
 import {toast} from "sonner";
 import {useMutation} from "@tanstack/react-query";
 import {Button, buttonVariants} from "@/components/ui/button";
@@ -44,7 +44,7 @@ function ResetPassword() {
     );
   }
 
-  const handleResetPassword = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleResetPassword = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.target as HTMLFormElement);
     const newPassword = formData.get("password") as string;

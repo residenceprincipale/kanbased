@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated")({
 
     if (
       hasNoActiveOrganization &&
-      !location.pathname?.includes("/new-organization")
+      !location.pathname.includes("/new-organization")
     ) {
       throw redirect({
         to: "/new-organization",
@@ -55,7 +55,7 @@ export const Route = createFileRoute("/_authenticated")({
       <div className="h-screen flex items-center justify-center">
         <div className="max-w-96">
           <p className="text-destructive text-2xl font-bold mb-2">
-            {error?.error?.message}
+            {error.error.message}
           </p>
           <p className="text-destructive">
             Something went wrong, Try refreshing the page.
@@ -103,7 +103,7 @@ function RouteComponent() {
 
   if (
     hasNoActiveOrganization &&
-    !location.pathname?.includes("/new-organization")
+    !location.pathname.includes("/new-organization")
   ) {
     router.navigate({
       to: "/new-organization",

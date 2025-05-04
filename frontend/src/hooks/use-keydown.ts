@@ -1,4 +1,4 @@
-import { useEffect} from "react";
+import {useEffect} from "react";
 import type {DependencyList} from "react";
 import {useEffectEvent} from "@/hooks/use-event";
 

@@ -1,10 +1,6 @@
 import {useCallback, useRef} from "react";
-import {
-  DragDropContext,
-  Droppable
-} from "@hello-pangea/dnd";
-import type {
-  OnDragEndResponder} from "@hello-pangea/dnd";
+import {DragDropContext, Droppable} from "@hello-pangea/dnd";
+import type {OnDragEndResponder} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {Column} from "@/features/board-detail/column";
 import {CreateColumn} from "@/features/board-detail/create-column";
@@ -42,7 +38,7 @@ export function Columns({
     });
   }, []);
 
-  const handleDragEnd: OnDragEndResponder = async (e) => {
+  const handleDragEnd: OnDragEndResponder = (e) => {
     if (!e.destination) {
       return;
     }

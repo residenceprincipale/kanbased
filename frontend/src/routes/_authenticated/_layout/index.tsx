@@ -1,4 +1,4 @@
-import {Link,createFileRoute} from "@tanstack/react-router";
+import {Link, createFileRoute} from "@tanstack/react-router";
 import {useAuthData} from "@/queries/session";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";

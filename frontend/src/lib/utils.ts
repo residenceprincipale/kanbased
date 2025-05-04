@@ -1,4 +1,4 @@
-import { clsx} from "clsx";
+import {clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
 import {ulid} from "ulid";
 import type {ClassValue} from "clsx";
@@ -65,22 +65,22 @@ type Success<T> = {
   error: null;
 };
 
-type Failure<E> = {
+type Failure<ErrorType> = {
   data: null;
-  error: E;
+  error: ErrorType;
 };
 
-type Result<T, E = Error> = Success<T> | Failure<E>;
+type Result<T, Err = Error> = Success<T> | Failure<Err>;
 
 // Main wrapper function
-export async function tryCatch<T, E = Error>(
+export async function tryCatch<T, Err = Error>(
   promise: Promise<T>,
-): Promise<Result<T, E>> {
+): Promise<Result<T, Err>> {
   try {
     const data = await promise;
     return {data, error: null};
   } catch (error) {
-    return {data: null, error: error as E};
+    return {data: null, error: error as Err};
   }
 }
 

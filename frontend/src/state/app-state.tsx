@@ -13,7 +13,7 @@ const AppContext = createContext<AppContextValues>({} as AppContextValues);
 
 export function AppContextProvider(props: React.PropsWithChildren) {
   const [theme, setTheme] = useState<Theme>(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme;
+    const savedTheme = localStorage.getItem("theme") as Theme | null;
     return savedTheme || "system";
   });
 

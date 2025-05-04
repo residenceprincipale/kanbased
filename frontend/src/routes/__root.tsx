@@ -5,7 +5,7 @@ import {AppContextProvider} from "@/state/app-state";
 import {Toaster} from "@/components/ui/sonner";
 
 const TanStackRouterDevtools =
-  // @ts-ignore
+  // @ts-ignore - This is a workaround to avoid the devtools from being bundled in production
   process.env.NODE_ENV === "production"
     ? () => null // Render nothing in production
     : lazy(() =>

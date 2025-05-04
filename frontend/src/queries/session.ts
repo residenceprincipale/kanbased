@@ -1,9 +1,5 @@
-import {
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import type {
-  QueryClient} from "@tanstack/react-query";
+import {useQueryClient, useSuspenseQuery} from "@tanstack/react-query";
+import type {QueryClient} from "@tanstack/react-query";
 import {authClient} from "@/lib/auth";
 import {authQueryOptions} from "@/lib/query-options-factory";
 import {AuthError} from "@/lib/utils";
@@ -15,6 +11,7 @@ export async function fetchSession() {
     throw error;
   }
 
+  // @typescript-eslint/no-unnecessary-condition
   if (!data) {
     throw new AuthError({
       status: 401,

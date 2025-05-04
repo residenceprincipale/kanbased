@@ -1,5 +1,5 @@
 import {useBlocker} from "@tanstack/react-router";
-import {useEffect,useState} from "react";
+import {useEffect, useState} from "react";
 import type {
   CodeMirrorEditorRef,
   EditorMode,
@@ -53,6 +53,8 @@ export function useMarkdownEditorPreviewToggle({
       focusEditor();
     } else if (value === "preview") {
       updateMarkdownToHtml();
+    } else {
+      throw new Error(`Invalid mode: ${value}`);
     }
   };
 
@@ -68,6 +70,8 @@ export function useMarkdownEditorPreviewToggle({
       focusEditor();
     } else if (newMode === "preview") {
       updateMarkdownToHtml();
+    } else {
+      throw new Error(`Invalid mode: ${newMode}`);
     }
   };
 

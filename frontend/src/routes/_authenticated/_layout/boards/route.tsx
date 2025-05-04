@@ -10,7 +10,7 @@ import {getBoardsListQuery} from "@/lib/zero-queries";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
-  loader: async () => {
+  loader: () => {
     return {
       breadcrumbs: linkOptions([
         {
@@ -34,7 +34,7 @@ function BoardsPage() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold tracking-tight">
-                Boards ({boards?.length || 0})
+                Boards ({boards.length || 0})
               </h1>
               <p className="text-muted-foreground mt-1">
                 Manage and organize your boards
@@ -47,7 +47,7 @@ function BoardsPage() {
             </div>
           </div>
 
-          {boards?.length === 0 ? (
+          {boards.length === 0 ? (
             <div className="text-center py-12 border rounded-lg bg-muted/10">
               <h1 className="text-xl font-bold mb-1">No boards yet</h1>
               <p className="text-muted-foreground mb-4 text-sm">

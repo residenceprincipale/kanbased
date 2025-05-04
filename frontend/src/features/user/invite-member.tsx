@@ -4,7 +4,6 @@ import {useRef} from "react";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {useAuthData} from "@/queries/session";
 import {authClient} from "@/lib/auth";
 import {handleAuthResponse} from "@/lib/utils";
 import {Spinner} from "@/components/ui/spinner";
@@ -39,7 +38,7 @@ export function InviteMemberDialog() {
     },
   });
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
