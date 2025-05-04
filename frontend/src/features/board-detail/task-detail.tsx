@@ -54,7 +54,10 @@ export function TaskDetail(props: { onClose: () => void; taskId: string }) {
           const closeButton = document.querySelector("#dialog-close-button");
           (closeButton as HTMLElement)?.focus();
         }}
-        onCloseAutoFocus={(e) => e.preventDefault()}
+        onCloseAutoFocus={(e) => {
+          e.preventDefault();
+          document.body.style.pointerEvents = "";
+        }}
         onEscapeKeyDown={(e) => {
           const vimMode = editorRef.current?.getVimMode();
 
