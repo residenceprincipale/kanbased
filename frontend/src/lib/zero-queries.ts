@@ -76,3 +76,23 @@ export function allBoardsQuery(z: Z) {
 export type AllBoardsQueryResult = Array<
   ZeroQueryResult<typeof allBoardsQuery>
 >;
+
+export function getOrganizationQuery(z: Z, slug: string) {
+  return z.query.organizationsTable.where("slug", slug).one();
+}
+
+export type GetOrganizationQueryResult = ZeroQueryResult<
+  typeof getOrganizationQuery
+>;
+
+let didPreloadAllBoards = false;
+
+export function preloadAllBoards(z: Z) {
+  if (didPreloadAllBoards) {
+    return;
+  }
+
+  didPreloadAllBoards = true;
+
+  return allBoardsQuery(z).preload({ttl: "forever"});
+}

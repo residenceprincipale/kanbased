@@ -20,6 +20,7 @@ import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-pas
 import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
 import { Route as authForgotPasswordRouteImport } from './routes/(auth)/forgot-password/route'
 import { Route as AuthenticatedLayoutIndexImport } from './routes/_authenticated/_layout/index'
+import { Route as AuthenticatedWorkspaceSlugRouteImport } from './routes/_authenticated/workspace/$slug/route'
 import { Route as AuthenticatedAcceptInvitationInvitationIdRouteImport } from './routes/_authenticated/accept-invitation/$invitationId/route'
 import { Route as AuthenticatedLayoutNotesRouteImport } from './routes/_authenticated/_layout/notes/route'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
@@ -82,6 +83,13 @@ const AuthenticatedLayoutIndexRoute = AuthenticatedLayoutIndexImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedLayoutRoute,
 } as any)
+
+const AuthenticatedWorkspaceSlugRouteRoute =
+  AuthenticatedWorkspaceSlugRouteImport.update({
+    id: '/workspace/$slug',
+    path: '/workspace/$slug',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 const AuthenticatedAcceptInvitationInvitationIdRouteRoute =
   AuthenticatedAcceptInvitationInvitationIdRouteImport.update({
@@ -199,6 +207,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAcceptInvitationInvitationIdRouteImport
       parentRoute: typeof AuthenticatedImport
     }
+    '/_authenticated/workspace/$slug': {
+      id: '/_authenticated/workspace/$slug'
+      path: '/workspace/$slug'
+      fullPath: '/workspace/$slug'
+      preLoaderRoute: typeof AuthenticatedWorkspaceSlugRouteImport
+      parentRoute: typeof AuthenticatedImport
+    }
     '/_authenticated/_layout/': {
       id: '/_authenticated/_layout/'
       path: '/'
@@ -251,6 +266,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRoute
   AuthenticatedLayoutRoute: typeof AuthenticatedLayoutRouteWithChildren
   AuthenticatedAcceptInvitationInvitationIdRouteRoute: typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
+  AuthenticatedWorkspaceSlugRouteRoute: typeof AuthenticatedWorkspaceSlugRouteRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -260,6 +276,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLayoutRoute: AuthenticatedLayoutRouteWithChildren,
   AuthenticatedAcceptInvitationInvitationIdRouteRoute:
     AuthenticatedAcceptInvitationInvitationIdRouteRoute,
+  AuthenticatedWorkspaceSlugRouteRoute: AuthenticatedWorkspaceSlugRouteRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
@@ -277,6 +294,7 @@ export interface FileRoutesByFullPath {
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/notes': typeof AuthenticatedLayoutNotesRouteRoute
   '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
+  '/workspace/$slug': typeof AuthenticatedWorkspaceSlugRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -293,6 +311,7 @@ export interface FileRoutesByTo {
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/notes': typeof AuthenticatedLayoutNotesRouteRoute
   '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
+  '/workspace/$slug': typeof AuthenticatedWorkspaceSlugRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
   '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -311,6 +330,7 @@ export interface FileRoutesById {
   '/_authenticated/_layout/boards': typeof AuthenticatedLayoutBoardsRouteRoute
   '/_authenticated/_layout/notes': typeof AuthenticatedLayoutNotesRouteRoute
   '/_authenticated/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
+  '/_authenticated/workspace/$slug': typeof AuthenticatedWorkspaceSlugRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
   '/_authenticated/_layout/boards_/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
   '/_authenticated/_layout/notes_/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
@@ -329,6 +349,7 @@ export interface FileRouteTypes {
     | '/boards'
     | '/notes'
     | '/accept-invitation/$invitationId'
+    | '/workspace/$slug'
     | '/'
     | '/boards/$slug'
     | '/notes/$noteId'
@@ -344,6 +365,7 @@ export interface FileRouteTypes {
     | '/boards'
     | '/notes'
     | '/accept-invitation/$invitationId'
+    | '/workspace/$slug'
     | '/'
     | '/boards/$slug'
     | '/notes/$noteId'
@@ -360,6 +382,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_layout/boards'
     | '/_authenticated/_layout/notes'
     | '/_authenticated/accept-invitation/$invitationId'
+    | '/_authenticated/workspace/$slug'
     | '/_authenticated/_layout/'
     | '/_authenticated/_layout/boards_/$slug'
     | '/_authenticated/_layout/notes_/$noteId'
@@ -405,7 +428,8 @@ export const routeTree = rootRoute
         "/_authenticated/new-organization",
         "/_authenticated/settings",
         "/_authenticated/_layout",
-        "/_authenticated/accept-invitation/$invitationId"
+        "/_authenticated/accept-invitation/$invitationId",
+        "/_authenticated/workspace/$slug"
       ]
     },
     "/(auth)/forgot-password": {
@@ -449,6 +473,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/accept-invitation/$invitationId": {
       "filePath": "_authenticated/accept-invitation/$invitationId/route.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/workspace/$slug": {
+      "filePath": "_authenticated/workspace/$slug/route.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/_layout/": {
