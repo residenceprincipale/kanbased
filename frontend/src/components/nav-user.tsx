@@ -3,6 +3,7 @@
 import {ChevronsUpDown, Lock, LogOut, Settings} from "lucide-react";
 import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
+import {Link} from "@tanstack/react-router";
 import {handleAuthResponse} from "@/lib/utils";
 
 import {
@@ -24,7 +25,6 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import {Dialog} from "@/components/ui/dialog";
-import {Link} from "@tanstack/react-router";
 import UserAvatar from "@/components/user-avatar";
 
 export function NavUser() {

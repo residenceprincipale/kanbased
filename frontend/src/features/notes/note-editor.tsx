@@ -2,6 +2,7 @@ import {Suspense, useRef, useState} from "react";
 import {toast} from "sonner";
 import {flushSync} from "react-dom";
 import {Expand, Eye, Fullscreen, Minimize2, Pencil, Save} from "lucide-react";
+import {useHotkeys} from "react-hotkeys-hook";
 import type {
   CodeMirrorEditorRefData,
   EditorMode,
@@ -27,7 +28,6 @@ import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
-import {useHotkeys} from "react-hotkeys-hook";
 
 type CommonProps = {
   afterSave: (data: {noteId: string}) => void;

@@ -1,6 +1,9 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {useQuery} from "@rocicorp/zero/react";
 import {toast} from "sonner";
+import {ArrowDown, ArrowUp} from "lucide-react";
+import {useHotkeys} from "react-hotkeys-hook";
+import {Link, useNavigate, useParams} from "@tanstack/react-router";
 import type {CodeMirrorEditorRefData} from "@/components/md-editor/md-editor";
 import {
   Dialog,
@@ -17,11 +20,8 @@ import {Spinner} from "@/components/ui/spinner";
 import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
 import {Button, buttonVariants} from "@/components/ui/button";
-import {ArrowDown, ArrowUp} from "lucide-react";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
-import {useHotkeys} from "react-hotkeys-hook";
-import {Link, useNavigate, useParams} from "@tanstack/react-router";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/edit-task-content"),

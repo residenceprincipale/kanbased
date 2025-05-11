@@ -1,6 +1,6 @@
 import {useMemo} from "react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {getInitials, getColorFromName} from "@/lib/helpers";
+import {getColorFromName, getInitials} from "@/lib/helpers";
 
 function UserAvatar({
   name,

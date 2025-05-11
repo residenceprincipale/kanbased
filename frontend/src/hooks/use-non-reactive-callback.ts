@@ -8,7 +8,7 @@ import {useCallback, useInsertionEffect, useRef} from "react";
 //
 // Also, you should avoid calling the returned function during rendering
 // since the values captured by it are going to lag behind.
-export function useNonReactiveCallback<T extends (...args: any[]) => any>(
+export function useNonReactiveCallback<T extends (...args: Array<any>) => any>(
   fn: T,
 ): T {
   const ref = useRef(fn);

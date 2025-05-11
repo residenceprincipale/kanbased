@@ -5,10 +5,10 @@ import {EditorView, keymap} from "@codemirror/view";
 import {EditorState} from "@codemirror/state";
 import {markdown} from "@codemirror/lang-markdown";
 import {Vim, getCM, vim} from "@replit/codemirror-vim";
-import {basicExtensions} from "@/components/md-editor/helpers";
 import {indentWithTab} from "@codemirror/commands";
 
 import {themeExtension} from "./theme";
+import {basicExtensions} from "@/components/md-editor/helpers";
 import {cn} from "@/lib/utils";
 
 const customTheme = EditorView.theme({

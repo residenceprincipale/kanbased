@@ -1,5 +1,7 @@
 import {useState} from "react";
 import {toast} from "sonner";
+import {Check, Mail, X} from "lucide-react";
+import {useMutation} from "@tanstack/react-query";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
@@ -16,11 +18,9 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
-import {Check, Mail, X} from "lucide-react";
 import {authClient} from "@/lib/auth";
 import {getOrigin} from "@/lib/constants";
 import {handleAuthResponse} from "@/lib/utils";
-import {useMutation} from "@tanstack/react-query";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 
 export function UserSettings() {
