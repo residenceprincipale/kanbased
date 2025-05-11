@@ -21,9 +21,9 @@ export function KeyboardShortcutIndicator(
 
   if (props.label) {
     return (
-      <div className="flex items-center text-xs text-muted-foreground rounded px-1 w-fit h-fit self-center shrink-0">
+      <div className="flex items-center text-xs rounded px-1 w-fit h-fit self-center shrink-0">
         <span>{props.label}: </span>
-        <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border bg-background px-1.5 font-mono font-medium uppercase">
+        <kbd className="inline-flex ml-1 select-none items-center gap-1 rounded border px-1.5 font-mono font-medium uppercase">
           {commandOrCtrlLabel}
           {props.children}
         </kbd>

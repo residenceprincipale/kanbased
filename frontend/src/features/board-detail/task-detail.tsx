@@ -54,15 +54,11 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
     });
   };
 
-  useHotkeys(
-    ["k", "up"],
-    () => previousTaskId && navigateToTask(previousTaskId),
-    [previousTaskId],
-  );
-
-  useHotkeys(["j", "down"], () => nextTaskId && navigateToTask(nextTaskId), [
-    nextTaskId,
+  useHotkeys("k", () => previousTaskId && navigateToTask(previousTaskId), [
+    previousTaskId,
   ]);
+
+  useHotkeys("j", () => nextTaskId && navigateToTask(nextTaskId), [nextTaskId]);
 
   const handleTitleChange = (updatedTitle: string) => {
     z.mutate.tasksTable.update({
@@ -149,16 +145,9 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                 </Button>
               )}
 
-              <span>
-                Previous Task{" "}
-                <div>
-                  <KeyboardShortcutIndicator>K</KeyboardShortcutIndicator>
-                  <span className="px-2">Or</span>
-                  <KeyboardShortcutIndicator>
-                    Up Arrow
-                  </KeyboardShortcutIndicator>
-                </div>
-              </span>
+              <KeyboardShortcutIndicator label="Previous Task">
+                K
+              </KeyboardShortcutIndicator>
             </WrappedTooltip>
 
             <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
@@ -176,16 +165,9 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                 </Button>
               )}
 
-              <span>
-                Next Task{" "}
-                <div>
-                  <KeyboardShortcutIndicator>J</KeyboardShortcutIndicator>
-                  <span className="px-2">Or</span>
-                  <KeyboardShortcutIndicator>
-                    Down Arrow
-                  </KeyboardShortcutIndicator>
-                </div>
-              </span>
+              <KeyboardShortcutIndicator label="Next Task">
+                J
+              </KeyboardShortcutIndicator>
             </WrappedTooltip>
           </div>
 
