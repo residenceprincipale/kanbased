@@ -1,33 +1,21 @@
 "use client";
 
 import {
-  Building2,
   ChevronsUpDown,
   Lock,
   LogOut,
-  Mail,
   MailWarning,
-  Plus,
   Settings,
-  UserRound,
 } from "lucide-react";
 import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
-import {Link} from "@tanstack/react-router";
-import {useQuery} from "@rocicorp/zero/react";
 import {handleAuthResponse} from "@/lib/utils";
 
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {useAuthData} from "@/queries/session";
@@ -39,18 +27,16 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {getOrganizationListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
-import {Dialog, DialogTrigger} from "@/components/ui/dialog";
+import {Dialog, DialogTitle} from "@/components/ui/dialog";
 import {InviteMemberDialog} from "@/features/user/invite-member";
+import {useState} from "react";
+import {UserSettings} from "@/features/user/user-settings";
 
 export function NavUser() {
   const userData = useAuthData();
   const z = useZ();
-  const [organizationsList] = useQuery(getOrganizationListQuery(z));
-  const currentOrganization = organizationsList.find(
-    (org) => org.id === userData.activeOrganizationId,
-  );
+  const [showUserSettings, setShowUserSettings] = useState(false);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -123,65 +109,61 @@ export function NavUser() {
     });
   };
 
-  const handleSwitchOrganization = (organizationId: string) => {
-    const promise = switchOrganizationMutation.mutateAsync(organizationId);
-    toast.promise(promise, {
-      loading: "Switching organization...",
-      error: "Failed to switch organization",
-      position: "top-center",
-    });
-  };
-
   return (
-    <SidebarMenu>
-      <SidebarMenuItem>
-        <Dialog>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <SidebarMenuButton
-                size="lg"
-                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-0!"
-              >
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src={userData.image} alt={userData.name} />
-                  <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="font-medium truncate">{userData.name}</span>
-                </div>
-                <ChevronsUpDown className="ml-auto h-4 w-4" />
-              </SidebarMenuButton>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56" align="start" side="right">
-              {!userData.emailVerified && (
-                <DropdownMenuItem onClick={handleVerifyEmail}>
-                  <MailWarning className="mr-2 h-4 w-4" />
-                  Verify Email
+    <>
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <Dialog>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <SidebarMenuButton
+                  size="lg"
+                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-0!"
+                >
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={userData.image} alt={userData.name} />
+                    <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
+                  </Avatar>
+                  <div className="grid flex-1 text-left text-sm leading-tight">
+                    <span className="font-medium truncate">
+                      {userData.name}
+                    </span>
+                  </div>
+                  <ChevronsUpDown className="ml-auto h-4 w-4" />
+                </SidebarMenuButton>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="start" side="right">
+                {!userData.emailVerified && (
+                  <DropdownMenuItem onClick={handleVerifyEmail}>
+                    <MailWarning className="mr-2 h-4 w-4" />
+                    Verify Email
+                  </DropdownMenuItem>
+                )}
+
+                <DropdownMenuItem onClick={handleResetPassword}>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Reset Password
                 </DropdownMenuItem>
-              )}
 
-              <DropdownMenuItem onClick={handleResetPassword}>
-                <Lock className="mr-2 h-4 w-4" />
-                Reset Password
-              </DropdownMenuItem>
-
-              <DropdownMenuItem asChild>
-                <Link to="/user-settings">
+                <DropdownMenuItem onClick={() => setShowUserSettings(true)}>
                   <Settings className="mr-2 h-4 w-4" />
-                  User Settings
-                </Link>
-              </DropdownMenuItem>
+                  Settings
+                </DropdownMenuItem>
 
-              <DropdownMenuItem onClick={handleLogout}>
-                <LogOut className="mr-2 h-4 w-4" />
-                Log out
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+                <DropdownMenuItem onClick={handleLogout}>
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Log out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
 
-          <InviteMemberDialog />
-        </Dialog>
-      </SidebarMenuItem>
-    </SidebarMenu>
+            <InviteMemberDialog />
+          </Dialog>
+        </SidebarMenuItem>
+      </SidebarMenu>
+      {showUserSettings && (
+        <UserSettings onClose={() => setShowUserSettings(false)} />
+      )}
+    </>
   );
 }
