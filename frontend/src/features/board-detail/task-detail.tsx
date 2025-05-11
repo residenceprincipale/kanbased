@@ -78,7 +78,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
             editorRef.current?.handleEscapeForVim();
           }
         }}
-        className="min-w-[90%] h-[90%] flex flex-col"
+        className="min-w-11/12 h-11/12 flex flex-col"
       >
         <>
           <DialogHeader className="w-9/12">

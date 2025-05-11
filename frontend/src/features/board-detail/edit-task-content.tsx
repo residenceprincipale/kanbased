@@ -124,7 +124,7 @@ export default function EditTaskContent(props: {
               onClick={handleSave}
               type="button"
               size="sm"
-              className="flex items-center gap-2"
+              className="h-9"
               disabled={!isDirty}
             >
               <>

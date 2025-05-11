@@ -1,6 +1,6 @@
 import {Link, useRouter} from "@tanstack/react-router";
 import {useEffect, useMemo} from "react";
-import {EllipsisVertical, Expand, Trash} from "lucide-react";
+import {EllipsisVertical, Expand, Trash2} from "lucide-react";
 import {toast} from "sonner";
 import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
@@ -102,9 +102,9 @@ export function ViewNote(props: {
             <DropdownMenuContent align="end">
               <DropdownMenuItem
                 onClick={handleDelete}
-                className="text-red-10! focus:bg-red-3! dark:focus:bg-red-2!"
+                className="!text-destructive focus:bg-destructive/10"
               >
-                <Trash className="size-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4 text-destructive" />
                 Delete
               </DropdownMenuItem>
             </DropdownMenuContent>
