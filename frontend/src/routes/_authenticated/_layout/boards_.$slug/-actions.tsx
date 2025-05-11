@@ -20,7 +20,9 @@ export function TaskDetailPage() {
 
     setTimeout(() => {
       const el = document.querySelector(`#task-${taskId}`);
-      el?.focus();
+      if (el) {
+        (el as HTMLElement).focus();
+      }
     }, 100);
   };
 

@@ -9,10 +9,19 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {getTaskQuery} from "@/lib/zero-queries";
+import {
+  getBoardWithColumnsAndTasksQuery,
+  getTaskQuery,
+} from "@/lib/zero-queries";
 import {Spinner} from "@/components/ui/spinner";
 import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
+import {Button, buttonVariants} from "@/components/ui/button";
+import {ArrowDown, ArrowUp} from "lucide-react";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
+import {useHotkeys} from "react-hotkeys-hook";
+import {Link, useNavigate, useParams} from "@tanstack/react-router";
 
 const EditTaskContentLazy = lazy(
   () => import("@/features/board-detail/edit-task-content"),
@@ -25,9 +34,35 @@ const ViewTaskContentLazy = lazy(
 export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const editorRef = useRef<CodeMirrorEditorRefData>(null);
   const [isEditing, setIsEditing] = useState(false);
-
+  const navigate = useNavigate();
+  const {slug} = useParams({from: "/_authenticated/_layout/boards_/$slug"});
   const z = useZ();
   const [data] = useQuery(getTaskQuery(z, props.taskId));
+  const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
+  const tasks =
+    board?.columns?.find((col) => col.id === data?.columnId)?.tasks ?? [];
+  const activeTaskIndex = tasks.findIndex((task) => task.id === data?.id);
+  const previousTaskId = tasks[activeTaskIndex - 1]?.id;
+  const nextTaskId = tasks[activeTaskIndex + 1]?.id;
+
+  const navigateToTask = (taskId: string) => {
+    navigate({
+      to: ".",
+      search: {
+        taskId,
+      },
+    });
+  };
+
+  useHotkeys(
+    ["k", "up"],
+    () => previousTaskId && navigateToTask(previousTaskId),
+    [previousTaskId],
+  );
+
+  useHotkeys(["j", "down"], () => nextTaskId && navigateToTask(nextTaskId), [
+    nextTaskId,
+  ]);
 
   const handleTitleChange = (updatedTitle: string) => {
     z.mutate.tasksTable.update({
@@ -97,6 +132,62 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
               Task detail for {data?.name}
             </DialogDescription>
           </DialogHeader>
+
+          <div className="absolute right-12 top-2 flex items-center">
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
+              {previousTaskId ? (
+                <Link
+                  to="."
+                  search={{taskId: previousTaskId}}
+                  className={buttonVariants({variant: "ghost", size: "icon"})}
+                >
+                  <ArrowUp />
+                </Link>
+              ) : (
+                <Button variant="ghost" size="icon" disabled>
+                  <ArrowUp />
+                </Button>
+              )}
+
+              <span>
+                Previous Task{" "}
+                <div>
+                  <KeyboardShortcutIndicator>K</KeyboardShortcutIndicator>
+                  <span className="px-2">Or</span>
+                  <KeyboardShortcutIndicator>
+                    Up Arrow
+                  </KeyboardShortcutIndicator>
+                </div>
+              </span>
+            </WrappedTooltip>
+
+            <WrappedTooltip tooltipContentProps={{side: "bottom"}}>
+              {nextTaskId ? (
+                <Link
+                  to="."
+                  search={{taskId: nextTaskId}}
+                  className={buttonVariants({variant: "ghost", size: "icon"})}
+                >
+                  <ArrowDown />
+                </Link>
+              ) : (
+                <Button variant="ghost" size="icon" disabled>
+                  <ArrowDown />
+                </Button>
+              )}
+
+              <span>
+                Next Task{" "}
+                <div>
+                  <KeyboardShortcutIndicator>J</KeyboardShortcutIndicator>
+                  <span className="px-2">Or</span>
+                  <KeyboardShortcutIndicator>
+                    Down Arrow
+                  </KeyboardShortcutIndicator>
+                </div>
+              </span>
+            </WrappedTooltip>
+          </div>
 
           <div className="min-h-0 flex-1 h-full">
             {!isEditing && (
