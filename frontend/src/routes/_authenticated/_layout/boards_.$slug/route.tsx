@@ -62,7 +62,7 @@ function BoardPage() {
             defaultValue={board.name}
             onSubmit={handleBoardNameChange}
           />
-          <div className="flex gap-3">
+          <div className="flex gap-2">
             <CreateColumnButton />
             <OtherActions board={board} />
           </div>

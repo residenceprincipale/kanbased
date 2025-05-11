@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  ChevronsUpDown,
-  Lock,
-  LogOut,
-  MailWarning,
-  Settings,
-} from "lucide-react";
+import {ChevronsUpDown, Lock, LogOut, Settings} from "lucide-react";
 import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {handleAuthResponse} from "@/lib/utils";
@@ -47,16 +41,6 @@ export function NavUser() {
     },
   });
 
-  const verifyEmailMutation = useMutation({
-    mutationFn: async () => {
-      const res = await authClient.sendVerificationEmail({
-        email: userData.email,
-        callbackURL: getOrigin(),
-      });
-      return handleAuthResponse(res);
-    },
-  });
-
   const forgotPasswordMutation = useMutation({
     mutationFn: async () => {
       const res = await authClient.forgetPassword({
@@ -72,15 +56,6 @@ export function NavUser() {
       loading: "Logging out...",
       success: "Logged out successfully",
       error: "Failed to log out",
-    });
-  };
-
-  const handleVerifyEmail = () => {
-    toast.promise(() => verifyEmailMutation.mutateAsync(), {
-      loading: "Sending verification email...",
-      success: "Verification email sent successfully, please check your email.",
-      error: "Failed to send verification email",
-      position: "bottom-center",
     });
   };
 
@@ -117,24 +92,18 @@ export function NavUser() {
                   <ChevronsUpDown className="ml-auto h-4 w-4" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
+
               <DropdownMenuContent className="w-56" align="start" side="right">
-                {!userData.emailVerified && (
-                  <DropdownMenuItem onClick={handleVerifyEmail}>
-                    <MailWarning className="mr-2 h-4 w-4" />
-                    Verify Email
-                  </DropdownMenuItem>
-                )}
-
-                <DropdownMenuItem onClick={handleResetPassword}>
-                  <Lock className="mr-2 h-4 w-4" />
-                  Reset Password
-                </DropdownMenuItem>
-
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings className="mr-2 h-4 w-4" />
                     Settings
                   </Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem onClick={handleResetPassword}>
+                  <Lock className="mr-2 h-4 w-4" />
+                  Reset Password
                 </DropdownMenuItem>
 
                 <DropdownMenuItem onClick={handleLogout}>
