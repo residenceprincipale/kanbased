@@ -27,6 +27,7 @@ import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
+import {useHotkeys} from "react-hotkeys-hook";
 
 type CommonProps = {
   afterSave: (data: {noteId: string}) => void;
@@ -91,6 +92,22 @@ export default function NoteEditor(props: NoteEditorProps) {
     }
   });
 
+  useHotkeys(
+    "Escape",
+    () => {
+      const vimMode = editorRef.current?.getVimMode();
+
+      if (!vimMode || vimMode === "normal" || mode !== "write") {
+        props.onClose();
+      } else {
+        // handle escape for vim, because it's not working in Codemirror editor
+        editorRef.current?.handleEscapeForVim();
+      }
+    },
+
+    {enableOnContentEditable: true},
+  );
+
   const handleSave = () => {
     const noteId = isCreate ? createId() : props.noteId;
     const now = Date.now();
@@ -137,21 +154,7 @@ export default function NoteEditor(props: NoteEditorProps) {
         )}
         onOpenAutoFocus={(e) => e.preventDefault()}
         onCloseAutoFocus={(e) => e.preventDefault()}
-        onEscapeKeyDown={(e) => {
-          const vimMode = editorRef.current?.getVimMode();
-
-          // Always prevent Dialog from closing on Escape
-          e.preventDefault();
-
-          if (!vimMode || vimMode === "normal" || mode !== "write") {
-            props.onClose();
-          } else {
-            // the prevent default is to prevent the dialog from closing
-            // but codemirror vim mode checking defaultPrevented for escape which is not what we want
-            // so we are manually handling the escape for vim
-            editorRef.current?.handleEscapeForVim();
-          }
-        }}
+        onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogHeader className="shrink-0">
           <DialogTitle className="min-w-80 max-w-fit">
@@ -302,7 +305,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                       onClick={handleSave}
                       type="button"
                       size="sm"
-                      className="flex items-center gap-2"
+                      className="h-9"
                       disabled={!isDirty}
                     >
                       <>

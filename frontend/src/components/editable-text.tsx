@@ -1,7 +1,6 @@
 import {CheckIcon, XIcon} from "lucide-react";
 import {useEffect, useRef, useState} from "react";
 import {flushSync} from "react-dom";
-import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {Button} from "@/components/ui/button";
 import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
 import {cn} from "@/lib/utils";

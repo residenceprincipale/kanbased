@@ -60,6 +60,21 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
 
   useHotkeys("j", () => nextTaskId && navigateToTask(nextTaskId), [nextTaskId]);
 
+  useHotkeys(
+    "Escape",
+    () => {
+      const vimMode = editorRef.current?.getVimMode();
+
+      if (!vimMode) {
+        props.onClose();
+      } else {
+        // handle escape for vim, because it's not working in Codemirror editor
+        editorRef.current?.handleEscapeForVim();
+      }
+    },
+    {enableOnContentEditable: true},
+  );
+
   const handleTitleChange = (updatedTitle: string) => {
     z.mutate.tasksTable.update({
       id: data!.id,
@@ -89,26 +104,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
           e.preventDefault();
           document.body.style.pointerEvents = "";
         }}
-        onEscapeKeyDown={(e) => {
-          const vimMode = editorRef.current?.getVimMode();
-
-          if (e.defaultPrevented) {
-            e.preventDefault();
-            return;
-          }
-
-          // Always prevent Dialog from closing on Escape
-          e.preventDefault();
-
-          if (!vimMode) {
-            props.onClose();
-          } else {
-            // the prevent default is to prevent the dialog from closing
-            // but codemirror vim mode checking defaultPrevented for escape which is not what we want
-            // so we are manually handling the escape for vim
-            editorRef.current?.handleEscapeForVim();
-          }
-        }}
+        onEscapeKeyDown={(e) => e.preventDefault()}
         className="min-w-11/12 h-11/12 flex flex-col"
       >
         <>

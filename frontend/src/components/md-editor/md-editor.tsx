@@ -121,7 +121,9 @@ export default function CodeMirrorEditor(props: CodeMirrorEditorProps) {
         keymap.of([indentWithTab]),
         customTheme,
         themeExtension(),
-        markdown(),
+        markdown({
+          addKeymap: true,
+        }),
         EditorView.lineWrapping,
         updateListenerExtension,
       ],
