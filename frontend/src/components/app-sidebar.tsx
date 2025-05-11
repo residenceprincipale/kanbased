@@ -2,7 +2,7 @@ import * as React from "react";
 import {useEffect} from "react";
 
 import {ThemeToggle} from "./theme-toggle";
-import {NavUser} from "@/components/nav-user";
+import {NavOrganization} from "@/components/nav-org";
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/sidebar";
 import {NavBoards} from "@/components/nav-boards";
 import {NavNotes} from "@/components/nav-notes";
+import {NavUser} from "@/components/nav-user";
 
 export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   useEffect(() => {
@@ -29,7 +30,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <NavUser />
+        <NavOrganization />
       </SidebarHeader>
 
       <SidebarContent className="gap-0! mt-3">
@@ -39,6 +40,7 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter>
         <ThemeToggle />
+        <NavUser />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
