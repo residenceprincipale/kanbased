@@ -11,12 +11,18 @@ import {
 } from "@/queries/user";
 import {Spinner} from "@/components/ui/spinner";
 import {SettingsSidebar} from "@/features/user/settings-sidebar";
-import {SidebarProvider} from "@/components/ui/sidebar";
+import {
+  SidebarProvider,
+  SidebarTrigger,
+  useSidebar,
+} from "@/components/ui/sidebar";
 import {Check, Mail, X} from "lucide-react";
 import {authClient} from "@/lib/auth";
 import {getOrigin} from "@/lib/constants";
 import {handleAuthResponse} from "@/lib/utils";
 import {useMutation} from "@tanstack/react-query";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+
 export function UserSettings() {
   const userData = useAuthData();
   const defaultUserImage = userData.image;
@@ -94,119 +100,137 @@ export function UserSettings() {
   };
 
   return (
-    <SidebarProvider>
+    <SidebarProvider className="relative">
       <SettingsSidebar />
 
-      <div className="container max-w-xl p-10">
-        <div>
-          <h1 className="text-2xl font-bold tracking-tighter mb-6">Profile</h1>
-          <form
-            onSubmit={handleSubmit}
-            onReset={handleClear}
-            className="space-y-6"
-          >
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <Label htmlFor="avatar" className="mb-2">
-                  <Avatar className="h-20 w-20">
-                    <AvatarImage src={previewUrl} alt="Profile picture" />
-                    <AvatarFallback>
-                      {userData.name[0]} {userData.name[1]}
-                    </AvatarFallback>
-                  </Avatar>
-                </Label>
-
-                <div className="flex flex-col">
+      <div className="relative w-full">
+        <div className="container max-w-2xl p-10 mx-auto">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tighter mb-6">
+              Profile
+            </h1>
+            <form
+              onSubmit={handleSubmit}
+              onReset={handleClear}
+              className="space-y-6"
+            >
+              <div className="space-y-4">
+                <div className="flex items-center space-x-4">
                   <Label htmlFor="avatar" className="mb-2">
-                    Profile Picture
+                    <Avatar className="h-20 w-20">
+                      <AvatarImage src={previewUrl} alt="Profile picture" />
+                      <AvatarFallback>
+                        {userData.name[0]} {userData.name[1]}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Label>
+
+                  <div className="flex flex-col">
+                    <Label htmlFor="avatar" className="mb-2">
+                      Profile Picture
+                    </Label>
+                    <Input
+                      id="avatar"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                      className="w-full"
+                      disabled={
+                        uploadImageMutation.isPending ||
+                        updateUserMutation.isPending
+                      }
+                    />
+
+                    {uploadImageMutation.isPending && (
+                      <div className="flex items-center space-x-2 mt-1.5">
+                        <Spinner />
+                        <p className="text-xs text-gray-500">
+                          Uploading profile picture...
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="email">
+                    Email
+                    {!userData.emailVerified ? (
+                      <div className="flex items-center space-x-1 text-xs text-red-11">
+                        <X className="w-4 h-4" />
+                        <p>Email not verified</p>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2 text-xs text-green-11">
+                        <Check className="w-4 h-4" />
+                        <p>Email verified</p>
+                      </div>
+                    )}
                   </Label>
                   <Input
-                    id="avatar"
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                    className="w-full"
-                    disabled={
-                      uploadImageMutation.isPending ||
-                      updateUserMutation.isPending
-                    }
+                    id="email"
+                    name="email"
+                    defaultValue={userData.email}
+                    disabled
                   />
 
-                  {uploadImageMutation.isPending && (
-                    <div className="flex items-center space-x-2 mt-1.5">
-                      <Spinner />
-                      <p className="text-xs text-gray-500">
-                        Uploading profile picture...
-                      </p>
-                    </div>
+                  {!userData.emailVerified && (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleVerifyEmail}
+                    >
+                      <Mail className="w-4 h-4" />
+                      Verify email
+                    </Button>
                   )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="name">Name</Label>
+                  <Input
+                    id="name"
+                    name="name"
+                    defaultValue={userData.name}
+                    placeholder="Jon Snow"
+                    required
+                  />
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">
-                  Email
-                  {!userData.emailVerified ? (
-                    <div className="flex items-center space-x-1 text-xs text-red-11">
-                      <X className="w-4 h-4" />
-                      <p>Email not verified</p>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2 text-xs text-green-11">
-                      <Check className="w-4 h-4" />
-                      <p>Email verified</p>
-                    </div>
-                  )}
-                </Label>
-                <Input
-                  id="email"
-                  name="email"
-                  defaultValue={userData.email}
-                  disabled
-                />
-
-                {!userData.emailVerified && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleVerifyEmail}
-                  >
-                    <Mail className="w-4 h-4" />
-                    Verify email
-                  </Button>
-                )}
+              <div className="flex justify-end space-x-4">
+                <Button type="reset" variant="outline">
+                  Clear
+                </Button>
+                <Button
+                  disabled={
+                    uploadImageMutation.isPending ||
+                    updateUserMutation.isPending
+                  }
+                  type="submit"
+                >
+                  {updateUserMutation.isPending && <Spinner />}
+                  Save
+                </Button>
               </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="name">Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  defaultValue={userData.name}
-                  placeholder="Jon Snow"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-end space-x-4">
-              <Button type="reset" variant="outline">
-                Clear
-              </Button>
-              <Button
-                disabled={
-                  uploadImageMutation.isPending || updateUserMutation.isPending
-                }
-                type="submit"
-              >
-                {updateUserMutation.isPending && <Spinner />}
-                Save
-              </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
+        <MobileSidebarTrigger />
       </div>
     </SidebarProvider>
+  );
+}
+
+function MobileSidebarTrigger() {
+  const {isMobile} = useSidebar();
+
+  if (!isMobile) return null;
+  return (
+    <WrappedTooltip>
+      <SidebarTrigger className="absolute top-0 left-0 p-5" />
+      <span>Toggle sidebar (⌘+B)</span>
+    </WrappedTooltip>
   );
 }

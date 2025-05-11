@@ -1,7 +1,6 @@
 import * as React from "react";
 import {useEffect} from "react";
 
-import {ThemeToggle} from "./theme-toggle";
 import {NavOrganization} from "@/components/nav-org";
 import {
   Sidebar,
@@ -39,7 +38,6 @@ export function AppSidebar(props: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
-        <ThemeToggle />
         <NavUser />
       </SidebarFooter>
       <SidebarRail />

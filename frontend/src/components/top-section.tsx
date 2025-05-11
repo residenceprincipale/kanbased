@@ -5,6 +5,7 @@ import {WrappedTooltip} from "@/components/ui/tooltip";
 import {Separator} from "@/components/ui/separator";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {useAppContext} from "@/state/app-state";
+import {ThemeToggle} from "@/components/theme-toggle";
 
 export function TopSection() {
   const {isMobile, state} = useSidebar();
@@ -24,19 +25,14 @@ export function TopSection() {
 
   return (
     <div
-      className="sticky top-0 right-0 z-5 flex items-center gap-2 justify-between py-1 px-2 border-b bg-background shrink-0"
+      className="sticky top-0 right-0 z-5 flex items-center gap-2 justify-between py-1 px-3 border-b bg-background shrink-0"
       style={{
         left: getSidebarWidth(),
-        width: `calc(100vw - ${getSidebarWidth()} - 1rem)`,
+        width: `calc(100vw - ${getSidebarWidth()}`,
       }}
     >
       <div className="flex items-center gap-2 py-1">
-        <WrappedTooltip
-          tooltipProps={{delayDuration: 300}}
-          tooltipContentProps={{
-            side: "right",
-          }}
-        >
+        <WrappedTooltip>
           <SidebarTrigger className="self-center" />
           <span>Toggle sidebar (⌘+B)</span>
         </WrappedTooltip>
@@ -45,19 +41,23 @@ export function TopSection() {
         <TsrBreadcrumbs />
       </div>
 
-      <button
-        type="button"
-        className="shrink-0 flex items-center gap-10 text-sm font-medium cursor-pointer bg-muted text-muted-foreground px-2 py-1 rounded-md hover:text-foreground w-60 border border-transparent hover:border-accent justify-between"
-        onClick={openSearch}
-      >
-        <div className="shrink-0 flex items-center gap-1">
-          <SearchIcon className="size-4" />
-          Search
-        </div>
-        <KeyboardShortcutIndicator commandOrCtrlKey className="text-sm">
-          K
-        </KeyboardShortcutIndicator>
-      </button>
+      <div className="shrink-0 flex items-center gap-2 *:shrink-0">
+        <button
+          type="button"
+          className="shrink-0 flex items-center gap-10 text-sm font-medium cursor-pointer bg-muted text-muted-foreground px-2 py-1 rounded-md hover:text-foreground border border-transparent hover:border-accent justify-between w-fit sm:w-60"
+          onClick={openSearch}
+        >
+          <div className="shrink-0 flex items-center gap-1">
+            <SearchIcon className="size-4" />
+            <span className="hidden sm:block">Search</span>
+          </div>
+          <KeyboardShortcutIndicator commandOrCtrlKey className="text-sm">
+            K
+          </KeyboardShortcutIndicator>
+        </button>
+
+        <ThemeToggle />
+      </div>
     </div>
   );
 }

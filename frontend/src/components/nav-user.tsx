@@ -5,11 +5,12 @@ import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
 import {handleAuthResponse} from "@/lib/utils";
 
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {useAuthData} from "@/queries/session";
@@ -20,15 +21,15 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
-import {useZ} from "@/lib/zero-cache";
 import {Dialog} from "@/components/ui/dialog";
-import {InviteMemberDialog} from "@/features/user/invite-member";
 import {Link} from "@tanstack/react-router";
+import UserAvatar from "@/components/user-avatar";
 
 export function NavUser() {
   const userData = useAuthData();
-  const z = useZ();
+  const {isMobile} = useSidebar();
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -80,10 +81,8 @@ export function NavUser() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-0!"
                 >
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src={userData.image} alt={userData.name} />
-                    <AvatarFallback>{userData.name.slice(0, 2)}</AvatarFallback>
-                  </Avatar>
+                  <UserAvatar name={userData.name} imageUrl={userData.image} />
+
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="font-medium truncate">
                       {userData.name}
@@ -93,7 +92,29 @@ export function NavUser() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
 
-              <DropdownMenuContent className="w-56" align="start" side="right">
+              <DropdownMenuContent
+                className="w-56"
+                align="start"
+                side={isMobile ? "top" : "right"}
+              >
+                <DropdownMenuLabel className="p-0 font-normal">
+                  <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                    <UserAvatar
+                      name={userData.name}
+                      imageUrl={userData.image}
+                    />
+
+                    <div className="grid flex-1 text-left text-sm leading-tight">
+                      <span className="truncate font-semibold">
+                        {userData.name}
+                      </span>
+                      <span className="truncate text-xs">{userData.email}</span>
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem asChild>
                   <Link to="/settings">
                     <Settings className="mr-2 h-4 w-4" />
@@ -106,14 +127,14 @@ export function NavUser() {
                   Reset Password
                 </DropdownMenuItem>
 
+                <DropdownMenuSeparator />
+
                 <DropdownMenuItem onClick={handleLogout}>
                   <LogOut className="mr-2 h-4 w-4" />
                   Log out
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-
-            <InviteMemberDialog />
           </Dialog>
         </SidebarMenuItem>
       </SidebarMenu>

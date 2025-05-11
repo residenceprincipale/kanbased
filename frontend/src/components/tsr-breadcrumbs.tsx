@@ -9,6 +9,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import {useSidebar} from "@/components/ui/sidebar";
 
 export interface BreadcrumbsData {
   breadcrumbs: Array<LinkProps & {label: string}>;
@@ -16,10 +17,25 @@ export interface BreadcrumbsData {
 
 export function TsrBreadcrumbs() {
   const matches = useMatches();
+  const {isMobile} = useSidebar();
 
   const breadcrumbs = matches
     .filter((match) => isMatch(match, "loaderData.breadcrumbs"))
     .flatMap((match) => match.loaderData?.breadcrumbs!);
+
+  if (isMobile) {
+    const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
+
+    return (
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbPage>{lastBreadcrumb?.label}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+    );
+  }
 
   return (
     <Breadcrumb>

@@ -1,8 +1,9 @@
 import {useMemo} from "react";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {getInitials, getColorFromName} from "@/lib/helpers";
+import {cn} from "@/lib/utils";
 
-function UserAvatar({
+function OrgAvatar({
   name,
   imageUrl,
   className,
@@ -15,10 +16,10 @@ function UserAvatar({
   const bgColor = useMemo(() => getColorFromName(name), [name]);
 
   return (
-    <Avatar className={className}>
+    <Avatar className={cn("rounded-md", className)}>
       <AvatarImage src={imageUrl} alt={name} />
       <AvatarFallback
-        className="text-white text-xs"
+        className="text-white rounded-md"
         style={{backgroundColor: bgColor}}
       >
         {initials}
@@ -27,4 +28,4 @@ function UserAvatar({
   );
 }
 
-export default UserAvatar;
+export default OrgAvatar;
