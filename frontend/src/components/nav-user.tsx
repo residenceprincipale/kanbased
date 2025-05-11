@@ -28,15 +28,13 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import {useZ} from "@/lib/zero-cache";
-import {Dialog, DialogTitle} from "@/components/ui/dialog";
+import {Dialog} from "@/components/ui/dialog";
 import {InviteMemberDialog} from "@/features/user/invite-member";
-import {useState} from "react";
-import {UserSettings} from "@/features/user/user-settings";
+import {Link} from "@tanstack/react-router";
 
 export function NavUser() {
   const userData = useAuthData();
   const z = useZ();
-  const [showUserSettings, setShowUserSettings] = useState(false);
 
   const logoutMutation = useMutation({
     mutationFn: async () => {
@@ -66,19 +64,6 @@ export function NavUser() {
         redirectTo: `${getOrigin()}/reset-password`,
       });
       return handleAuthResponse(res);
-    },
-  });
-
-  const switchOrganizationMutation = useMutation({
-    mutationFn: async (organizationId: string) => {
-      const res = await authClient.organization.setActive({
-        organizationId,
-      });
-      return handleAuthResponse(res);
-    },
-    onSuccess: () => {
-      localStorage.removeItem("auth-token");
-      window.location.href = "/";
     },
   });
 
@@ -145,9 +130,11 @@ export function NavUser() {
                   Reset Password
                 </DropdownMenuItem>
 
-                <DropdownMenuItem onClick={() => setShowUserSettings(true)}>
-                  <Settings className="mr-2 h-4 w-4" />
-                  Settings
+                <DropdownMenuItem asChild>
+                  <Link to="/settings">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Settings
+                  </Link>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem onClick={handleLogout}>
@@ -161,9 +148,6 @@ export function NavUser() {
           </Dialog>
         </SidebarMenuItem>
       </SidebarMenu>
-      {showUserSettings && (
-        <UserSettings onClose={() => setShowUserSettings(false)} />
-      )}
     </>
   );
 }
