@@ -15,7 +15,7 @@ function RouteComponent() {
   const [note] = useQuery(getNoteQuery(z, noteId));
   const navigate = useNavigate();
 
-  if (!note) {
+  if (note === undefined) {
     return null;
   }
 

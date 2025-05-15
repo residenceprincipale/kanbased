@@ -52,6 +52,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const [isDirty, setIsDirty] = useState(false);
   const [hasFocused, setHasFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const navigateToTask = (taskId: string) => {
     navigate({
@@ -83,7 +84,14 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
     enableOnContentEditable: true,
   });
 
-  useDirtyEditorBlock(isDirty);
+  useDirtyEditorBlock(() => {
+    if (!isDirty) return false;
+
+    const defaultContent = data?.content ?? "";
+    const currentContent = editorRef.current?.getMarkdown();
+
+    return currentContent !== defaultContent;
+  });
 
   const handleSave = () => {
     z.mutate.tasksTable.update({
@@ -92,6 +100,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
       content: editorRef.current?.getMarkdown(),
     });
 
+    timeoutRef.current && clearTimeout(timeoutRef.current);
     setIsDirty(false);
     toast.success("Task updated");
   };
@@ -247,8 +256,18 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                   <MarkdownEditorLazy
                     defaultValue={data.content ?? ""}
                     ref={editorRef}
-                    onChange={() => {
-                      setIsDirty(true);
+                    onChange={(updatedMarkdown) => {
+                      if (timeoutRef.current) {
+                        clearTimeout(timeoutRef.current);
+                      }
+
+                      timeoutRef.current = setTimeout(() => {
+                        console.log({
+                          updatedMarkdown,
+                          dataContent: data.content,
+                        });
+                        setIsDirty(updatedMarkdown !== (data.content ?? ""));
+                      }, 1000);
                     }}
                     onFocus={() => {
                       containerRef.current?.scrollTo({

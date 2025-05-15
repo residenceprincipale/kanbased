@@ -69,6 +69,8 @@ export default function NoteEditor(props: NoteEditorProps) {
     "note-editor-fullscreen",
     false,
   );
+  const defaultContent = isCreate ? "" : (props.note?.content ?? "");
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   useHotkeys(
     "f",
@@ -85,7 +87,10 @@ export default function NoteEditor(props: NoteEditorProps) {
     enableOnContentEditable: true,
   });
 
-  useDirtyEditorBlock(isDirty);
+  useDirtyEditorBlock(() => {
+    if (!isDirty) return false;
+    return editorRef.current?.getMarkdown() !== defaultContent;
+  });
 
   const handleSave = () => {
     const noteId = isCreate ? createId() : props.note.id;
@@ -102,6 +107,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     });
 
     flushSync(() => {
+      timeoutRef.current && clearTimeout(timeoutRef.current);
       setIsDirty(false);
     });
 
@@ -283,10 +289,16 @@ export default function NoteEditor(props: NoteEditorProps) {
                 }
               >
                 <MarkdownEditorLazy
-                  defaultValue={isCreate ? "" : (props.note.content ?? "")}
+                  defaultValue={defaultContent}
                   ref={editorRef}
-                  onChange={() => {
-                    setIsDirty(true);
+                  onChange={(updatedMarkdown) => {
+                    if (timeoutRef.current) {
+                      clearTimeout(timeoutRef.current);
+                    }
+
+                    timeoutRef.current = setTimeout(() => {
+                      setIsDirty(updatedMarkdown !== defaultContent);
+                    }, 1000);
                   }}
                   onFocus={() => {
                     containerRef.current?.scrollTo({
