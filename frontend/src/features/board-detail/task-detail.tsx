@@ -95,7 +95,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
 
   const handleSave = () => {
     z.mutate.tasksTable.update({
-      id: props.taskId,
+      id: data!.id,
       updatedAt: Date.now(),
       content: editorRef.current?.getMarkdown(),
     });

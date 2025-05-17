@@ -102,10 +102,10 @@
     h5,
     h6 {
       font-family: var(--crepe-font-title);
-      font-weight: 400;
       padding: 2px 0;
       font-weight: 700;
-      letter-spacing: -0.05em;
+      font-optical-sizing: auto;
+      letter-spacing: -0.03em;
     }
 
     h1 {
