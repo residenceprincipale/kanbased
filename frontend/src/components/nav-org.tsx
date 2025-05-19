@@ -78,7 +78,10 @@ export function NavOrganization() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground py-0!"
                 >
-                  <OrgAvatar name={currentOrganization?.name ?? ""} />
+                  <OrgAvatar
+                    name={currentOrganization?.name ?? ""}
+                    imageUrl={currentOrganization?.logo}
+                  />
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="font-medium truncate">
                       {currentOrganization?.name}

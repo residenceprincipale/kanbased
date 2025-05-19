@@ -1,7 +1,14 @@
 "use client";
 
 import * as React from "react";
-import {FileText, KanbanSquare, SquareCheck, SunMoon} from "lucide-react";
+import {
+  FileText,
+  KanbanSquare,
+  SquareCheck,
+  SunMoon,
+  Building2,
+  ArrowUpDown,
+} from "lucide-react";
 
 import {useQuery} from "@rocicorp/zero/react";
 import {useRouter} from "@tanstack/react-router";
@@ -20,12 +27,13 @@ import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
 import {useAppContext} from "@/state/app-state";
 import {useEffect, useState} from "react";
 import {CommandThemes} from "@/features/cmd-k/cmd-themes";
+import {CommandOrgSwitch} from "@/features/cmd-k/cmd-org-switch";
 import {useHotkeys} from "react-hotkeys-hook";
 import {DialogContent} from "@/components/ui/dialog";
 import {Dialog, DialogDescription, DialogTitle} from "@/components/ui/dialog";
 import {DialogHeader} from "@/components/ui/dialog";
 
-type Page = "boards" | "notes" | "tasks" | "theme";
+type Page = "boards" | "notes" | "tasks" | "theme" | "organization";
 
 function CommandDialogImpl() {
   const {isCmdKOpen, closeCmdK} = useAppContext();
@@ -92,7 +100,7 @@ function CommandDialogImpl() {
         onKeyDown={handleKeyDown}
       >
         <CommandInput
-          placeholder="Search any board, task..."
+          placeholder="Search for a command..."
           value={search}
           onValueChange={setSearch}
         />
@@ -101,10 +109,20 @@ function CommandDialogImpl() {
           <CommandSeparator />
 
           {page === "theme" && <CommandThemes />}
+          {page === "organization" && <CommandOrgSwitch />}
 
           {!page && (
             <>
               <CommandGroup heading="Suggestions">
+                <CommandItem
+                  onSelect={() => {
+                    setPages((prevPages) => [...prevPages, "organization"]);
+                    clearSearch();
+                  }}
+                >
+                  <ArrowUpDown />
+                  Switch workspace
+                </CommandItem>
                 <CommandItem
                   onSelect={() => {
                     setPages((prevPages) => [...prevPages, "theme"]);
@@ -114,6 +132,7 @@ function CommandDialogImpl() {
                   <SunMoon />
                   Change theme
                 </CommandItem>
+
                 <CommandItem
                   onSelect={() => {
                     router.navigate({to: "/boards"});

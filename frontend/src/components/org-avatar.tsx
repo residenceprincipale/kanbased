@@ -9,7 +9,7 @@ function OrgAvatar({
   className,
 }: {
   name: string;
-  imageUrl?: string;
+  imageUrl?: string | null;
   className?: string;
 }) {
   const initials = useMemo(() => getInitials(name), [name]);
@@ -17,7 +17,7 @@ function OrgAvatar({
 
   return (
     <Avatar className={cn("rounded-md", className)}>
-      <AvatarImage src={imageUrl} alt={name} />
+      <AvatarImage src={imageUrl ?? undefined} alt={name} />
       <AvatarFallback
         className="text-white rounded-md"
         style={{backgroundColor: bgColor}}
