@@ -4,9 +4,9 @@ type Theme = "light" | "dark" | "system";
 type AppContextValues = {
   theme: Theme;
   updateTheme: (theme: Theme) => void;
-  isSearchOpen: boolean;
-  openSearch: () => void;
-  closeSearch: () => void;
+  isCmdKOpen: boolean;
+  openCmdK: () => void;
+  closeCmdK: () => void;
 };
 
 const AppContext = createContext<AppContextValues>({} as AppContextValues);
@@ -70,7 +70,13 @@ export function AppContextProvider(props: React.PropsWithChildren) {
 
   return (
     <AppContext.Provider
-      value={{theme, updateTheme, isSearchOpen, openSearch, closeSearch}}
+      value={{
+        theme,
+        updateTheme,
+        isCmdKOpen: isSearchOpen,
+        openCmdK: openSearch,
+        closeCmdK: closeSearch,
+      }}
     >
       {props.children}
     </AppContext.Provider>

@@ -9,7 +9,7 @@ import {ThemeToggle} from "@/components/theme-toggle";
 
 export function TopSection() {
   const {isMobile, state} = useSidebar();
-  const {openSearch} = useAppContext();
+  const {openCmdK} = useAppContext();
 
   const getSidebarWidth = () => {
     if (isMobile) {
@@ -45,7 +45,7 @@ export function TopSection() {
         <button
           type="button"
           className="shrink-0 flex items-center gap-10 text-sm font-medium cursor-pointer bg-muted text-muted-foreground px-2 py-1 rounded-md hover:text-foreground border border-transparent hover:border-accent justify-between w-fit sm:w-60"
-          onClick={openSearch}
+          onClick={openCmdK}
         >
           <div className="shrink-0 flex items-center gap-1">
             <SearchIcon className="size-4" />

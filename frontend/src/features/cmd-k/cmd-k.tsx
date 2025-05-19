@@ -1,18 +1,12 @@
 "use client";
 
 import * as React from "react";
-import {
-  FileText,
-  Grid2x2Plus,
-  KanbanSquare,
-  List,
-  SquareCheck,
-} from "lucide-react";
+import {FileText, KanbanSquare, SquareCheck, SunMoon} from "lucide-react";
 
 import {useQuery} from "@rocicorp/zero/react";
 import {useRouter} from "@tanstack/react-router";
 import {
-  CommandDialog as CommandDialogComponent,
+  Command,
   CommandEmpty,
   CommandGroup,
   CommandInput,
@@ -24,12 +18,23 @@ import {
 import {useZ} from "@/lib/zero-cache";
 import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
 import {useAppContext} from "@/state/app-state";
+import {useEffect, useState} from "react";
+import {CommandThemes} from "@/features/cmd-k/cmd-themes";
+import {useHotkeys} from "react-hotkeys-hook";
+import {DialogContent} from "@/components/ui/dialog";
+import {Dialog, DialogDescription, DialogTitle} from "@/components/ui/dialog";
+import {DialogHeader} from "@/components/ui/dialog";
 
-export function CommandDialog() {
-  const {isSearchOpen, openSearch, closeSearch} = useAppContext();
+type Page = "boards" | "notes" | "tasks" | "theme";
+
+function CommandDialogImpl() {
+  const {isCmdKOpen, closeCmdK} = useAppContext();
+  const [pages, setPages] = useState<Page[]>([]);
+  const page = pages[pages.length - 1];
   const router = useRouter();
   const z = useZ();
   const [boards] = useQuery(allBoardsQuery(z));
+  const [search, setSearch] = useState("");
 
   const allTasks = boards.reduce(
     (
@@ -52,107 +57,177 @@ export function CommandDialog() {
   );
   const [notes] = useQuery(getNotesListQuery(z));
 
-  React.useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        openSearch();
-      }
-    };
+  const clearSearch = () => {
+    setSearch("");
+  };
 
-    document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
-  }, []);
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Escape" || (e.key === "Backspace" && !search)) {
+      e.preventDefault();
+      if (pages.length) {
+        setPages((prevPages) => prevPages.slice(0, -1));
+        clearSearch();
+      } else {
+        e.key === "Escape" && closeCmdK();
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!isCmdKOpen) {
+      setTimeout(() => {
+        setPages([]);
+        setSearch("");
+      }, 100);
+    }
+  }, [isCmdKOpen]);
 
   return (
-    <CommandDialogComponent open={isSearchOpen} onOpenChange={closeSearch}>
-      <CommandInput placeholder="Search any board, task..." />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        <CommandSeparator />
-        <CommandGroup heading="Suggestions">
-          <CommandItem
-            onSelect={() => {
-              router.navigate({to: "/boards"});
-              closeSearch();
-            }}
-          >
-            <KanbanSquare />
-            <span>Boards</span>
-          </CommandItem>
+    <DialogContent
+      className="overflow-hidden p-0"
+      onEscapeKeyDown={(e) => e.preventDefault()}
+    >
+      <Command
+        className="[&_[cmdk-group-heading]]:text-muted-foreground **:data-[slot=command-input-wrapper]:h-12 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group]]:px-2 [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-input-wrapper]_svg]:h-5 [&_[cmdk-input-wrapper]_svg]:w-5 [&_[cmdk-input]]:h-12 [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-3 [&_[cmdk-item]_svg]:h-5 [&_[cmdk-item]_svg]:w-5"
+        onKeyDown={handleKeyDown}
+      >
+        <CommandInput
+          placeholder="Search any board, task..."
+          value={search}
+          onValueChange={setSearch}
+        />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandSeparator />
 
-          <CommandItem
-            onSelect={() => {
-              router.navigate({to: "/notes"});
-              closeSearch();
-            }}
-          >
-            <FileText />
-            <span>Notes</span>
-          </CommandItem>
-        </CommandGroup>
-        <CommandGroup heading="Boards">
-          {boards.map((board) => (
-            <CommandItem
-              key={board.id}
-              onSelect={() => {
-                router.navigate({
-                  to: "/boards/$slug",
-                  params: {slug: board.slug},
-                });
-                closeSearch();
-              }}
-            >
-              <KanbanSquare />
-              <span className="flex-1 truncate">{board.name}</span>
-              <CommandSubtitle className="shrink-0">Board</CommandSubtitle>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+          {page === "theme" && <CommandThemes />}
 
-        <CommandGroup heading="Notes">
-          {notes.map((note) => (
-            <CommandItem
-              key={note.id}
-              onSelect={() => {
-                router.navigate({
-                  to: "/notes/$noteId",
-                  params: {noteId: note.id},
-                });
-                closeSearch();
-              }}
-            >
-              <FileText />
-              <span>{note.name}</span>
-              <CommandSubtitle>Note</CommandSubtitle>
-            </CommandItem>
-          ))}
-        </CommandGroup>
+          {!page && (
+            <>
+              <CommandGroup heading="Suggestions">
+                <CommandItem
+                  onSelect={() => {
+                    setPages((prevPages) => [...prevPages, "theme"]);
+                    clearSearch();
+                  }}
+                >
+                  <SunMoon />
+                  Change theme
+                </CommandItem>
+                <CommandItem
+                  onSelect={() => {
+                    router.navigate({to: "/boards"});
+                    closeCmdK();
+                  }}
+                >
+                  <KanbanSquare />
+                  <span>Boards</span>
+                </CommandItem>
 
-        <CommandSeparator />
+                <CommandItem
+                  onSelect={() => {
+                    router.navigate({to: "/notes"});
+                    closeCmdK();
+                  }}
+                >
+                  <FileText />
+                  <span>Notes</span>
+                </CommandItem>
+              </CommandGroup>
+              <CommandGroup heading="Boards">
+                {boards.map((board) => (
+                  <CommandItem
+                    key={board.id}
+                    onSelect={() => {
+                      router.navigate({
+                        to: "/boards/$slug",
+                        params: {slug: board.slug},
+                      });
+                      closeCmdK();
+                    }}
+                  >
+                    <KanbanSquare />
+                    <span className="flex-1 truncate">{board.name}</span>
+                    <CommandSubtitle className="shrink-0">
+                      Board
+                    </CommandSubtitle>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
 
-        <CommandGroup heading="Tasks">
-          {allTasks.map((task) => (
-            <CommandItem
-              key={task.id}
-              onSelect={() => {
-                router.navigate({
-                  to: "/boards/$slug",
-                  params: {slug: task.slug},
-                  search: {
-                    taskId: task.id,
-                  },
-                });
-                closeSearch();
-              }}
-            >
-              <SquareCheck />
-              <span className="flex-1 truncate">{task.name}</span>
-              <CommandSubtitle className="shrink-0">Task</CommandSubtitle>
-            </CommandItem>
-          ))}
-        </CommandGroup>
-      </CommandList>
-    </CommandDialogComponent>
+              <CommandGroup heading="Notes">
+                {notes.map((note) => (
+                  <CommandItem
+                    key={note.id}
+                    onSelect={() => {
+                      router.navigate({
+                        to: "/notes/$noteId",
+                        params: {noteId: note.id},
+                      });
+                      closeCmdK();
+                    }}
+                  >
+                    <FileText />
+                    <span>{note.name}</span>
+                    <CommandSubtitle>Note</CommandSubtitle>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+
+              <CommandSeparator />
+
+              <CommandGroup heading="Tasks">
+                {allTasks.map((task) => (
+                  <CommandItem
+                    key={task.id}
+                    onSelect={() => {
+                      router.navigate({
+                        to: "/boards/$slug",
+                        params: {slug: task.slug},
+                        search: {
+                          taskId: task.id,
+                        },
+                      });
+                      closeCmdK();
+                    }}
+                  >
+                    <SquareCheck />
+                    <span className="flex-1 truncate">{task.name}</span>
+                    <CommandSubtitle className="shrink-0">Task</CommandSubtitle>
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </>
+          )}
+        </CommandList>
+      </Command>
+    </DialogContent>
+  );
+}
+
+export function CommandDialog() {
+  const {isCmdKOpen, openCmdK, closeCmdK} = useAppContext();
+
+  useHotkeys(
+    "mod+k",
+    () => {
+      openCmdK();
+    },
+    {
+      preventDefault: true,
+      enableOnFormTags: true,
+      enableOnContentEditable: true,
+    },
+  );
+
+  return (
+    <Dialog open={isCmdKOpen} onOpenChange={closeCmdK}>
+      <DialogHeader className="sr-only">
+        <DialogTitle>Command Palette</DialogTitle>
+        <DialogDescription>Search for a command to run...</DialogDescription>
+      </DialogHeader>
+
+      <CommandDialogImpl />
+    </Dialog>
   );
 }
