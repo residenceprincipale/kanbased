@@ -6,6 +6,7 @@ import {SidebarProvider} from "@/components/ui/sidebar";
 import {getSidebarStateFromCookie} from "@/lib/utils";
 import {TopSection} from "@/components/top-section";
 import {CommandDialog} from "@/features/cmd-k/cmd-k";
+import {OrganizationDedicatedSwitch} from "@/features/cmd-k/organization-dedicated-switch";
 
 export const Route = createFileRoute("/_authenticated/_layout")({
   component: RouteComponent,
@@ -35,6 +36,7 @@ function RouteComponent() {
       </main>
 
       <CommandDialog />
+      <OrganizationDedicatedSwitch />
     </SidebarProvider>
   );
 }

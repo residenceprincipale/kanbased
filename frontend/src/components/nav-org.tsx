@@ -33,6 +33,9 @@ import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 import {InviteMemberDialog} from "@/features/user/invite-member";
 import OrgAvatar from "@/components/org-avatar";
 import {Button} from "@/components/ui/button";
+import {useAppContext} from "@/state/app-state";
+import {WrappedTooltip} from "@/components/ui/tooltip";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 
 export function NavOrganization() {
   const userData = useAuthData();
@@ -44,7 +47,7 @@ export function NavOrganization() {
   const currentOrganization = organizationsList.find(
     (org) => org.id === userData.activeOrganizationId,
   );
-
+  const {openOrgSwitch} = useAppContext();
   const switchOrganizationMutation = useMutation({
     mutationFn: async (organizationId: string) => {
       const res = await authClient.organization.setActive({
@@ -90,13 +93,20 @@ export function NavOrganization() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
 
-              <Button
-                type="button"
-                variant="ghost"
-                className={cn(isSidebarCollapsed && "hidden")}
-              >
-                <ArrowUpDown className="text-muted-foreground" />
-              </Button>
+              <WrappedTooltip asChild>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className={cn(isSidebarCollapsed && "hidden")}
+                  onClick={() => openOrgSwitch()}
+                >
+                  <ArrowUpDown className="text-muted-foreground" />
+                </Button>
+
+                <KeyboardShortcutIndicator commandOrCtrlKey label="Shortcut">
+                  o
+                </KeyboardShortcutIndicator>
+              </WrappedTooltip>
             </div>
 
             <DropdownMenuContent

@@ -7,6 +7,9 @@ type AppContextValues = {
   isCmdKOpen: boolean;
   openCmdK: () => void;
   closeCmdK: () => void;
+  isOrgSwitchOpen: boolean;
+  openOrgSwitch: () => void;
+  closeOrgSwitch: () => void;
 };
 
 const AppContext = createContext<AppContextValues>({} as AppContextValues);
@@ -18,7 +21,7 @@ export function AppContextProvider(props: React.PropsWithChildren) {
   });
 
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
+  const [isOrgSwitchOpen, setIsOrgSwitchOpen] = useState(false);
   const updateTheme = (value: Theme) => {
     const htmlElement = document.documentElement;
 
@@ -76,6 +79,9 @@ export function AppContextProvider(props: React.PropsWithChildren) {
         isCmdKOpen: isSearchOpen,
         openCmdK: openSearch,
         closeCmdK: closeSearch,
+        isOrgSwitchOpen,
+        openOrgSwitch: () => setIsOrgSwitchOpen(true),
+        closeOrgSwitch: () => setIsOrgSwitchOpen(false),
       }}
     >
       {props.children}
