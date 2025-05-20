@@ -13,7 +13,6 @@ import {
 } from "../../icons";
 import type {DefineFeature, Icon} from "../shared";
 
-
 interface TableConfig {
   addRowIcon: Icon;
   addColIcon: Icon;

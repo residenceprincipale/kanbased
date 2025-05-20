@@ -1,4 +1,3 @@
-
 import {
   Editor,
   EditorStatus,
@@ -14,7 +13,6 @@ import {trailing} from "@milkdown/kit/plugin/trailing";
 import {commonmark} from "@milkdown/kit/preset/commonmark";
 import {gfm} from "@milkdown/kit/preset/gfm";
 import {getMarkdown} from "@milkdown/kit/utils";
-
 
 import {CrepeFeature, defaultFeatures, loadFeature} from "../feature";
 import {configureFeatures, crepeCtx} from "./slice";

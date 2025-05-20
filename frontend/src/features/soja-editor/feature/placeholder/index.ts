@@ -1,4 +1,3 @@
-
 import {findParent} from "@milkdown/kit/prose";
 import {Plugin, PluginKey} from "@milkdown/kit/prose/state";
 import {Decoration, DecorationSet} from "@milkdown/kit/prose/view";

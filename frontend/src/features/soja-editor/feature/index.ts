@@ -6,8 +6,8 @@ import type {LinkTooltipFeatureConfig} from "./link-tooltip";
 import type {ListItemFeatureConfig} from "./list-item";
 import type {PlaceHolderFeatureConfig} from "./placeholder";
 import type {TableFeatureConfig} from "./table";
-import {BlockEditFeatureConfig} from "@/features/soja-editor/feature/block-edit";
-import {ToolbarFeatureConfig} from "@/features/soja-editor/feature/toolbar";
+import type {BlockEditFeatureConfig} from "@/features/soja-editor/feature/block-edit";
+import type {ToolbarFeatureConfig} from "@/features/soja-editor/feature/toolbar";
 
 export enum CrepeFeature {
   ListItem = "list-item",

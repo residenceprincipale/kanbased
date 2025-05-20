@@ -1,9 +1,10 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {useQuery} from "@rocicorp/zero/react";
 import {toast} from "sonner";
-import {ArrowDown, ArrowUp, Info} from "lucide-react";
+import {ArrowDown, ArrowUp, EllipsisVertical,Info, Trash2} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
 import {Link, useNavigate, useParams} from "@tanstack/react-router";
+import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {
   Dialog,
   DialogContent,
@@ -22,14 +23,12 @@ import {Button, buttonVariants} from "@/components/ui/button";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 
-import {EllipsisVertical, Trash2} from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {cn} from "@/lib/utils";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
 

@@ -1,4 +1,3 @@
-import type {Ctx} from "@milkdown/kit/ctx";
 
 import {imageBlockSchema} from "@milkdown/kit/component/image-block";
 import {editorViewCtx} from "@milkdown/kit/core";
@@ -15,8 +14,6 @@ import {
 import {createTable} from "@milkdown/kit/preset/gfm";
 import {TextSelection} from "@milkdown/kit/prose/state";
 
-import type {BlockEditFeatureConfig} from "../index";
-import type {MenuItemGroup} from "./utils";
 
 import {CrepeFeature} from "../../..";
 import {FeaturesCtx} from "../../../core/slice";
@@ -45,6 +42,9 @@ import {
   clearContentAndWrapInBlockType,
   clearRange,
 } from "./utils";
+import type {MenuItemGroup} from "./utils";
+import type {BlockEditFeatureConfig} from "../index";
+import type {Ctx} from "@milkdown/kit/ctx";
 
 export function getGroups(
   filter?: string,
@@ -307,7 +307,7 @@ export function getGroups(
   }, 0);
 
   return {
-    groups: groups as MenuItemGroup[],
+    groups: groups as Array<MenuItemGroup>,
     size: items.length,
   };
 }

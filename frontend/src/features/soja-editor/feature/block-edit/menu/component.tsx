@@ -1,17 +1,18 @@
-import type {Ctx} from "@milkdown/kit/ctx";
 import {Icon} from "@milkdown/kit/component";
 import {
+  
   computed,
   defineComponent,
   h,
   onUnmounted,
   ref,
   watch,
-  watchEffect,
-  type Ref,
+  watchEffect
 } from "vue";
-import type {BlockEditFeatureConfig} from "..";
 import {getGroups} from "./config";
+import type {Ref} from "vue";
+import type {BlockEditFeatureConfig} from "..";
+import type {Ctx} from "@milkdown/kit/ctx";
 
 type MenuProps = {
   ctx: Ctx;

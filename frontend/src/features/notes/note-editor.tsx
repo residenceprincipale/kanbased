@@ -1,4 +1,4 @@
-import {lazy, Suspense, useRef, useState} from "react";
+import {Suspense, lazy, useRef, useState} from "react";
 import {toast} from "sonner";
 import {flushSync} from "react-dom";
 import {
@@ -10,6 +10,8 @@ import {
   Trash2,
 } from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
+import type {GetNoteQueryResult} from "@/lib/zero-queries";
+import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {Button} from "@/components/ui/button";
 import {Spinner} from "@/components/ui/spinner";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
@@ -26,8 +28,6 @@ import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
-import {GetNoteQueryResult} from "@/lib/zero-queries";
-import {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
 
 import {

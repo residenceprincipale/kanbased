@@ -2,16 +2,18 @@
 
 import * as React from "react";
 import {
+  ArrowUpDown,
+  Building2,
   FileText,
   KanbanSquare,
   SquareCheck,
   SunMoon,
-  Building2,
-  ArrowUpDown,
 } from "lucide-react";
 
 import {useQuery} from "@rocicorp/zero/react";
 import {useRouter} from "@tanstack/react-router";
+import {useEffect, useState} from "react";
+import {useHotkeys} from "react-hotkeys-hook";
 import {
   Command,
   CommandEmpty,
@@ -25,19 +27,15 @@ import {
 import {useZ} from "@/lib/zero-cache";
 import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
 import {useAppContext} from "@/state/app-state";
-import {useEffect, useState} from "react";
 import {CommandThemes} from "@/features/cmd-k/cmd-themes";
 import {CommandOrgSwitch} from "@/features/cmd-k/cmd-org-switch";
-import {useHotkeys} from "react-hotkeys-hook";
-import {DialogContent} from "@/components/ui/dialog";
-import {Dialog, DialogDescription, DialogTitle} from "@/components/ui/dialog";
-import {DialogHeader} from "@/components/ui/dialog";
+import {Dialog,DialogContent, DialogDescription, DialogHeader,DialogTitle} from "@/components/ui/dialog";
 
 type Page = "boards" | "notes" | "tasks" | "theme" | "organization";
 
 export function CommandDialog() {
   const {isCmdKOpen, openCmdK, closeCmdK} = useAppContext();
-  const [pages, setPages] = useState<Page[]>([]);
+  const [pages, setPages] = useState<Array<Page>>([]);
   const page = pages[pages.length - 1];
   const router = useRouter();
   const z = useZ();

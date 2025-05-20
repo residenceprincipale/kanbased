@@ -10,7 +10,6 @@ import {
 import {captionIcon, confirmIcon, imageIcon} from "../../icons";
 import type {DefineFeature, Icon} from "../shared";
 
-
 interface ImageBlockConfig {
   onUpload: (file: File) => Promise<string>;
   proxyDomURL: (url: string) => Promise<string> | string;

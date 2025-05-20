@@ -1,13 +1,13 @@
+import {useHotkeys} from "react-hotkeys-hook";
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandInput,
   CommandList,
   CommandSeparator,
-  Command,
 } from "@/components/ui/command";
 import {CommandOrgSwitch} from "@/features/cmd-k/cmd-org-switch";
-import {useHotkeys} from "react-hotkeys-hook";
 import {useAppContext} from "@/state/app-state";
 
 export function OrganizationDedicatedSwitch() {

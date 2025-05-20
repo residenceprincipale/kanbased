@@ -1,5 +1,3 @@
-import type {Ctx} from "@milkdown/kit/ctx";
-import type {MarkType} from "@milkdown/kit/prose/model";
 
 import {Icon} from "@milkdown/kit/component";
 import {linkTooltipAPI} from "@milkdown/kit/component/link-tooltip";
@@ -17,11 +15,8 @@ import {
   strikethroughSchema,
   toggleStrikethroughCommand,
 } from "@milkdown/kit/preset/gfm";
-import {type Selection} from "@milkdown/kit/prose/state";
 import clsx from "clsx";
-import {defineComponent, type Ref, type ShallowRef, h, Fragment} from "vue";
-
-import type {ToolbarFeatureConfig} from ".";
+import {Fragment,   defineComponent, h} from "vue";
 import {
   boldIcon,
   codeIcon,
@@ -29,6 +24,12 @@ import {
   linkIcon,
   strikethroughIcon,
 } from "../../icons";
+import type {Ref, ShallowRef} from "vue";
+
+import type {Selection} from "@milkdown/kit/prose/state";
+import type {ToolbarFeatureConfig} from ".";
+import type {MarkType} from "@milkdown/kit/prose/model";
+import type {Ctx} from "@milkdown/kit/ctx";
 
 type ToolbarProps = {
   ctx: Ctx;

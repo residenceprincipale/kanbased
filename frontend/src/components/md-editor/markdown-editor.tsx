@@ -1,6 +1,7 @@
-import {useEffect, useImperativeHandle, RefObject} from "react";
+import {useEffect, useImperativeHandle} from "react";
 import {Milkdown, MilkdownProvider, useEditor} from "@milkdown/react";
 import {editorViewCtx} from "@milkdown/kit/core";
+import type { RefObject} from "react";
 import type {ListenerManager} from "@milkdown/kit/plugin/listener";
 import {Crepe} from "@/features/soja-editor";
 import {useAppContext} from "@/state/app-state";

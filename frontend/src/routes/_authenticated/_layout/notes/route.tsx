@@ -1,7 +1,7 @@
 import {
+  Outlet,
   createFileRoute,
   linkOptions,
-  Outlet,
   useRouter,
 } from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";

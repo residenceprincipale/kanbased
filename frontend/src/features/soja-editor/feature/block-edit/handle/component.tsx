@@ -1,5 +1,5 @@
 import {Icon} from "@milkdown/kit/component";
-import {defineComponent, ref, h, Fragment} from "vue";
+import {Fragment, defineComponent, h, ref} from "vue";
 
 import type {Icon as IconType} from "../../shared";
 

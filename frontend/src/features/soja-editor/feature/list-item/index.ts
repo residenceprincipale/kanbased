@@ -9,9 +9,7 @@ import {
 } from "../../icons";
 import type {Ctx} from "@milkdown/kit/ctx";
 
-
 import type {DefineFeature, Icon} from "../shared";
-
 
 export interface ListItemConfig {
   bulletIcon: Icon;

@@ -7,7 +7,6 @@ import {
 import {confirmIcon, copyIcon, editIcon, removeIcon} from "../../icons";
 import type {DefineFeature, Icon} from "../shared";
 
-
 interface LinkTooltipConfig {
   linkIcon: Icon;
   editButton: Icon;
