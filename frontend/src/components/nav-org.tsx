@@ -1,26 +1,19 @@
 "use client";
 
 import {ArrowUpDown, Plus, Users} from "lucide-react";
-import {useMutation} from "@tanstack/react-query";
-import {toast} from "sonner";
 import {Link} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
-import {cn, handleAuthResponse} from "@/lib/utils";
+import {cn} from "@/lib/utils";
 
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {useAuthData} from "@/queries/session";
-import {authClient} from "@/lib/auth";
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -48,27 +41,6 @@ export function NavOrganization() {
     (org) => org.id === userData.activeOrganizationId,
   );
   const {openOrgSwitch} = useAppContext();
-  const switchOrganizationMutation = useMutation({
-    mutationFn: async (organizationId: string) => {
-      const res = await authClient.organization.setActive({
-        organizationId,
-      });
-      return handleAuthResponse(res);
-    },
-    onSuccess: () => {
-      localStorage.removeItem("auth-token");
-      window.location.href = "/";
-    },
-  });
-
-  const handleSwitchOrganization = (organizationId: string) => {
-    const promise = switchOrganizationMutation.mutateAsync(organizationId);
-    toast.promise(promise, {
-      loading: "Switching organization...",
-      error: "Failed to switch organization",
-      position: "top-center",
-    });
-  };
 
   return (
     <SidebarMenu>
@@ -98,7 +70,7 @@ export function NavOrganization() {
                   type="button"
                   variant="ghost"
                   className={cn(isSidebarCollapsed && "hidden")}
-                  onClick={() => openOrgSwitch()}
+                  onClick={openOrgSwitch}
                 >
                   <ArrowUpDown className="text-muted-foreground" />
                 </Button>
@@ -114,7 +86,17 @@ export function NavOrganization() {
               align="start"
               side={isMobile ? "bottom" : "right"}
             >
-              <DropdownMenuLabel>Workspace</DropdownMenuLabel>
+              <DropdownMenuLabel className="flex items-center gap-2">
+                <OrgAvatar
+                  name={currentOrganization?.name ?? ""}
+                  imageUrl={currentOrganization?.logo}
+                />
+                <div className="grid flex-1 text-left text-sm leading-tight">
+                  <span className="font-medium truncate">
+                    {currentOrganization?.name}
+                  </span>
+                </div>
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
                 <Link to="/new-organization">
@@ -130,23 +112,10 @@ export function NavOrganization() {
                 </DropdownMenuItem>
               </DialogTrigger>
 
-              <DropdownMenuSub>
-                <DropdownMenuSubTrigger>
-                  <ArrowUpDown className="mr-2 h-4 w-4 text-muted-foreground" />
-                  Switch workspace
-                </DropdownMenuSubTrigger>
-                <DropdownMenuSubContent>
-                  {organizationsList.map((org) => (
-                    <DropdownMenuCheckboxItem
-                      checked={org.id === userData.activeOrganizationId}
-                      key={org.id}
-                      onCheckedChange={() => handleSwitchOrganization(org.id)}
-                    >
-                      {org.name}
-                    </DropdownMenuCheckboxItem>
-                  ))}
-                </DropdownMenuSubContent>
-              </DropdownMenuSub>
+              <DropdownMenuItem className="w-full" onClick={openOrgSwitch}>
+                <ArrowUpDown className="mr-2 h-4 w-4 text-muted-foreground" />
+                Switch workspace
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
