@@ -85,6 +85,16 @@ export type GetOrganizationQueryResult = ZeroQueryResult<
   typeof getOrganizationQuery
 >;
 
+export function getOrganizationMembersQuery(z: Z, orgId: string) {
+  return z.query.membersTable
+    .where("organizationId", orgId)
+    .related("user", (q) => q.orderBy("name", "asc"));
+}
+
+export type GetOrganizationMembersQueryResult = Array<
+  ZeroQueryResult<typeof getOrganizationMembersQuery>
+>;
+
 let didPreloadAllBoards = false;
 
 export function preloadAllBoards(z: Z) {
