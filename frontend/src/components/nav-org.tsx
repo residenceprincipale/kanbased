@@ -1,6 +1,6 @@
 "use client";
 
-import {ArrowUpDown, Plus, Users} from "lucide-react";
+import {ArrowUpDown, Plus, UserPlus, Users} from "lucide-react";
 import {Link} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {cn} from "@/lib/utils";
@@ -105,10 +105,17 @@ export function NavOrganization() {
                 </Link>
               </DropdownMenuItem>
 
+              <DropdownMenuItem asChild>
+                <Link to="/workspace-settings">
+                  <Users className="mr-2 h-4 w-4" />
+                  Manage workspace
+                </Link>
+              </DropdownMenuItem>
+
               <DialogTrigger asChild>
                 <DropdownMenuItem className="w-full">
-                  <Users className="mr-2 h-4 w-4" />
-                  Manage members
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Invite member
                 </DropdownMenuItem>
               </DialogTrigger>
 

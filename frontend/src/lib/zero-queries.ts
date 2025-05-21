@@ -77,8 +77,8 @@ export type AllBoardsQueryResult = Array<
   ZeroQueryResult<typeof allBoardsQuery>
 >;
 
-export function getOrganizationQuery(z: Z, slug: string) {
-  return z.query.organizationsTable.where("slug", slug).one();
+export function getOrganizationQuery(z: Z, orgId: string) {
+  return z.query.organizationsTable.where("id", orgId).one();
 }
 
 export type GetOrganizationQueryResult = ZeroQueryResult<
