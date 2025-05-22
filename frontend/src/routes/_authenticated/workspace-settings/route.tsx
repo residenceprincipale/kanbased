@@ -19,6 +19,11 @@ import {Button} from "@/components/ui/button";
 import {DialogTrigger} from "@/components/ui/dialog";
 import {Dialog} from "@/components/ui/dialog";
 import {InviteMemberDialog, RoleSelect} from "@/features/user/invite-member";
+import {Trash2} from "lucide-react";
+import {useMutation} from "@tanstack/react-query";
+import {authClient} from "@/lib/auth";
+import {handleAuthResponse} from "@/lib/utils";
+import {toast} from "sonner";
 
 export const Route = createFileRoute("/_authenticated/workspace-settings")({
   component: RouteComponent,
@@ -30,9 +35,30 @@ function RouteComponent() {
   const [myOrg] = useQuery(getOrganizationQuery(z, orgId));
   const [members] = useQuery(getOrganizationMembersQuery(z, orgId));
 
+  const removeMemberMutation = useMutation({
+    mutationFn: async ({memberId}: {memberId: string}) => {
+      const result = await authClient.organization.removeMember({
+        memberIdOrEmail: memberId,
+      });
+
+      return handleAuthResponse(result);
+    },
+  });
+
   if (!myOrg) {
     return null;
   }
+
+  const handleRemoveMember = (memberId: string) => {
+    const removeMemberPromise = removeMemberMutation.mutateAsync({memberId});
+
+    toast.promise(removeMemberPromise, {
+      loading: "Removing member...",
+      success: "Member removed",
+      error: "Failed to remove member",
+      position: "top-center",
+    });
+  };
 
   return (
     <div className="max-w-lg mx-auto mt-10">
@@ -86,7 +112,7 @@ function RouteComponent() {
             {members?.map((member) => (
               <div
                 key={member.id}
-                className="flex items-center gap-4 p-2 rounded-lg hover:bg-muted transition"
+                className="flex items-center gap-4 p-2 rounded-lg transition"
               >
                 <UserAvatar
                   name={member.user?.name || "?"}
@@ -101,12 +127,23 @@ function RouteComponent() {
                     {member.user?.email}
                   </div>
                 </div>
-                <RoleSelect
-                  value={member.role}
-                  onChange={(role) => {
-                    console.log(role);
-                  }}
-                />
+
+                <div className="flex items-center gap-2">
+                  <RoleSelect
+                    value={member.role}
+                    onChange={(role) => {
+                      console.log(role);
+                    }}
+                  />
+
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    onClick={() => handleRemoveMember(member.id)}
+                  >
+                    <Trash2 />
+                  </Button>
+                </div>
               </div>
             ))}
           </div>
