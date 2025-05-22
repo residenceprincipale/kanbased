@@ -1,11 +1,9 @@
-
 import {editorViewCtx} from "@milkdown/kit/core";
 import {BlockProvider, block, blockConfig} from "@milkdown/kit/plugin/block";
 import {paragraphSchema} from "@milkdown/kit/preset/commonmark";
 import {findParent} from "@milkdown/kit/prose";
 import {TextSelection} from "@milkdown/kit/prose/state";
-import { createApp} from "vue";
-
+import {createApp} from "vue";
 
 import {menuIcon, plusIcon} from "../../../icons";
 import {menuAPI} from "../menu";

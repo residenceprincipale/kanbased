@@ -3,7 +3,6 @@ import type {Ctx} from "@milkdown/kit/ctx";
 import type {Attrs, NodeType} from "@milkdown/kit/prose/model";
 import type {Command, Transaction} from "@milkdown/kit/prose/state";
 
-
 export interface MenuItem {
   index: number;
   key: string;
@@ -20,7 +19,9 @@ export type MenuItemGroup<HasIndex extends true | false = true> = WithRange<
   {
     key: string;
     label: string;
-    items: HasIndex extends true ? Array<MenuItem> : Array<Omit<MenuItem, "index">>;
+    items: HasIndex extends true
+      ? Array<MenuItem>
+      : Array<Omit<MenuItem, "index">>;
   },
   HasIndex
 >;

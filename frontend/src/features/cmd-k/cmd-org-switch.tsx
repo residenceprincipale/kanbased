@@ -5,14 +5,11 @@ import {useMutation} from "@tanstack/react-query";
 import {toast} from "sonner";
 
 import {useQuery} from "@rocicorp/zero/react";
-import type {
-  GetOrganizationListQueryResult} from "@/lib/zero-queries";
+import type {GetOrganizationListQueryResult} from "@/lib/zero-queries";
 import type {AuthJwtPayload} from "@/types/api-response-types";
 import {CommandItem, CommandSubtitle} from "@/components/ui/command";
 import {useZ} from "@/lib/zero-cache";
-import {
-  getOrganizationListQuery
-} from "@/lib/zero-queries";
+import {getOrganizationListQuery} from "@/lib/zero-queries";
 import {useAuthData} from "@/queries/session";
 import {authClient} from "@/lib/auth";
 import {handleAuthResponse} from "@/lib/utils";

@@ -1,13 +1,12 @@
 import {Icon} from "@milkdown/kit/component";
 import {
-  
   computed,
   defineComponent,
   h,
   onUnmounted,
   ref,
   watch,
-  watchEffect
+  watchEffect,
 } from "vue";
 import {getGroups} from "./config";
 import type {Ref} from "vue";

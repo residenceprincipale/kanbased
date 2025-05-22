@@ -5,7 +5,6 @@ import {configureMenu, menu, menuAPI} from "./menu";
 import type {DefineFeature, Icon} from "../shared";
 import type {GroupBuilder} from "./menu/group-builder";
 
-
 interface BlockEditConfig {
   handleAddIcon: Icon;
   handleDragIcon: Icon;

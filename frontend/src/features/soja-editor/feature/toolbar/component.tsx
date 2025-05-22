@@ -1,4 +1,3 @@
-
 import {Icon} from "@milkdown/kit/component";
 import {linkTooltipAPI} from "@milkdown/kit/component/link-tooltip";
 import {commandsCtx, editorViewCtx} from "@milkdown/kit/core";
@@ -16,7 +15,7 @@ import {
   toggleStrikethroughCommand,
 } from "@milkdown/kit/preset/gfm";
 import clsx from "clsx";
-import {Fragment,   defineComponent, h} from "vue";
+import {Fragment, defineComponent, h} from "vue";
 import {
   boldIcon,
   codeIcon,

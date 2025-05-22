@@ -1,13 +1,7 @@
-
 import {SlashProvider, slashFactory} from "@milkdown/kit/plugin/slash";
-import {
-  
-  
-  TextSelection
-} from "@milkdown/kit/prose/state";
+import {TextSelection} from "@milkdown/kit/prose/state";
 import {$ctx} from "@milkdown/kit/utils";
-import {  createApp, ref} from "vue";
-
+import {createApp, ref} from "vue";
 
 import {isInCodeBlock, isInList} from "../../../utils";
 import {Menu} from "./component";

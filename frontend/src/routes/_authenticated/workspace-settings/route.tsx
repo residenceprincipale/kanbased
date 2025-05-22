@@ -1,41 +1,39 @@
-import {useZ} from "@/lib/zero-cache";
-import {
-  getOrganizationQuery,
-  getOrganizationMembersQuery,
-  getOrganizationListQuery,
-} from "@/lib/zero-queries";
-import {useActiveOrganizationId, useAuthData} from "@/queries/session";
 import {useQuery} from "@rocicorp/zero/react";
 import {createFileRoute, useRouter} from "@tanstack/react-router";
+import {Trash2} from "lucide-react";
+import {useMutation} from "@tanstack/react-query";
+import {toast} from "sonner";
+import {useZ} from "@/lib/zero-cache";
+import {
+  getOrganizationListQuery,
+  getOrganizationMembersQuery,
+  getOrganizationQuery,
+} from "@/lib/zero-queries";
+import {useActiveOrganizationId, useAuthData} from "@/queries/session";
 import UserAvatar from "@/components/user-avatar";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from "@/components/ui/card";
 import OrgAvatar from "@/components/org-avatar";
 import {Button} from "@/components/ui/button";
-import {DialogTrigger} from "@/components/ui/dialog";
-import {Dialog} from "@/components/ui/dialog";
+import {Dialog,DialogTrigger} from "@/components/ui/dialog";
 import {InviteMemberDialog, RoleSelect} from "@/features/user/invite-member";
-import {Trash2} from "lucide-react";
-import {useMutation} from "@tanstack/react-query";
 import {authClient} from "@/lib/auth";
 import {handleAuthResponse} from "@/lib/utils";
-import {toast} from "sonner";
 import {BackButton} from "@/components/back-button";
 import {
+  AlertDialog,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialogTitle,AlertDialogTrigger
 } from "@/components/ui/alert-dialog";
-import {AlertDialog} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/workspace-settings")({
   component: RouteComponent,
@@ -70,7 +68,7 @@ function RouteComponent() {
       role: "member" | "admin" | "owner";
     }) => {
       const result = await authClient.organization.updateMemberRole({
-        role: role as "member" | "admin" | "owner",
+        role: role,
         memberId,
       });
 

@@ -1,4 +1,3 @@
-
 import {imageBlockSchema} from "@milkdown/kit/component/image-block";
 import {editorViewCtx} from "@milkdown/kit/core";
 import {
@@ -13,7 +12,6 @@ import {
 } from "@milkdown/kit/preset/commonmark";
 import {createTable} from "@milkdown/kit/preset/gfm";
 import {TextSelection} from "@milkdown/kit/prose/state";
-
 
 import {CrepeFeature} from "../../..";
 import {FeaturesCtx} from "../../../core/slice";

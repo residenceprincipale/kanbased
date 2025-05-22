@@ -1,6 +1,6 @@
 import {TooltipProvider, tooltipFactory} from "@milkdown/kit/plugin/tooltip";
 import {TextSelection} from "@milkdown/kit/prose/state";
-import {  createApp, ref, shallowRef} from "vue";
+import {createApp, ref, shallowRef} from "vue";
 import {Toolbar} from "./component";
 import type {Ctx} from "@milkdown/kit/ctx";
 import type {
@@ -13,7 +13,6 @@ import type {EditorView} from "@milkdown/kit/prose/view";
 import type {App, ShallowRef} from "vue";
 
 import type {DefineFeature, Icon} from "../shared";
-
 
 interface ToolbarConfig {
   boldIcon: Icon;
