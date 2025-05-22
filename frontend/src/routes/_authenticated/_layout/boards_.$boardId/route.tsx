@@ -1,5 +1,6 @@
 import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
+import {useEffect} from "react";
 import {TaskDetailPage} from "./-actions";
 import {Columns} from "@/features/board-detail/columns";
 import {ModalProvider} from "@/state/modals";
@@ -9,7 +10,6 @@ import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
 import {useAuthData} from "@/queries/session";
-import {useEffect} from "react";
 
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardId",

@@ -20,7 +20,7 @@ import {
 } from "@/components/ui/card";
 import OrgAvatar from "@/components/org-avatar";
 import {Button} from "@/components/ui/button";
-import {Dialog,DialogTrigger} from "@/components/ui/dialog";
+import {Dialog, DialogTrigger} from "@/components/ui/dialog";
 import {InviteMemberDialog, RoleSelect} from "@/features/user/invite-member";
 import {authClient} from "@/lib/auth";
 import {handleAuthResponse} from "@/lib/utils";
@@ -32,7 +32,8 @@ import {
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
-  AlertDialogTitle,AlertDialogTrigger
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated/workspace-settings")({
