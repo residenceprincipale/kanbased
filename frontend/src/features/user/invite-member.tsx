@@ -99,8 +99,8 @@ export function RoleSelect({
   onChange,
   className,
 }: {
-  value?: string;
-  onChange?: (value: string) => void;
+  value?: "member" | "admin" | "owner";
+  onChange?: (value: "member" | "admin" | "owner") => void;
   className?: string;
 }) {
   return (
@@ -108,7 +108,11 @@ export function RoleSelect({
       <select
         name="role"
         value={value}
-        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        onChange={
+          onChange
+            ? (e) => onChange(e.target.value as "member" | "admin" | "owner")
+            : undefined
+        }
         className="appearance-none border rounded px-2 py-1 bg-muted-foreground/10 w-full pr-8 focus:outline-none focus:ring-2 focus:ring-primary"
       >
         <option value="owner">Owner</option>

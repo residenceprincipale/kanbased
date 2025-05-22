@@ -59,6 +59,23 @@ function RouteComponent() {
     },
   });
 
+  const changeMemberRoleMutation = useMutation({
+    mutationFn: async ({
+      memberId,
+      role,
+    }: {
+      memberId: string;
+      role: "member" | "admin" | "owner";
+    }) => {
+      const result = await authClient.organization.updateMemberRole({
+        role: role as "member" | "admin" | "owner",
+        memberId,
+      });
+
+      return handleAuthResponse(result);
+    },
+  });
+
   const deleteWorkspaceMutation = useMutation({
     mutationFn: async () => {
       const result = await authClient.organization.delete({
@@ -103,6 +120,23 @@ function RouteComponent() {
       loading: "Deleting workspace...",
       success: "Workspace deleted",
       error: "Failed to delete workspace",
+      position: "top-center",
+    });
+  };
+
+  const handleChangeMemberRole = (
+    memberId: string,
+    role: "member" | "admin" | "owner",
+  ) => {
+    const changeMemberRolePromise = changeMemberRoleMutation.mutateAsync({
+      memberId,
+      role,
+    });
+
+    toast.promise(changeMemberRolePromise, {
+      loading: "Changing member role...",
+      success: "Member role changed",
+      error: "Failed to change member role",
       position: "top-center",
     });
   };
@@ -216,9 +250,9 @@ function RouteComponent() {
 
                   <div className="flex items-center gap-2">
                     <RoleSelect
-                      value={member.role}
+                      value={member.role as "member" | "admin" | "owner"}
                       onChange={(role) => {
-                        console.log(role);
+                        handleChangeMemberRole(member.id, role);
                       }}
                     />
 
