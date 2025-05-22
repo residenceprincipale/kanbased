@@ -8,10 +8,12 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {cn} from "@/lib/utils";
 
 export function BackButton(
   props: React.PropsWithChildren<{
     variant?: ButtonVariant;
+    className?: string;
   }>,
 ) {
   const router = useRouter();
@@ -26,7 +28,7 @@ export function BackButton(
             size={props.children ? "default" : "icon"}
             type="button"
             onClick={() => router.history.back()}
-            className="h-8"
+            className={cn("h-8", props.className)}
             aria-label="Go back"
             disabled={!canGoBack}
           >
