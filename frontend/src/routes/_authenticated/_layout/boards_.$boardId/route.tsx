@@ -1,4 +1,4 @@
-import {createFileRoute, linkOptions} from "@tanstack/react-router";
+import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {TaskDetailPage} from "./-actions";
 import {Columns} from "@/features/board-detail/columns";
@@ -9,6 +9,7 @@ import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
 import {useAuthData} from "@/queries/session";
+import {useEffect} from "react";
 
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardId",
@@ -19,6 +20,15 @@ export const Route = createFileRoute(
       taskId: typeof search.taskId === "string" ? search.taskId : undefined,
     };
   },
+  context: () => {
+    let _boardName = "";
+    return {
+      getBoardName: () => _boardName,
+      setBoardName: (name: string) => {
+        _boardName = name;
+      },
+    };
+  },
   loader: (ctx) => {
     return {
       breadcrumbs: linkOptions([
@@ -27,7 +37,7 @@ export const Route = createFileRoute(
           to: "/boards",
         },
         {
-          label: ctx.params.boardId,
+          label: ctx.context.getBoardName(),
           to: "/boards/$boardId",
           params: {boardId: ctx.params.boardId},
         },
@@ -42,6 +52,15 @@ function BoardPage() {
   const userData = useAuthData();
   const isMember = userData.role === "member";
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, boardId));
+  const router = useRouter();
+  const routeCtx = Route.useRouteContext();
+
+  useEffect(() => {
+    if (board?.name) {
+      routeCtx.setBoardName(board.name);
+      router.invalidate();
+    }
+  }, [board?.name]);
 
   if (!board) {
     return null;

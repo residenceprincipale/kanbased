@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/breadcrumb";
 import {useSidebar} from "@/components/ui/sidebar";
 
+type BreadcrumbType = LinkProps & {label: string};
+
 export interface BreadcrumbsData {
-  breadcrumbs: Array<LinkProps & {label: string}>;
+  breadcrumbs: Array<BreadcrumbType>;
 }
 
 export function TsrBreadcrumbs() {
@@ -21,7 +23,7 @@ export function TsrBreadcrumbs() {
 
   const breadcrumbs = matches
     .filter((match) => isMatch(match, "loaderData.breadcrumbs"))
-    .flatMap((match) => match.loaderData?.breadcrumbs!);
+    .flatMap((match) => match.loaderData?.breadcrumbs) as Array<BreadcrumbType>;
 
   if (isMobile) {
     const lastBreadcrumb = breadcrumbs[breadcrumbs.length - 1];
