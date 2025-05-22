@@ -16,6 +16,9 @@ import {
 } from "@/components/ui/card";
 import OrgAvatar from "@/components/org-avatar";
 import {Button} from "@/components/ui/button";
+import {DialogTrigger} from "@/components/ui/dialog";
+import {Dialog} from "@/components/ui/dialog";
+import {InviteMemberDialog, RoleSelect} from "@/features/user/invite-member";
 
 export const Route = createFileRoute("/_authenticated/workspace-settings")({
   component: RouteComponent,
@@ -67,9 +70,15 @@ function RouteComponent() {
             </CardDescription>
           </div>
 
-          <Button size="sm" variant="outline">
-            Invite Member
-          </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline">
+                Invite Member
+              </Button>
+            </DialogTrigger>
+
+            <InviteMemberDialog />
+          </Dialog>
         </CardHeader>
 
         <CardContent>
@@ -92,44 +101,17 @@ function RouteComponent() {
                     {member.user?.email}
                   </div>
                 </div>
-                <div className="relative w-[110px]">
-                  <select
-                    value={member.role}
-                    className="appearance-none border rounded px-2 py-1 bg-muted-foreground/10 w-full pr-8 focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option value="owner">Owner</option>
-                    <option value="admin">Admin</option>
-                    <option value="member">Member</option>
-                  </select>
-                  <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M6 8L10 12L14 8"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </div>
+                <RoleSelect
+                  value={member.role}
+                  onChange={(role) => {
+                    console.log(role);
+                  }}
+                />
               </div>
             ))}
           </div>
         </CardContent>
       </Card>
-      <style>{`
-        select::-ms-expand { display: none; }
-        select {
-          background: none;
-        }
-      `}</style>
     </div>
   );
 }

@@ -5,7 +5,7 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {authClient} from "@/lib/auth";
-import {handleAuthResponse} from "@/lib/utils";
+import {cn, handleAuthResponse} from "@/lib/utils";
 import {Spinner} from "@/components/ui/spinner";
 import {
   DialogClose,
@@ -72,16 +72,7 @@ export function InviteMemberDialog() {
 
         <div className="space-y-2">
           <Label htmlFor="role">Role</Label>
-          <select
-            id="role"
-            name="role"
-            defaultValue="admin"
-            disabled={inviteMutation.isPending}
-            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 appearance-none bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20fill%3D%22none%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%221.5%22%20stroke%3D%22currentColor%22%3E%3Cpath%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20d%3D%22M19.5%208.25l-7.5%207.5-7.5-7.5%22%2F%3E%3C%2Fsvg%3E')] bg-no-repeat bg-[length:16px] bg-[center_right_12px]"
-          >
-            <option value="member">Member</option>
-            <option value="admin">Admin</option>
-          </select>
+          <RoleSelect />
           <p className="text-sm text-muted-foreground">
             Choose the role for the invited user
           </p>
@@ -100,5 +91,47 @@ export function InviteMemberDialog() {
         </DialogFooter>
       </form>
     </DialogContent>
+  );
+}
+
+export function RoleSelect({
+  value,
+  onChange,
+  className,
+}: {
+  value?: string;
+  onChange?: (value: string) => void;
+  className?: string;
+}) {
+  return (
+    <div className={cn("relative w-[110px]", className)}>
+      <select
+        name="role"
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined}
+        className="appearance-none border rounded px-2 py-1 bg-muted-foreground/10 w-full pr-8 focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        <option value="owner">Owner</option>
+        <option value="admin">Admin</option>
+        <option value="member">Member</option>
+      </select>
+      <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-gray-400">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 20 20"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M6 8L10 12L14 8"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      </span>
+    </div>
   );
 }
