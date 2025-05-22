@@ -15,9 +15,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {useAuthData} from "@/queries/session";
 
 export function InviteMemberDialog() {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
+
   const inviteMutation = useMutation({
     mutationFn: async ({
       email,
@@ -72,7 +76,10 @@ export function InviteMemberDialog() {
 
         <div className="space-y-2">
           <Label htmlFor="role">Role</Label>
-          <RoleSelect />
+          <RoleSelect
+            defaultValue={isMember ? "member" : "admin"}
+            disabled={isMember}
+          />
           <p className="text-sm text-muted-foreground">
             Choose the role for the invited user
           </p>
@@ -98,10 +105,14 @@ export function RoleSelect({
   value,
   onChange,
   className,
+  disabled,
+  defaultValue,
 }: {
   value?: "member" | "admin" | "owner";
   onChange?: (value: "member" | "admin" | "owner") => void;
   className?: string;
+  disabled?: boolean;
+  defaultValue?: "member" | "admin" | "owner";
 }) {
   return (
     <div className={cn("relative w-[110px]", className)}>
@@ -114,6 +125,8 @@ export function RoleSelect({
             : undefined
         }
         className="appearance-none border rounded px-2 py-1 bg-muted-foreground/10 w-full pr-8 focus:outline-none focus:ring-2 focus:ring-primary"
+        disabled={disabled}
+        defaultValue={defaultValue}
       >
         <option value="owner">Owner</option>
         <option value="admin">Admin</option>

@@ -7,6 +7,7 @@ import {CreateBoardButton} from "@/features/boards/create-board-button";
 import {OtherActions} from "@/features/boards/other-boards-actions";
 import {useZ} from "@/lib/zero-cache";
 import {getBoardsListQuery} from "@/lib/zero-queries";
+import {useAuthData} from "@/queries/session";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
@@ -26,6 +27,8 @@ function BoardsPage() {
   const z = useZ();
   const boardsQuery = getBoardsListQuery(z);
   const [boards] = useQuery(boardsQuery);
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
 
   return (
     <ModalProvider>
@@ -41,10 +44,12 @@ function BoardsPage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <CreateBoardButton />
-              <OtherActions />
-            </div>
+            {!isMember && (
+              <div className="flex items-center gap-3">
+                <CreateBoardButton />
+                <OtherActions />
+              </div>
+            )}
           </div>
 
           {boards.length === 0 ? (
@@ -57,7 +62,7 @@ function BoardsPage() {
               <CreateBoardButton size="sm" />
             </div>
           ) : (
-            <BoardList boards={boards} />
+            <BoardList boards={boards} readonly={isMember} />
           )}
         </div>
       </div>

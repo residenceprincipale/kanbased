@@ -4,7 +4,7 @@ import {
   getOrganizationMembersQuery,
   getOrganizationListQuery,
 } from "@/lib/zero-queries";
-import {useActiveOrganizationId} from "@/queries/session";
+import {useActiveOrganizationId, useAuthData} from "@/queries/session";
 import {useQuery} from "@rocicorp/zero/react";
 import {createFileRoute, useRouter} from "@tanstack/react-router";
 import UserAvatar from "@/components/user-avatar";
@@ -47,7 +47,9 @@ function RouteComponent() {
   const [myOrg] = useQuery(getOrganizationQuery(z, orgId));
   const [members] = useQuery(getOrganizationMembersQuery(z, orgId));
   const [orgList] = useQuery(getOrganizationListQuery(z));
+  const userData = useAuthData();
   const router = useRouter();
+  const isMember = userData.role === "member";
 
   const removeMemberMutation = useMutation({
     mutationFn: async ({memberId}: {memberId: string}) => {
@@ -73,6 +75,12 @@ function RouteComponent() {
       });
 
       return handleAuthResponse(result);
+    },
+    onSuccess: async (member) => {
+      if (member?.id === userData.id) {
+        localStorage.removeItem("auth-token");
+        router.navigate({to: ".", reloadDocument: true});
+      }
     },
   });
 
@@ -175,35 +183,37 @@ function RouteComponent() {
             </div>
 
             <div className="w-fit ml-auto">
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button type="button" size="sm" variant="destructive">
-                    Delete workspace
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to delete the workspace:{" "}
-                      {myOrg.name}?
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      This action will be permanent, You will not be able to
-                      undo it.
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <Button
-                      variant="destructive"
-                      onClick={handleDeleteWorkspace}
-                      type="submit"
-                    >
-                      Delete
+              {!isMember && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button type="button" size="sm" variant="destructive">
+                      Delete workspace
                     </Button>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>
+                        Are you sure you want to delete the workspace:{" "}
+                        {myOrg.name}?
+                      </AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action will be permanent, You will not be able to
+                        undo it.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <Button
+                        variant="destructive"
+                        onClick={handleDeleteWorkspace}
+                        type="submit"
+                      >
+                        Delete
+                      </Button>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
             </div>
           </CardHeader>
         </Card>
@@ -255,15 +265,18 @@ function RouteComponent() {
                       onChange={(role) => {
                         handleChangeMemberRole(member.id, role);
                       }}
+                      disabled={isMember}
                     />
 
-                    <Button
-                      size="icon"
-                      variant="ghost"
-                      onClick={() => handleRemoveMember(member.id)}
-                    >
-                      <Trash2 />
-                    </Button>
+                    {!isMember && (
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        onClick={() => handleRemoveMember(member.id)}
+                      >
+                        <Trash2 />
+                      </Button>
+                    )}
                   </div>
                 </div>
               ))}

@@ -10,13 +10,16 @@ import {CreateTask} from "@/features/board-detail/create-task";
 type TasksProps = {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
   columnId: string;
+  readonly?: boolean;
 };
 
 function TaskList(props: TasksProps) {
   return (
     <>
       {props.tasks.map((task, i) => {
-        return <Task task={task} key={task.id} index={i} />;
+        return (
+          <Task task={task} key={task.id} index={i} readonly={props.readonly} />
+        );
       })}
     </>
   );
@@ -59,6 +62,7 @@ export function Tasks(props: TasksProps) {
                 <MemoizedTaskList
                   columnId={props.columnId}
                   tasks={props.tasks}
+                  readonly={props.readonly}
                 />
 
                 {droppableProvided.placeholder}
@@ -100,6 +104,7 @@ export function Tasks(props: TasksProps) {
             type="button"
             variant="secondary"
             ref={addTaskButtonRef}
+            disabled={props.readonly}
           >
             + Add a task
           </Button>

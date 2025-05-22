@@ -13,6 +13,7 @@ export function EditableText({
   defaultValue,
   defaultMode = "view",
   onSubmit,
+  defaultReadOnly,
 }: {
   fieldName: string;
   inputClassName: string;
@@ -21,6 +22,7 @@ export function EditableText({
   defaultMode?: "edit" | "view";
   defaultValue: string;
   onSubmit: (value: string) => Promise<void> | void;
+  defaultReadOnly?: boolean;
 }) {
   const [edit, setEdit] = useState(defaultMode === "edit");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -108,6 +110,7 @@ export function EditableText({
         inputRef.current?.select();
       }}
       className={cn("w-full text-left p-2 rounded-lg", buttonClassName)}
+      disabled={defaultReadOnly}
     >
       {defaultValue}
     </button>

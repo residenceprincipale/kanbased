@@ -11,7 +11,13 @@ import {
 import {useBoardModalControls} from "@/features/boards/board.state";
 import {getRelativeTimeString} from "@/lib/utils";
 
-function BoardItem({board}: {board: GetBoardsListQueryResult[number]}) {
+function BoardItem({
+  board,
+  readonly,
+}: {
+  board: GetBoardsListQueryResult[number];
+  readonly: boolean;
+}) {
   const {openModal, closeModal} = useBoardModalControls();
 
   return (
@@ -30,48 +36,50 @@ function BoardItem({board}: {board: GetBoardsListQueryResult[number]}) {
             <h3 className="font-semibold text-xl tracking-tight line-clamp-1">
               {board.name}
             </h3>
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openModal({
-                      type: "edit-board",
-                      board,
-                      onClose: closeModal,
-                    });
-                  }}
-                >
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="!text-destructive focus:bg-destructive/10"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    openModal({
-                      type: "delete-board",
-                      board,
-                      onClose: closeModal,
-                      onDeleteSuccess: closeModal,
-                    });
-                  }}
-                >
-                  <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {!readonly && (
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openModal({
+                        type: "edit-board",
+                        board,
+                        onClose: closeModal,
+                      });
+                    }}
+                  >
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="!text-destructive focus:bg-destructive/10"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openModal({
+                        type: "delete-board",
+                        board,
+                        onClose: closeModal,
+                        onDeleteSuccess: closeModal,
+                      });
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Stats */}
@@ -94,11 +102,14 @@ function BoardItem({board}: {board: GetBoardsListQueryResult[number]}) {
   );
 }
 
-export function BoardList(props: {boards: GetBoardsListQueryResult}) {
+export function BoardList(props: {
+  boards: GetBoardsListQueryResult;
+  readonly: boolean;
+}) {
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {props.boards.map((board) => (
-        <BoardItem board={board} key={board.id} />
+        <BoardItem board={board} key={board.id} readonly={props.readonly} />
       ))}
     </ul>
   );

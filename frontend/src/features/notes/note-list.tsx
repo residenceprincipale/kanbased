@@ -15,9 +15,11 @@ import {useZ} from "@/lib/zero-cache";
 function NoteItem({
   note,
   onDelete,
+  readonly,
 }: {
   note: GetNotesListQueryResult[number];
   onDelete: () => void;
+  readonly: boolean;
 }) {
   return (
     <Link
@@ -37,30 +39,32 @@ function NoteItem({
               {note.name}
             </h3>
 
-            <DropdownMenu modal={false}>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  className="!text-destructive focus:bg-destructive/10"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onDelete();
-                  }}
-                >
-                  <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            {!readonly && (
+              <DropdownMenu modal={false}>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    <MoreHorizontal className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem
+                    className="!text-destructive focus:bg-destructive/10"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onDelete();
+                    }}
+                  >
+                    <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                    Delete
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
 
           {/* Updated at */}
@@ -79,7 +83,10 @@ function NoteItem({
   );
 }
 
-export function NoteList(props: {notes: GetNotesListQueryResult}) {
+export function NoteList(props: {
+  notes: GetNotesListQueryResult;
+  readonly: boolean;
+}) {
   const z = useZ();
 
   const handleDelete = (noteId: string) => {
@@ -97,6 +104,7 @@ export function NoteList(props: {notes: GetNotesListQueryResult}) {
           note={note}
           key={note.id}
           onDelete={() => handleDelete(note.id)}
+          readonly={props.readonly}
         />
       ))}
     </ul>

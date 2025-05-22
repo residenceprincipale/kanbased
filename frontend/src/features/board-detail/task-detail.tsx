@@ -1,7 +1,7 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {useQuery} from "@rocicorp/zero/react";
 import {toast} from "sonner";
-import {ArrowDown, ArrowUp, EllipsisVertical,Info, Trash2} from "lucide-react";
+import {ArrowDown, ArrowUp, EllipsisVertical, Info, Trash2} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
 import {Link, useNavigate, useParams} from "@tanstack/react-router";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {cn} from "@/lib/utils";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
+import {useAuthData} from "@/queries/session";
 
 const MarkdownEditorLazy = lazy(
   () => import("@/components/md-editor/markdown-editor"),
@@ -39,6 +40,7 @@ const MarkdownEditorLazy = lazy(
 export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const navigate = useNavigate();
   const {slug} = useParams({from: "/_authenticated/_layout/boards_/$slug"});
+  const userData = useAuthData();
   const z = useZ();
   const [data] = useQuery(getTaskQuery(z, props.taskId));
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
@@ -52,6 +54,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const [hasFocused, setHasFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
+  const isMember = userData.role === "member";
 
   const navigateToTask = (taskId: string) => {
     navigate({
@@ -147,6 +150,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                 defaultValue={data?.name ?? ""}
                 defaultMode="view"
                 onSubmit={handleTitleChange}
+                defaultReadOnly={isMember}
               />
             </DialogTitle>
             <DialogDescription className="sr-only">
@@ -223,23 +227,26 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                   </KeyboardShortcutIndicator>
                 </>
               </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="icon" className="size-8">
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
 
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={handleDelete}
-                    className="!text-destructive focus:bg-destructive/10"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                    Delete task
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {!isMember && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="secondary" size="icon" className="size-8">
+                      <EllipsisVertical />
+                    </Button>
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={handleDelete}
+                      className="!text-destructive focus:bg-destructive/10"
+                    >
+                      <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                      Delete task
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
             <div
@@ -269,6 +276,7 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                   >
                     <MarkdownEditorLazy
                       defaultValue={data.content ?? ""}
+                      defaultReadOnly={isMember}
                       ref={editorRef}
                       onChange={(updatedMarkdown) => {
                         if (timeoutRef.current) {

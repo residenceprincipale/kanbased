@@ -28,12 +28,14 @@ import {
 export type TaskProps = {
   task: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"][number];
   index: number;
+  readonly?: boolean;
 };
 
 function ViewTask(props: {
   taskProps: TaskProps;
   dndProps: {provided: DraggableProvided; snapshot: DraggableStateSnapshot};
   onEdit: () => void;
+  readonly?: boolean;
 }) {
   const {task} = props.taskProps;
   const {provided, snapshot} = props.dndProps;
@@ -73,39 +75,41 @@ function ViewTask(props: {
         </span>
 
         <div className="shrink-0 flex flex-col justify-between gap-1.5">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                onClick={(e) => e.stopPropagation()}
-                className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5 focus:opacity-100"
-                variant="ghost"
-                size="icon"
-              >
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  props.onEdit();
-                }}
-              >
-                <Pencil className="mr-2 h-4 w-4" />
-                Edit Task
-              </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteTask();
-                }}
-                className="!text-destructive focus:bg-destructive/10"
-              >
-                <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                Delete Task
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {!props.readonly && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  onClick={(e) => e.stopPropagation()}
+                  className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5 focus:opacity-100"
+                  variant="ghost"
+                  size="icon"
+                >
+                  <MoreVertical className="w-4 h-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    props.onEdit();
+                  }}
+                >
+                  <Pencil className="mr-2 h-4 w-4" />
+                  Edit Task
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteTask();
+                  }}
+                  className="!text-destructive focus:bg-destructive/10"
+                >
+                  <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                  Delete Task
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
 
           <TooltipProvider>
             <Tooltip delayDuration={300}>
@@ -149,6 +153,7 @@ function TaskComp(props: TaskProps) {
               taskProps={props}
               dndProps={{provided, snapshot}}
               onEdit={() => setIsEditing(true)}
+              readonly={props.readonly}
             />
           )}
         </>

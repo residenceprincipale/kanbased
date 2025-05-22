@@ -1,7 +1,12 @@
 import {useEffect, useImperativeHandle} from "react";
-import {Milkdown, MilkdownProvider, useEditor} from "@milkdown/react";
+import {
+  Milkdown,
+  MilkdownProvider,
+  useEditor,
+  useInstance,
+} from "@milkdown/react";
 import {editorViewCtx} from "@milkdown/kit/core";
-import type { RefObject} from "react";
+import type {RefObject} from "react";
 import type {ListenerManager} from "@milkdown/kit/plugin/listener";
 import {Crepe} from "@/features/soja-editor";
 import {useAppContext} from "@/state/app-state";
@@ -22,10 +27,14 @@ type MilkdownEditorProps = {
   ref: RefObject<MilkdownEditorRef | null>;
   onChange?: (markdown: string) => void;
   onFocus?: () => void;
+  defaultReadOnly?: boolean;
 };
 
 function MilkdownEditorImpl(props: MilkdownEditorProps) {
-  const {defaultValue = "", placeholder = "Type / for commands"} = props;
+  const {
+    defaultValue = "",
+    placeholder = props.defaultReadOnly ? "" : "Type / for commands",
+  } = props;
   const {theme} = useAppContext();
 
   const focusEditor = () => {
@@ -107,6 +116,8 @@ function MilkdownEditorImpl(props: MilkdownEditorProps) {
         },
       },
     });
+
+    props.defaultReadOnly && crepe.setReadonly(true);
 
     crepe.on((api: ListenerManager) => {
       api.markdownUpdated((_, updatedMarkdown) => {

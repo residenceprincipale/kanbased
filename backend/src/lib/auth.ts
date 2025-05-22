@@ -6,7 +6,7 @@ import { jwt, openAPI, organization } from "better-auth/plugins";
 import * as schema from "../db/schema/auth-schema.js";
 import resend from "./email.js";
 import { getActiveOrganization } from "../use-cases/organization.js";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { membersTable } from "../db/schema/index.js";
 import { sendOrganizationInvitation } from "./email.js";
 
@@ -81,7 +81,10 @@ export const auth = betterAuth({
           const { user, session } = data;
 
           const s = await db.query.membersTable.findFirst({
-            where: eq(membersTable.userId, user.id),
+            where: and(
+              eq(membersTable.userId, user.id),
+              eq(membersTable.organizationId, session.activeOrganizationId),
+            ),
             columns: {
               role: true,
             },

@@ -8,6 +8,7 @@ import {getBoardWithColumnsAndTasksQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
+import {useAuthData} from "@/queries/session";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
   component: BoardPage,
@@ -37,6 +38,8 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
 function BoardPage() {
   const {slug} = Route.useParams();
   const z = useZ();
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
 
   if (!board) {
@@ -62,10 +65,12 @@ function BoardPage() {
             defaultValue={board.name}
             onSubmit={handleBoardNameChange}
           />
-          <div className="flex gap-2">
-            <CreateColumnButton />
-            <OtherActions board={board} />
-          </div>
+          {!isMember && (
+            <div className="flex gap-2">
+              <CreateColumnButton />
+              <OtherActions board={board} />
+            </div>
+          )}
         </div>
 
         <div className="flex-1 h-full min-h-0">

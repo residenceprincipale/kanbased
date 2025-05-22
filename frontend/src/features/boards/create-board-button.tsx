@@ -1,9 +1,16 @@
 import {CirclePlus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useBoardModalControls} from "@/features/boards/board.state";
+import {useAuthData} from "@/queries/session";
 
 export function CreateBoardButton({size}: {size?: "sm" | "lg"}) {
   const {openModal, closeModal} = useBoardModalControls();
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
+
+  if (isMember) {
+    return null;
+  }
 
   return (
     <Button

@@ -5,6 +5,7 @@ import {useZ} from "@/lib/zero-cache";
 export function EditableColumnName(props: {
   columnName: string;
   columnId: string;
+  readonly?: boolean;
 }) {
   const [edit, setEdit] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +57,7 @@ export function EditableColumnName(props: {
         inputRef.current?.select();
       }}
       className="text-lg font-semibold flex-1 pl-1 text-left focus:outline-hidden focus:border-none focus:ring-3 focus:ring-offset-2 focus:ring-offset-gray-2 focus:ring-ring rounded bg-inherit"
+      disabled={props.readonly}
     >
       {props.columnName}
     </button>

@@ -1,5 +1,6 @@
 import {CirclePlus} from "lucide-react";
 import {Button} from "@/components/ui/button";
+import {useAuthData} from "@/queries/session";
 
 export function CreateNoteButton({
   size,
@@ -8,6 +9,13 @@ export function CreateNoteButton({
   size?: "sm" | "lg";
   onClick: () => void;
 }) {
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
+
+  if (isMember) {
+    return null;
+  }
+
   return (
     <Button
       id="create-note-button"

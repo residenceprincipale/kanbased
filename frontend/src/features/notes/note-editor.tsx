@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/dialog";
 import {EditableText} from "@/components/editable-text";
 import {useZ} from "@/lib/zero-cache";
-import {useActiveOrganizationId} from "@/queries/session";
+import {useActiveOrganizationId, useAuthData} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
@@ -62,6 +62,7 @@ export default function NoteEditor(props: NoteEditorProps) {
   const [isDirty, setIsDirty] = useState(false);
   const [hasFocused, setHasFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+  const userData = useAuthData();
   const activeOrganizationId = useActiveOrganizationId();
   const defaultTitle = isCreate ? "Untitled Note" : (props.note?.name ?? "");
   const [title, setTitle] = useState(defaultTitle);
@@ -71,6 +72,7 @@ export default function NoteEditor(props: NoteEditorProps) {
   );
   const defaultContent = isCreate ? "" : (props.note?.content ?? "");
   const timeoutRef = useRef<NodeJS.Timeout>(null);
+  const isMember = userData.role === "member";
 
   useHotkeys(
     "f",
@@ -163,6 +165,7 @@ export default function NoteEditor(props: NoteEditorProps) {
         <DialogHeader className="shrink-0">
           <DialogTitle className="min-w-80 max-w-fit">
             <EditableText
+              defaultReadOnly={isMember}
               inputLabel="Title"
               fieldName="title"
               inputClassName="text-xl font-bold w-80"
@@ -257,7 +260,7 @@ export default function NoteEditor(props: NoteEditorProps) {
               </Button>
             )}
 
-            {!isCreate && !isFullscreen && (
+            {!isCreate && !isFullscreen && !isMember && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="icon" className="size-8">
@@ -302,6 +305,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                 >
                   <MarkdownEditorLazy
                     defaultValue={defaultContent}
+                    defaultReadOnly={isMember}
                     ref={editorRef}
                     onChange={(updatedMarkdown) => {
                       if (timeoutRef.current) {

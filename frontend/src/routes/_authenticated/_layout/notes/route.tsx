@@ -11,6 +11,7 @@ import {ModalProvider} from "@/state/modals";
 import {NoteList} from "@/features/notes/note-list";
 import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
+import {useAuthData} from "@/queries/session";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
@@ -38,6 +39,8 @@ function RouteComponent() {
   const router = useRouter();
   const z = useZ();
   const [notes] = useQuery(getNotesListQuery(z));
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
 
   const handleCreateNote = () => {
     router.navigate({to: ".", search: {createNote: true}});
@@ -57,9 +60,11 @@ function RouteComponent() {
               </p>
             </div>
 
-            <div className="flex items-center gap-3">
-              <CreateNoteButton size="sm" onClick={handleCreateNote} />
-            </div>
+            {!isMember && (
+              <div className="flex items-center gap-3">
+                <CreateNoteButton size="sm" onClick={handleCreateNote} />
+              </div>
+            )}
           </div>
 
           {notes.length === 0 ? (
@@ -72,7 +77,7 @@ function RouteComponent() {
               <CreateNoteButton size="sm" onClick={handleCreateNote} />
             </div>
           ) : (
-            <NoteList notes={notes} />
+            <NoteList notes={notes} readonly={isMember} />
           )}
         </div>
       </div>

@@ -13,6 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {DeleteColumn} from "@/features/board-detail/delete-column";
+import {useAuthData} from "@/queries/session";
 
 type ColumnProps = {
   column: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number];
@@ -21,6 +22,9 @@ type ColumnProps = {
 };
 
 export function Column({column, index, columnRef}: ColumnProps) {
+  const userData = useAuthData();
+  const isMember = userData.role === "member";
+
   return (
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => {
@@ -52,26 +56,33 @@ export function Column({column, index, columnRef}: ColumnProps) {
               <EditableColumnName
                 columnName={column.name}
                 columnId={column.id}
+                readonly={isMember}
               />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <button
-                    className="text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg ml-2"
-                    type="button"
-                  >
-                    <MoreVertical size={16} />
-                  </button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem asChild>
-                    <DeleteColumn columnId={column.id} />
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {!isMember && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className="text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg ml-2"
+                      type="button"
+                    >
+                      <MoreVertical size={16} />
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem asChild>
+                      <DeleteColumn columnId={column.id} />
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
             </div>
 
-            <Tasks tasks={column.tasks} columnId={column.id} />
+            <Tasks
+              tasks={column.tasks}
+              columnId={column.id}
+              readonly={isMember}
+            />
           </ColumnWrapper>
         );
       }}
