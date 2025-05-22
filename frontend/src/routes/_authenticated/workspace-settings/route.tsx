@@ -184,7 +184,8 @@ function RouteComponent() {
                 <AlertDialogContent>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      Are you sure you want to delete the board {myOrg.name}?
+                      Are you sure you want to delete the workspace:{" "}
+                      {myOrg.name}?
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                       This action will be permanent, You will not be able to
