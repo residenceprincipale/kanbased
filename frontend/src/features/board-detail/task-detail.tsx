@@ -39,11 +39,13 @@ const MarkdownEditorLazy = lazy(
 
 export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const navigate = useNavigate();
-  const {slug} = useParams({from: "/_authenticated/_layout/boards_/$slug"});
+  const {boardId} = useParams({
+    from: "/_authenticated/_layout/boards_/$boardId",
+  });
   const userData = useAuthData();
   const z = useZ();
   const [data] = useQuery(getTaskQuery(z, props.taskId));
-  const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
+  const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, boardId));
   const tasks =
     board?.columns?.find((col) => col.id === data?.columnId)?.tasks ?? [];
   const activeTaskIndex = tasks.findIndex((task) => task.id === data?.id);

@@ -1,5 +1,4 @@
 import {Link} from "@tanstack/react-router";
-import {useState} from "react";
 import {toast} from "sonner";
 import type {FormEventHandler} from "react";
 import type {CreateBoardModal} from "@/features/boards/board.state";
@@ -19,16 +18,18 @@ import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
 
 export function CreateBoard(props: CreateBoardModal) {
-  const [boardName, setBoardName] = useState("");
-  const slug = boardName.toLowerCase().split(" ").join("-");
   const z = useZ();
   const activeOrganizationId = useActiveOrganizationId();
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
+    const fd = new FormData(e.target as HTMLFormElement);
+    const boardId = createId();
+    const boardName = fd.get("board-name") as string;
+    const slug = boardName.toLowerCase().split(" ").join("-");
 
     z.mutate.boardsTable.insert({
-      id: createId(),
+      id: boardId,
       name: boardName,
       slug,
       updatedAt: Date.now(),
@@ -47,8 +48,8 @@ export function CreateBoard(props: CreateBoardModal) {
             size: "sm",
             className: "h-8!",
           })}
-          to="/boards/$slug"
-          params={{slug}}
+          to="/boards/$boardId"
+          params={{boardId}}
         >
           View
         </Link>
@@ -73,16 +74,10 @@ export function CreateBoard(props: CreateBoardModal) {
               name="board-name"
               placeholder="eg: work board"
               required
-              value={boardName}
-              onChange={(e) => setBoardName(e.target.value)}
             />
             <DialogDescription className="text-xs!">
               Enter a unique name that reflects the purpose of this board.
             </DialogDescription>
-
-            <p className="text-xs">
-              Board URL: <b>{slug}</b>
-            </p>
           </div>
 
           <DialogFooter>

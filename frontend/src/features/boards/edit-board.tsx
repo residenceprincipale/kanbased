@@ -1,4 +1,3 @@
-import {useState} from "react";
 import {toast} from "sonner";
 import type {FormEventHandler} from "react";
 import type {EditBoardModal} from "@/features/boards/board.state";
@@ -17,12 +16,14 @@ import {useZ} from "@/lib/zero-cache";
 
 export function EditBoard(props: EditBoardModal) {
   const {board} = props;
-  const [boardName, setBoardName] = useState(board.name);
-  const slug = boardName.toLowerCase().split(" ").join("-");
   const z = useZ();
 
   const handleSubmit: FormEventHandler = (e) => {
     e.preventDefault();
+
+    const fd = new FormData(e.target as HTMLFormElement);
+    const boardName = fd.get("board-name") as string;
+    const slug = boardName.toLowerCase().split(" ").join("-");
 
     z.mutate.boardsTable.update({
       id: board.id,
@@ -55,16 +56,11 @@ export function EditBoard(props: EditBoardModal) {
               name="board-name"
               placeholder="eg: work board"
               required
-              value={boardName}
-              onChange={(e) => setBoardName(e.target.value)}
+              defaultValue={board.name}
             />
             <DialogDescription className="text-xs!">
               Enter a unique name that reflects the purpose of this board.
             </DialogDescription>
-
-            <p className="text-xs">
-              Board URL: <b>{slug}</b>
-            </p>
           </div>
 
           <DialogFooter>

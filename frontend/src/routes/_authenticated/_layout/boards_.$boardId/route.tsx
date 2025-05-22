@@ -10,7 +10,9 @@ import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
 import {useAuthData} from "@/queries/session";
 
-export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
+export const Route = createFileRoute(
+  "/_authenticated/_layout/boards_/$boardId",
+)({
   component: BoardPage,
   validateSearch: (search): {taskId?: string} => {
     return {
@@ -25,10 +27,9 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
           to: "/boards",
         },
         {
-          // TODO: Use the board name instead of the slug
-          label: ctx.params.slug,
-          to: "/boards/$slug",
-          params: {slug: ctx.params.slug},
+          label: ctx.params.boardId,
+          to: "/boards/$boardId",
+          params: {boardId: ctx.params.boardId},
         },
       ]),
     };
@@ -36,11 +37,11 @@ export const Route = createFileRoute("/_authenticated/_layout/boards_/$slug")({
 });
 
 function BoardPage() {
-  const {slug} = Route.useParams();
+  const {boardId} = Route.useParams();
   const z = useZ();
   const userData = useAuthData();
   const isMember = userData.role === "member";
-  const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, slug));
+  const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, boardId));
 
   if (!board) {
     return null;

@@ -22,8 +22,8 @@ function BoardItem({
 
   return (
     <Link
-      to="/boards/$slug"
-      params={{slug: board.slug}}
+      to="/boards/$boardId"
+      params={{boardId: board.id}}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
     >
       <div className="relative p-6">

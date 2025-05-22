@@ -20,9 +20,9 @@ export function NavBoards() {
     items: boards.map((board) => ({
       title: board.name,
       linkProps: linkOptions({
-        to: "/boards/$slug",
+        to: "/boards/$boardId",
         params: {
-          slug: board.slug,
+          boardId: board.id,
         },
       }),
     })),

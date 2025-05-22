@@ -25,7 +25,7 @@ import { Route as AuthenticatedAcceptInvitationInvitationIdRouteImport } from '.
 import { Route as AuthenticatedLayoutNotesRouteImport } from './routes/_authenticated/_layout/notes/route'
 import { Route as AuthenticatedLayoutBoardsRouteImport } from './routes/_authenticated/_layout/boards/route'
 import { Route as AuthenticatedLayoutNotesNoteIdRouteImport } from './routes/_authenticated/_layout/notes/$noteId/route'
-import { Route as AuthenticatedLayoutBoardsSlugRouteImport } from './routes/_authenticated/_layout/boards_.$slug/route'
+import { Route as AuthenticatedLayoutBoardsBoardIdRouteImport } from './routes/_authenticated/_layout/boards_.$boardId/route'
 
 // Create/Update Routes
 
@@ -119,10 +119,10 @@ const AuthenticatedLayoutNotesNoteIdRouteRoute =
     getParentRoute: () => AuthenticatedLayoutNotesRouteRoute,
   } as any)
 
-const AuthenticatedLayoutBoardsSlugRouteRoute =
-  AuthenticatedLayoutBoardsSlugRouteImport.update({
-    id: '/boards_/$slug',
-    path: '/boards/$slug',
+const AuthenticatedLayoutBoardsBoardIdRouteRoute =
+  AuthenticatedLayoutBoardsBoardIdRouteImport.update({
+    id: '/boards_/$boardId',
+    path: '/boards/$boardId',
     getParentRoute: () => AuthenticatedLayoutRoute,
   } as any)
 
@@ -221,11 +221,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLayoutIndexImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
-    '/_authenticated/_layout/boards_/$slug': {
-      id: '/_authenticated/_layout/boards_/$slug'
-      path: '/boards/$slug'
-      fullPath: '/boards/$slug'
-      preLoaderRoute: typeof AuthenticatedLayoutBoardsSlugRouteImport
+    '/_authenticated/_layout/boards_/$boardId': {
+      id: '/_authenticated/_layout/boards_/$boardId'
+      path: '/boards/$boardId'
+      fullPath: '/boards/$boardId'
+      preLoaderRoute: typeof AuthenticatedLayoutBoardsBoardIdRouteImport
       parentRoute: typeof AuthenticatedLayoutImport
     }
     '/_authenticated/_layout/notes/$noteId': {
@@ -259,7 +259,7 @@ interface AuthenticatedLayoutRouteChildren {
   AuthenticatedLayoutBoardsRouteRoute: typeof AuthenticatedLayoutBoardsRouteRoute
   AuthenticatedLayoutNotesRouteRoute: typeof AuthenticatedLayoutNotesRouteRouteWithChildren
   AuthenticatedLayoutIndexRoute: typeof AuthenticatedLayoutIndexRoute
-  AuthenticatedLayoutBoardsSlugRouteRoute: typeof AuthenticatedLayoutBoardsSlugRouteRoute
+  AuthenticatedLayoutBoardsBoardIdRouteRoute: typeof AuthenticatedLayoutBoardsBoardIdRouteRoute
 }
 
 const AuthenticatedLayoutRouteChildren: AuthenticatedLayoutRouteChildren = {
@@ -267,8 +267,8 @@ const AuthenticatedLayoutRouteChildren: AuthenticatedLayoutRouteChildren = {
   AuthenticatedLayoutNotesRouteRoute:
     AuthenticatedLayoutNotesRouteRouteWithChildren,
   AuthenticatedLayoutIndexRoute: AuthenticatedLayoutIndexRoute,
-  AuthenticatedLayoutBoardsSlugRouteRoute:
-    AuthenticatedLayoutBoardsSlugRouteRoute,
+  AuthenticatedLayoutBoardsBoardIdRouteRoute:
+    AuthenticatedLayoutBoardsBoardIdRouteRoute,
 }
 
 const AuthenticatedLayoutRouteWithChildren =
@@ -310,7 +310,7 @@ export interface FileRoutesByFullPath {
   '/notes': typeof AuthenticatedLayoutNotesRouteRouteWithChildren
   '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
-  '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
+  '/boards/$boardId': typeof AuthenticatedLayoutBoardsBoardIdRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
 }
 
@@ -327,7 +327,7 @@ export interface FileRoutesByTo {
   '/notes': typeof AuthenticatedLayoutNotesRouteRouteWithChildren
   '/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/': typeof AuthenticatedLayoutIndexRoute
-  '/boards/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
+  '/boards/$boardId': typeof AuthenticatedLayoutBoardsBoardIdRouteRoute
   '/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
 }
 
@@ -346,7 +346,7 @@ export interface FileRoutesById {
   '/_authenticated/_layout/notes': typeof AuthenticatedLayoutNotesRouteRouteWithChildren
   '/_authenticated/accept-invitation/$invitationId': typeof AuthenticatedAcceptInvitationInvitationIdRouteRoute
   '/_authenticated/_layout/': typeof AuthenticatedLayoutIndexRoute
-  '/_authenticated/_layout/boards_/$slug': typeof AuthenticatedLayoutBoardsSlugRouteRoute
+  '/_authenticated/_layout/boards_/$boardId': typeof AuthenticatedLayoutBoardsBoardIdRouteRoute
   '/_authenticated/_layout/notes/$noteId': typeof AuthenticatedLayoutNotesNoteIdRouteRoute
 }
 
@@ -365,7 +365,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/accept-invitation/$invitationId'
     | '/'
-    | '/boards/$slug'
+    | '/boards/$boardId'
     | '/notes/$noteId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -381,7 +381,7 @@ export interface FileRouteTypes {
     | '/notes'
     | '/accept-invitation/$invitationId'
     | '/'
-    | '/boards/$slug'
+    | '/boards/$boardId'
     | '/notes/$noteId'
   id:
     | '__root__'
@@ -398,7 +398,7 @@ export interface FileRouteTypes {
     | '/_authenticated/_layout/notes'
     | '/_authenticated/accept-invitation/$invitationId'
     | '/_authenticated/_layout/'
-    | '/_authenticated/_layout/boards_/$slug'
+    | '/_authenticated/_layout/boards_/$boardId'
     | '/_authenticated/_layout/notes/$noteId'
   fileRoutesById: FileRoutesById
 }
@@ -477,7 +477,7 @@ export const routeTree = rootRoute
         "/_authenticated/_layout/boards",
         "/_authenticated/_layout/notes",
         "/_authenticated/_layout/",
-        "/_authenticated/_layout/boards_/$slug"
+        "/_authenticated/_layout/boards_/$boardId"
       ]
     },
     "/_authenticated/_layout/boards": {
@@ -499,8 +499,8 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/_layout/index.tsx",
       "parent": "/_authenticated/_layout"
     },
-    "/_authenticated/_layout/boards_/$slug": {
-      "filePath": "_authenticated/_layout/boards_.$slug/route.tsx",
+    "/_authenticated/_layout/boards_/$boardId": {
+      "filePath": "_authenticated/_layout/boards_.$boardId/route.tsx",
       "parent": "/_authenticated/_layout"
     },
     "/_authenticated/_layout/notes/$noteId": {

@@ -24,9 +24,9 @@ export function getNoteQuery(z: Z, noteId: string) {
 
 export type GetNoteQueryResult = ZeroQueryResult<typeof getNoteQuery>;
 
-export function getBoardWithColumnsAndTasksQuery(z: Z, slug: string) {
+export function getBoardWithColumnsAndTasksQuery(z: Z, boardId: string) {
   return z.query.boardsTable
-    .where("slug", slug)
+    .where("id", boardId)
     .related("columns", (q) =>
       q
         .where("deletedAt", "IS", null)

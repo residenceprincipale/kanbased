@@ -29,7 +29,13 @@ import {allBoardsQuery, getNotesListQuery} from "@/lib/zero-queries";
 import {useAppContext} from "@/state/app-state";
 import {CommandThemes} from "@/features/cmd-k/cmd-themes";
 import {CommandOrgSwitch} from "@/features/cmd-k/cmd-org-switch";
-import {Dialog,DialogContent, DialogDescription, DialogHeader,DialogTitle} from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type Page = "boards" | "notes" | "tasks" | "theme" | "organization";
 
@@ -44,14 +50,14 @@ export function CommandDialog() {
 
   const allTasks = boards.reduce(
     (
-      allTasks: Array<{id: string; name: string; slug: string}>,
+      allTasks: Array<{id: string; name: string; boardId: string}>,
       currentBoard,
     ) => {
       const tasks = currentBoard.columns.flatMap((column) =>
         column.tasks.map((task) => ({
           id: task.id,
           name: task.name,
-          slug: currentBoard.slug,
+          boardId: currentBoard.id,
         })),
       );
 
@@ -175,8 +181,8 @@ export function CommandDialog() {
                       key={board.id}
                       onSelect={() => {
                         router.navigate({
-                          to: "/boards/$slug",
-                          params: {slug: board.slug},
+                          to: "/boards/$boardId",
+                          params: {boardId: board.id},
                         });
                         closeCmdK();
                       }}
@@ -217,8 +223,8 @@ export function CommandDialog() {
                       key={task.id}
                       onSelect={() => {
                         router.navigate({
-                          to: "/boards/$slug",
-                          params: {slug: task.slug},
+                          to: "/boards/$boardId",
+                          params: {boardId: task.boardId},
                           search: {
                             taskId: task.id,
                           },
