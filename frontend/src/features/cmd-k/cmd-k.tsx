@@ -133,6 +133,8 @@ export function CommandDialog() {
             {page === "theme" && <CommandThemes />}
             {page === "organization" && <CommandOrgSwitch />}
 
+            {search && !page && <CommandThemes />}
+
             {!page && (
               <>
                 <CommandGroup heading="Suggestions">

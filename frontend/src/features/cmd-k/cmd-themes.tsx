@@ -15,9 +15,12 @@ export function CommandThemes() {
 
   return (
     <>
-      <CommandItem onSelect={() => handleSelect("light")}>
+      <CommandItem
+        onSelect={() => handleSelect("light")}
+        keywords={["light", "light theme"]}
+      >
         <Sun />
-        <span>Change to Light</span>
+        <span>Change theme to Light</span>
 
         {theme === "light" && (
           <CommandSubtitle className="shrink-0">
@@ -26,9 +29,12 @@ export function CommandThemes() {
         )}
       </CommandItem>
 
-      <CommandItem onSelect={() => handleSelect("dark")}>
+      <CommandItem
+        onSelect={() => handleSelect("dark")}
+        keywords={["dark", "dark theme"]}
+      >
         <Moon />
-        <span>Change to Dark</span>
+        <span>Change theme to Dark</span>
 
         {theme === "dark" && (
           <CommandSubtitle className="shrink-0">
@@ -39,7 +45,7 @@ export function CommandThemes() {
 
       <CommandItem onSelect={() => handleSelect("system")}>
         <Monitor />
-        <span>Change to system</span>
+        <span>Change theme to system</span>
 
         {theme === "system" && (
           <CommandSubtitle className="shrink-0">

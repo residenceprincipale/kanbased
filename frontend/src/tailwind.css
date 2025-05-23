@@ -176,7 +176,6 @@
 
 @utility custom-scrollbar {
   scrollbar-width: thin;
-  /* scrollbar-color: var(--color-gray-8) transparent; */
 
   &::-webkit-scrollbar {
     width: 6px;
@@ -204,7 +203,7 @@
   --foreground: var(--color-gray-12);
   --muted: var(--color-gray-3);
   --muted-foreground: var(--color-gray-11);
-  --popover: var(--color-white);
+  --popover: var(--color-gray-1);
   --popover-foreground: var(--color-gray-12);
   --card: var(--color-white);
   --card-foreground: var(--color-gray-12);
@@ -236,7 +235,7 @@
   --primary: var(--color-white);
   --primary-foreground: var(--color-black);
   --background: var(--color-accent-2);
-  --popover: var(--color-black);
+  --popover: var(--color-gray-1);
   --color-scheme: dark;
 
   --sidebar-background: var(--background);
