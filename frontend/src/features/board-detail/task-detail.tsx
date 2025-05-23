@@ -29,7 +29,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {cn} from "@/lib/utils";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
 import {useAuthData} from "@/queries/session";
 
@@ -52,11 +51,10 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
   const previousTaskId = tasks[activeTaskIndex - 1]?.id;
   const nextTaskId = tasks[activeTaskIndex + 1]?.id;
   const editorRef = useRef<MilkdownEditorRef>(null);
-  const [isDirty, setIsDirty] = useState(false);
   const [hasFocused, setHasFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>(null);
   const isMember = userData.role === "member";
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const navigateToTask = (taskId: string) => {
     navigate({
@@ -83,30 +81,38 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
 
   useHotkeys("Escape", () => props.onClose(), {enableOnContentEditable: true});
 
-  useHotkeys("mod+s", () => handleSave(), [isDirty], {
-    preventDefault: true,
-    enableOnContentEditable: true,
-  });
+  useHotkeys(
+    "mod+s",
+    () => {
+      handleSave(editorRef.current!.getMarkdown());
+      toast.success("Task updated");
+    },
+    {
+      preventDefault: true,
+      enableOnContentEditable: true,
+    },
+  );
 
   useDirtyEditorBlock(() => {
-    if (!isDirty) return false;
-
-    const defaultContent = data?.content ?? "";
     const currentContent = editorRef.current?.getMarkdown();
+    const hasChanges =
+      currentContent !== undefined &&
+      data?.content !== undefined &&
+      currentContent !== data.content;
 
-    return currentContent !== defaultContent;
+    if (hasChanges) {
+      handleSave(currentContent);
+    }
+
+    return false;
   });
 
-  const handleSave = () => {
+  const handleSave = (updatedMarkdown: string) => {
     z.mutate.tasksTable.update({
       id: data!.id,
       updatedAt: Date.now(),
-      content: editorRef.current?.getMarkdown(),
+      content: updatedMarkdown,
     });
-
-    timeoutRef.current && clearTimeout(timeoutRef.current);
-    setIsDirty(false);
-    toast.success("Task updated");
   };
 
   const handleTitleChange = (updatedTitle: string) => {
@@ -213,23 +219,6 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
 
           <div className="flex-1 h-full flex flex-col min-h-0">
             <div className="ml-auto shrink-0 flex items-center gap-3">
-              <Button
-                onClick={handleSave}
-                type="button"
-                size="sm"
-                className={cn(
-                  "h-9 transition-opacity duration-300",
-                  isDirty ? "visible opacity-100" : "invisible opacity-0",
-                )}
-              >
-                <>
-                  <span>Save</span>
-                  <KeyboardShortcutIndicator commandOrCtrlKey>
-                    S
-                  </KeyboardShortcutIndicator>
-                </>
-              </Button>
-
               {!isMember && (
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -286,8 +275,10 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                         }
 
                         timeoutRef.current = setTimeout(() => {
-                          setIsDirty(updatedMarkdown !== (data.content ?? ""));
-                        }, 1000);
+                          if (updatedMarkdown !== data.content) {
+                            handleSave(updatedMarkdown);
+                          }
+                        }, 2000);
                       }}
                       onFocus={() => {
                         containerRef.current?.scrollTo({
