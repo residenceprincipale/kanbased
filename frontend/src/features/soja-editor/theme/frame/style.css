@@ -1,8 +1,8 @@
 @import "../_internal/classic-common.css";
 
 .milkdown {
-  --crepe-color-background: #ffffff;
-  --crepe-color-on-background: #000000;
+  --crepe-color-background: var(--background);
+  --crepe-color-on-background: var(--foreground);
   --crepe-color-surface: #f7f7f7;
   --crepe-color-surface-low: #ededed;
   --crepe-color-on-surface: #1c1c1c;
@@ -31,8 +31,6 @@
 }
 
 .dark {
-  --crepe-color-background: #1a1a1a;
-  --crepe-color-on-background: #e6e6e6;
   --crepe-color-surface: #121212;
   --crepe-color-surface-low: #1c1c1c;
   --crepe-color-on-surface: #d1d1d1;

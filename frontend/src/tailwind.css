@@ -199,7 +199,7 @@
   /* My vars end */
 
   /* On light theme, prefer using white bg color */
-  --background: var(--color-white);
+  --background: var(--color-gray-1);
   --foreground: var(--color-gray-12);
   --muted: var(--color-gray-3);
   --muted-foreground: var(--color-gray-11);
@@ -234,7 +234,7 @@
 .dark {
   --primary: var(--color-white);
   --primary-foreground: var(--color-black);
-  --background: var(--color-accent-2);
+  --background: var(--color-gray-2);
   --popover: var(--color-gray-1);
   --color-scheme: dark;
 
