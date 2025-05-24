@@ -1,6 +1,7 @@
 import {CirclePlus} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useAuthData} from "@/queries/session";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 
 export function CreateNoteButton({
   size,
@@ -25,6 +26,7 @@ export function CreateNoteButton({
     >
       <CirclePlus className="w-5 h-5" />
       Create Note
+      <KeyboardShortcutIndicator>A</KeyboardShortcutIndicator>
     </Button>
   );
 }

@@ -77,7 +77,7 @@ function RouteComponent() {
 
             {!isMember && (
               <div className="flex items-center gap-3">
-                <CreateNoteButton size="sm" onClick={handleCreateNote} />
+                <CreateNoteButton onClick={handleCreateNote} />
               </div>
             )}
           </div>
@@ -89,7 +89,7 @@ function RouteComponent() {
                 Create your first note to get started!
               </p>
 
-              <CreateNoteButton size="sm" onClick={handleCreateNote} />
+              <CreateNoteButton onClick={handleCreateNote} />
             </div>
           ) : (
             <NoteList notes={notes} readonly={isMember} />
