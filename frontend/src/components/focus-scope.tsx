@@ -2,7 +2,6 @@ import React, {
   createContext,
   useContext,
   useRef,
-  useLayoutEffect,
   useMemo,
   ReactNode,
   useCallback,
@@ -11,8 +10,6 @@ import React, {
 } from "react";
 
 interface FocusManagerOptions {
-  /** Whether to only include tabbable elements, or all focusable elements. */
-  tabbable?: boolean;
   /** Whether focus should wrap around when it reaches the end of the scope. */
   wrap?: boolean;
   /** A callback that determines whether the given element should be focused. */
@@ -39,43 +36,6 @@ interface FocusScopeProps {
 
 const FocusContext = createContext<FocusManager | null>(null);
 
-// Simple selectors for focusable elements
-const FOCUSABLE_SELECTOR =
-  [
-    "input:not([disabled]):not([type=hidden])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "button:not([disabled])",
-    "a[href]",
-    "area[href]",
-    "summary",
-    "iframe",
-    "object",
-    "embed",
-    "audio[controls]",
-    "video[controls]",
-    '[contenteditable]:not([contenteditable="false"])',
-    "[tabindex]:not([disabled])",
-  ].join(":not([hidden]), ") + ":not([hidden])";
-
-const TABBABLE_SELECTOR =
-  [
-    "input:not([disabled]):not([type=hidden])",
-    "select:not([disabled])",
-    "textarea:not([disabled])",
-    "button:not([disabled])",
-    "a[href]",
-    "area[href]",
-    "summary",
-    "iframe",
-    "object",
-    "embed",
-    "audio[controls]",
-    "video[controls]",
-    '[contenteditable]:not([contenteditable="false"])',
-  ].join(':not([hidden]):not([tabindex="-1"]), ') +
-  ':not([hidden]):not([tabindex="-1"])';
-
 function isElementVisible(element: Element): boolean {
   const style = window.getComputedStyle(element);
   return (
@@ -87,12 +47,9 @@ function isElementVisible(element: Element): boolean {
 
 function getFocusableElements(
   container: Element,
-  tabbable = false,
   accept?: (node: Element) => boolean,
 ): Element[] {
-  const selector = tabbable ? TABBABLE_SELECTOR : FOCUSABLE_SELECTOR;
-  const elements = Array.from(container.querySelectorAll(selector));
-  return elements
+  return Array.from(container.querySelectorAll("[data-kb-focus]"))
     .filter(isElementVisible)
     .filter((element) => (accept ? accept(element) : true));
 }
@@ -105,11 +62,7 @@ function createFocusManager(
       const container = containerRef.current;
       if (!container) return null;
 
-      const elements = getFocusableElements(
-        container,
-        opts.tabbable,
-        opts.accept,
-      );
+      const elements = getFocusableElements(container, opts.accept);
       if (elements.length === 0) return null;
 
       const currentIndex = elements.indexOf(document.activeElement as Element);
@@ -132,11 +85,7 @@ function createFocusManager(
       const container = containerRef.current;
       if (!container) return null;
 
-      const elements = getFocusableElements(
-        container,
-        opts.tabbable,
-        opts.accept,
-      );
+      const elements = getFocusableElements(container, opts.accept);
       if (elements.length === 0) return null;
 
       const currentIndex = elements.indexOf(document.activeElement as Element);
@@ -159,11 +108,7 @@ function createFocusManager(
       const container = containerRef.current;
       if (!container) return null;
 
-      const elements = getFocusableElements(
-        container,
-        opts.tabbable,
-        opts.accept,
-      );
+      const elements = getFocusableElements(container, opts.accept);
       if (elements.length === 0) return null;
 
       const firstElement = elements[0];
@@ -178,15 +123,10 @@ function createFocusManager(
       const container = containerRef.current;
       if (!container) return null;
 
-      const elements = getFocusableElements(
-        container,
-        opts.tabbable,
-        opts.accept,
-      );
+      const elements = getFocusableElements(container, opts.accept);
       if (elements.length === 0) return null;
 
       const lastElement = elements[elements.length - 1];
-
       if (lastElement) {
         (lastElement as HTMLElement).focus();
         return lastElement;
@@ -201,7 +141,7 @@ export function FocusScope({children, autoFocus}: FocusScopeProps) {
   const focusManager = useMemo(() => createFocusManager(containerRef), []);
 
   // Auto focus the first element on mount
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (autoFocus && containerRef.current) {
       const elements = getFocusableElements(containerRef.current);
       const firstElement = elements[0];
@@ -235,9 +175,6 @@ export function useFocusManager() {
 
 const listNavigationOptions: FocusManagerOptions = {
   wrap: true,
-  accept: (node) => {
-    return (node as HTMLElement)?.dataset?.kbFocus === "true";
-  },
 };
 
 /**
