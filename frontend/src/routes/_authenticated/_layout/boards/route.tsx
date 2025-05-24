@@ -59,7 +59,7 @@ function BoardsPage() {
                 Create your first board to get started!
               </p>
 
-              <CreateBoardButton size="sm" />
+              <CreateBoardButton />
             </div>
           ) : (
             <BoardList boards={boards} readonly={isMember} />
