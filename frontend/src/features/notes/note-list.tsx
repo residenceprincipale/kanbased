@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {useZ} from "@/lib/zero-cache";
-import {useListNavigationListenerAttached} from "@/components/focus-scope";
 
 function NoteItem({
   note,
@@ -90,7 +89,6 @@ export function NoteList(props: {
   readonly: boolean;
 }) {
   const z = useZ();
-  useListNavigationListenerAttached();
 
   const handleDelete = (noteId: string) => {
     z.mutate.notesTable.update({

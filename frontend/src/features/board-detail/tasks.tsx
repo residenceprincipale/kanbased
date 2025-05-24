@@ -6,7 +6,7 @@ import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import {Task} from "@/features/board-detail/task";
 import {CreateTask} from "@/features/board-detail/create-task";
-import {FocusScope, useListNavigation} from "@/components/focus-scope";
+import {FocusScope} from "@/components/focus-scope";
 
 type TasksProps = {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
@@ -17,14 +17,8 @@ type TasksProps = {
 };
 
 function TaskList(props: TasksProps) {
-  const {handleKeyDown} = useListNavigation();
-
   return (
-    <div
-      ref={props.ref}
-      className="min-h-8 px-2 mt-1"
-      onKeyDown={handleKeyDown}
-    >
+    <div ref={props.ref} className="min-h-8 px-2 mt-1">
       {props.tasks.map((task, i) => {
         return (
           <Task task={task} key={task.id} index={i} readonly={props.readonly} />
@@ -64,7 +58,11 @@ export function Tasks(props: TasksProps) {
               ref={containerRef}
               id={`col-${props.columnId}`}
             >
-              <FocusScope autoFocus={props.autoFocus}>
+              <FocusScope
+                autoFocus={props.autoFocus}
+                shortcutType="list"
+                eventListenerType="parent"
+              >
                 <MemoizedTaskList
                   columnId={props.columnId}
                   tasks={props.tasks}

@@ -54,7 +54,7 @@ function ViewTask(props: {
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       className={cn(
-        "group mb-2.5 block cursor-default! overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 focus:ring-3 outline-hidden",
+        "group mb-2.5 block cursor-default! overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 focus:ring-2 outline-hidden",
         snapshot.isDragging
           ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
           : "dark:border-transparent bg-white dark:bg-gray-3",

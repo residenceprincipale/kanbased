@@ -63,7 +63,11 @@ function BoardsPage() {
               <CreateBoardButton />
             </div>
           ) : (
-            <FocusScope autoFocus>
+            <FocusScope
+              autoFocus
+              shortcutType="list"
+              eventListenerType="document"
+            >
               <BoardList boards={boards} readonly={isMember} />
             </FocusScope>
           )}

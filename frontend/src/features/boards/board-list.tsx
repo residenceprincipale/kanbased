@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {useBoardModalControls} from "@/features/boards/board.state";
 import {getRelativeTimeString} from "@/lib/utils";
-import {useListNavigationListenerAttached} from "@/components/focus-scope";
 
 function BoardItem({
   board,
@@ -108,7 +107,6 @@ export function BoardList(props: {
   boards: GetBoardsListQueryResult;
   readonly: boolean;
 }) {
-  useListNavigationListenerAttached();
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {props.boards.map((board) => (

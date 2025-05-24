@@ -93,7 +93,11 @@ function RouteComponent() {
               <CreateNoteButton onClick={handleCreateNote} />
             </div>
           ) : (
-            <FocusScope autoFocus>
+            <FocusScope
+              autoFocus
+              shortcutType="list"
+              eventListenerType="document"
+            >
               <NoteList notes={notes} readonly={isMember} />
             </FocusScope>
           )}

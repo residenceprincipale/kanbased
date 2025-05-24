@@ -4,10 +4,9 @@ import React, {
   useRef,
   useMemo,
   ReactNode,
-  useCallback,
-  KeyboardEventHandler,
   useEffect,
 } from "react";
+import {Slot} from "radix-ui";
 
 interface FocusManagerOptions {
   /** Whether focus should wrap around when it reaches the end of the scope. */
@@ -27,12 +26,25 @@ interface FocusManager {
   focusLast(opts?: FocusManagerOptions): Element | null;
 }
 
-interface FocusScopeProps {
+type FocusScopePropsCommon = {
   /** The contents of the focus scope. */
   children: ReactNode;
   /** Whether to auto focus the first focusable element in the focus scope on mount. */
   autoFocus?: boolean;
-}
+  asChild?: boolean;
+};
+
+type ListShortcutFocusScopeProps = FocusScopePropsCommon & {
+  shortcutType: "list";
+  eventListenerType: "document" | "parent";
+  onUnknownKeyDown?: (event: KeyboardEvent) => void;
+};
+
+type FocusScopePropsNoShortcut = FocusScopePropsCommon & {
+  shortcutType?: undefined;
+};
+
+type FocusScopeProps = ListShortcutFocusScopeProps | FocusScopePropsNoShortcut;
 
 const FocusContext = createContext<FocusManager | null>(null);
 
@@ -136,11 +148,11 @@ function createFocusManager(
   };
 }
 
-export function FocusScope({children, autoFocus}: FocusScopeProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
+export function FocusScope(props: FocusScopeProps) {
+  const {children, autoFocus, asChild} = props;
+  const containerRef = useRef<Element>(null);
   const focusManager = useMemo(() => createFocusManager(containerRef), []);
 
-  // Auto focus the first element on mount
   useEffect(() => {
     if (autoFocus && containerRef.current) {
       const elements = getFocusableElements(containerRef.current);
@@ -151,18 +163,64 @@ export function FocusScope({children, autoFocus}: FocusScopeProps) {
     }
   }, [autoFocus]);
 
+  useEffect(() => {
+    if (props.shortcutType === "list") {
+      const handleKeyDown = (event: KeyboardEvent) => {
+        switch (event.key) {
+          case "ArrowDown":
+          case "j":
+            event.preventDefault();
+            focusManager.focusNext(listNavigationOptions);
+            break;
+          case "ArrowUp":
+          case "k":
+            event.preventDefault();
+            focusManager.focusPrevious(listNavigationOptions);
+            break;
+          case "Home":
+          case "g":
+            event.preventDefault();
+            focusManager.focusFirst(listNavigationOptions);
+            break;
+          case "End":
+          case "G":
+            event.preventDefault();
+            focusManager.focusLast(listNavigationOptions);
+            break;
+          default:
+            props.onUnknownKeyDown?.(event);
+            break;
+        }
+      };
+
+      const listener =
+        props.eventListenerType === "document"
+          ? document
+          : containerRef.current;
+
+      listener?.addEventListener("keydown", handleKeyDown as EventListener);
+
+      return () => {
+        listener?.removeEventListener(
+          "keydown",
+          handleKeyDown as EventListener,
+        );
+      };
+    }
+    // @ts-expect-error
+  }, [props.eventListenerType, props.shortcutType, focusManager]);
+
+  const Comp = asChild ? Slot.Slot : "div";
+
   return (
     <FocusContext.Provider value={focusManager}>
-      <div ref={containerRef} data-focus-scope>
+      <Comp ref={containerRef as React.Ref<HTMLDivElement>} data-focus-scope>
         {children}
-      </div>
+      </Comp>
     </FocusContext.Provider>
   );
 }
 
-/**
- * Hook to get the focus manager for the current focus scope.
- */
 export function useFocusManager() {
   const focusManager = useContext(FocusContext);
 
@@ -176,57 +234,3 @@ export function useFocusManager() {
 const listNavigationOptions: FocusManagerOptions = {
   wrap: true,
 };
-
-/**
- * Hook to handle list navigation within a focus scope.
- */
-export function useListNavigation() {
-  const focusManager = useFocusManager();
-
-  const handleKeyDown: KeyboardEventHandler = useCallback(
-    (event) => {
-      switch (event.key) {
-        case "ArrowDown":
-        case "j":
-          event.preventDefault();
-          focusManager.focusNext(listNavigationOptions);
-          break;
-        case "ArrowUp":
-        case "k":
-          event.preventDefault();
-          focusManager.focusPrevious(listNavigationOptions);
-          break;
-        case "Home":
-        case "g":
-          event.preventDefault();
-          focusManager.focusFirst(listNavigationOptions);
-          break;
-        case "End":
-        case "G":
-          event.preventDefault();
-          focusManager.focusLast(listNavigationOptions);
-          break;
-      }
-    },
-    [focusManager],
-  );
-
-  return {handleKeyDown};
-}
-
-export function useListNavigationListenerAttached() {
-  const {handleKeyDown} = useListNavigation();
-
-  useEffect(() => {
-    document.addEventListener(
-      "keydown",
-      handleKeyDown as unknown as EventListener,
-    );
-    return () => {
-      document.removeEventListener(
-        "keydown",
-        handleKeyDown as unknown as EventListener,
-      );
-    };
-  }, []);
-}
