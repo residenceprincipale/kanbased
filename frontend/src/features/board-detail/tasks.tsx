@@ -6,22 +6,31 @@ import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import {Task} from "@/features/board-detail/task";
 import {CreateTask} from "@/features/board-detail/create-task";
+import {FocusScope, useListNavigation} from "@/components/focus-scope";
 
 type TasksProps = {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
   columnId: string;
   readonly?: boolean;
+  ref?: React.Ref<HTMLDivElement>;
+  autoFocus?: boolean;
 };
 
 function TaskList(props: TasksProps) {
+  const {handleKeyDown} = useListNavigation();
+
   return (
-    <>
+    <div
+      ref={props.ref}
+      className="min-h-8 px-2 mt-1"
+      onKeyDown={handleKeyDown}
+    >
       {props.tasks.map((task, i) => {
         return (
           <Task task={task} key={task.id} index={i} readonly={props.readonly} />
         );
       })}
-    </>
+    </div>
   );
 }
 
@@ -55,18 +64,16 @@ export function Tasks(props: TasksProps) {
               ref={containerRef}
               id={`col-${props.columnId}`}
             >
-              <div
-                ref={droppableProvided.innerRef}
-                className="min-h-8 px-2 mt-1"
-              >
+              <FocusScope autoFocus={props.autoFocus}>
                 <MemoizedTaskList
                   columnId={props.columnId}
                   tasks={props.tasks}
                   readonly={props.readonly}
+                  ref={droppableProvided.innerRef}
                 />
 
                 {droppableProvided.placeholder}
-              </div>
+              </FocusScope>
             </div>
           );
         }}

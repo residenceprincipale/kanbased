@@ -1,6 +1,6 @@
 import {Draggable} from "@hello-pangea/dnd";
 import {MoreVertical, Pencil, Trash2} from "lucide-react";
-import {memo, useCallback, useState} from "react";
+import {memo, useState} from "react";
 import {Link} from "@tanstack/react-router";
 import type {
   DraggableProvided,
@@ -64,6 +64,7 @@ function ViewTask(props: {
       search={{taskId: task.id}}
       replace
       preload={false}
+      data-kb-focus
     >
       <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
         <span
@@ -113,7 +114,7 @@ function ViewTask(props: {
 
           <TooltipProvider>
             <Tooltip delayDuration={300}>
-              <TooltipTrigger className="self-end">
+              <TooltipTrigger className="self-end" tabIndex={-1}>
                 <UserAvatar
                   name={task.creator?.name ?? ""}
                   imageUrl={task.creator?.image ?? ""}

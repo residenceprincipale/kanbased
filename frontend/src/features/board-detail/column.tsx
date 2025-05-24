@@ -82,6 +82,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
               tasks={column.tasks}
               columnId={column.id}
               readonly={isMember}
+              autoFocus={index === 0}
             />
           </ColumnWrapper>
         );
