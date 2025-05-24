@@ -12,6 +12,7 @@ import {NoteList} from "@/features/notes/note-list";
 import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import {useAuthData} from "@/queries/session";
+import {useHotkeys} from "react-hotkeys-hook";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
@@ -41,10 +42,24 @@ function RouteComponent() {
   const [notes] = useQuery(getNotesListQuery(z));
   const userData = useAuthData();
   const isMember = userData.role === "member";
+  const params: Record<string, any> = Route.useParams();
 
   const handleCreateNote = () => {
     router.navigate({to: ".", search: {createNote: true}});
   };
+
+  useHotkeys(
+    "a",
+    () => {
+      if (!params.noteId) {
+        handleCreateNote();
+      }
+    },
+    {
+      preventDefault: true,
+    },
+    [params.noteId],
+  );
 
   return (
     <ModalProvider>
