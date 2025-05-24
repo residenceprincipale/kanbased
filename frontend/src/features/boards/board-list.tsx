@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {useBoardModalControls} from "@/features/boards/board.state";
 import {getRelativeTimeString} from "@/lib/utils";
+import {useListNavigationListenerAttached} from "@/components/focus-scope";
 
 function BoardItem({
   board,
@@ -25,6 +26,7 @@ function BoardItem({
       to="/boards/$boardId"
       params={{boardId: board.id}}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
+      data-kb-focus
     >
       <div className="relative p-6">
         {/* Decorative gradient background */}
@@ -106,6 +108,7 @@ export function BoardList(props: {
   boards: GetBoardsListQueryResult;
   readonly: boolean;
 }) {
+  useListNavigationListenerAttached();
   return (
     <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {props.boards.map((board) => (

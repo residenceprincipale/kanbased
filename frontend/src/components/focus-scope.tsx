@@ -5,6 +5,9 @@ import React, {
   useLayoutEffect,
   useMemo,
   ReactNode,
+  useCallback,
+  KeyboardEventHandler,
+  useEffect,
 } from "react";
 
 interface FocusManagerOptions {
@@ -243,30 +246,50 @@ const listNavigationOptions: FocusManagerOptions = {
 export function useListNavigation() {
   const focusManager = useFocusManager();
 
-  const handleKeyDown = (event: React.KeyboardEvent) => {
-    switch (event.key) {
-      case "ArrowDown":
-      case "j":
-        event.preventDefault();
-        focusManager.focusNext(listNavigationOptions);
-        break;
-      case "ArrowUp":
-      case "k":
-        event.preventDefault();
-        focusManager.focusPrevious(listNavigationOptions);
-        break;
-      case "Home":
-      case "g":
-        event.preventDefault();
-        focusManager.focusFirst(listNavigationOptions);
-        break;
-      case "End":
-      case "G":
-        event.preventDefault();
-        focusManager.focusLast(listNavigationOptions);
-        break;
-    }
-  };
+  const handleKeyDown: KeyboardEventHandler = useCallback(
+    (event) => {
+      switch (event.key) {
+        case "ArrowDown":
+        case "j":
+          event.preventDefault();
+          focusManager.focusNext(listNavigationOptions);
+          break;
+        case "ArrowUp":
+        case "k":
+          event.preventDefault();
+          focusManager.focusPrevious(listNavigationOptions);
+          break;
+        case "Home":
+        case "g":
+          event.preventDefault();
+          focusManager.focusFirst(listNavigationOptions);
+          break;
+        case "End":
+        case "G":
+          event.preventDefault();
+          focusManager.focusLast(listNavigationOptions);
+          break;
+      }
+    },
+    [focusManager],
+  );
 
   return {handleKeyDown};
+}
+
+export function useListNavigationListenerAttached() {
+  const {handleKeyDown} = useListNavigation();
+
+  useEffect(() => {
+    document.addEventListener(
+      "keydown",
+      handleKeyDown as unknown as EventListener,
+    );
+    return () => {
+      document.removeEventListener(
+        "keydown",
+        handleKeyDown as unknown as EventListener,
+      );
+    };
+  }, []);
 }

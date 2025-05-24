@@ -13,6 +13,7 @@ import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import {useAuthData} from "@/queries/session";
 import {useHotkeys} from "react-hotkeys-hook";
+import {FocusScope} from "@/components/focus-scope";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({
   component: RouteComponent,
@@ -92,7 +93,9 @@ function RouteComponent() {
               <CreateNoteButton onClick={handleCreateNote} />
             </div>
           ) : (
-            <NoteList notes={notes} readonly={isMember} />
+            <FocusScope autoFocus>
+              <NoteList notes={notes} readonly={isMember} />
+            </FocusScope>
           )}
         </div>
       </div>

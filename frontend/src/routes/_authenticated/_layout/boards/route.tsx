@@ -8,6 +8,7 @@ import {OtherActions} from "@/features/boards/other-boards-actions";
 import {useZ} from "@/lib/zero-cache";
 import {getBoardsListQuery} from "@/lib/zero-queries";
 import {useAuthData} from "@/queries/session";
+import {FocusScope} from "@/components/focus-scope";
 
 export const Route = createFileRoute("/_authenticated/_layout/boards")({
   component: BoardsPage,
@@ -32,7 +33,7 @@ function BoardsPage() {
 
   return (
     <ModalProvider>
-      <div className="container mx-auto px-6 py-8 w-full">
+      <div className="container mx-auto px-6 py-8">
         <div className="flex flex-col gap-8">
           <div className="flex items-center justify-between">
             <div>
@@ -62,7 +63,9 @@ function BoardsPage() {
               <CreateBoardButton />
             </div>
           ) : (
-            <BoardList boards={boards} readonly={isMember} />
+            <FocusScope autoFocus>
+              <BoardList boards={boards} readonly={isMember} />
+            </FocusScope>
           )}
         </div>
       </div>

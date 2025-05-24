@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {useZ} from "@/lib/zero-cache";
+import {useListNavigationListenerAttached} from "@/components/focus-scope";
 
 function NoteItem({
   note,
@@ -27,6 +28,7 @@ function NoteItem({
       params={{noteId: note.id}}
       className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
       id={`note-item-${note.id}`}
+      data-kb-focus
     >
       <div className="relative p-6">
         {/* Decorative gradient background */}
@@ -88,6 +90,7 @@ export function NoteList(props: {
   readonly: boolean;
 }) {
   const z = useZ();
+  useListNavigationListenerAttached();
 
   const handleDelete = (noteId: string) => {
     z.mutate.notesTable.update({
