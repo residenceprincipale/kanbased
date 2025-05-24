@@ -13,7 +13,7 @@ type TasksProps = {
   columnId: string;
   readonly?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-  autoFocus?: boolean;
+  autoFocusElementIndex?: number;
 };
 
 function TaskList(props: TasksProps) {
@@ -59,7 +59,7 @@ export function Tasks(props: TasksProps) {
               id={`col-${props.columnId}`}
             >
               <FocusScope
-                autoFocus={props.autoFocus}
+                autoFocusElementIndex={props.autoFocusElementIndex}
                 shortcutType="list"
                 eventListenerType="parent"
               >

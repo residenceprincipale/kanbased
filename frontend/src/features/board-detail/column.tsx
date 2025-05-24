@@ -82,7 +82,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
               tasks={column.tasks}
               columnId={column.id}
               readonly={isMember}
-              autoFocus={index === 0}
+              autoFocusElementIndex={index === 0 ? 0 : undefined}
             />
           </ColumnWrapper>
         );
