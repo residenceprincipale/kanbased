@@ -6,14 +6,13 @@ import {Button} from "@/components/ui/button";
 import {cn} from "@/lib/utils";
 import {Task} from "@/features/board-detail/task";
 import {CreateTask} from "@/features/board-detail/create-task";
-import {FocusScope} from "@/components/focus-scope";
 
 type TasksProps = {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
   columnId: string;
+  columnIndex: number;
   readonly?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-  autoFocusElementIndex?: number;
 };
 
 function TaskList(props: TasksProps) {
@@ -21,7 +20,13 @@ function TaskList(props: TasksProps) {
     <div ref={props.ref} className="min-h-8 px-2 mt-1">
       {props.tasks.map((task, i) => {
         return (
-          <Task task={task} key={task.id} index={i} readonly={props.readonly} />
+          <Task
+            task={task}
+            key={task.id}
+            index={i}
+            columnIndex={props.columnIndex}
+            readonly={props.readonly}
+          />
         );
       })}
     </div>
@@ -58,20 +63,15 @@ export function Tasks(props: TasksProps) {
               ref={containerRef}
               id={`col-${props.columnId}`}
             >
-              <FocusScope
-                autoFocusElementIndex={props.autoFocusElementIndex}
-                shortcutType="list"
-                eventListenerType="parent"
-              >
-                <MemoizedTaskList
-                  columnId={props.columnId}
-                  tasks={props.tasks}
-                  readonly={props.readonly}
-                  ref={droppableProvided.innerRef}
-                />
+              <MemoizedTaskList
+                columnIndex={props.columnIndex}
+                columnId={props.columnId}
+                tasks={props.tasks}
+                readonly={props.readonly}
+                ref={droppableProvided.innerRef}
+              />
 
-                {droppableProvided.placeholder}
-              </FocusScope>
+              {droppableProvided.placeholder}
             </div>
           );
         }}

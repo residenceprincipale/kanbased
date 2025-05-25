@@ -1,4 +1,4 @@
-import {useCallback, useRef} from "react";
+import {useCallback, useEffect, useRef} from "react";
 import {DragDropContext, Droppable} from "@hello-pangea/dnd";
 import type {OnDragEndResponder} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
@@ -20,6 +20,59 @@ export function Columns({
   const z = useZ();
   const containerRef = useRef<HTMLDivElement>(null);
   const {closeModal} = useColumnModalControls();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      const activeElement = document.activeElement;
+      if (!activeElement?.hasAttribute("data-kb-focus")) {
+        return;
+      }
+
+      if (event.key === "ArrowRight" || event.key === "l") {
+        event.preventDefault();
+        const columnIndex = Number(
+          activeElement.getAttribute("data-column-index"),
+        );
+        const nextColumn = columns[columnIndex + 1];
+        const hasTasks = !!nextColumn?.tasks?.length;
+        const nextColumnEl = document.getElementById(`col-${nextColumn?.id}`);
+        const firstTaskEl = nextColumnEl?.querySelector(
+          "[data-kb-focus]",
+        ) as HTMLElement | null;
+        const focusEl = hasTasks ? firstTaskEl : nextColumnEl;
+        focusEl?.focus();
+        focusEl?.scrollIntoView();
+      }
+
+      if (event.key === "ArrowLeft" || event.key === "h") {
+        event.preventDefault();
+
+        const columnIndex = Number(
+          activeElement.getAttribute("data-column-index"),
+        );
+        const previousColumn = columns[columnIndex - 1];
+        const hasTasks = !!previousColumn?.tasks?.length;
+        const previousColumnEl = document.getElementById(
+          `col-${previousColumn?.id}`,
+        );
+        const firstTaskEl = previousColumnEl?.querySelector(
+          "[data-kb-focus]",
+        ) as HTMLElement | null;
+
+        columnIndex === 1 && containerRef?.current?.scrollTo({left: 0});
+
+        const focusEl = hasTasks ? firstTaskEl : previousColumnEl;
+        focusEl?.focus();
+        focusEl?.scrollIntoView();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [columns]);
 
   const lastColumnRef = useCallback((node: HTMLDivElement | null) => {
     /*
@@ -202,4 +255,42 @@ function reorderTask(params: {
     position: newPosition,
     columnId: destinationColumn.id,
   };
+}
+
+function getNextElementWithDataKbFocus(activeElement: Element | null) {
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: (node: HTMLElement) =>
+        node.hasAttribute("data-kb-focus")
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP,
+    },
+  );
+
+  if (activeElement) {
+    walker.currentNode = activeElement;
+  }
+
+  return walker.nextNode(); // Just go to the next matching one after active
+}
+
+function getPreviousElementWithDataKbFocus(activeElement: Element | null) {
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_ELEMENT,
+    {
+      acceptNode: (node: HTMLElement) =>
+        node.hasAttribute("data-kb-focus")
+          ? NodeFilter.FILTER_ACCEPT
+          : NodeFilter.FILTER_SKIP,
+    },
+  );
+
+  if (activeElement) {
+    walker.currentNode = activeElement;
+  }
+
+  return walker.previousNode(); // Just go to the next matching one after active
 }

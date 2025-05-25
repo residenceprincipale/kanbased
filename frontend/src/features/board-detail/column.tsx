@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {DeleteColumn} from "@/features/board-detail/delete-column";
 import {useAuthData} from "@/queries/session";
+import {FocusScope} from "@/components/focus-scope";
 
 type ColumnProps = {
   column: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number];
@@ -29,62 +30,73 @@ export function Column({column, index, columnRef}: ColumnProps) {
     <Draggable draggableId={column.id} index={index}>
       {(provided, snapshot) => {
         return (
-          <ColumnWrapper
-            ref={useCallback((node: HTMLDivElement | null) => {
-              provided.innerRef(node);
-              if (typeof columnRef === "function") {
-                columnRef(node);
-              } else if (columnRef) {
-                columnRef.current = node;
-              }
-            }, [])}
-            {...provided.draggableProps}
-            id={`col-${column.id}`}
-            className={cn(
-              "mx-2",
-              snapshot.isDragging && "border-gray-10! shadow-xl!",
-            )}
+          <FocusScope
+            // If the column is the first column, we need to focus the second element if there are tasks, otherwise focus the first element
+            autoFocusElementIndex={
+              index === 0 ? (column.tasks.length > 0 ? 1 : 0) : undefined
+            }
+            shortcutType="list"
+            eventListenerType="parent"
           >
-            <div className="flex items-center justify-between shrink-0 pt-1">
-              <div
-                className="cursor-grab text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg active:cursor-grabbing mr-1.5"
-                {...provided.dragHandleProps}
-              >
-                <GripVertical size={16} />
+            <ColumnWrapper
+              ref={useCallback((node: HTMLDivElement | null) => {
+                provided.innerRef(node);
+                if (typeof columnRef === "function") {
+                  columnRef(node);
+                } else if (columnRef) {
+                  columnRef.current = node;
+                }
+              }, [])}
+              {...provided.draggableProps}
+              id={`col-${column.id}`}
+              className={cn(
+                "mx-2 focus:ring-2",
+                snapshot.isDragging && "border-gray-10! shadow-xl!",
+              )}
+              data-kb-focus
+              tabIndex={-1}
+            >
+              <div className="flex items-center justify-between shrink-0 pt-1">
+                <div
+                  className="cursor-grab text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg active:cursor-grabbing mr-1.5"
+                  {...provided.dragHandleProps}
+                >
+                  <GripVertical size={16} />
+                </div>
+
+                <EditableColumnName
+                  columnName={column.name}
+                  columnId={column.id}
+                  readonly={isMember}
+                />
+
+                {!isMember && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button
+                        className="text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg ml-2"
+                        type="button"
+                      >
+                        <MoreVertical size={16} />
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem asChild>
+                        <DeleteColumn columnId={column.id} />
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </div>
 
-              <EditableColumnName
-                columnName={column.name}
+              <Tasks
+                tasks={column.tasks}
                 columnId={column.id}
                 readonly={isMember}
+                columnIndex={index}
               />
-
-              {!isMember && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <button
-                      className="text-muted-foreground w-8 grid place-content-center h-8 hover:text-foreground shrink-0 hover:bg-grayA-4 active:bg-grayA-4 rounded-lg ml-2"
-                      type="button"
-                    >
-                      <MoreVertical size={16} />
-                    </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem asChild>
-                      <DeleteColumn columnId={column.id} />
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-            </div>
-
-            <Tasks
-              tasks={column.tasks}
-              columnId={column.id}
-              readonly={isMember}
-              autoFocusElementIndex={index === 0 ? 0 : undefined}
-            />
-          </ColumnWrapper>
+            </ColumnWrapper>
+          </FocusScope>
         );
       }}
     </Draggable>

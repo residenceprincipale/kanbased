@@ -28,11 +28,13 @@ import {
 export type TaskProps = {
   task: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"][number];
   index: number;
+  columnIndex: number;
   readonly?: boolean;
 };
 
 function ViewTask(props: {
   taskProps: TaskProps;
+  columnIndex: number;
   dndProps: {provided: DraggableProvided; snapshot: DraggableStateSnapshot};
   onEdit: () => void;
   readonly?: boolean;
@@ -63,8 +65,8 @@ function ViewTask(props: {
       to="."
       search={{taskId: task.id}}
       replace
-      preload={false}
       data-kb-focus
+      data-column-index={props.columnIndex}
     >
       <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
         <span
@@ -152,6 +154,7 @@ function TaskComp(props: TaskProps) {
           ) : (
             <ViewTask
               taskProps={props}
+              columnIndex={props.columnIndex}
               dndProps={{provided, snapshot}}
               onEdit={() => setIsEditing(true)}
               readonly={props.readonly}
