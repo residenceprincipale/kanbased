@@ -21,58 +21,58 @@ export function Columns({
   const containerRef = useRef<HTMLDivElement>(null);
   const {closeModal} = useColumnModalControls();
 
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      const activeElement = document.activeElement;
-      if (!activeElement?.hasAttribute("data-kb-focus")) {
-        return;
-      }
+  // useEffect(() => {
+  //   const handleKeyDown = (event: KeyboardEvent) => {
+  //     const activeElement = document.activeElement;
+  //     if (!activeElement?.hasAttribute("data-kb-focus")) {
+  //       return;
+  //     }
 
-      if (event.key === "ArrowRight" || event.key === "l") {
-        event.preventDefault();
-        const columnIndex = Number(
-          activeElement.getAttribute("data-column-index"),
-        );
-        const nextColumn = columns[columnIndex + 1];
-        const hasTasks = !!nextColumn?.tasks?.length;
-        const nextColumnEl = document.getElementById(`col-${nextColumn?.id}`);
-        const firstTaskEl = nextColumnEl?.querySelector(
-          "[data-kb-focus]",
-        ) as HTMLElement | null;
-        const focusEl = hasTasks ? firstTaskEl : nextColumnEl;
-        focusEl?.focus();
-        focusEl?.scrollIntoView();
-      }
+  //     if (event.key === "ArrowRight" || event.key === "l") {
+  //       event.preventDefault();
+  //       const columnIndex = Number(
+  //         activeElement.getAttribute("data-column-index"),
+  //       );
+  //       const nextColumn = columns[columnIndex + 1];
+  //       const hasTasks = !!nextColumn?.tasks?.length;
+  //       const nextColumnEl = document.getElementById(`col-${nextColumn?.id}`);
+  //       const firstTaskEl = nextColumnEl?.querySelector(
+  //         "[data-kb-focus]",
+  //       ) as HTMLElement | null;
+  //       const focusEl = hasTasks ? firstTaskEl : nextColumnEl;
+  //       focusEl?.focus();
+  //       focusEl?.scrollIntoView();
+  //     }
 
-      if (event.key === "ArrowLeft" || event.key === "h") {
-        event.preventDefault();
+  //     if (event.key === "ArrowLeft" || event.key === "h") {
+  //       event.preventDefault();
 
-        const columnIndex = Number(
-          activeElement.getAttribute("data-column-index"),
-        );
-        const previousColumn = columns[columnIndex - 1];
-        const hasTasks = !!previousColumn?.tasks?.length;
-        const previousColumnEl = document.getElementById(
-          `col-${previousColumn?.id}`,
-        );
-        const firstTaskEl = previousColumnEl?.querySelector(
-          "[data-kb-focus]",
-        ) as HTMLElement | null;
+  //       const columnIndex = Number(
+  //         activeElement.getAttribute("data-column-index"),
+  //       );
+  //       const previousColumn = columns[columnIndex - 1];
+  //       const hasTasks = !!previousColumn?.tasks?.length;
+  //       const previousColumnEl = document.getElementById(
+  //         `col-${previousColumn?.id}`,
+  //       );
+  //       const firstTaskEl = previousColumnEl?.querySelector(
+  //         "[data-kb-focus]",
+  //       ) as HTMLElement | null;
 
-        columnIndex === 1 && containerRef?.current?.scrollTo({left: 0});
+  //       columnIndex === 1 && containerRef?.current?.scrollTo({left: 0});
 
-        const focusEl = hasTasks ? firstTaskEl : previousColumnEl;
-        focusEl?.focus();
-        focusEl?.scrollIntoView();
-      }
-    };
+  //       const focusEl = hasTasks ? firstTaskEl : previousColumnEl;
+  //       focusEl?.focus();
+  //       focusEl?.scrollIntoView();
+  //     }
+  //   };
 
-    document.addEventListener("keydown", handleKeyDown);
+  //   document.addEventListener("keydown", handleKeyDown);
 
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [columns]);
+  //   return () => {
+  //     document.removeEventListener("keydown", handleKeyDown);
+  //   };
+  // }, [columns]);
 
   const lastColumnRef = useCallback((node: HTMLDivElement | null) => {
     /*
