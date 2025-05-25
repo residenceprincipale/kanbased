@@ -94,9 +94,9 @@ function RouteComponent() {
             </div>
           ) : (
             <FocusScope
-              autoFocus
+              autoFocusElementIndex={0}
               shortcutType="list"
-              eventListenerType="document"
+              eventListenerType="parent"
             >
               <NoteList notes={notes} readonly={isMember} />
             </FocusScope>
