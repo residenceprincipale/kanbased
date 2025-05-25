@@ -7,6 +7,7 @@ import React, {
   useEffect,
 } from "react";
 import {Slot} from "radix-ui";
+import {isHotkeyEnabledOnInput} from "@/lib/helpers";
 
 interface FocusManagerOptions {
   /** Whether focus should wrap around when it reaches the end of the scope. */
@@ -166,6 +167,8 @@ export function FocusScope(props: FocusScopeProps) {
   useEffect(() => {
     if (props.shortcutType === "list") {
       const handleKeyDown = (event: KeyboardEvent) => {
+        if (isHotkeyEnabledOnInput(event)) return;
+
         switch (event.key) {
           case "ArrowDown":
           case "j":

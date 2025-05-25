@@ -37,3 +37,12 @@ export function getColorFromName(name: string) {
   const hue = Math.abs(hash % 360); // hue between 0 and 359
   return `hsl(${hue}, 65%, 55%)`; // tweak saturation/lightness to your taste
 }
+
+export function isHotkeyEnabledOnInput(event: KeyboardEvent): boolean {
+  const {target} = event;
+  const targetTagName = target && (target as HTMLElement).tagName.toLowerCase();
+
+  return Boolean(
+    targetTagName && ["input", "textarea", "select"].includes(targetTagName),
+  );
+}
