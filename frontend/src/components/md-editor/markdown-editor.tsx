@@ -110,9 +110,6 @@ function MilkdownEditorImpl(props: MilkdownEditorProps) {
           slashMenuH1Label: "H1",
           slashMenuH2Label: "H2",
           slashMenuH3Label: "H3",
-          slashMenuH4Label: "H4",
-          slashMenuH5Label: "H5",
-          slashMenuH6Label: "H6",
         },
       },
     });

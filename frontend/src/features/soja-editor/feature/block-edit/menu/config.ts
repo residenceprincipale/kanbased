@@ -106,45 +106,6 @@ export function getGroups(
         command(state, dispatch);
       },
     })
-    .addItem("h4", {
-      label: config?.slashMenuH4Label ?? "Heading 4",
-      icon: config?.slashMenuH4Icon?.() ?? h4Icon,
-      onRun: (ctx) => {
-        const view = ctx.get(editorViewCtx);
-        const {dispatch, state} = view;
-
-        const command = clearContentAndSetBlockType(headingSchema.type(ctx), {
-          level: 4,
-        });
-        command(state, dispatch);
-      },
-    })
-    .addItem("h5", {
-      label: config?.slashMenuH5Label ?? "Heading 5",
-      icon: config?.slashMenuH5Icon?.() ?? h5Icon,
-      onRun: (ctx) => {
-        const view = ctx.get(editorViewCtx);
-        const {dispatch, state} = view;
-
-        const command = clearContentAndSetBlockType(headingSchema.type(ctx), {
-          level: 5,
-        });
-        command(state, dispatch);
-      },
-    })
-    .addItem("h6", {
-      label: config?.slashMenuH6Label ?? "Heading 6",
-      icon: config?.slashMenuH6Icon?.() ?? h6Icon,
-      onRun: (ctx) => {
-        const view = ctx.get(editorViewCtx);
-        const {dispatch, state} = view;
-
-        const command = clearContentAndSetBlockType(headingSchema.type(ctx), {
-          level: 6,
-        });
-        command(state, dispatch);
-      },
-    })
     .addItem("quote", {
       label: config?.slashMenuQuoteLabel ?? "Quote",
       icon: config?.slashMenuQuoteIcon?.() ?? quoteIcon,
