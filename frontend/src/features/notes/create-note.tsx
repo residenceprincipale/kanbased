@@ -1,16 +1,7 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {toast} from "sonner";
-import {flushSync} from "react-dom";
-import {
-  EllipsisVertical,
-  Expand,
-  Info,
-  Minimize2,
-  Save,
-  Trash2,
-} from "lucide-react";
+import {Expand, Info, Minimize2, Save} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
-import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {Button} from "@/components/ui/button";
 import {Spinner} from "@/components/ui/spinner";
@@ -25,54 +16,33 @@ import {
 } from "@/components/ui/dialog";
 import {EditableText} from "@/components/editable-text";
 import {useZ} from "@/lib/zero-cache";
-import {useActiveOrganizationId, useAuthData} from "@/queries/session";
+import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import {flushSync} from "react-dom";
 
 const MarkdownEditorLazy = lazy(
   () => import("@/components/md-editor/markdown-editor"),
 );
 
-type CreateNoteProps = {
-  mode: "create";
+export default function CreateNote(props: {
   onClose: () => void;
   afterSave: (noteId: string) => void;
-};
-
-type EditNoteProps = {
-  mode: "edit";
-  note: NonNullable<GetNoteQueryResult>;
-  onClose: () => void;
-};
-
-type NoteEditorProps = CreateNoteProps | EditNoteProps;
-
-export default function NoteEditor(props: NoteEditorProps) {
-  const isCreate = props.mode === "create";
+}) {
   const z = useZ();
   const editorRef = useRef<MilkdownEditorRef>(null);
-  const [isDirty, setIsDirty] = useState(false);
   const [hasFocused, setHasFocused] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-  const userData = useAuthData();
   const activeOrganizationId = useActiveOrganizationId();
-  const defaultTitle = isCreate ? "Untitled Note" : (props.note?.name ?? "");
+  const defaultTitle = "Untitled Note";
   const [title, setTitle] = useState(defaultTitle);
   const [isFullscreen, setIsFullscreen] = useLocalStorage(
     "note-editor-fullscreen",
     false,
   );
-  const defaultContent = isCreate ? "" : (props.note?.content ?? "");
-  const timeoutRef = useRef<NodeJS.Timeout>(null);
-  const isMember = userData.role === "member";
+  const defaultContent = "";
+  const [noteSaved, setNoteSaved] = useState(false);
 
   useHotkeys(
     "f",
@@ -84,62 +54,48 @@ export default function NoteEditor(props: NoteEditorProps) {
 
   useHotkeys("Escape", () => props.onClose(), {enableOnContentEditable: true});
 
-  useHotkeys("mod+s", () => handleSave(), [isDirty], {
+  useHotkeys("mod+s", () => handleSave(), {
     preventDefault: true,
     enableOnContentEditable: true,
   });
 
+  const getIsDirty = () => {
+    if (noteSaved) return false;
+    if (editorRef.current == null) return false;
+
+    return (
+      defaultTitle !== title ||
+      editorRef.current.getMarkdown() !== defaultContent
+    );
+  };
+
   useDirtyEditorBlock(() => {
-    if (!isDirty) return false;
-    return editorRef.current?.getMarkdown() !== defaultContent;
+    return getIsDirty();
   });
 
   const handleSave = () => {
-    const noteId = isCreate ? createId() : props.note.id;
-    const now = Date.now();
+    const noteId = createId();
 
-    z.mutate.notesTable.upsert({
+    z.mutate.notesTable.insert({
       id: noteId,
       name: title,
       content: editorRef.current!.getMarkdown(),
-      createdAt: now,
-      updatedAt: isCreate ? null : now,
+      createdAt: Date.now(),
       organizationId: activeOrganizationId,
       creatorId: z.userID,
     });
 
     flushSync(() => {
-      timeoutRef.current && clearTimeout(timeoutRef.current);
-      setIsDirty(false);
+      setNoteSaved(true);
     });
 
-    toast.success(isCreate ? "Note created" : "Note updated");
-    isCreate && props.afterSave(noteId);
-  };
-
-  const handleDelete = async () => {
-    if (!isCreate) {
-      await z.mutate.notesTable.update({
-        id: props.note.id,
-        deletedAt: Date.now(),
-      });
-    }
-
-    toast.success("Note deleted");
-    props.onClose();
+    toast.success("Note created");
+    props.afterSave(noteId);
   };
 
   const handleTitleSave = (updatedTitle: string) => {
     setTitle(updatedTitle);
-
-    if (isCreate) {
-      editorRef.current?.focus();
-    } else {
-      z.mutate.notesTable.update({
-        id: props.note.id,
-        name: updatedTitle,
-      });
-    }
+    editorRef.current?.focus();
   };
 
   return (
@@ -165,13 +121,12 @@ export default function NoteEditor(props: NoteEditorProps) {
         <DialogHeader className="shrink-0">
           <DialogTitle className="min-w-80 max-w-fit">
             <EditableText
-              defaultReadOnly={isMember}
               inputLabel="Title"
               fieldName="title"
               inputClassName="text-xl font-bold w-80"
               buttonClassName="text-xl font-bold"
               defaultValue={title}
-              defaultMode={isCreate ? "edit" : "view"}
+              defaultMode="edit"
               onSubmit={handleTitleSave}
             />
           </DialogTitle>
@@ -186,7 +141,6 @@ export default function NoteEditor(props: NoteEditorProps) {
               onClick={handleSave}
               variant="ghost"
               size="icon"
-              disabled={!isDirty}
               className={!isFullscreen ? "hidden" : ""}
             >
               <Save />
@@ -246,9 +200,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                 size="sm"
                 className={cn(
                   "h-9 transition-opacity duration-300",
-                  isDirty && !isFullscreen
-                    ? "visible opacity-100"
-                    : "invisible opacity-0",
+                  !isFullscreen ? "visible opacity-100" : "invisible opacity-0",
                 )}
               >
                 <>
@@ -258,26 +210,6 @@ export default function NoteEditor(props: NoteEditorProps) {
                   </KeyboardShortcutIndicator>
                 </>
               </Button>
-            )}
-
-            {!isCreate && !isFullscreen && !isMember && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="secondary" size="icon" className="size-8">
-                    <EllipsisVertical />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem
-                    onClick={handleDelete}
-                    className="!text-destructive focus:bg-destructive/10"
-                  >
-                    <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                    Delete note
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             )}
           </div>
 
@@ -294,38 +226,25 @@ export default function NoteEditor(props: NoteEditorProps) {
             }}
           >
             <div className="min-h-0 flex-1 h-full mx-auto w-full max-w-3xl flex justify-center *:w-full *:h-full">
-              {isCreate || props.note !== undefined ? (
-                <Suspense
-                  fallback={
-                    <div className="w-full h-full flex items-center justify-center gap-2">
-                      <Spinner />
-                      Loading editor...
-                    </div>
-                  }
-                >
-                  <MarkdownEditorLazy
-                    defaultValue={defaultContent}
-                    defaultReadOnly={isMember}
-                    ref={editorRef}
-                    onChange={(updatedMarkdown) => {
-                      if (timeoutRef.current) {
-                        clearTimeout(timeoutRef.current);
-                      }
-
-                      timeoutRef.current = setTimeout(() => {
-                        setIsDirty(updatedMarkdown !== defaultContent);
-                      }, 1000);
-                    }}
-                    onFocus={() => {
-                      containerRef.current?.scrollTo({
-                        top: containerRef.current.scrollHeight,
-                      });
-                      setHasFocused(true);
-                    }}
-                    key={isCreate ? "create" : props.note.id}
-                  />
-                </Suspense>
-              ) : null}
+              <Suspense
+                fallback={
+                  <div className="w-full h-full flex items-center justify-center gap-2">
+                    <Spinner />
+                    Loading editor...
+                  </div>
+                }
+              >
+                <MarkdownEditorLazy
+                  defaultValue={defaultContent}
+                  ref={editorRef}
+                  onFocus={() => {
+                    containerRef.current?.scrollTo({
+                      top: containerRef.current.scrollHeight,
+                    });
+                    setHasFocused(true);
+                  }}
+                />
+              </Suspense>
             </div>
           </div>
         </div>

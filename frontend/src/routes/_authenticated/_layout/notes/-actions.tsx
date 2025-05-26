@@ -1,6 +1,6 @@
 import {getRouteApi, useNavigate} from "@tanstack/react-router";
 import {focusElementWithDelay} from "@/lib/helpers";
-import NoteEditor from "@/features/notes/note-editor";
+import CreateNote from "@/features/notes/create-note";
 
 const routeApi = getRouteApi("/_authenticated/_layout/notes");
 
@@ -10,8 +10,7 @@ export function Actions() {
 
   if (createNote) {
     return (
-      <NoteEditor
-        mode="create"
+      <CreateNote
         afterSave={(noteId) => {
           navigate({
             to: "/notes/$noteId",

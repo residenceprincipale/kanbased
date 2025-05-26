@@ -2,7 +2,7 @@ import {createFileRoute, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {useZ} from "@/lib/zero-cache";
 import {getNoteQuery} from "@/lib/zero-queries";
-import NoteEditor from "@/features/notes/note-editor";
+import NoteEditor from "@/features/notes/edit-note";
 import {focusElementWithDelay} from "@/lib/helpers";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes/$noteId")({
