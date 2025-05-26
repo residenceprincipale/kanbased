@@ -1,6 +1,6 @@
 import {getRouteApi, useNavigate} from "@tanstack/react-router";
-import {focusElementWithDelay} from "@/lib/helpers";
 import CreateNote from "@/features/notes/create-note";
+import {promiseTimeout} from "@/lib/utils";
 
 const routeApi = getRouteApi("/_authenticated/_layout/notes");
 
@@ -8,23 +8,19 @@ export function Actions() {
   const {createNote} = routeApi.useSearch();
   const navigate = useNavigate();
 
+  const handleClose = async () => {
+    await navigate({to: ".", search: undefined, replace: true});
+    document.getElementById("create-note-button")?.focus();
+  };
+
+  const handleAfterSave = async (noteId: string) => {
+    await navigate({to: ".", search: undefined, replace: true});
+    await promiseTimeout(500);
+    document.getElementById(`note-item-${noteId}`)?.focus();
+  };
+
   if (createNote) {
-    return (
-      <CreateNote
-        afterSave={(noteId) => {
-          navigate({
-            to: "/notes/$noteId",
-            params: {noteId},
-            search: undefined,
-            replace: true,
-          });
-        }}
-        onClose={() => {
-          navigate({to: ".", search: undefined, replace: true});
-          focusElementWithDelay(document.getElementById("create-note-button"));
-        }}
-      />
-    );
+    return <CreateNote afterSave={handleAfterSave} onClose={handleClose} />;
   }
 
   return null;

@@ -2,8 +2,8 @@ import {createFileRoute, useNavigate} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {useZ} from "@/lib/zero-cache";
 import {getNoteQuery} from "@/lib/zero-queries";
-import NoteEditor from "@/features/notes/edit-note";
-import {focusElementWithDelay} from "@/lib/helpers";
+import EditNote from "@/features/notes/edit-note";
+import {promiseTimeout} from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes/$noteId")({
   component: RouteComponent,
@@ -19,11 +19,11 @@ function RouteComponent() {
     return null;
   }
 
-  const goToNotes = () => {
-    navigate({to: "/notes"}).then(() => {
-      focusElementWithDelay(document.getElementById(`note-item-${noteId}`));
-    });
+  const goToNotes = async () => {
+    await navigate({to: "/notes"});
+    await promiseTimeout(100);
+    document.getElementById(`note-item-${noteId}`)?.focus();
   };
 
-  return <NoteEditor note={note} onClose={goToNotes} mode="edit" />;
+  return <EditNote note={note} onClose={goToNotes} />;
 }

@@ -11,14 +11,6 @@ export function markdownToHtml(markdown: string): string {
   return escapedContent;
 }
 
-export function focusElementWithDelay(element: HTMLElement | null) {
-  if (!element) return;
-
-  setTimeout(() => {
-    element.focus();
-  }, 100);
-}
-
 export function getInitials(name: string) {
   return name
     .split(" ")

@@ -7,7 +7,7 @@ import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {Button} from "@/components/ui/button";
 import {Spinner} from "@/components/ui/spinner";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
-import {cn, createId} from "@/lib/utils";
+import {cn} from "@/lib/utils";
 import {
   Dialog,
   DialogContent,
@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import {EditableText} from "@/components/editable-text";
 import {useZ} from "@/lib/zero-cache";
-import {useActiveOrganizationId, useAuthData} from "@/queries/session";
+import {useAuthData} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
@@ -33,35 +33,22 @@ const MarkdownEditorLazy = lazy(
   () => import("@/components/md-editor/markdown-editor"),
 );
 
-type CreateNoteProps = {
-  mode: "create";
-  onClose: () => void;
-  afterSave: (noteId: string) => void;
-};
-
-type EditNoteProps = {
-  mode: "edit";
+export default function EditNote(props: {
   note: NonNullable<GetNoteQueryResult>;
   onClose: () => void;
-};
-
-type NoteEditorProps = CreateNoteProps | EditNoteProps;
-
-export default function NoteEditor(props: NoteEditorProps) {
-  const isCreate = props.mode === "create";
+}) {
   const z = useZ();
   const editorRef = useRef<MilkdownEditorRef>(null);
   const [hasFocused, setHasFocused] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const userData = useAuthData();
-  const activeOrganizationId = useActiveOrganizationId();
-  const defaultTitle = isCreate ? "Untitled Note" : (props.note?.name ?? "");
-  const [title, setTitle] = useState(defaultTitle);
   const [isFullscreen, setIsFullscreen] = useLocalStorage(
     "note-editor-fullscreen",
     false,
   );
-  const defaultContent = isCreate ? "" : (props.note?.content ?? "");
+  const containerRef = useRef<HTMLDivElement>(null);
+  const userData = useAuthData();
+  const defaultTitle = props.note.name;
+  const [title, setTitle] = useState(defaultTitle);
+  const defaultContent = props.note.content;
   const timeoutRef = useRef<NodeJS.Timeout>(null);
   const isMember = userData.role === "member";
 
@@ -79,7 +66,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     "mod+s",
     () => {
       handleMarkdownSave(editorRef.current?.getMarkdown() ?? "");
-      toast.success(isCreate ? "Note created" : "Note updated");
+      toast.success("Note saved");
     },
     {
       preventDefault: true,
@@ -91,9 +78,7 @@ export default function NoteEditor(props: NoteEditorProps) {
     const currentContent = editorRef.current?.getMarkdown();
 
     const hasChanges =
-      currentContent !== undefined &&
-      defaultContent &&
-      currentContent !== defaultContent;
+      currentContent !== undefined && currentContent !== defaultContent;
 
     if (hasChanges) {
       handleMarkdownSave(currentContent);
@@ -103,29 +88,20 @@ export default function NoteEditor(props: NoteEditorProps) {
   });
 
   const handleMarkdownSave = (updatedMarkdown: string) => {
-    const noteId = isCreate ? createId() : props.note.id;
-    const now = Date.now();
+    const noteId = props.note.id;
 
-    z.mutate.notesTable.upsert({
+    z.mutate.notesTable.update({
       id: noteId,
-      name: title,
       content: updatedMarkdown ?? "",
-      createdAt: now,
-      updatedAt: isCreate ? null : now,
-      organizationId: activeOrganizationId,
-      creatorId: z.userID,
+      updatedAt: Date.now(),
     });
-
-    isCreate && props.afterSave(noteId);
   };
 
   const handleDelete = async () => {
-    if (!isCreate) {
-      await z.mutate.notesTable.update({
-        id: props.note.id,
-        deletedAt: Date.now(),
-      });
-    }
+    await z.mutate.notesTable.update({
+      id: props.note.id,
+      deletedAt: Date.now(),
+    });
 
     toast.success("Note deleted");
     props.onClose();
@@ -134,14 +110,10 @@ export default function NoteEditor(props: NoteEditorProps) {
   const handleTitleSave = (updatedTitle: string) => {
     setTitle(updatedTitle);
 
-    if (isCreate) {
-      editorRef.current?.focus();
-    } else {
-      z.mutate.notesTable.update({
-        id: props.note.id,
-        name: updatedTitle,
-      });
-    }
+    z.mutate.notesTable.update({
+      id: props.note.id,
+      name: updatedTitle,
+    });
   };
 
   return (
@@ -173,7 +145,7 @@ export default function NoteEditor(props: NoteEditorProps) {
               inputClassName="text-xl font-bold w-80"
               buttonClassName="text-xl font-bold"
               defaultValue={title}
-              defaultMode={isCreate ? "edit" : "view"}
+              defaultMode="view"
               onSubmit={handleTitleSave}
             />
           </DialogTitle>
@@ -222,7 +194,7 @@ export default function NoteEditor(props: NoteEditorProps) {
 
         <div className="flex-1 h-full flex flex-col min-h-0">
           <div className="ml-auto shrink-0 flex items-center gap-3">
-            {!isCreate && !isFullscreen && !isMember && (
+            {!isFullscreen && !isMember && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="secondary" size="icon" className="size-8">
@@ -256,7 +228,7 @@ export default function NoteEditor(props: NoteEditorProps) {
             }}
           >
             <div className="min-h-0 flex-1 h-full mx-auto w-full max-w-3xl flex justify-center *:w-full *:h-full">
-              {isCreate || props.note !== undefined ? (
+              {props.note !== undefined ? (
                 <Suspense
                   fallback={
                     <div className="w-full h-full flex items-center justify-center gap-2">
@@ -286,7 +258,7 @@ export default function NoteEditor(props: NoteEditorProps) {
                       });
                       setHasFocused(true);
                     }}
-                    key={isCreate ? "create" : props.note.id}
+                    key={props.note.id}
                   />
                 </Suspense>
               ) : null}
