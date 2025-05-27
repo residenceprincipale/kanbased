@@ -24,7 +24,8 @@ function BoardItem({
     <Link
       to="/boards/$boardId"
       params={{boardId: board.id}}
-      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
+      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg 
+      default-focus-ring"
       data-kb-focus
     >
       <div className="relative p-6">

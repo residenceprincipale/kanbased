@@ -274,6 +274,11 @@
     font-weight: 500;
     color-scheme: var(--color-scheme);
   }
+
+  /* Universal focus ring for all interactive elements */
+  .default-focus-ring {
+    @apply focus:outline-none focus:ring-offset-1 focus:ring-offset-background focus:ring-current/50 focus:ring-3;
+  }
 }
 
 @layer base {

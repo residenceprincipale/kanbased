@@ -17,7 +17,7 @@ export function CommandThemes() {
     <>
       <CommandItem
         onSelect={() => handleSelect("light")}
-        keywords={["light", "light theme"]}
+        keywords={["light", "light theme", "light mode", "mode"]}
       >
         <Sun />
         <span>Change theme to Light</span>
@@ -31,7 +31,7 @@ export function CommandThemes() {
 
       <CommandItem
         onSelect={() => handleSelect("dark")}
-        keywords={["dark", "dark theme"]}
+        keywords={["dark", "dark theme", "dark mode", "mode"]}
       >
         <Moon />
         <span>Change theme to Dark</span>

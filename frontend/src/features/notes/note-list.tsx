@@ -25,7 +25,7 @@ function NoteItem({
     <Link
       to="/notes/$noteId"
       params={{noteId: note.id}}
-      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg"
+      className="group relative overflow-hidden rounded-xl border bg-card text-card-foreground shadow-xs transition-shadow hover:shadow-lg default-focus-ring"
       id={`note-item-${note.id}`}
       data-kb-focus
     >

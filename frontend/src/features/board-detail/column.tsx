@@ -88,7 +88,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
               {...provided.draggableProps}
               id={`col-${column.id}`}
               className={cn(
-                "mx-2 focus:ring-2",
+                "mx-2 default-focus-ring",
                 snapshot.isDragging && "border-gray-10! shadow-xl!",
               )}
               data-kb-focus
