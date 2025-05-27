@@ -6,12 +6,16 @@ import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
 import {createId} from "@/lib/utils";
 import {useZ} from "@/lib/zero-cache";
 import {useActiveOrganizationId} from "@/queries/session";
+import {isMac} from "@/lib/constants";
+
+type InsertPosition = "append" | "prepend";
 
 export type CreateCardProps = {
   columnId: string;
   nextPosition: number;
+  firstPosition: number;
   onComplete: () => void;
-  onAdd: () => void;
+  onAdd: (insertPosition: InsertPosition) => void;
 };
 
 export function CreateTask(props: CreateCardProps) {
@@ -20,6 +24,7 @@ export function CreateTask(props: CreateCardProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const z = useZ();
   const organizationId = useActiveOrganizationId();
+  const insertPosition = useRef<InsertPosition>("append");
 
   useInteractiveOutside(wrapperRef, () => {
     props.onComplete();
@@ -34,13 +39,16 @@ export function CreateTask(props: CreateCardProps) {
       id: createId(),
       columnId: props.columnId,
       name,
-      position: props.nextPosition,
+      position:
+        insertPosition.current === "prepend"
+          ? props.firstPosition - 1
+          : props.nextPosition,
       createdAt: Date.now(),
       creatorId: z.userID,
       organizationId,
     });
 
-    props.onAdd();
+    props.onAdd(insertPosition.current);
   };
 
   return (
@@ -54,6 +62,11 @@ export function CreateTask(props: CreateCardProps) {
             if (event.key === "Enter") {
               event.preventDefault();
               if (event.shiftKey) return;
+              if (event.metaKey || event.ctrlKey) {
+                insertPosition.current = "prepend";
+              } else {
+                insertPosition.current = "append";
+              }
               buttonRef.current!.click();
             }
             if (event.key === "Escape") {
@@ -61,9 +74,10 @@ export function CreateTask(props: CreateCardProps) {
             }
           }}
           autoFocus
-          className="min-h-17.5 px-2! resize-none overflow-hidden ring-transparent! text-base!"
+          className="min-h-17.5 px-2! resize-none overflow-hidden ring-transparent! text-base! placeholder:text-xs"
+          placeholder={`↵ to append, ${isMac ? "⌘" : "Ctrl"}↵ to prepend`}
+          title={`Add task, Enter to append, ${isMac ? "⌘" : "Ctrl"}Enter to prepend`}
         />
-
         <div className="flex gap-4 w-fit ml-auto">
           <Button
             onClick={props.onComplete}

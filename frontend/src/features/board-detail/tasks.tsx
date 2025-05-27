@@ -38,7 +38,7 @@ export function Tasks(props: {
   const addTaskButtonRef = useRef<HTMLButtonElement | null>(null);
   const sortedTasks = props.tasks;
 
-  const scrollList = () => {
+  const scrollListToEnd = () => {
     containerRef.current?.scrollTo({top: containerRef.current.scrollHeight});
   };
 
@@ -46,7 +46,7 @@ export function Tasks(props: {
     flushSync(() => {
       setShowAddTask(true);
     });
-    scrollList();
+    scrollListToEnd();
   };
 
   useImperativeHandle(props.ref, () => ({
@@ -92,6 +92,7 @@ export function Tasks(props: {
                 ? sortedTasks[sortedTasks.length - 1]!.position + 1
                 : 1000
             }
+            firstPosition={sortedTasks.length ? sortedTasks[0]!.position : 1000}
             onComplete={() => {
               flushSync(() => {
                 setShowAddTask(false);
@@ -99,8 +100,12 @@ export function Tasks(props: {
 
               addTaskButtonRef.current?.focus();
             }}
-            onAdd={() => {
-              scrollList();
+            onAdd={(insertPosition) => {
+              if (insertPosition === "prepend") {
+                containerRef.current?.scrollTo({top: 0});
+              } else {
+                scrollListToEnd();
+              }
             }}
           />
         ) : (
