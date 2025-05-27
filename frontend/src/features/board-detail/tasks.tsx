@@ -1,4 +1,4 @@
-import React, {memo, useRef, useState} from "react";
+import React, {memo, useImperativeHandle, useRef, useState} from "react";
 import {flushSync} from "react-dom";
 import {Droppable} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
@@ -7,26 +7,17 @@ import {cn} from "@/lib/utils";
 import {Task} from "@/features/board-detail/task";
 import {CreateTask} from "@/features/board-detail/create-task";
 
-type TasksProps = {
+function TaskList(props: {
   tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
   columnId: string;
-  columnIndex: number;
   readonly?: boolean;
   ref?: React.Ref<HTMLDivElement>;
-};
-
-function TaskList(props: TasksProps) {
+}) {
   return (
     <div ref={props.ref} className="min-h-8 px-2 mt-1">
       {props.tasks.map((task, i) => {
         return (
-          <Task
-            task={task}
-            key={task.id}
-            index={i}
-            columnIndex={props.columnIndex}
-            readonly={props.readonly}
-          />
+          <Task task={task} key={task.id} index={i} readonly={props.readonly} />
         );
       })}
     </div>
@@ -35,7 +26,13 @@ function TaskList(props: TasksProps) {
 
 const MemoizedTaskList = memo<React.ComponentProps<typeof TaskList>>(TaskList);
 
-export function Tasks(props: TasksProps) {
+export type TasksRefValue = {openAddTaskForm: () => void};
+export function Tasks(props: {
+  tasks: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"];
+  columnId: string;
+  readonly?: boolean;
+  ref: React.Ref<TasksRefValue>;
+}) {
   const [showAddTask, setShowAddTask] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const addTaskButtonRef = useRef<HTMLButtonElement | null>(null);
@@ -44,6 +41,17 @@ export function Tasks(props: TasksProps) {
   const scrollList = () => {
     containerRef.current?.scrollTo({top: containerRef.current.scrollHeight});
   };
+
+  const openAddTaskForm = () => {
+    flushSync(() => {
+      setShowAddTask(true);
+    });
+    scrollList();
+  };
+
+  useImperativeHandle(props.ref, () => ({
+    openAddTaskForm,
+  }));
 
   return (
     <div className="flex-1 flex flex-col min-h-0">
@@ -61,10 +69,8 @@ export function Tasks(props: TasksProps) {
               )}
               {...droppableProvided.droppableProps}
               ref={containerRef}
-              id={`col-${props.columnId}`}
             >
               <MemoizedTaskList
-                columnIndex={props.columnIndex}
                 columnId={props.columnId}
                 tasks={props.tasks}
                 readonly={props.readonly}
@@ -99,12 +105,7 @@ export function Tasks(props: TasksProps) {
           />
         ) : (
           <Button
-            onClick={() => {
-              flushSync(() => {
-                setShowAddTask(true);
-              });
-              scrollList();
-            }}
+            onClick={openAddTaskForm}
             className="w-full"
             type="button"
             variant="secondary"

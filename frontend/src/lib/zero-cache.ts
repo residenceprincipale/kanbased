@@ -23,7 +23,8 @@ export function createZeroCache({userId}: {userId: string}) {
     server: import.meta.env.CLIENT_PUBLIC_SERVER,
     schema: schema,
     kvStore: "idb",
-    logLevel: import.meta.env.DEV ? "debug" : undefined,
+    // logLevel: import.meta.env.DEV ? "debug" : undefined,
+    logLevel: "error",
   });
 }
 

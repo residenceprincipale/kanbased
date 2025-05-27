@@ -1,11 +1,11 @@
 import {Draggable} from "@hello-pangea/dnd";
 import {GripVertical, MoreVertical} from "lucide-react";
-import {useCallback} from "react";
+import {useCallback, useRef} from "react";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {ColumnWrapper} from "@/components/column-ui";
 import {cn} from "@/lib/utils";
 import {EditableColumnName} from "@/features/board-detail/editable-column-name";
-import {Tasks} from "@/features/board-detail/tasks";
+import {Tasks, TasksRefValue} from "@/features/board-detail/tasks";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,6 +25,43 @@ type ColumnProps = {
 export function Column({column, index, columnRef}: ColumnProps) {
   const userData = useAuthData();
   const isMember = userData.role === "member";
+  const tasksRef = useRef<TasksRefValue>(null);
+
+  const handleUnknownKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "ArrowRight" || event.key === "l") {
+      event.preventDefault();
+
+      const nextColumn = document.querySelector(
+        `[data-column-index="${index + 1}"]`,
+      ) as HTMLElement | null;
+
+      if (!nextColumn) return;
+      const nextTasks = nextColumn.querySelectorAll("[data-kb-focus]");
+      const focusEl = (
+        nextTasks?.length ? nextTasks[0] : nextColumn
+      ) as HTMLElement | null;
+
+      focusEl?.focus();
+      focusEl?.scrollIntoView();
+    } else if (event.key === "ArrowLeft" || event.key === "h") {
+      event.preventDefault();
+      const prevColumn = document.querySelector(
+        `[data-column-index="${index - 1}"]`,
+      ) as HTMLElement | null;
+
+      if (!prevColumn) return;
+      const prevTasks = prevColumn.querySelectorAll("[data-kb-focus]");
+      const focusEl = (
+        prevTasks?.length ? prevTasks[0] : prevColumn
+      ) as HTMLElement | null;
+
+      focusEl?.focus();
+      focusEl?.scrollIntoView();
+    } else if (event.key === "a") {
+      event.preventDefault();
+      tasksRef.current?.openAddTaskForm();
+    }
+  };
 
   return (
     <Draggable draggableId={column.id} index={index}>
@@ -37,6 +74,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
             }
             shortcutType="list"
             eventListenerType="parent"
+            onUnknownKeyDown={handleUnknownKeyDown}
           >
             <ColumnWrapper
               ref={useCallback((node: HTMLDivElement | null) => {
@@ -55,6 +93,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
               )}
               data-kb-focus
               tabIndex={-1}
+              data-column-index={index}
             >
               <div className="flex items-center justify-between shrink-0 pt-1">
                 <div
@@ -93,7 +132,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
                 tasks={column.tasks}
                 columnId={column.id}
                 readonly={isMember}
-                columnIndex={index}
+                ref={tasksRef}
               />
             </ColumnWrapper>
           </FocusScope>
