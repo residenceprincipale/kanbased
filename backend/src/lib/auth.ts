@@ -76,7 +76,7 @@ export const auth = betterAuth({
   plugins: [
     jwt({
       jwt: {
-        expirationTime: "7d",
+        expirationTime: "1y",
         definePayload: async (data) => {
           const { user, session } = data;
 
