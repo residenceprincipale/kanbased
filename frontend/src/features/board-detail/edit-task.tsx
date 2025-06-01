@@ -3,6 +3,7 @@ import type {GetTaskQueryResult} from "@/lib/zero-queries";
 import {CustomizedTextarea} from "@/components/ui/customized-textarea";
 import {useInteractiveOutside} from "@/hooks/use-interactive-outside";
 import {useZ} from "@/lib/zero-cache";
+import {useUndoManager} from "@/state/undo-manager";
 
 export type EditTaskProps = {
   task: NonNullable<GetTaskQueryResult>;
@@ -13,16 +14,32 @@ export type EditTaskProps = {
 export function EditTask(props: EditTaskProps) {
   const textAreaRef = useRef<HTMLTextAreaElement | null>(null);
   const z = useZ();
+  const undoManager = useUndoManager();
 
   useInteractiveOutside(textAreaRef, () => {
     props.onComplete();
   });
 
   const handleSubmit = () => {
-    z.mutate.tasksTable.update({
-      id: props.task.id,
-      name: textAreaRef.current!.value,
-      updatedAt: Date.now(),
+    const execute = () => {
+      z.mutate.tasksTable.update({
+        id: props.task.id,
+        name: textAreaRef.current!.value,
+        updatedAt: Date.now(),
+      });
+    };
+
+    const undo = () => {
+      z.mutate.tasksTable.update({
+        id: props.task.id,
+        name: props.task.name,
+        updatedAt: props.task.updatedAt,
+      });
+    };
+
+    undoManager.add({
+      execute,
+      undo,
     });
 
     props.onComplete();

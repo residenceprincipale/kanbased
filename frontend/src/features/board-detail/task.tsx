@@ -28,6 +28,8 @@ import {useHotkeys} from "react-hotkeys-hook";
 import {flushSync} from "react-dom";
 import {toast} from "sonner";
 import {useFocusManager} from "@/components/focus-scope";
+import {useUndoManager} from "@/state/undo-manager";
+import {ModKey} from "@/lib/constants";
 
 export type TaskProps = {
   task: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"][number];
@@ -45,6 +47,7 @@ function ViewTask(props: {
   const {provided, snapshot} = props.dndProps;
   const z = useZ();
   const focusManager = useFocusManager();
+  const undoManager = useUndoManager();
 
   const editHotkeyRef = useHotkeys(
     "i",
@@ -71,11 +74,32 @@ function ViewTask(props: {
   );
 
   const handleDeleteTask = () => {
-    z.mutate.tasksTable.update({
-      id: task.id,
-      deletedAt: Date.now(),
+    const execute = () => {
+      z.mutate.tasksTable.update({
+        id: task.id,
+        deletedAt: Date.now(),
+      });
+    };
+
+    const undo = () => {
+      z.mutate.tasksTable.update({
+        id: task.id,
+        deletedAt: null,
+      });
+    };
+
+    undoManager.add({
+      execute,
+      undo,
     });
-    toast.success("Task deleted");
+
+    toast.success("Task deleted", {
+      action: {
+        label: `Undo (${ModKey}+Z)`,
+        onClick: () => undoManager.undo(),
+      },
+    });
+
     focusManager.focusNext();
   };
 

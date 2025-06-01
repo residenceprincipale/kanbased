@@ -1,7 +1,6 @@
 import {createFileRoute, linkOptions, useRouter} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {useEffect} from "react";
-import {TaskDetailPage} from "./-actions";
 import {Columns} from "@/features/board-detail/columns";
 import {ModalProvider} from "@/state/modals";
 import {CreateColumnButton} from "@/features/board-detail/create-column-button";
@@ -10,6 +9,8 @@ import {useZ} from "@/lib/zero-cache";
 import {EditableText} from "@/components/editable-text";
 import {OtherActions} from "@/features/board-detail/other-actions";
 import {useAuthData} from "@/queries/session";
+import {UndoManagerProvider} from "@/state/undo-manager";
+import {TaskDetail} from "@/features/board-detail/task-detail";
 
 export const Route = createFileRoute(
   "/_authenticated/_layout/boards_/$boardId",
@@ -54,6 +55,7 @@ function BoardPage() {
   const [board] = useQuery(getBoardWithColumnsAndTasksQuery(z, boardId));
   const router = useRouter();
   const routeCtx = Route.useRouteContext();
+  const {taskId} = Route.useSearch();
 
   useEffect(() => {
     if (board?.name) {
@@ -71,6 +73,21 @@ function BoardPage() {
       id: board.id,
       name: updatedName,
     });
+  };
+
+  const handleClose = () => {
+    router.navigate({
+      to: ".",
+      search: {taskId: undefined},
+      replace: true,
+    });
+
+    setTimeout(() => {
+      const el = document.querySelector(`#task-${taskId}`);
+      if (el) {
+        (el as HTMLElement).focus();
+      }
+    }, 100);
   };
 
   return (
@@ -94,10 +111,13 @@ function BoardPage() {
         </div>
 
         <div className="flex-1 h-full min-h-0">
-          <Columns boardId={board.id} columns={board.columns} />
+          <UndoManagerProvider disabled={!!taskId}>
+            <Columns boardId={board.id} columns={board.columns} />
+          </UndoManagerProvider>
         </div>
       </div>
-      <TaskDetailPage />
+
+      {taskId && <TaskDetail onClose={handleClose} taskId={taskId} />}
     </ModalProvider>
   );
 }

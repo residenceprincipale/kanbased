@@ -13,3 +13,5 @@ export function getOrigin() {
 export const isMac =
   typeof window !== "undefined" &&
   navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+
+export const ModKey = isMac ? "⌘" : "Ctrl";
