@@ -18,18 +18,16 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {useZ} from "@/lib/zero-cache";
 import UserAvatar from "@/components/user-avatar";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
 import {useHotkeys} from "react-hotkeys-hook";
 import {flushSync} from "react-dom";
 import {toast} from "sonner";
 import {useFocusManager} from "@/components/focus-scope";
 import {useUndoManager} from "@/state/undo-manager";
-import {ModKey} from "@/lib/constants";
+import {FOCUS_TOOLTIP_CLASS, ModKey} from "@/lib/constants";
+import {Tooltip as RadixTooltip} from "radix-ui";
+import {useDelayedFocusIndicator} from "@/hooks/use-focus-indicator";
+import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 
 export type TaskProps = {
   task: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"][number];
@@ -48,6 +46,8 @@ function ViewTask(props: {
   const z = useZ();
   const focusManager = useFocusManager();
   const undoManager = useUndoManager();
+  const {isFocused, showIndicatorDelayed, hideIndicator} =
+    useDelayedFocusIndicator();
 
   const editHotkeyRef = useHotkeys(
     "i",
@@ -113,7 +113,7 @@ function ViewTask(props: {
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       className={cn(
-        "group mb-2.5 block cursor-default! overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 default-focus-ring",
+        "group mb-2.5 block cursor-default! overflow-x-hidden rounded-lg border text-foreground dark:hover:bg-gray-4 hover:bg-gray-3 default-focus-ring relative",
         snapshot.isDragging
           ? "shadow-inner bg-gray-4 dark:bg-gray-5 border-gray-10"
           : "dark:border-transparent bg-white dark:bg-gray-3",
@@ -123,70 +123,93 @@ function ViewTask(props: {
       search={{taskId: task.id}}
       replace
       data-kb-focus
+      onFocus={showIndicatorDelayed}
+      onBlur={hideIndicator}
     >
-      <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
-        <span
-          style={{
-            overflowWrap: "anywhere",
-          }}
-        >
-          {task.name}
-        </span>
+      <RadixTooltip.Provider>
+        <RadixTooltip.Root open={isFocused} delayDuration={1000}>
+          <RadixTooltip.Trigger asChild>
+            <div className={cn("p-2 min-h-16 flex justify-between gap-1")}>
+              <span
+                style={{
+                  overflowWrap: "anywhere",
+                }}
+              >
+                {task.name}
+              </span>
 
-        <div className="shrink-0 flex flex-col justify-between gap-1.5">
-          {!props.readonly && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  onClick={(e) => e.stopPropagation()}
-                  className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5 focus:opacity-100"
-                  variant="ghost"
-                  size="icon"
-                >
-                  <MoreVertical className="w-4 h-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    props.onEdit();
-                  }}
-                >
-                  <Pencil className="mr-2 h-4 w-4" />
-                  Edit Task
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleDeleteTask();
-                  }}
-                  className="!text-destructive focus:bg-destructive/10"
-                >
-                  <Trash2 className="mr-2 h-4 w-4 text-destructive" />
-                  Delete Task
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          )}
+              <div className="shrink-0 flex flex-col justify-between gap-1.5">
+                {!props.readonly && (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        onClick={(e) => e.stopPropagation()}
+                        className="opacity-0 group-hover:opacity-100 shrink-0 transition-opacity text-muted-foreground hover:text-foreground w-7 h-7 hover:bg-gray-5 focus:opacity-100"
+                        variant="ghost"
+                        size="icon"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          props.onEdit();
+                        }}
+                      >
+                        <Pencil className="mr-2 h-4 w-4" />
+                        Edit Task
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTask();
+                        }}
+                        className="!text-destructive focus:bg-destructive/10"
+                      >
+                        <Trash2 className="mr-2 h-4 w-4 text-destructive" />
+                        Delete Task
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
 
-          <TooltipProvider>
-            <Tooltip delayDuration={300}>
-              <TooltipTrigger className="self-end" tabIndex={-1}>
-                <UserAvatar
-                  name={task.creator?.name ?? ""}
-                  imageUrl={task.creator?.image ?? ""}
-                  className="w-5 h-5 opacity-0 group-hover:opacity-90 shrink-0 transition-opacity focus:opacity-90"
-                />
-              </TooltipTrigger>
+                <Tooltip delayDuration={300}>
+                  <TooltipTrigger className="self-end" tabIndex={-1}>
+                    <UserAvatar
+                      name={task.creator?.name ?? ""}
+                      imageUrl={task.creator?.image ?? ""}
+                      className="w-5 h-5 opacity-0 group-hover:opacity-90 shrink-0 transition-opacity focus:opacity-90"
+                    />
+                  </TooltipTrigger>
 
-              <TooltipContent>
-                <span>Created by: {task.creator?.name}</span>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        </div>
-      </div>
+                  <TooltipContent>
+                    <span>Created by: {task.creator?.name}</span>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+            </div>
+          </RadixTooltip.Trigger>
+
+          <RadixTooltip.Content
+            side="bottom"
+            className={FOCUS_TOOLTIP_CLASS}
+            sideOffset={6}
+          >
+            <div className="flex gap-4 items-center text-xs">
+              <div>
+                <KeyboardShortcutIndicator>i</KeyboardShortcutIndicator> to edit
+              </div>
+
+              <div>
+                <KeyboardShortcutIndicator>shift + D</KeyboardShortcutIndicator>{" "}
+                to delete
+              </div>
+            </div>
+          </RadixTooltip.Content>
+        </RadixTooltip.Root>
+      </RadixTooltip.Provider>
     </Link>
   );
 }
