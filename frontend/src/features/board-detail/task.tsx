@@ -1,6 +1,6 @@
 import {Draggable} from "@hello-pangea/dnd";
 import {MoreVertical, Pencil, Trash2} from "lucide-react";
-import {memo, useState} from "react";
+import {memo, useCallback, useState} from "react";
 import {Link} from "@tanstack/react-router";
 import type {
   DraggableProvided,
@@ -24,6 +24,10 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {useHotkeys} from "react-hotkeys-hook";
+import {flushSync} from "react-dom";
+import {toast} from "sonner";
+import {useFocusManager} from "@/components/focus-scope";
 
 export type TaskProps = {
   task: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number]["tasks"][number];
@@ -40,17 +44,48 @@ function ViewTask(props: {
   const {task} = props.taskProps;
   const {provided, snapshot} = props.dndProps;
   const z = useZ();
+  const focusManager = useFocusManager();
+
+  const editHotkeyRef = useHotkeys(
+    "i",
+    () => {
+      if (!props.readonly) {
+        props.onEdit();
+      }
+    },
+    {
+      preventDefault: true,
+    },
+  );
+
+  const deleteHotkeyRef = useHotkeys(
+    "shift+d",
+    () => {
+      if (!props.readonly) {
+        handleDeleteTask();
+      }
+    },
+    {
+      preventDefault: true,
+    },
+  );
 
   const handleDeleteTask = () => {
     z.mutate.tasksTable.update({
       id: task.id,
       deletedAt: Date.now(),
     });
+    toast.success("Task deleted");
+    focusManager.focusNext();
   };
 
   return (
     <Link
-      ref={provided.innerRef}
+      ref={useCallback((el: HTMLAnchorElement) => {
+        provided.innerRef(el);
+        editHotkeyRef.current = el;
+        deleteHotkeyRef.current = el;
+      }, [])}
       {...provided.draggableProps}
       {...provided.dragHandleProps}
       className={cn(
@@ -144,7 +179,10 @@ function TaskComp(props: TaskProps) {
             <EditTask
               task={task}
               onComplete={() => {
-                setIsEditing(false);
+                flushSync(() => {
+                  setIsEditing(false);
+                });
+                document.getElementById(`task-${task.id}`)?.focus();
               }}
               className="mb-2.5"
             />
