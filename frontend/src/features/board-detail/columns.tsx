@@ -1,5 +1,5 @@
 import {DragDropContext, Droppable} from "@hello-pangea/dnd";
-import type {OnDragEndResponder} from "@hello-pangea/dnd";
+import type {OnDragEndResponder, OnDragStartResponder} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {Column} from "@/features/board-detail/column";
 import {CreateColumn} from "@/features/board-detail/create-column";
@@ -18,6 +18,12 @@ export function Columns({
 }) {
   const z = useZ();
   const {closeModal} = useColumnModalControls();
+
+  const handleDragStart: OnDragStartResponder = (e) => {
+    if (e.type === "TASK") {
+      document.getElementById(`task-${e.draggableId}`)?.focus();
+    }
+  };
 
   const handleDragEnd: OnDragEndResponder = (e) => {
     if (!e.destination) {
@@ -67,11 +73,14 @@ export function Columns({
       });
 
       z.mutate.tasksTable.update(updatedTask);
+      setTimeout(() => {
+        document.getElementById(`task-${updatedTask.id}`)?.focus();
+      }, 0);
     }
   };
 
   return (
-    <DragDropContext onDragEnd={handleDragEnd}>
+    <DragDropContext onDragEnd={handleDragEnd} onDragStart={handleDragStart}>
       <Droppable
         droppableId="board"
         type="COLUMN"

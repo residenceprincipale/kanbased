@@ -94,7 +94,7 @@ function RouteComponent() {
             </div>
           ) : (
             <FocusScope
-              autoFocusElementIndex={0}
+              autoFocusElementIndexOnMount={0}
               shortcutType="list"
               eventListenerType="parent"
             >

@@ -72,7 +72,7 @@ export function Column({column, index}: ColumnProps) {
         return (
           <FocusScope
             // If the column is the first column, we need to focus the second element if there are tasks, otherwise focus the first element
-            autoFocusElementIndex={
+            autoFocusElementIndexOnMount={
               index === 0 ? (column.tasks.length > 0 ? 1 : 0) : undefined
             }
             shortcutType="list"

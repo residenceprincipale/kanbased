@@ -66,7 +66,7 @@ function BoardsPage() {
             <FocusScope
               shortcutType="list"
               eventListenerType="document"
-              autoFocusElementIndex={0}
+              autoFocusElementIndexOnMount={0}
             >
               <BoardList boards={boards} readonly={isMember} />
             </FocusScope>

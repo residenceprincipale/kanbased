@@ -31,7 +31,7 @@ type FocusScopePropsCommon = {
   /** The contents of the focus scope. */
   children: ReactNode;
   /** The index of the element to auto focus on, can be used to focus first element on component mount or even a specific element after mount. */
-  autoFocusElementIndex?: number;
+  autoFocusElementIndexOnMount?: number;
   asChild?: boolean;
 };
 
@@ -150,7 +150,11 @@ function createFocusManager(
 }
 
 export function FocusScope(props: FocusScopeProps) {
-  const {children, autoFocusElementIndex, asChild} = props;
+  const {
+    children,
+    autoFocusElementIndexOnMount: autoFocusElementIndex,
+    asChild,
+  } = props;
   const containerRef = useRef<Element>(null);
   const focusManager = useMemo(() => createFocusManager(containerRef), []);
 
@@ -158,11 +162,12 @@ export function FocusScope(props: FocusScopeProps) {
     if (autoFocusElementIndex !== undefined && containerRef.current) {
       const elements = getFocusableElements(containerRef.current);
       const element = elements[autoFocusElementIndex];
+
       if (element) {
         (element as HTMLElement).focus();
       }
     }
-  }, [autoFocusElementIndex]);
+  }, []);
 
   useEffect(() => {
     if (props.shortcutType === "list") {
