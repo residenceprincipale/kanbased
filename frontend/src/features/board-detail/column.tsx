@@ -1,6 +1,6 @@
 import {Draggable} from "@hello-pangea/dnd";
 import {GripVertical, MoreVertical} from "lucide-react";
-import {useCallback, useRef} from "react";
+import {useRef} from "react";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
 import {ColumnWrapper} from "@/components/column-ui";
 import {cn} from "@/lib/utils";
@@ -19,10 +19,9 @@ import {FocusScope} from "@/components/focus-scope";
 type ColumnProps = {
   column: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"][number];
   index: number;
-  columnRef?: React.Ref<HTMLDivElement | null>;
 };
 
-export function Column({column, index, columnRef}: ColumnProps) {
+export function Column({column, index}: ColumnProps) {
   const userData = useAuthData();
   const isMember = userData.role === "member";
   const tasksRef = useRef<TasksRefValue>(null);
@@ -57,6 +56,10 @@ export function Column({column, index, columnRef}: ColumnProps) {
 
       focusEl?.focus();
       focusEl?.scrollIntoView();
+      index === 1 &&
+        document.documentElement.scrollTo({
+          left: 0,
+        });
     } else if (event.key === "a") {
       event.preventDefault();
       tasksRef.current?.openAddTaskForm();
@@ -77,14 +80,7 @@ export function Column({column, index, columnRef}: ColumnProps) {
             onUnknownKeyDown={handleUnknownKeyDown}
           >
             <ColumnWrapper
-              ref={useCallback((node: HTMLDivElement | null) => {
-                provided.innerRef(node);
-                if (typeof columnRef === "function") {
-                  columnRef(node);
-                } else if (columnRef) {
-                  columnRef.current = node;
-                }
-              }, [])}
+              ref={provided.innerRef}
               {...provided.draggableProps}
               id={`col-${column.id}`}
               className={cn(

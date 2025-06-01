@@ -1,4 +1,3 @@
-import {useCallback, useEffect, useRef} from "react";
 import {DragDropContext, Droppable} from "@hello-pangea/dnd";
 import type {OnDragEndResponder} from "@hello-pangea/dnd";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
@@ -18,25 +17,7 @@ export function Columns({
   columns: NonNullable<GetBoardWithColumnsAndTasksQueryResult>["columns"];
 }) {
   const z = useZ();
-  const containerRef = useRef<HTMLDivElement>(null);
   const {closeModal} = useColumnModalControls();
-
-  const lastColumnRef = useCallback((node: HTMLDivElement | null) => {
-    /*
-     * This callback is used to scroll to the end of the container whenever a new column is added.
-     *
-     * React assigns and calls ref callbacks for child components before assigning refs for their parent components.
-     * By leveraging this behavior, we can ensure this code runs after the child node is mounted.
-     *
-     * The cool thing about this is The container won't scroll on the initial mount of the app.
-     * The reason is `containerRef` will be null on initial mount because child nodes refs will be called first
-     */
-
-    if (!node) return;
-    containerRef.current?.scrollTo({
-      left: containerRef.current.scrollWidth,
-    });
-  }, []);
 
   const handleDragEnd: OnDragEndResponder = (e) => {
     if (!e.destination) {
@@ -101,18 +82,12 @@ export function Columns({
         {(provided) => {
           return (
             <div
-              ref={containerRef}
               className="pb-8 h-full inline-flex px-8 space-x-4"
               {...provided.droppableProps}
             >
               <div className="flex h-full" ref={provided.innerRef}>
-                {columns.map((column, i, arr) => (
-                  <Column
-                    column={column}
-                    columnRef={arr.length - 1 === i ? lastColumnRef : undefined}
-                    index={i}
-                    key={column.id}
-                  />
+                {columns.map((column, i) => (
+                  <Column column={column} index={i} key={column.id} />
                 ))}
                 {provided.placeholder}
               </div>
