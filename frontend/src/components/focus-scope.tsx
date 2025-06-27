@@ -1,12 +1,13 @@
 import React, {
   createContext,
   useContext,
-  useRef,
-  useMemo,
-  ReactNode,
   useEffect,
+  useMemo,
+  useRef,
 } from "react";
 import {Slot} from "radix-ui";
+import type {
+  ReactNode} from "react";
 import {isHotkeyEnabledOnInput} from "@/lib/helpers";
 
 interface FocusManagerOptions {
@@ -18,13 +19,13 @@ interface FocusManagerOptions {
 
 interface FocusManager {
   /** Moves focus to the next focusable element in the scope. */
-  focusNext(opts?: FocusManagerOptions): Element | null;
+  focusNext: (opts?: FocusManagerOptions) => Element | null;
   /** Moves focus to the previous focusable element in the scope. */
-  focusPrevious(opts?: FocusManagerOptions): Element | null;
+  focusPrevious: (opts?: FocusManagerOptions) => Element | null;
   /** Moves focus to the first focusable element in the scope. */
-  focusFirst(opts?: FocusManagerOptions): Element | null;
+  focusFirst: (opts?: FocusManagerOptions) => Element | null;
   /** Moves focus to the last focusable element in the scope. */
-  focusLast(opts?: FocusManagerOptions): Element | null;
+  focusLast: (opts?: FocusManagerOptions) => Element | null;
 }
 
 type FocusScopePropsCommon = {
@@ -61,7 +62,7 @@ function isElementVisible(element: Element): boolean {
 function getFocusableElements(
   container: Element,
   accept?: (node: Element) => boolean,
-): Element[] {
+): Array<Element> {
   return Array.from(container.querySelectorAll("[data-kb-focus]"))
     .filter(isElementVisible)
     .filter((element) => (accept ? accept(element) : true));

@@ -2,6 +2,10 @@ import {Draggable} from "@hello-pangea/dnd";
 import {MoreVertical, Pencil, Trash2} from "lucide-react";
 import {memo, useCallback, useState} from "react";
 import {Link} from "@tanstack/react-router";
+import {useHotkeys} from "react-hotkeys-hook";
+import {flushSync} from "react-dom";
+import {toast} from "sonner";
+import {Tooltip as RadixTooltip} from "radix-ui";
 import type {
   DraggableProvided,
   DraggableStateSnapshot,
@@ -19,13 +23,9 @@ import {
 import {useZ} from "@/lib/zero-cache";
 import UserAvatar from "@/components/user-avatar";
 import {Tooltip, TooltipContent, TooltipTrigger} from "@/components/ui/tooltip";
-import {useHotkeys} from "react-hotkeys-hook";
-import {flushSync} from "react-dom";
-import {toast} from "sonner";
 import {useFocusManager} from "@/components/focus-scope";
 import {useUndoManager} from "@/state/undo-manager";
 import {FOCUS_TOOLTIP_CLASS, ModKey} from "@/lib/constants";
-import {Tooltip as RadixTooltip} from "radix-ui";
 import {useDelayedFocusIndicator} from "@/hooks/use-focus-indicator";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 

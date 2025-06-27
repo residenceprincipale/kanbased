@@ -1,3 +1,4 @@
+import {useHotkeys} from "react-hotkeys-hook";
 import {
   useBoardModalControls,
   useBoardModalState,
@@ -7,7 +8,6 @@ import {DeleteBoard} from "@/features/boards/delete-board";
 import {EditBoard} from "@/features/boards/edit-board";
 import {ExportBoards} from "@/features/boards/export-boards";
 import {ImportBoards} from "@/features/boards/import-boards";
-import {useHotkeys} from "react-hotkeys-hook";
 
 export function BoardActions() {
   const {activeModal} = useBoardModalState();

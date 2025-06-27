@@ -5,6 +5,7 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
+import {useHotkeys} from "react-hotkeys-hook";
 import {Actions} from "./-actions";
 import {CreateNoteButton} from "@/features/notes/create-note-button";
 import {ModalProvider} from "@/state/modals";
@@ -12,7 +13,6 @@ import {NoteList} from "@/features/notes/note-list";
 import {getNotesListQuery} from "@/lib/zero-queries";
 import {useZ} from "@/lib/zero-cache";
 import {useAuthData} from "@/queries/session";
-import {useHotkeys} from "react-hotkeys-hook";
 import {FocusScope} from "@/components/focus-scope";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes")({

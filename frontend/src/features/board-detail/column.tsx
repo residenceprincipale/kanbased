@@ -8,11 +8,13 @@ import {
   MoreVertical,
 } from "lucide-react";
 import {useRef, useState} from "react";
+import {Tooltip as RadixTooltip} from "radix-ui";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
+import type { TasksRefValue} from "@/features/board-detail/tasks";
 import {ColumnWrapper} from "@/components/column-ui";
 import {cn} from "@/lib/utils";
 import {EditableColumnName} from "@/features/board-detail/editable-column-name";
-import {Tasks, TasksRefValue} from "@/features/board-detail/tasks";
+import {Tasks} from "@/features/board-detail/tasks";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +24,6 @@ import {
 import {DeleteColumn} from "@/features/board-detail/delete-column";
 import {useAuthData} from "@/queries/session";
 import {FocusScope} from "@/components/focus-scope";
-import {Tooltip as RadixTooltip} from "radix-ui";
 import {KeyboardShortcutIndicator} from "@/components/keyboard-shortcut";
 import {FOCUS_TOOLTIP_CLASS} from "@/lib/constants";
 import {Separator} from "@/components/ui/separator";
@@ -44,7 +45,7 @@ export function Column({column, index}: ColumnProps) {
 
       const nextColumn = document.querySelector(
         `[data-column-index="${index + 1}"]`,
-      ) as HTMLElement | null;
+      );
 
       if (!nextColumn) return;
       const nextTasks = nextColumn.querySelectorAll("[data-kb-focus]");
@@ -58,7 +59,7 @@ export function Column({column, index}: ColumnProps) {
       event.preventDefault();
       const prevColumn = document.querySelector(
         `[data-column-index="${index - 1}"]`,
-      ) as HTMLElement | null;
+      );
 
       if (!prevColumn) return;
       const prevTasks = prevColumn.querySelectorAll("[data-kb-focus]");

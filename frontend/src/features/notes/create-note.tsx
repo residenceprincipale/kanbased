@@ -2,6 +2,7 @@ import {Suspense, lazy, useRef, useState} from "react";
 import {toast} from "sonner";
 import {Expand, Info, Minimize2, Save} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
+import {flushSync} from "react-dom";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
 import {Button} from "@/components/ui/button";
 import {Spinner} from "@/components/ui/spinner";
@@ -20,7 +21,6 @@ import {useActiveOrganizationId} from "@/queries/session";
 import {WrappedTooltip} from "@/components/ui/tooltip";
 import {useLocalStorage} from "@/hooks/use-local-storage";
 import {useDirtyEditorBlock} from "@/hooks/use-dirty-editor-block";
-import {flushSync} from "react-dom";
 
 const MarkdownEditorLazy = lazy(
   () => import("@/components/md-editor/markdown-editor"),
