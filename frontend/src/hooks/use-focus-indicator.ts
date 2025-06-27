@@ -17,7 +17,7 @@ export function useDelayedFocusIndicator() {
 
     timeoutRef.current = setTimeout(() => {
       showIndicator();
-    }, 1000);
+    }, 3000);
   };
 
   const autoHideIndicator = () => {
