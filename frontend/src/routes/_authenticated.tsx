@@ -13,6 +13,17 @@ import {queryClient} from "@/lib/query-client";
 import {preloadAllBoards} from "@/lib/zero-queries";
 import {createZeroCache} from "@/lib/zero-cache";
 import {useAuthData} from "@/queries/session";
+import {authClient} from "@/lib/auth";
+import {router} from "@/main";
+
+const clearAndRedirectToHome = async () => {
+  localStorage.removeItem("auth-token");
+  await queryClient.invalidateQueries(authQueryOptions, {
+    throwOnError: true,
+  });
+
+  router.navigate({to: "/", reloadDocument: true});
+};
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
@@ -37,10 +48,49 @@ export const Route = createFileRoute("/_authenticated")({
       hasNoActiveOrganization &&
       !location.pathname.includes("/new-organization")
     ) {
-      throw redirect({
-        to: "/new-organization",
-        reloadDocument: true,
-      });
+      const orgListRes = await authClient.organization.list();
+      const orgList = orgListRes.data;
+
+      if (orgList && orgList.length > 0) {
+        const {error} = await authClient.organization.setActive({
+          organizationId: orgList[0]!.id,
+        });
+
+        if (error) {
+          throw new Error("Something went wrong, Try refreshing the page.");
+        }
+
+        await clearAndRedirectToHome();
+        return;
+      }
+
+      const hasName = decodedData.name && decodedData.name.length > 0;
+
+      if (hasName) {
+        const {data, error} = await authClient.organization.create({
+          name: `${decodedData.name}'s Workspace`,
+          slug: `${decodedData.name!.toLowerCase().replace(" ", "-")}-workspace`,
+        });
+
+        if (error && !location.pathname.includes("/new-organization")) {
+          throw redirect({
+            to: "/new-organization",
+            reloadDocument: true,
+          });
+        }
+
+        if (data) {
+          const {error} = await authClient.organization.setActive({
+            organizationId: data.id,
+          });
+
+          if (error) {
+            throw new Error("Something went wrong, Try refreshing the page.");
+          }
+
+          await clearAndRedirectToHome();
+        }
+      }
     }
   },
 

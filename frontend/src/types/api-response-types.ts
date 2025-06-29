@@ -5,7 +5,7 @@ export type AuthJwtPayload = {
   role: string;
   activeOrganizationId: string;
   image: string;
-  name: string;
+  name: string | null;
   email: string;
   iat: number;
   iss: string;
