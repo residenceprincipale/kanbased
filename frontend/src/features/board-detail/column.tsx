@@ -10,7 +10,7 @@ import {
 import {useRef, useState} from "react";
 import {Tooltip as RadixTooltip} from "radix-ui";
 import type {GetBoardWithColumnsAndTasksQueryResult} from "@/lib/zero-queries";
-import type { TasksRefValue} from "@/features/board-detail/tasks";
+import type {TasksRefValue} from "@/features/board-detail/tasks";
 import {ColumnWrapper} from "@/components/column-ui";
 import {cn} from "@/lib/utils";
 import {EditableColumnName} from "@/features/board-detail/editable-column-name";
@@ -41,6 +41,7 @@ export function Column({column, index}: ColumnProps) {
 
   const handleUnknownKeyDown = (event: KeyboardEvent) => {
     if (event.key === "ArrowRight" || event.key === "l") {
+      if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
 
       const nextColumn = document.querySelector(
@@ -50,12 +51,13 @@ export function Column({column, index}: ColumnProps) {
       if (!nextColumn) return;
       const nextTasks = nextColumn.querySelectorAll("[data-kb-focus]");
       const focusEl = (
-        nextTasks?.length ? nextTasks[0] : nextColumn
+        nextTasks.length ? nextTasks[0] : nextColumn
       ) as HTMLElement | null;
 
       focusEl?.focus();
       focusEl?.scrollIntoView();
     } else if (event.key === "ArrowLeft" || event.key === "h") {
+      if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
       const prevColumn = document.querySelector(
         `[data-column-index="${index - 1}"]`,
@@ -64,7 +66,7 @@ export function Column({column, index}: ColumnProps) {
       if (!prevColumn) return;
       const prevTasks = prevColumn.querySelectorAll("[data-kb-focus]");
       const focusEl = (
-        prevTasks?.length ? prevTasks[0] : prevColumn
+        prevTasks.length ? prevTasks[0] : prevColumn
       ) as HTMLElement | null;
 
       focusEl?.focus();
@@ -74,6 +76,7 @@ export function Column({column, index}: ColumnProps) {
           left: 0,
         });
     } else if (event.key === "a") {
+      if (event.ctrlKey || event.metaKey) return;
       event.preventDefault();
       tasksRef.current?.openAddTaskForm();
     }

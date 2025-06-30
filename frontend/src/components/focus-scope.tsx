@@ -6,8 +6,7 @@ import React, {
   useRef,
 } from "react";
 import {Slot} from "radix-ui";
-import type {
-  ReactNode} from "react";
+import type {ReactNode} from "react";
 import {isHotkeyEnabledOnInput} from "@/lib/helpers";
 
 interface FocusManagerOptions {
@@ -178,21 +177,25 @@ export function FocusScope(props: FocusScopeProps) {
         switch (event.key) {
           case "ArrowDown":
           case "j":
+            if (event.ctrlKey || event.metaKey) return;
             event.preventDefault();
             focusManager.focusNext(listNavigationOptions);
             break;
           case "ArrowUp":
           case "k":
+            if (event.ctrlKey || event.metaKey) return;
             event.preventDefault();
             focusManager.focusPrevious(listNavigationOptions);
             break;
           case "Home":
           case "g":
+            if (event.ctrlKey || event.metaKey) return;
             event.preventDefault();
             focusManager.focusFirst(listNavigationOptions);
             break;
           case "End":
           case "G":
+            if (event.ctrlKey || event.metaKey) return;
             event.preventDefault();
             focusManager.focusLast(listNavigationOptions);
             break;
