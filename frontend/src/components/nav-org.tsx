@@ -99,7 +99,7 @@ export function NavOrganization() {
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem asChild>
-                <Link to="/new-organization">
+                <Link to="/new-workspace">
                   <Plus className="mr-2 h-4 w-4" />
                   Create new workspace
                 </Link>

@@ -15,7 +15,7 @@ import { Route as AuthenticatedImport } from './routes/_authenticated'
 import { Route as AuthenticatedLayoutImport } from './routes/_authenticated/_layout'
 import { Route as AuthenticatedWorkspaceSettingsRouteImport } from './routes/_authenticated/workspace-settings/route'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings/route'
-import { Route as AuthenticatedNewOrganizationRouteImport } from './routes/_authenticated/new-organization/route'
+import { Route as AuthenticatedNewWorkspaceRouteImport } from './routes/_authenticated/new-workspace/route'
 import { Route as authSignupRouteImport } from './routes/(auth)/signup/route'
 import { Route as authResetPasswordRouteImport } from './routes/(auth)/reset-password/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login/route'
@@ -54,10 +54,10 @@ const AuthenticatedSettingsRouteRoute = AuthenticatedSettingsRouteImport.update(
   } as any,
 )
 
-const AuthenticatedNewOrganizationRouteRoute =
-  AuthenticatedNewOrganizationRouteImport.update({
-    id: '/new-organization',
-    path: '/new-organization',
+const AuthenticatedNewWorkspaceRouteRoute =
+  AuthenticatedNewWorkspaceRouteImport.update({
+    id: '/new-workspace',
+    path: '/new-workspace',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 
@@ -165,11 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authSignupRouteImport
       parentRoute: typeof rootRoute
     }
-    '/_authenticated/new-organization': {
-      id: '/_authenticated/new-organization'
-      path: '/new-organization'
-      fullPath: '/new-organization'
-      preLoaderRoute: typeof AuthenticatedNewOrganizationRouteImport
+    '/_authenticated/new-workspace': {
+      id: '/_authenticated/new-workspace'
+      path: '/new-workspace'
+      fullPath: '/new-workspace'
+      preLoaderRoute: typeof AuthenticatedNewWorkspaceRouteImport
       parentRoute: typeof AuthenticatedImport
     }
     '/_authenticated/settings': {
@@ -275,7 +275,7 @@ const AuthenticatedLayoutRouteWithChildren =
   AuthenticatedLayoutRoute._addFileChildren(AuthenticatedLayoutRouteChildren)
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedNewOrganizationRouteRoute: typeof AuthenticatedNewOrganizationRouteRoute
+  AuthenticatedNewWorkspaceRouteRoute: typeof AuthenticatedNewWorkspaceRouteRoute
   AuthenticatedSettingsRouteRoute: typeof AuthenticatedSettingsRouteRoute
   AuthenticatedWorkspaceSettingsRouteRoute: typeof AuthenticatedWorkspaceSettingsRouteRoute
   AuthenticatedLayoutRoute: typeof AuthenticatedLayoutRouteWithChildren
@@ -283,8 +283,7 @@ interface AuthenticatedRouteChildren {
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedNewOrganizationRouteRoute:
-    AuthenticatedNewOrganizationRouteRoute,
+  AuthenticatedNewWorkspaceRouteRoute: AuthenticatedNewWorkspaceRouteRoute,
   AuthenticatedSettingsRouteRoute: AuthenticatedSettingsRouteRoute,
   AuthenticatedWorkspaceSettingsRouteRoute:
     AuthenticatedWorkspaceSettingsRouteRoute,
@@ -303,7 +302,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
   '/signup': typeof authSignupRouteRoute
-  '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
+  '/new-workspace': typeof AuthenticatedNewWorkspaceRouteRoute
   '/settings': typeof AuthenticatedSettingsRouteRoute
   '/workspace-settings': typeof AuthenticatedWorkspaceSettingsRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
@@ -320,7 +319,7 @@ export interface FileRoutesByTo {
   '/login': typeof authLoginRouteRoute
   '/reset-password': typeof authResetPasswordRouteRoute
   '/signup': typeof authSignupRouteRoute
-  '/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
+  '/new-workspace': typeof AuthenticatedNewWorkspaceRouteRoute
   '/settings': typeof AuthenticatedSettingsRouteRoute
   '/workspace-settings': typeof AuthenticatedWorkspaceSettingsRouteRoute
   '/boards': typeof AuthenticatedLayoutBoardsRouteRoute
@@ -338,7 +337,7 @@ export interface FileRoutesById {
   '/(auth)/login': typeof authLoginRouteRoute
   '/(auth)/reset-password': typeof authResetPasswordRouteRoute
   '/(auth)/signup': typeof authSignupRouteRoute
-  '/_authenticated/new-organization': typeof AuthenticatedNewOrganizationRouteRoute
+  '/_authenticated/new-workspace': typeof AuthenticatedNewWorkspaceRouteRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRouteRoute
   '/_authenticated/workspace-settings': typeof AuthenticatedWorkspaceSettingsRouteRoute
   '/_authenticated/_layout': typeof AuthenticatedLayoutRouteWithChildren
@@ -358,7 +357,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
-    | '/new-organization'
+    | '/new-workspace'
     | '/settings'
     | '/workspace-settings'
     | '/boards'
@@ -374,7 +373,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/reset-password'
     | '/signup'
-    | '/new-organization'
+    | '/new-workspace'
     | '/settings'
     | '/workspace-settings'
     | '/boards'
@@ -390,7 +389,7 @@ export interface FileRouteTypes {
     | '/(auth)/login'
     | '/(auth)/reset-password'
     | '/(auth)/signup'
-    | '/_authenticated/new-organization'
+    | '/_authenticated/new-workspace'
     | '/_authenticated/settings'
     | '/_authenticated/workspace-settings'
     | '/_authenticated/_layout'
@@ -439,7 +438,7 @@ export const routeTree = rootRoute
     "/_authenticated": {
       "filePath": "_authenticated.tsx",
       "children": [
-        "/_authenticated/new-organization",
+        "/_authenticated/new-workspace",
         "/_authenticated/settings",
         "/_authenticated/workspace-settings",
         "/_authenticated/_layout",
@@ -458,8 +457,8 @@ export const routeTree = rootRoute
     "/(auth)/signup": {
       "filePath": "(auth)/signup/route.tsx"
     },
-    "/_authenticated/new-organization": {
-      "filePath": "_authenticated/new-organization/route.tsx",
+    "/_authenticated/new-workspace": {
+      "filePath": "_authenticated/new-workspace/route.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/settings": {

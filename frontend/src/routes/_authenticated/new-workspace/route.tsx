@@ -20,7 +20,7 @@ import {queryClient} from "@/lib/query-client";
 import {BackButton} from "@/components/back-button";
 import {authQueryOptions} from "@/lib/query-options-factory";
 
-export const Route = createFileRoute("/_authenticated/new-organization")({
+export const Route = createFileRoute("/_authenticated/new-workspace")({
   component: Welcome,
 });
 

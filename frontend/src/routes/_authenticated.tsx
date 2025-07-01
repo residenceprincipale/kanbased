@@ -1,99 +1,38 @@
 import {
   Outlet,
   createFileRoute,
-  redirect,
+  useLocation,
   useRouter,
 } from "@tanstack/react-router";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {memo, useEffect, useMemo} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {ZeroProvider} from "@rocicorp/zero/react";
-import {AuthError} from "@/lib/utils";
+import {AuthError, createId} from "@/lib/utils";
 import {authQueryOptions} from "@/lib/query-options-factory";
 import {queryClient} from "@/lib/query-client";
 import {preloadAllBoards} from "@/lib/zero-queries";
 import {createZeroCache} from "@/lib/zero-cache";
-import {useAuthData} from "@/queries/session";
 import {authClient} from "@/lib/auth";
 import {router} from "@/main";
+import {useAuthData} from "@/queries/session";
 
-const clearAndRedirectToHome = async () => {
+const clearAndRedirectToHome = async (newUser?: boolean) => {
   localStorage.removeItem("auth-token");
   await queryClient.invalidateQueries(authQueryOptions, {
     throwOnError: true,
   });
 
-  router.navigate({to: "/", reloadDocument: true});
+  router.navigate({
+    to: "/",
+    reloadDocument: true,
+    search: {
+      newUser,
+    },
+  });
 };
 
 export const Route = createFileRoute("/_authenticated")({
   component: RouteComponent,
-
-  beforeLoad: async () => {
-    const {decodedData} = await queryClient.ensureQueryData(authQueryOptions);
-
-    const currentTime = Math.floor(Date.now() / 1000);
-    const isAuthExpired = currentTime >= decodedData.exp;
-
-    if (isAuthExpired) {
-      localStorage.removeItem("auth-token");
-      throw redirect({
-        to: "/login",
-        reloadDocument: true,
-      });
-    }
-
-    const hasNoActiveOrganization = !decodedData.activeOrganizationId;
-
-    if (
-      hasNoActiveOrganization &&
-      !location.pathname.includes("/new-organization")
-    ) {
-      const orgListRes = await authClient.organization.list();
-      const orgList = orgListRes.data;
-
-      if (orgList && orgList.length > 0) {
-        const {error} = await authClient.organization.setActive({
-          organizationId: orgList[0]!.id,
-        });
-
-        if (error) {
-          throw new Error("Something went wrong, Try refreshing the page.");
-        }
-
-        await clearAndRedirectToHome();
-        return;
-      }
-
-      const hasName = decodedData.name && decodedData.name.length > 0;
-
-      if (hasName) {
-        const {data, error} = await authClient.organization.create({
-          name: `${decodedData.name}'s Workspace`,
-          slug: `${decodedData.name!.toLowerCase().replace(" ", "-")}-workspace`,
-        });
-
-        if (error && !location.pathname.includes("/new-organization")) {
-          throw redirect({
-            to: "/new-organization",
-            reloadDocument: true,
-          });
-        }
-
-        if (data) {
-          const {error} = await authClient.organization.setActive({
-            organizationId: data.id,
-          });
-
-          if (error) {
-            throw new Error("Something went wrong, Try refreshing the page.");
-          }
-
-          await clearAndRedirectToHome();
-        }
-      }
-    }
-  },
-
   errorComponent: (error) => {
     const router = useRouter();
 
@@ -119,14 +58,20 @@ export const Route = createFileRoute("/_authenticated")({
       </div>
     );
   },
+  validateSearch: (search): {newUser?: boolean} => {
+    return {
+      newUser: typeof search.newUser === "boolean" ? search.newUser : undefined,
+    };
+  },
 });
 
 function RouteComponent() {
   const {
     data: {decodedData},
-    isError,
   } = useSuspenseQuery(authQueryOptions);
   const router = useRouter();
+  const pathName = useLocation({select: (location) => location.pathname});
+  const [error, setError] = useState("");
 
   const redirectToLogin = () => {
     localStorage.removeItem("auth-token");
@@ -135,15 +80,6 @@ function RouteComponent() {
       reloadDocument: true,
     });
   };
-
-  // I have to make auth related checks on beforeLoad
-  // and also on component here becuase beforeLoad
-  // is not reactive and will not update when the query
-  // data is updated
-  if (isError) {
-    redirectToLogin();
-    return null;
-  }
 
   const currentTime = Math.floor(Date.now() / 1000);
   const isAuthExpired = currentTime >= decodedData.exp;
@@ -154,16 +90,67 @@ function RouteComponent() {
     return null;
   }
 
-  const hasNoActiveOrganization = !decodedData.activeOrganizationId;
+  const hasActiveOrganization = decodedData.activeOrganizationId;
 
-  if (
-    hasNoActiveOrganization &&
-    !location.pathname.includes("/new-organization")
-  ) {
-    router.navigate({
-      to: "/new-organization",
-    });
+  const handleNoActiveOrganization = async () => {
+    if (pathName.includes("/new-workspace")) return;
 
+    const {data: orgList} = await authClient.organization.list();
+
+    // If there is an active organization, set it as active and redirect to home
+    if (orgList && orgList.length > 0) {
+      const {error} = await authClient.organization.setActive({
+        organizationId: orgList[0]!.id,
+      });
+
+      if (error) {
+        setError("Something went wrong, Try refreshing the page.");
+        return;
+      }
+
+      await clearAndRedirectToHome();
+      return;
+    }
+
+    const hasName = decodedData.name && decodedData.name.length > 0;
+
+    // If the user has a name, create a new organization and set it as active
+    if (hasName) {
+      const {data, error} = await authClient.organization.create({
+        name: `${decodedData.name!.split(" ")[0]}'s Workspace`,
+        slug: `${decodedData.name!.toLowerCase().replace(" ", "-")}-workspace`,
+      });
+
+      if (error) {
+        router.navigate({
+          to: "/new-workspace",
+        });
+        return;
+      }
+
+      const activeOrgRes = await authClient.organization.setActive({
+        organizationId: data.id,
+      });
+
+      if (activeOrgRes.error) {
+        setError("Something went wrong, Try refreshing the page.");
+        return;
+      }
+
+      await clearAndRedirectToHome(true);
+    } else {
+      router.navigate({
+        to: "/new-workspace",
+      });
+    }
+  };
+
+  if (error) {
+    throw new Error(error);
+  }
+
+  if (!hasActiveOrganization) {
+    handleNoActiveOrganization();
     return null;
   }
 
@@ -174,15 +161,95 @@ function RouteComponent() {
   );
 }
 
-const ZeroWrapped = memo(function ZeroWrapped({
-  children,
-}: React.PropsWithChildren) {
-  const userData = useAuthData();
-  const z = useMemo(() => createZeroCache({userId: userData.id}), []);
+function ZeroWrapped({children}: {children: React.ReactNode}) {
+  const authData = useAuthData();
+  const z = useMemo(
+    () => createZeroCache({userId: authData.id}),
+    [authData.id],
+  );
+  const {newUser} = Route.useSearch();
 
   useEffect(() => {
     preloadAllBoards(z);
   }, [z]);
 
+  const createDefaultBoard = useCallback(async () => {
+    // Create a default board for the newly created organization
+    await z.mutateBatch(async (m) => {
+      const boardId = createId();
+
+      await m.boardsTable.insert({
+        id: boardId,
+        name: "Getting Things Done",
+        slug: "getting-things-done",
+        organizationId: authData.activeOrganizationId,
+        creatorId: authData.id,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+
+      const firstColumnId = createId();
+
+      // Create a default column for the newly created board
+      await m.columnsTable.insert({
+        id: firstColumnId,
+        name: "To Do",
+        boardId,
+        position: 0,
+        creatorId: authData.id,
+        organizationId: authData.activeOrganizationId,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+
+      await m.columnsTable.insert({
+        id: createId(),
+        name: "Doing",
+        boardId,
+        position: 1,
+        creatorId: authData.id,
+        organizationId: authData.activeOrganizationId,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+
+      await m.columnsTable.insert({
+        id: createId(),
+        name: "Done",
+        boardId,
+        position: 2,
+        creatorId: authData.id,
+        organizationId: authData.activeOrganizationId,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+
+      await m.tasksTable.insert({
+        id: createId(),
+        name: "👋 Welcome to your board! Move this task to 'Done' to complete your first action.",
+        columnId: firstColumnId,
+        position: 1000,
+        creatorId: authData.id,
+        organizationId: authData.activeOrganizationId,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+    });
+  }, [authData.activeOrganizationId, authData.id, z]);
+
+  useEffect(() => {
+    if (newUser) {
+      createDefaultBoard().then(() => {
+        router.navigate({
+          to: "/",
+          search: {
+            newUser: undefined,
+          },
+          replace: true,
+        });
+      });
+    }
+  }, [newUser, createDefaultBoard, router]);
+
   return <ZeroProvider zero={z}>{children}</ZeroProvider>;
-});
+}

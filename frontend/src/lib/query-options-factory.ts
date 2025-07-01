@@ -17,7 +17,6 @@ export const authQueryOptions = queryOptions({
         },
       });
 
-      // @typescript-eslint/no-unnecessary-condition
       if (!data || !data.token || error) {
         throw new AuthError({
           status: 401,
@@ -46,6 +45,6 @@ export const authQueryOptions = queryOptions({
       decodedData,
     };
   },
-
+  retry: false,
   staleTime: Infinity,
 });

@@ -106,6 +106,7 @@ function SignIn() {
                 name="email"
                 placeholder="m@example.com"
                 required
+                autoFocus
               />
             </div>
 
