@@ -3,7 +3,6 @@
 import * as React from "react";
 import {
   ArrowUpDown,
-  Building2,
   FileText,
   KanbanSquare,
   SquareCheck,
@@ -36,6 +35,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {CommandTasks} from "@/features/cmd-k/cmd-tasks";
 
 type Page = "boards" | "notes" | "tasks" | "theme" | "organization";
 
@@ -132,6 +132,7 @@ export function CommandDialog() {
 
             {page === "theme" && <CommandThemes />}
             {page === "organization" && <CommandOrgSwitch />}
+            {page === "tasks" && <CommandTasks allTasks={allTasks} />}
 
             {search && !page && <CommandThemes />}
 
@@ -176,72 +177,65 @@ export function CommandDialog() {
                     <FileText />
                     <span>Notes</span>
                   </CommandItem>
-                </CommandGroup>
-                <CommandGroup heading="Boards">
-                  {boards.map((board) => (
-                    <CommandItem
-                      key={board.id}
-                      onSelect={() => {
-                        router.navigate({
-                          to: "/boards/$boardId",
-                          params: {boardId: board.id},
-                        });
-                        closeCmdK();
-                      }}
-                    >
-                      <KanbanSquare />
-                      <span className="flex-1 truncate">{board.name}</span>
-                      <CommandSubtitle className="shrink-0">
-                        Board
-                      </CommandSubtitle>
-                    </CommandItem>
-                  ))}
+
+                  <CommandItem
+                    onSelect={() => {
+                      setPages((prevPages) => [...prevPages, "tasks"]);
+                      clearSearch();
+                    }}
+                  >
+                    <SquareCheck />
+                    <span>Tasks</span>
+                  </CommandItem>
                 </CommandGroup>
 
-                <CommandGroup heading="Notes">
-                  {notes.map((note) => (
-                    <CommandItem
-                      key={note.id}
-                      onSelect={() => {
-                        router.navigate({
-                          to: "/notes/$noteId",
-                          params: {noteId: note.id},
-                        });
-                        closeCmdK();
-                      }}
-                    >
-                      <FileText />
-                      <span>{note.name}</span>
-                      <CommandSubtitle>Note</CommandSubtitle>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <CommandSeparator className="my-2" />
+
+                {boards.length > 0 && (
+                  <CommandGroup heading="Boards">
+                    {boards.map((board) => (
+                      <CommandItem
+                        key={board.id}
+                        onSelect={() => {
+                          router.navigate({
+                            to: "/boards/$boardId",
+                            params: {boardId: board.id},
+                          });
+                          closeCmdK();
+                        }}
+                      >
+                        <KanbanSquare />
+                        <span className="flex-1 truncate">{board.name}</span>
+                        <CommandSubtitle className="shrink-0">
+                          Board
+                        </CommandSubtitle>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
+
+                {notes.length > 0 && (
+                  <CommandGroup heading="Notes">
+                    {notes.map((note) => (
+                      <CommandItem
+                        key={note.id}
+                        onSelect={() => {
+                          router.navigate({
+                            to: "/notes/$noteId",
+                            params: {noteId: note.id},
+                          });
+                          closeCmdK();
+                        }}
+                      >
+                        <FileText />
+                        <span>{note.name}</span>
+                        <CommandSubtitle>Note</CommandSubtitle>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                )}
 
                 <CommandSeparator />
-
-                <CommandGroup heading="Tasks">
-                  {allTasks.map((task) => (
-                    <CommandItem
-                      key={task.id}
-                      onSelect={() => {
-                        router.navigate({
-                          to: "/boards/$boardId",
-                          params: {boardId: task.boardId},
-                          search: {
-                            taskId: task.id,
-                          },
-                        });
-                        closeCmdK();
-                      }}
-                    >
-                      <SquareCheck />
-                      <span className="flex-1 truncate">{task.name}</span>
-                      <CommandSubtitle className="shrink-0">
-                        Task
-                      </CommandSubtitle>
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
               </>
             )}
           </CommandList>
