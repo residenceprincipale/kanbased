@@ -76,7 +76,7 @@ export function Column({column, index}: ColumnProps) {
           left: 0,
         });
     } else if (event.key === "a") {
-      if (event.ctrlKey || event.metaKey) return;
+      if (event.ctrlKey || event.metaKey || isMember) return;
       event.preventDefault();
       tasksRef.current?.openAddTaskForm();
     }
@@ -154,6 +154,7 @@ export function Column({column, index}: ColumnProps) {
                     side="top"
                     sideOffset={12}
                     className={FOCUS_TOOLTIP_CLASS}
+                    hidden={isMember}
                   >
                     <div className="flex gap-2 items-center text-xs">
                       <div>

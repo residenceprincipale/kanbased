@@ -231,6 +231,28 @@ function ZeroWrapped({children}: {children: React.ReactNode}) {
         position: 1000,
         creatorId: authData.id,
         organizationId: authData.activeOrganizationId,
+        content: `
+# Welcome to KanBased! 👋
+
+This is a **minimal** and **distraction-free** Kanban app built to help you focus on what matters.
+
+
+✨ **Keyboard-first experience**  
+Navigate and manage tasks quickly without touching the mouse.  
+_Pay attention to keyboard shortcuts, they make everything faster._
+
+
+🎯 Start by:
+- Creating your own tasks
+- Moving them across columns with drag or shortcuts
+- Exploring what works best for your flow
+
+---
+
+
+✅ Ready? Move this task to **Done** to begin.
+
+        `,
         createdAt: Date.now(),
         updatedAt: Date.now(),
       });

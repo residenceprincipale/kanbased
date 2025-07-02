@@ -1,18 +1,31 @@
-import {useEffect, useRef,useState} from "react";
+import {useEffect, useRef, useState} from "react";
 
-export function useDelayedFocusIndicator() {
+export function useDelayedFocusIndicator({
+  isDisabled = false,
+}: {
+  isDisabled?: boolean;
+}) {
   const [isFocused, setIsFocused] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const shownIndicatorRef = useRef(false);
 
   const showIndicator = () => {
+    if (isDisabled) return;
     if (shownIndicatorRef.current) return;
     shownIndicatorRef.current = true;
     setIsFocused(true);
   };
 
   const showIndicatorDelayed = () => {
-    if (shownIndicatorRef.current) return;
+    if (isDisabled) return;
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    if (shownIndicatorRef.current) {
+      return;
+    }
 
     timeoutRef.current = setTimeout(() => {
       showIndicator();

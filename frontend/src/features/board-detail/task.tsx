@@ -47,7 +47,9 @@ function ViewTask(props: {
   const focusManager = useFocusManager();
   const undoManager = useUndoManager();
   const {isFocused, showIndicatorDelayed, hideIndicator} =
-    useDelayedFocusIndicator();
+    useDelayedFocusIndicator({
+      isDisabled: props.readonly,
+    });
 
   const editHotkeyRef = useHotkeys(
     "i",
@@ -176,11 +178,14 @@ function ViewTask(props: {
                 )}
 
                 <Tooltip delayDuration={300}>
-                  <TooltipTrigger className="self-end" tabIndex={-1}>
+                  <TooltipTrigger
+                    className="self-end h-fit mt-auto"
+                    tabIndex={-1}
+                  >
                     <UserAvatar
                       name={task.creator?.name ?? ""}
                       imageUrl={task.creator?.image ?? ""}
-                      className="w-5 h-5 opacity-0 group-hover:opacity-90 shrink-0 transition-opacity focus:opacity-90"
+                      className="w-5 h-5 opacity-0 group-hover:opacity-90 shrink-0 transition-opacity group-focus:opacity-90"
                     />
                   </TooltipTrigger>
 
