@@ -1,4 +1,8 @@
-import {Outlet, createRootRouteWithContext} from "@tanstack/react-router";
+import {
+  HeadContent,
+  Outlet,
+  createRootRouteWithContext,
+} from "@tanstack/react-router";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {lazy} from "react";
 import {AppContextProvider} from "@/state/app-state";
@@ -21,15 +25,23 @@ interface MyRouterContext {}
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   component: RootComponent,
+  head(ctx) {
+    return {
+      meta: [{title: "KanBased"}],
+    };
+  },
 });
 
 function RootComponent() {
   return (
-    <AppContextProvider>
-      <Outlet />
-      <Toaster closeButton />
-      <TanStackRouterDevtools position="bottom-right" />
-      <ReactQueryDevtools position="bottom" />
-    </AppContextProvider>
+    <>
+      <HeadContent />
+      <AppContextProvider>
+        <Outlet />
+        <Toaster closeButton />
+        <TanStackRouterDevtools position="bottom-right" />
+        <ReactQueryDevtools position="bottom" />
+      </AppContextProvider>
+    </>
   );
 }

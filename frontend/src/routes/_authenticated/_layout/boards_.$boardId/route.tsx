@@ -21,6 +21,7 @@ export const Route = createFileRoute(
       taskId: typeof search.taskId === "string" ? search.taskId : undefined,
     };
   },
+
   context: () => {
     let _boardName = "";
     return {
@@ -30,6 +31,7 @@ export const Route = createFileRoute(
       },
     };
   },
+
   loader: (ctx) => {
     return {
       breadcrumbs: linkOptions([
@@ -43,6 +45,13 @@ export const Route = createFileRoute(
           params: {boardId: ctx.params.boardId},
         },
       ]),
+    };
+  },
+  head(ctx) {
+    const boardName: string = ctx.match.context.getBoardName();
+
+    return {
+      meta: [{title: boardName}],
     };
   },
 });

@@ -35,6 +35,12 @@ export const Route = createFileRoute("/_authenticated/_layout/notes")({
         typeof search.createNote === "boolean" ? search.createNote : undefined,
     };
   },
+
+  head(ctx) {
+    return {
+      meta: [{title: "Notes"}],
+    };
+  },
 });
 
 function RouteComponent() {

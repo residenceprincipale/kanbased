@@ -33,6 +33,11 @@ export const Route = createFileRoute("/(auth)/login")({
         typeof search.redirect === "string" ? search.redirect : undefined,
     };
   },
+  head(ctx) {
+    return {
+      meta: [{title: "Login | KanBased"}],
+    };
+  },
 });
 
 function SignIn() {

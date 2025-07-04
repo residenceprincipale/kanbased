@@ -1,4 +1,6 @@
-import {createFileRoute, useNavigate} from "@tanstack/react-router";
+import {useEffect} from "react";
+
+import {createFileRoute, useNavigate, useRouter} from "@tanstack/react-router";
 import {useQuery} from "@rocicorp/zero/react";
 import {useZ} from "@/lib/zero-cache";
 import {getNoteQuery} from "@/lib/zero-queries";
@@ -7,6 +9,24 @@ import {promiseTimeout} from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/_layout/notes/$noteId")({
   component: RouteComponent,
+
+  context: () => {
+    let _noteTitle = "";
+    return {
+      getNoteTitle: () => _noteTitle,
+      setNoteTitle: (title: string) => {
+        _noteTitle = title;
+      },
+    };
+  },
+
+  head(ctx) {
+    const noteTitle: string = ctx.match.context.getNoteTitle();
+
+    return {
+      meta: [{title: noteTitle}],
+    };
+  },
 });
 
 function RouteComponent() {
@@ -14,6 +34,15 @@ function RouteComponent() {
   const z = useZ();
   const [note] = useQuery(getNoteQuery(z, noteId));
   const navigate = useNavigate();
+  const router = useRouter();
+  const routeCtx = Route.useRouteContext();
+
+  useEffect(() => {
+    if (note?.name) {
+      routeCtx.setNoteTitle(note.name);
+      router.invalidate();
+    }
+  }, [note?.name]);
 
   if (note === undefined) {
     return null;

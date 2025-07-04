@@ -22,6 +22,11 @@ export const Route = createFileRoute("/_authenticated/_layout/boards")({
       ]),
     };
   },
+  head(ctx) {
+    return {
+      meta: [{title: "Boards"}],
+    };
+  },
 });
 
 function BoardsPage() {

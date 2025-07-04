@@ -18,6 +18,11 @@ import {handleAuthResponse} from "@/lib/utils";
 
 export const Route = createFileRoute("/(auth)/reset-password")({
   component: ResetPassword,
+  head(ctx) {
+    return {
+      meta: [{title: "Reset Password | KanBased"}],
+    };
+  },
 });
 
 function ResetPassword() {

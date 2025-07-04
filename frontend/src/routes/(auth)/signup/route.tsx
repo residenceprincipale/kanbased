@@ -26,6 +26,11 @@ import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
+  head(ctx) {
+    return {
+      meta: [{title: "Sign Up | KanBased"}],
+    };
+  },
 });
 
 function SignUp() {
