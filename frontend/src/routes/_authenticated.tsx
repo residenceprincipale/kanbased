@@ -6,15 +6,15 @@ import {
 } from "@tanstack/react-router";
 import {useSuspenseQuery} from "@tanstack/react-query";
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {ZeroProvider} from "@rocicorp/zero/react";
+import {ZeroProvider} from "@/lib/zero-provider";
 import {AuthError, createId} from "@/lib/utils";
 import {authQueryOptions} from "@/lib/query-options-factory";
 import {queryClient} from "@/lib/query-client";
 import {preloadAllBoards} from "@/lib/zero-queries";
-import {createZeroCache} from "@/lib/zero-cache";
 import {authClient} from "@/lib/auth";
 import {router} from "@/main";
 import {useAuthData} from "@/queries/session";
+import {useZ} from "@/lib/zero-cache";
 
 const clearAndRedirectToHome = async (newUser?: boolean) => {
   localStorage.removeItem("auth-token");
@@ -155,19 +155,18 @@ function RouteComponent() {
   }
 
   return (
-    <ZeroWrapped>
-      <Outlet />
-    </ZeroWrapped>
+    <ZeroProvider>
+      <WorkspaceInitializer>
+        <Outlet />
+      </WorkspaceInitializer>
+    </ZeroProvider>
   );
 }
 
-function ZeroWrapped({children}: {children: React.ReactNode}) {
+function WorkspaceInitializer({children}: {children: React.ReactNode}) {
   const authData = useAuthData();
-  const z = useMemo(
-    () => createZeroCache({userId: authData.id}),
-    [authData.id],
-  );
   const {newUser} = Route.useSearch();
+  const z = useZ();
 
   useEffect(() => {
     preloadAllBoards(z);
@@ -273,5 +272,5 @@ _Pay attention to keyboard shortcuts, they make everything faster._
     }
   }, [newUser, createDefaultBoard, router]);
 
-  return <ZeroProvider zero={z}>{children}</ZeroProvider>;
+  return children;
 }

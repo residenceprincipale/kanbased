@@ -11,7 +11,6 @@ export async function fetchSession() {
     throw error;
   }
 
-  // @typescript-eslint/no-unnecessary-condition
   if (!data) {
     throw new AuthError({
       status: 401,
