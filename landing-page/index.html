@@ -3,7 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>KanBased</title>
+    <title>KanBased - Minimal Kanban Boards with Instant Sync</title>
+    <meta
+      name="description"
+      content="A minimal, fast kanban board app with instant sync, keyboard shortcuts, and rich markdown editing. Free and open source."
+    />
 
     <link
       rel="icon"
@@ -23,6 +27,284 @@
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
+    <!-- Navigation -->
+    <nav class="nav">
+      <div class="nav-container">
+        <div class="nav-brand">
+          <span class="logo">KanBased</span>
+        </div>
+        <div class="nav-links">
+          <a href="#features" class="nav-link">Features</a>
+          <a href="#demo" class="nav-link">Demo</a>
+          <a
+            href="https://github.com/your-username/kanbased"
+            class="nav-link"
+            target="_blank"
+            >GitHub</a
+          >
+          <a href="#get-started" class="btn btn-primary">Get Started</a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-container">
+        <div class="hero-content">
+          <h1 class="hero-title">
+            Minimal Kanban Boards with
+            <span class="gradient-text">Instant Sync</span>
+          </h1>
+          <p class="hero-description">
+            A fast, keyboard-driven kanban app that updates instantly. No
+            loading spinners, no refresh needed. Your boards stay in perfect
+            sync with rich markdown editing and seamless collaboration.
+          </p>
+          <div class="hero-buttons">
+            <a href="#get-started" class="btn btn-primary btn-large">
+              Try KanBased Free
+            </a>
+            <a href="#demo" class="btn btn-secondary btn-large"> View Demo </a>
+          </div>
+          <div class="hero-badge">
+            <span class="badge">🚀 Free & Open Source</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Built for Speed & Simplicity</h2>
+          <p class="section-description">
+            Everything you need for effective task management, nothing you
+            don't.
+          </p>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Instant Updates</h3>
+            <p class="feature-description">
+              Built on a sync engine, not REST APIs. Changes appear instantly
+              across all devices with no loading spinners.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">⌨️</div>
+            <h3 class="feature-title">Keyboard Shortcuts</h3>
+            <p class="feature-description">
+              Access all core features with keyboard shortcuts. Navigate,
+              create, and manage tasks without touching your mouse.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">📝</div>
+            <h3 class="feature-title">Rich Markdown Editor</h3>
+            <p class="feature-description">
+              Powered by ProseMirror, write detailed task descriptions and notes
+              with a beautiful markdown editor.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🔄</div>
+            <h3 class="feature-title">Always in Sync</h3>
+            <p class="feature-description">
+              Your boards automatically stay synchronized. No refresh needed.
+              The sync engine handles everything seamlessly.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">👥</div>
+            <h3 class="feature-title">Team Collaboration</h3>
+            <p class="feature-description">
+              Create workspaces, invite team members, assign roles, and
+              collaborate on boards in real-time.
+            </p>
+          </div>
+
+          <div class="feature-card">
+            <div class="feature-icon">🎯</div>
+            <h3 class="feature-title">Minimal Design</h3>
+            <p class="feature-description">
+              Clean, distraction-free interface that lets you focus on what
+              matters most - getting things done.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Demo Section -->
+    <section id="demo" class="demo">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">See KanBased in Action</h2>
+          <p class="section-description">
+            A glimpse of the clean, minimalist interface that makes task
+            management effortless.
+          </p>
+        </div>
+
+        <div class="demo-grid">
+          <div class="demo-item">
+            <div class="demo-image">
+              <div class="demo-placeholder">
+                <h3>Kanban Board</h3>
+                <p>Drag & drop tasks between columns with instant feedback</p>
+              </div>
+            </div>
+            <div class="demo-content">
+              <h3>Streamlined Task Management</h3>
+              <p>
+                Organize your work with Todo, Doing, and Done columns. Create
+                tasks instantly and watch them sync across all your devices.
+              </p>
+            </div>
+          </div>
+
+          <div class="demo-item">
+            <div class="demo-image">
+              <div class="demo-placeholder">
+                <h3>Notes & Documentation</h3>
+                <p>Rich markdown editing for detailed task descriptions</p>
+              </div>
+            </div>
+            <div class="demo-content">
+              <h3>Rich Text Editing</h3>
+              <p>
+                Write detailed notes and task descriptions with our markdown
+                editor. Perfect for documentation and planning.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benefits Section -->
+    <section class="benefits">
+      <div class="container">
+        <div class="benefits-content">
+          <div class="benefits-text">
+            <h2 class="benefits-title">Why Choose KanBased?</h2>
+            <ul class="benefits-list">
+              <li class="benefit-item">
+                <strong>No Loading Spinners:</strong> Experience instant updates
+                that make task management feel effortless
+              </li>
+              <li class="benefit-item">
+                <strong>Keyboard-First:</strong> Navigate and manage tasks
+                without leaving your keyboard
+              </li>
+              <li class="benefit-item">
+                <strong>Always Synchronized:</strong> Your boards stay in sync
+                automatically across all devices
+              </li>
+              <li class="benefit-item">
+                <strong>Free & Open Source:</strong> Use it freely and
+                contribute to its development on GitHub
+              </li>
+              <li class="benefit-item">
+                <strong>Team Ready:</strong> Invite colleagues and collaborate
+                on shared workspaces
+              </li>
+            </ul>
+          </div>
+          <div class="benefits-visual">
+            <div class="floating-card">
+              <div class="card-header">
+                <div class="card-dots">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="sync-animation">
+                  <div class="sync-dot"></div>
+                  <div class="sync-dot"></div>
+                  <div class="sync-dot"></div>
+                </div>
+                <p class="card-text">Real-time sync in action</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="get-started" class="cta">
+      <div class="container">
+        <div class="cta-content">
+          <h2 class="cta-title">Ready to boost your productivity?</h2>
+          <p class="cta-description">
+            Join developers and teams who have already made the switch to a
+            faster, more intuitive way of managing tasks.
+          </p>
+          <div class="cta-buttons">
+            <a
+              href="https://app.kanbased.com"
+              class="btn btn-primary btn-large"
+            >
+              Start Using KanBased
+            </a>
+            <a
+              href="https://github.com/your-username/kanbased"
+              class="btn btn-outline btn-large"
+              target="_blank"
+            >
+              View on GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-brand">
+            <span class="logo">KanBased</span>
+            <p class="footer-description">
+              Minimal kanban boards with instant sync. Built for teams that
+              value speed and simplicity.
+            </p>
+          </div>
+          <div class="footer-links">
+            <div class="footer-section">
+              <h4>Product</h4>
+              <a href="#features">Features</a>
+              <a href="#demo">Demo</a>
+              <a href="#get-started">Get Started</a>
+            </div>
+            <div class="footer-section">
+              <h4>Community</h4>
+              <a
+                href="https://github.com/your-username/kanbased"
+                target="_blank"
+                >GitHub</a
+              >
+              <a href="#" target="_blank">Discussions</a>
+              <a href="#" target="_blank">Issues</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <p>&copy; 2024 KanBased. Open source and free to use.</p>
+        </div>
+      </div>
+    </footer>
+
     <script type="module" src="/index.js"></script>
   </body>
 </html>
