@@ -196,6 +196,7 @@ function RouteComponent() {
                   buttonClassName="text-3xl font-bold"
                   defaultValue={myOrg?.name}
                   onSubmit={handleChangeWorkspaceName}
+                  defaultReadOnly={isMember}
                 />
                 <CardDescription className="text-sm text-muted-foreground">
                   Workspace ID:{" "}
