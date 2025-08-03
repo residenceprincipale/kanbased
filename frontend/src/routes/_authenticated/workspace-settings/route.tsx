@@ -35,6 +35,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {EditableText} from "@/components/editable-text";
 
 export const Route = createFileRoute("/_authenticated/workspace-settings")({
   component: RouteComponent,
@@ -105,6 +106,19 @@ function RouteComponent() {
     },
   });
 
+  const changeWorkspaceNameMutation = useMutation({
+    mutationFn: async (name: string) => {
+      const result = await authClient.organization.update({
+        organizationId: orgId,
+        data: {
+          name,
+        },
+      });
+
+      return handleAuthResponse(result);
+    },
+  });
+
   if (!myOrg) {
     return null;
   }
@@ -148,6 +162,18 @@ function RouteComponent() {
     });
   };
 
+  const handleChangeWorkspaceName = (value: string) => {
+    const changeWorkspaceNamePromise =
+      changeWorkspaceNameMutation.mutateAsync(value);
+
+    toast.promise(changeWorkspaceNamePromise, {
+      loading: "Changing workspace name...",
+      success: "Workspace name changed",
+      error: "Failed to change workspace name",
+      position: "top-center",
+    });
+  };
+
   return (
     <div>
       <BackButton className="m-4" variant="outline">
@@ -163,9 +189,14 @@ function RouteComponent() {
                 className="size-16"
               />
               <div>
-                <CardTitle className="text-2xl font-bold mb-1">
-                  {myOrg?.name}
-                </CardTitle>
+                <EditableText
+                  fieldName="name"
+                  inputClassName="text-2xl font-bold mb-1"
+                  inputLabel="Workspace Name"
+                  buttonClassName="text-3xl font-bold"
+                  defaultValue={myOrg?.name}
+                  onSubmit={handleChangeWorkspaceName}
+                />
                 <CardDescription className="text-sm text-muted-foreground">
                   Workspace ID:{" "}
                   <span className="font-mono text-sm px-1 py-0.5">

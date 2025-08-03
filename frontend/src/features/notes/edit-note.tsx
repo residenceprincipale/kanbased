@@ -48,7 +48,7 @@ export default function EditNote(props: {
   const userData = useAuthData();
   const defaultTitle = props.note.name;
   const [title, setTitle] = useState(defaultTitle);
-  const defaultContent = props.note.content;
+  const defaultContent = props.note.content ?? "";
   const timeoutRef = useRef<NodeJS.Timeout>(null);
   const isMember = userData.role === "member";
 
