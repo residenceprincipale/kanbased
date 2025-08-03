@@ -1,7 +1,14 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {useQuery} from "@rocicorp/zero/react";
 import {toast} from "sonner";
-import {ArrowDown, ArrowUp, EllipsisVertical, Info, Trash2} from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Copy,
+  EllipsisVertical,
+  Info,
+  Trash2,
+} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
 import {Link, useNavigate, useParams} from "@tanstack/react-router";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
@@ -122,6 +129,17 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
     });
   };
 
+  const handleCopyMarkdown = () => {
+    const markdownContent = editorRef.current?.getMarkdown() ?? "";
+    // Clean the markdown by removing <br /> tags and other HTML tags
+    const cleanMarkdown = markdownContent
+      .replace(/<br\s*\/?>/gi, "\n") // Replace <br /> with actual line breaks
+      .replace(/<[^>]*>/g, ""); // Remove any other HTML tags
+
+    navigator.clipboard.writeText(cleanMarkdown);
+    toast.success("Content copied to clipboard");
+  };
+
   const handleDelete = async () => {
     await z.mutate.tasksTable.update({
       id: data!.id,
@@ -228,6 +246,11 @@ export function TaskDetail(props: {onClose: () => void; taskId: string}) {
                   </DropdownMenuTrigger>
 
                   <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={handleCopyMarkdown}>
+                      <Copy className="mr-2 h-4 w-4" />
+                      Copy content as markdown
+                    </DropdownMenuItem>
+
                     <DropdownMenuItem
                       onClick={handleDelete}
                       className="!text-destructive focus:bg-destructive/10"

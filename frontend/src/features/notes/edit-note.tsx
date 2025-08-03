@@ -1,6 +1,13 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {toast} from "sonner";
-import {EllipsisVertical, Expand, Info, Minimize2, Trash2} from "lucide-react";
+import {
+  Copy,
+  EllipsisVertical,
+  Expand,
+  Info,
+  Minimize2,
+  Trash2,
+} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
 import type {GetNoteQueryResult} from "@/lib/zero-queries";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
@@ -116,6 +123,17 @@ export default function EditNote(props: {
     });
   };
 
+  const handleCopyMarkdown = () => {
+    const markdownContent = editorRef.current?.getMarkdown() ?? "";
+    // Clean the markdown by removing <br /> tags and other HTML tags
+    const cleanMarkdown = markdownContent
+      .replace(/<br\s*\/?>/gi, "\n") // Replace <br /> with actual line breaks
+      .replace(/<[^>]*>/g, ""); // Remove any other HTML tags
+
+    navigator.clipboard.writeText(cleanMarkdown);
+    toast.success("Content copied to clipboard");
+  };
+
   return (
     <Dialog open onOpenChange={props.onClose}>
       <DialogContent
@@ -203,6 +221,10 @@ export default function EditNote(props: {
                 </DropdownMenuTrigger>
 
                 <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={handleCopyMarkdown}>
+                    <Copy className="mr-2 h-4 w-4" />
+                    Copy content as markdown
+                  </DropdownMenuItem>
                   <DropdownMenuItem
                     onClick={handleDelete}
                     className="!text-destructive focus:bg-destructive/10"

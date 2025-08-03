@@ -1,6 +1,6 @@
 import {Suspense, lazy, useRef, useState} from "react";
 import {toast} from "sonner";
-import {Expand, Info, Minimize2, Save} from "lucide-react";
+import {Copy, Expand, Info, Minimize2, Save} from "lucide-react";
 import {useHotkeys} from "react-hotkeys-hook";
 import {flushSync} from "react-dom";
 import type {MilkdownEditorRef} from "@/components/md-editor/markdown-editor";
@@ -96,6 +96,17 @@ export default function CreateNote(props: {
   const handleTitleSave = (updatedTitle: string) => {
     setTitle(updatedTitle);
     editorRef.current?.focus();
+  };
+
+  const handleCopyMarkdown = () => {
+    const markdownContent = editorRef.current?.getMarkdown() ?? "";
+    // Clean the markdown by removing <br /> tags and other HTML tags
+    const cleanMarkdown = markdownContent
+      .replace(/<br\s*\/?>/gi, "\n") // Replace <br /> with actual line breaks
+      .replace(/<[^>]*>/g, ""); // Remove any other HTML tags
+
+    navigator.clipboard.writeText(cleanMarkdown);
+    toast.success("Content copied to clipboard");
   };
 
   return (
@@ -211,6 +222,14 @@ export default function CreateNote(props: {
                 </>
               </Button>
             )}
+
+            <Button
+              onClick={handleCopyMarkdown}
+              variant="secondary"
+              size="icon"
+            >
+              <Copy className="h-4 w-4" />
+            </Button>
           </div>
 
           <div
