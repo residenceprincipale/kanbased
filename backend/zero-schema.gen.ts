@@ -295,6 +295,11 @@ export type Schema = {
           customType: string;
           optional: true;
         };
+        readonly assigneeId: {
+          type: "string";
+          customType: string;
+          optional: true;
+        };
       };
     };
     notesTable: {
@@ -1054,6 +1059,11 @@ export const schema = {
         position: {
           type: "number",
           optional: false,
+          customType: null as unknown,
+        },
+        assigneeId: {
+          type: "string",
+          optional: true,
           customType: null as unknown,
         },
         createdAt: {
