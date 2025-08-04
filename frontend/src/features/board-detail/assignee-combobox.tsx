@@ -110,6 +110,10 @@ export function AssigneeCombobox({
                   <CommandItem
                     key={member.id}
                     value={member.id}
+                    keywords={[
+                      member.user?.name ?? "",
+                      member.user?.email ?? "",
+                    ]}
                     onSelect={() => {
                       if (member.user?.id !== assignee?.id) {
                         onAssigneeChange(member.user?.id ?? null);
