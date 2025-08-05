@@ -15,21 +15,21 @@ export default function createApp() {
   appRouter.use(
     "/*",
     cors({
-      origin: env.FE_ORIGIN,
+      // TODO: get this from env later
+      origin: [env.FE_ORIGIN, "https://kanbased.com"],
       credentials: true,
-    })
+    }),
   );
 
   appRouter.use(csrf({ origin: env.FE_ORIGIN }));
   appRouter.use(pinoLogger());
-
 
   appRouter.notFound((c) => {
     return c.json(
       {
         message: `${HTTP_STATUS_PHRASES.NOT_FOUND} - ${c.req.path}`,
       },
-      HTTP_STATUS_CODES.NOT_FOUND
+      HTTP_STATUS_CODES.NOT_FOUND,
     );
   });
 
