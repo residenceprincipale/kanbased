@@ -45,6 +45,7 @@ export function CreateTask(props: CreateCardProps) {
           : props.nextPosition,
       createdAt: Date.now(),
       creatorId: z.userID,
+      assigneeId: z.userID,
       organizationId,
     });
 
