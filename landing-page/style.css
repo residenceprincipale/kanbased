@@ -106,6 +106,10 @@ p {
   border-bottom-color: var(--primary-6);
 }
 
+.nav.footer-touched {
+  background: white;
+}
+
 .nav-container {
   max-width: 1400px;
   margin: 0 auto;
