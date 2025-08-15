@@ -9,6 +9,7 @@
       content="A minimal, fast kanban board app with instant sync, keyboard shortcuts, and rich markdown editing. Free and open source."
     />
 
+    <script type="module" src="/auth-redirect.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -114,55 +115,100 @@
       </div>
     </section>
 
+    <section id="features" class="section">
+      <div class="section-content">
+        <h2 class="section-title">
+          <span class="feature-icon">🔄</span>
+          Always in Sync
+        </h2>
+        <p class="section-description">
+          Your boards automatically stay synchronized. No refresh needed. The
+          sync engine handles everything seamlessly.
+        </p>
+      </div>
+
+      <div class="section-video-container">
+        <video
+          src="/public/always-in-sync.mp4"
+          autoplay
+          muted
+          loop
+          class="section-video"
+        ></video>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-content">
+        <h2 class="section-title">
+          <span class="feature-icon">⌨️</span>
+          Keyboard Shortcuts
+        </h2>
+        <p class="section-description">
+          Access all core features with keyboard shortcuts. Navigate, create,
+          and manage tasks without touching your mouse.
+        </p>
+      </div>
+
+      <div class="section-video-container">
+        <video
+          src="/public/keyboard-shortcuts.mp4"
+          autoplay
+          muted
+          loop
+          class="section-video"
+        ></video>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-content">
+        <h2 class="section-title">
+          <span class="feature-icon">📝</span>
+          Rich Markdown Editing
+        </h2>
+        <p class="section-description">
+          Edit your boards with rich markdown editing. Add todo items, links,
+          and more.
+        </p>
+      </div>
+
+      <div class="section-video-container">
+        <video
+          src="/public/markdown.mp4"
+          autoplay
+          muted
+          loop
+          class="section-video"
+        ></video>
+      </div>
+    </section>
+
     <!-- Features Section -->
-    <section id="features" class="features">
+    <section class="features">
       <div class="container">
         <div class="section-header">
-          <h2 class="section-title">Built for Speed & Simplicity</h2>
+          <h2 class="section-title">And much more...</h2>
           <p class="section-description">
-            Everything you need for effective task management, nothing you
-            don't.
+            Despite its minimal approach, KanBased includes everything you need
+            to get started. Being open source, you can contribute missing
+            features or simply enjoy the useful features that keep being added.
           </p>
         </div>
 
         <div class="features-grid">
           <div class="feature-card">
-            <div class="feature-icon">⚡</div>
-            <h3 class="feature-title">Instant Updates</h3>
-            <p class="feature-description">
-              Built on a sync engine, not REST APIs. Changes appear instantly
-              across all devices with no loading spinners.
-            </p>
-          </div>
-
-          <div class="feature-card">
-            <div class="feature-icon">⌨️</div>
-            <h3 class="feature-title">Keyboard Shortcuts</h3>
-            <p class="feature-description">
-              Access all core features with keyboard shortcuts. Navigate,
-              create, and manage tasks without touching your mouse.
-            </p>
-          </div>
-
-          <div class="feature-card">
+            <div class="feature-card-background"></div>
             <div class="feature-icon">📝</div>
-            <h3 class="feature-title">Rich Markdown Editor</h3>
+            <h3 class="feature-title">Rich Notes</h3>
             <p class="feature-description">
-              Powered by ProseMirror, write detailed task descriptions and notes
-              with a beautiful markdown editor.
+              Beyond boards, capture ideas and documentation with our built-in
+              rich markdown editor. Take notes, write docs, all in one place.
             </p>
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon">🔄</div>
-            <h3 class="feature-title">Always in Sync</h3>
-            <p class="feature-description">
-              Your boards automatically stay synchronized. No refresh needed.
-              The sync engine handles everything seamlessly.
-            </p>
-          </div>
-
-          <div class="feature-card">
+            <div class="feature-card-background"></div>
             <div class="feature-icon">👥</div>
             <h3 class="feature-title">Team Collaboration</h3>
             <p class="feature-description">
@@ -172,11 +218,12 @@
           </div>
 
           <div class="feature-card">
-            <div class="feature-icon">🎯</div>
-            <h3 class="feature-title">Minimal Design</h3>
+            <div class="feature-card-background"></div>
+            <div class="feature-icon">⚡</div>
+            <h3 class="feature-title">Instant Updates</h3>
             <p class="feature-description">
-              Clean, distraction-free interface that lets you focus on what
-              matters most - getting things done.
+              Built on a sync engine, not REST APIs. Changes appear instantly
+              across all devices with no loading spinners.
             </p>
           </div>
         </div>
@@ -188,49 +235,160 @@
       <div class="container">
         <div class="benefits-content">
           <div class="benefits-text">
-            <h2 class="benefits-title">Why Choose KanBased?</h2>
+            <h2 class="benefits-title">Why you'll love KanBased</h2>
             <ul class="benefits-list">
               <li class="benefit-item">
-                <strong>No Loading Spinners:</strong> Experience instant updates
-                that make task management feel effortless
+                <div class="benefit-icon">⚡</div>
+                <div class="benefit-content">
+                  <strong>Save 30+ seconds per task:</strong> No more waiting
+                  for pages to load or data to refresh - every action is instant
+                </div>
               </li>
               <li class="benefit-item">
-                <strong>Keyboard-First:</strong> Navigate and manage tasks
-                without leaving your keyboard
+                <div class="benefit-icon">🧠</div>
+                <div class="benefit-content">
+                  <strong>Stay in your flow state:</strong> Keyboard shortcuts
+                  keep your hands on the keys and your mind focused on what
+                  matters
+                </div>
               </li>
               <li class="benefit-item">
-                <strong>Always Synchronized:</strong> Your boards stay in sync
-                automatically across all devices
+                <div class="benefit-icon">🔄</div>
+                <div class="benefit-content">
+                  <strong>Never lose work again:</strong> Real-time sync means
+                  your changes are saved and shared instantly - no "save" button
+                  needed
+                </div>
               </li>
               <li class="benefit-item">
-                <strong>Free & Open Source:</strong> Use it freely and
-                contribute to its development on GitHub
+                <div class="benefit-icon">💰</div>
+                <div class="benefit-content">
+                  <strong>Zero vendor lock-in:</strong> Free forever, open
+                  source, and you can self-host if needed
+                </div>
               </li>
               <li class="benefit-item">
-                <strong>Team Ready:</strong> Invite colleagues and collaborate
-                on shared workspaces
+                <div class="benefit-icon">🚀</div>
+                <div class="benefit-content">
+                  <strong>Get your team onboard in minutes:</strong> Clean
+                  interface means zero training time - just invite and start
+                  collaborating
+                </div>
               </li>
             </ul>
           </div>
-          <div class="benefits-visual">
-            <div class="floating-card">
-              <div class="card-header">
-                <div class="card-dots">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-              <div class="card-content">
-                <div class="sync-animation">
-                  <div class="sync-dot"></div>
-                  <div class="sync-dot"></div>
-                  <div class="sync-dot"></div>
-                </div>
-                <p class="card-text">Real-time sync in action</p>
-              </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Frequently Asked Questions</h2>
+          <p class="section-description">
+            Everything you need to know about KanBased to get started.
+          </p>
+        </div>
+
+        <div class="faq-container">
+          <details class="faq-item">
+            <summary class="faq-question">
+              Why should I use KanBased instead of Trello or any feature rich
+              apps?
+            </summary>
+            <div class="faq-answer">
+              <p>
+                I built KanBased because I was frustrated with the bloat and
+                complexity of other kanban apps. For me navigating the app using
+                keyboard shortcuts is a must have. I wanted a very minimal,
+                fast, and open-source kanban board that I could use myself and
+                share with my friends.
+              </p>
+              <p>
+                I'm not trying to compete with Trello or any other feature rich
+                apps.
+              </p>
+
+              <p>
+                If you feel the vibe I'm going for, you can give it a try and
+                see if it works for you 🙂
+              </p>
             </div>
-          </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Is KanBased really free?</summary>
+            <div class="faq-answer">
+              <p>
+                Yes, KanBased is completely free to use.
+                <a
+                  href="https://github.com/irshathcodes/kanbased"
+                  target="_blank"
+                  >It's open source software</a
+                >
+                with MIT license that you can use for personal and commercial
+                projects without any limitations. Although do note that we
+                cannot support large usage. You can self-host the entire
+                application if you want to support large usage.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              How does the instant sync work?
+            </summary>
+            <div class="faq-answer">
+              <p>
+                KanBased uses a modern sync engine instead of traditional REST
+                APIs. When you make changes, they're immediately propagated to
+                all connected devices in real-time. No refresh buttons, no
+                loading spinners - just instant updates across all your devices.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">Can I use KanBased offline?</summary>
+            <div class="faq-answer">
+              <p>
+                While it's possible to read your boards / notes offline, it's
+                not yet enabled at the moment
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">
+              How many team members can I invite?
+            </summary>
+            <div class="faq-answer">
+              <p>
+                There are no limits on team size. But we recommend keeping it
+                small since it's open source and free to use. You can self-host
+                the entire application if you want to support large teams.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-question">How do I get support?</summary>
+            <div class="faq-answer">
+              <p>
+                You can get help through our
+                <a
+                  href="https://github.com/irshathcodes/kanbased/issues"
+                  target="_blank"
+                >
+                  GitHub issues</a
+                >
+                for bug reports and feature requests. For general questions,
+                email me at
+                <a href="mailto:irshath700@gmail.com">irshath700@gmail.com</a>
+              </p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
@@ -239,17 +397,18 @@
     <section id="get-started" class="cta">
       <div class="container">
         <div class="cta-content">
-          <h2 class="cta-title">Ready to boost your productivity?</h2>
+          <h2 class="cta-title">Try KanBased for free</h2>
           <p class="cta-description">
-            Join developers and teams who have already made the switch to a
-            faster, more intuitive way of managing tasks.
+            Create your free account with Google, GitHub or email to give it a
+            try. It's free to use for small usage. You can self-host the entire
+            application if you want to support large usage.
           </p>
           <div class="cta-buttons">
             <a
               href="https://app.kanbased.com"
               class="btn btn-primary btn-large"
             >
-              Start Using KanBased
+              Open KanBased
             </a>
             <a
               href="https://github.com/irshathcodes/kanbased"
@@ -270,8 +429,8 @@
           <div class="footer-brand">
             <span class="logo">KanBased</span>
             <p class="footer-description">
-              Minimal kanban boards with instant sync. Built for teams that
-              value speed and simplicity.
+              A fast, keyboard-driven kanban app that updates instantly. No
+              loading spinners, no refresh needed.
             </p>
           </div>
           <div class="footer-links">
