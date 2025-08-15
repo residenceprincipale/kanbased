@@ -1,6 +1,8 @@
 # KanBased
 
-A minimal Kanban board application with instant real-time sync, keyboard shortcuts, and rich markdown editing. Perfect for teams seeking fast, clutter-free project management.
+A fast, keyboard-driven kanban app that updates instantly. No loading spinners, no refresh needed. Your boards stay in perfect sync with rich markdown editing and seamless collaboration.
+
+🚀 **[Try it free at kanbased.com](https://kanbased.com)**
 
 ## Features
 
@@ -8,8 +10,8 @@ A minimal Kanban board application with instant real-time sync, keyboard shortcu
 - **Keyboard Shortcuts** - Navigate and manage all the tasks and notes with keyboard shortcuts. Also has a CMD+K search to easily find all your tasks
 - **Rich Markdown** - Create detailed task descriptions and take your notes with rich markdown support backed by ProseMirror library
 - **Team Collaboration** - Invite team members and work together seamlessly
-- **Minimal Interface** - Clean, distraction-free design focused on productivity
-- **Self-hostable** - Free and open-source
+- **Minimal Interface** - Designed with simplicity in mind for those who appreciate minimalism
+- **Self-hostable** - This application is free and open-source, allowing you to host it on your own server.
 
 ## Tech Stack
 
