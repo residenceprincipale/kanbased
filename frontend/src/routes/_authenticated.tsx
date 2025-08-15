@@ -40,6 +40,9 @@ export const Route = createFileRoute("/_authenticated")({
       router.navigate({
         to: "/login",
         reloadDocument: true,
+        search: {
+          redirect: location.href,
+        },
       });
 
       return null;
@@ -78,6 +81,9 @@ function RouteComponent() {
     router.navigate({
       to: "/login",
       reloadDocument: true,
+      search: {
+        redirect: location.href,
+      },
     });
   };
 

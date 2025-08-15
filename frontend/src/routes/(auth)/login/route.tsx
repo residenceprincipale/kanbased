@@ -47,9 +47,7 @@ function SignIn() {
 
   useLoggedInRedirect();
 
-  const callbackURL = search.redirect
-    ? `${getOrigin()}${search.redirect}`
-    : getOrigin();
+  const callbackURL = search.redirect ? search.redirect : getOrigin();
 
   const userPasswordLoginMutation = useMutation({
     mutationFn: async (data: {email: string; password: string}) => {
@@ -160,6 +158,9 @@ function SignIn() {
 
           <Link
             to="/signup"
+            search={{
+              redirect: search.redirect,
+            }}
             className={buttonVariants({
               variant: "link",
               className: "text-left pl-0 w-fit my-2.5",

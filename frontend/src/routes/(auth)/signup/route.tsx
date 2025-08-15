@@ -26,6 +26,12 @@ import {GithubIcon, GoogleIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
+  validateSearch: (search): {redirect?: string} => {
+    return {
+      redirect:
+        typeof search.redirect === "string" ? search.redirect : undefined,
+    };
+  },
   head(ctx) {
     return {
       meta: [{title: "Sign Up | KanBased"}],
@@ -35,7 +41,8 @@ export const Route = createFileRoute("/(auth)/signup")({
 
 function SignUp() {
   const router = useRouter();
-  const callbackURL = getOrigin();
+  const search = Route.useSearch();
+  const callbackURL = search.redirect ? search.redirect : getOrigin();
 
   useLoggedInRedirect();
 
@@ -61,7 +68,7 @@ function SignUp() {
         description: "Please verify your email.",
       });
 
-      router.navigate({to: "/"});
+      router.history.push(search.redirect ?? "/");
     },
   });
 
