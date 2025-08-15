@@ -28,14 +28,28 @@ export function CreateBoard(props: CreateBoardModal) {
     const boardName = fd.get("board-name") as string;
     const slug = boardName.toLowerCase().split(" ").join("-");
 
-    z.mutate.boardsTable.insert({
-      id: boardId,
-      name: boardName,
-      slug,
-      updatedAt: Date.now(),
-      createdAt: Date.now(),
-      creatorId: z.userID,
-      organizationId: activeOrganizationId,
+    z.mutateBatch(async (m) => {
+      await m.boardsTable.insert({
+        id: boardId,
+        name: boardName,
+        slug,
+        updatedAt: Date.now(),
+        createdAt: Date.now(),
+        creatorId: z.userID,
+        organizationId: activeOrganizationId,
+      });
+
+      for (let i = 1; i <= 3; i++) {
+        await m.columnsTable.insert({
+          id: createId(),
+          boardId: boardId,
+          name: i === 1 ? "To Do" : i === 2 ? "In Progress" : "Done",
+          position: i,
+          createdAt: Date.now(),
+          organizationId: activeOrganizationId,
+          creatorId: z.userID,
+        });
+      }
     });
 
     toast.success(
