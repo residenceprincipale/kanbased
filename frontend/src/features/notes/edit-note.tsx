@@ -237,18 +237,7 @@ export default function EditNote(props: {
             )}
           </div>
 
-          <div
-            className="overflow-y-auto flex-1"
-            ref={containerRef}
-            tabIndex={-1}
-            onClick={(e) => {
-              // Only focus if clicking outside the editor content area
-              const editorElement = document.querySelector(".milkdown");
-              if (editorElement && !editorElement.contains(e.target as Node)) {
-                editorRef.current?.focus();
-              }
-            }}
-          >
+          <div className="overflow-y-auto flex-1" ref={containerRef}>
             <div className="min-h-0 flex-1 h-full mx-auto w-full max-w-3xl flex justify-center *:w-full *:h-full">
               {props.note !== undefined ? (
                 <Suspense
