@@ -51,11 +51,11 @@ GITHUB_CLIENT_SECRET=
 # Email
 RESEND_API_KEY= # sign up to Resend and get the API key
 
-# Storage
+# Storage (Optional - only needed for file uploads)
 S3_ACCESS_KEY_ID=
 S3_SECRET_ACCESS_KEY=
 S3_BUCKET_NAME=
-S3_REGION=
+S3_REGION=auto
 S3_ENDPOINT=
 PUBLIC_IMAGE_DOMAIN=# eg: https://images.kanbased.com
 

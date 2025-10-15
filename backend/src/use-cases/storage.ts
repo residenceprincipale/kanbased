@@ -10,6 +10,10 @@ export const getUserImagePresignedUrl = async (
   fileName: string,
   contentType: string,
 ) => {
+  if (!env.S3_BUCKET_NAME || !env.PUBLIC_IMAGE_DOMAIN) {
+    throw new Error("S3 storage is not configured. Please set S3_BUCKET_NAME and PUBLIC_IMAGE_DOMAIN in your environment variables.");
+  }
+
   const key = `users/${authCtx.session.userId}/${randomUUID()}-${fileName}`;
 
   const command = new PutObjectCommand({

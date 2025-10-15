@@ -13,11 +13,12 @@ export declare global {
       RESEND_API_KEY: string;
       GITHUB_CLIENT_ID: string;
       GITHUB_CLIENT_SECRET: string;
-      S3_ACCESS_KEY_ID: string;
-      S3_SECRET_ACCESS_KEY: string;
-      S3_BUCKET_NAME: string;
-      S3_ENDPOINT: string;
-      PUBLIC_IMAGE_DOMAIN: string;
+      S3_ACCESS_KEY_ID?: string;
+      S3_SECRET_ACCESS_KEY?: string;
+      S3_BUCKET_NAME?: string;
+      S3_ENDPOINT?: string;
+      S3_REGION?: string;
+      PUBLIC_IMAGE_DOMAIN?: string;
     }
   }
 }
