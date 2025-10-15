@@ -45,8 +45,6 @@ BE_PORT=8000
 # Auth
 BETTER_AUTH_SECRET=# crypto secure random string `openssl rand -hex 32`
 BETTER_AUTH_URL=http://localhost:8000
-GOOGLE_CLIENT_ID=# get it from google console
-GOOGLE_CLIENT_SECRET=
 GITHUB_CLIENT_ID=# get it from github developer settings
 GITHUB_CLIENT_SECRET=
 

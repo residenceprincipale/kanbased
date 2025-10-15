@@ -18,11 +18,8 @@ import {Spinner} from "@/components/ui/spinner";
 import {getOrigin} from "@/lib/constants";
 import {useLoggedInRedirect} from "@/hooks/use-logged-in-redirect";
 import {cn, handleAuthResponse} from "@/lib/utils";
-import {
-  useGithubLoginMutation,
-  useGoogleLoginMutation,
-} from "@/queries/authentication";
-import {GithubIcon, GoogleIcon} from "@/components/icons";
+import {useGithubLoginMutation} from "@/queries/authentication";
+import {GithubIcon} from "@/components/icons";
 
 export const Route = createFileRoute("/(auth)/signup")({
   component: SignUp,
@@ -72,10 +69,6 @@ function SignUp() {
     },
   });
 
-  const googleLoginMutation = useGoogleLoginMutation({
-    callbackURL,
-  });
-
   const githubLoginMutation = useGithubLoginMutation({
     callbackURL,
   });
@@ -100,10 +93,6 @@ function SignUp() {
       email,
       password,
     });
-  };
-
-  const handleGoogleLogin = () => {
-    googleLoginMutation.mutate();
   };
 
   const handleGithubLogin = () => {
@@ -202,28 +191,16 @@ function SignUp() {
             Already have an account? Sign in
           </Link>
 
-          <div className="space-y-2">
-            <Button
-              variant="outline"
-              className={cn("w-full gap-2")}
-              type="button"
-              onClick={handleGoogleLogin}
-              disabled={googleLoginMutation.isPending}
-            >
-              {googleLoginMutation.isPending ? <Spinner /> : <GoogleIcon />}
-              Sign up with Google
-            </Button>
-            <Button
-              variant="outline"
-              className={cn("w-full gap-2")}
-              type="button"
-              onClick={handleGithubLogin}
-              disabled={githubLoginMutation.isPending}
-            >
-              {githubLoginMutation.isPending ? <Spinner /> : <GithubIcon />}
-              Sign up with Github
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            className={cn("w-full gap-2")}
+            type="button"
+            onClick={handleGithubLogin}
+            disabled={githubLoginMutation.isPending}
+          >
+            {githubLoginMutation.isPending ? <Spinner /> : <GithubIcon />}
+            Sign up with Github
+          </Button>
         </CardContent>
       </Card>
     </form>
