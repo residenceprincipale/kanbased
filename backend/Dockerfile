@@ -1,10 +1,12 @@
-FROM oven/bun:1-alpine
+FROM node:18-alpine
 
-COPY package.json ./
-RUN bun install
+WORKDIR /app
+
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --prod --frozen-lockfile
 
 COPY . .
 
 EXPOSE 8000
 
-CMD ["bun", "src/index.ts"]
+CMD ["pnpm", "start"]
