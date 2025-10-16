@@ -160,42 +160,12 @@ function RouteComponent() {
     return null;
   }
 
-  // Temporarily bypass Zero to test auth/org flow
   return (
-    <div className="h-screen flex flex-col items-center justify-center p-4">
-      <div className="max-w-2xl w-full">
-        <div className="bg-card border rounded-lg p-6 mb-4">
-          <h1 className="text-2xl font-bold mb-4">✅ Authentication & Organization Working!</h1>
-          <div className="space-y-2">
-            <p><strong>User:</strong> {decodedData.name} ({decodedData.email})</p>
-            <p><strong>User ID:</strong> <code className="text-xs">{decodedData.id}</code></p>
-            <p><strong>Organization ID:</strong> <code className="text-xs">{decodedData.activeOrganizationId}</code></p>
-            <p><strong>Role:</strong> {decodedData.role || 'Not set'}</p>
-            <p><strong>Email Verified:</strong> {decodedData.emailVerified ? 'Yes' : 'No'}</p>
-          </div>
-        </div>
-        
-        <div className="bg-muted rounded-lg p-6">
-          <h2 className="font-bold mb-2">Next Step: Set up Zero Cache</h2>
-          <p className="text-sm text-muted-foreground mb-4">
-            The app needs Zero cache for real-time sync and data management.
-          </p>
-          <div className="text-xs space-y-1">
-            <p><strong>Frontend env:</strong> CLIENT_PUBLIC_SERVER={import.meta.env.CLIENT_PUBLIC_SERVER || 'NOT SET'}</p>
-            <p><strong>Expected:</strong> http://kanbased-zero-yvvdth:4848 (or your Zero container URL)</p>
-          </div>
-          <button
-            onClick={async () => {
-              await authClient.signOut();
-              window.location.href = '/login';
-            }}
-            className="mt-4 px-4 py-2 bg-destructive text-destructive-foreground rounded-md text-sm"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    </div>
+    <ZeroProvider>
+      <WorkspaceInitializer>
+        <Outlet />
+      </WorkspaceInitializer>
+    </ZeroProvider>
   );
 }
 
