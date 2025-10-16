@@ -17,6 +17,8 @@ export default function createApp() {
     cors({
       origin: env.FE_ORIGIN ? [env.FE_ORIGIN, "https://kanbased.com"] : ["https://kanbased.com"],
       credentials: true,
+      allowHeaders: ["Content-Type", "Authorization", "Cache-Control"],
+      allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     }),
   );
 
