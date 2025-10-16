@@ -2,14 +2,14 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/index.js";
 import { env } from "../env.js";
-import { /* jwt, organization, */ openAPI } from "better-auth/plugins";
+import { /* jwt, */ openAPI, organization } from "better-auth/plugins";
 import * as schema from "../db/schema/auth-schema.js";
 import resend from "./email.js";
 // import { getActiveOrganization } from "../use-cases/organization.js";
-// Temporarily commented - only needed for JWT/org plugins
+// Temporarily commented - only needed for JWT plugin
 // import { and, eq } from "drizzle-orm";
 // import { membersTable } from "../db/schema/index.js";
-// import { sendOrganizationInvitation } from "./email.js";
+import { sendOrganizationInvitation } from "./email.js";
 
 export const auth = betterAuth({
   appName: "kanbased",
@@ -116,18 +116,17 @@ export const auth = betterAuth({
     //   },
     // }),
     openAPI(),
-    // Temporarily disabled - might be causing hang
-    // organization({
-    //   async sendInvitationEmail(data) {
-    //     const inviteLink = `${env.FE_ORIGIN}/accept-invitation/${data.id}`;
-    //     await sendOrganizationInvitation({
-    //       email: data.email,
-    //       invitedByUsername: data.inviter.user.name,
-    //       invitedByEmail: data.inviter.user.email,
-    //       teamName: data.organization.name,
-    //       inviteLink,
-    //     });
-    //   },
-    // }),
+    organization({
+      async sendInvitationEmail(data) {
+        const inviteLink = `${env.FE_ORIGIN}/accept-invitation/${data.id}`;
+        await sendOrganizationInvitation({
+          email: data.email,
+          invitedByUsername: data.inviter.user.name,
+          invitedByEmail: data.inviter.user.email,
+          teamName: data.organization.name,
+          inviteLink,
+        });
+      },
+    }),
   ],
 });
