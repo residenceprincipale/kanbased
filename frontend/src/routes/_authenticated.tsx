@@ -161,12 +161,11 @@ function RouteComponent() {
   }
 
   return (
-    // Temporarily disabled ZeroProvider for debugging
-    // <ZeroProvider>
-    //   <WorkspaceInitializer>
+    <ZeroProvider>
+      <WorkspaceInitializer>
         <Outlet />
-    //   </WorkspaceInitializer>
-    // </ZeroProvider>
+      </WorkspaceInitializer>
+    </ZeroProvider>
   );
 }
 
