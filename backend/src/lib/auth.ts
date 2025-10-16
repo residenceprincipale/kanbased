@@ -11,20 +11,12 @@ import resend from "./email.js";
 // import { membersTable } from "../db/schema/index.js";
 // import { sendOrganizationInvitation } from "./email.js";
 
-console.log("[AUTH] Initializing better-auth with database adapter");
-
 export const auth = betterAuth({
   appName: "kanbased",
   database: drizzleAdapter(db, {
     provider: "pg",
     schema,
   }),
-  logger: {
-    level: "debug",
-    log: (level, message) => {
-      console.log(`[BETTER-AUTH ${level.toUpperCase()}]`, message);
-    },
-  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }) => {

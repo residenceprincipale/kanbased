@@ -51,8 +51,6 @@ function SignUp() {
       password: string;
       image?: string;
     }) => {
-      console.log("🚀 Starting signup with data:", { email: data.email, name: `${data.firstName} ${data.lastName}` });
-      
       const response = await authClient.signUp.email({
         email: data.email,
         password: data.password,
@@ -60,19 +58,16 @@ function SignUp() {
         callbackURL,
       });
 
-      console.log("✅ Signup response:", response);
       return handleAuthResponse(response);
     },
     onSuccess: () => {
-      console.log("🎉 Signup successful!");
-      toast("A verification email has been sent to your email address.", {
-        description: "Please verify your email.",
+      toast("Account created successfully!", {
+        description: "Welcome to Kanbased!",
       });
 
       router.history.push(search.redirect ?? "/");
     },
     onError: (error) => {
-      console.error("❌ Signup error:", error);
       toast.error("Signup failed: " + error.message);
     },
   });
