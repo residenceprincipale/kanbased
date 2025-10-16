@@ -28,18 +28,19 @@ export const auth = betterAuth({
       });
     },
   },
-  emailVerification: {
-    sendOnSignUp: true, // Re-enabled with test domain
-    autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
-      await resend.emails.send({
-        from: "onboarding@resend.dev", // Resend test domain - change to your verified domain later
-        to: user.email,
-        subject: "Verify your email address",
-        html: `<p>Click the link to verify your email: <a href="${url}">${url}</a></p>`,
-      });
-    },
-  },
+  // Temporarily disabled for debugging
+  // emailVerification: {
+  //   sendOnSignUp: true,
+  //   autoSignInAfterVerification: true,
+  //   sendVerificationEmail: async ({ user, url }) => {
+  //     await resend.emails.send({
+  //       from: "onboarding@resend.dev",
+  //       to: user.email,
+  //       subject: "Verify your email address",
+  //       html: `<p>Click the link to verify your email: <a href="${url}">${url}</a></p>`,
+  //     });
+  //   },
+  // },
 
   trustedOrigins: [env.FE_ORIGIN],
   socialProviders: {
@@ -59,23 +60,24 @@ export const auth = betterAuth({
       trustedProviders: ["github"],
     },
   },
-  databaseHooks: {
-    session: {
-      create: {
-        before: async (session) => {
-          const activeOrganizationId = await getActiveOrganization(
-            session.userId,
-          );
-          return {
-            data: {
-              ...session,
-              activeOrganizationId,
-            },
-          };
-        },
-      },
-    },
-  },
+  // Temporarily disabled to debug
+  // databaseHooks: {
+  //   session: {
+  //     create: {
+  //       before: async (session) => {
+  //         const activeOrganizationId = await getActiveOrganization(
+  //           session.userId,
+  //         );
+  //         return {
+  //           data: {
+  //             ...session,
+  //             activeOrganizationId,
+  //           },
+  //         };
+  //       },
+  //     },
+  //   },
+  // },
   plugins: [
     // Temporarily disabled JWT plugin - Zero cache server not reachable
     // jwt({
