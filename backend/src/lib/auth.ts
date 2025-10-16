@@ -2,14 +2,16 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/index.js";
 import { env } from "../env.js";
-import { /* jwt, */ openAPI, organization } from "better-auth/plugins";
+import { /* jwt, organization, */ openAPI } from "better-auth/plugins";
 import * as schema from "../db/schema/auth-schema.js";
 import resend from "./email.js";
-import { getActiveOrganization } from "../use-cases/organization.js";
-// Temporarily commented - only needed for JWT plugin
+// import { getActiveOrganization } from "../use-cases/organization.js";
+// Temporarily commented - only needed for JWT/org plugins
 // import { and, eq } from "drizzle-orm";
 // import { membersTable } from "../db/schema/index.js";
-import { sendOrganizationInvitation } from "./email.js";
+// import { sendOrganizationInvitation } from "./email.js";
+
+console.log("[AUTH] Initializing better-auth with database adapter");
 
 export const auth = betterAuth({
   appName: "kanbased",
@@ -17,6 +19,12 @@ export const auth = betterAuth({
     provider: "pg",
     schema,
   }),
+  logger: {
+    level: "debug",
+    log: (level, message) => {
+      console.log(`[BETTER-AUTH ${level.toUpperCase()}]`, message);
+    },
+  },
   emailAndPassword: {
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
@@ -116,17 +124,18 @@ export const auth = betterAuth({
     //   },
     // }),
     openAPI(),
-    organization({
-      async sendInvitationEmail(data) {
-        const inviteLink = `${env.FE_ORIGIN}/accept-invitation/${data.id}`;
-        await sendOrganizationInvitation({
-          email: data.email,
-          invitedByUsername: data.inviter.user.name,
-          invitedByEmail: data.inviter.user.email,
-          teamName: data.organization.name,
-          inviteLink,
-        });
-      },
-    }),
+    // Temporarily disabled - might be causing hang
+    // organization({
+    //   async sendInvitationEmail(data) {
+    //     const inviteLink = `${env.FE_ORIGIN}/accept-invitation/${data.id}`;
+    //     await sendOrganizationInvitation({
+    //       email: data.email,
+    //       invitedByUsername: data.inviter.user.name,
+    //       invitedByEmail: data.inviter.user.email,
+    //       teamName: data.organization.name,
+    //       inviteLink,
+    //     });
+    //   },
+    // }),
   ],
 });
