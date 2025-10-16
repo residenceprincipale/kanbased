@@ -10,6 +10,8 @@ export declare global {
       BE_ORIGIN: string;
       FE_ORIGIN: string;
       BE_PORT: string;
+      BETTER_AUTH_SECRET: string;
+      BETTER_AUTH_URL: string;
       RESEND_API_KEY: string;
       GITHUB_CLIENT_ID: string;
       GITHUB_CLIENT_SECRET: string;

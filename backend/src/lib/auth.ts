@@ -2,13 +2,12 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { db } from "../db/index.js";
 import { env } from "../env.js";
-import { /* jwt, */ openAPI, organization } from "better-auth/plugins";
+import { jwt, openAPI, organization } from "better-auth/plugins";
 import * as schema from "../db/schema/auth-schema.js";
 import resend from "./email.js";
 // import { getActiveOrganization } from "../use-cases/organization.js";
-// Temporarily commented - only needed for JWT plugin
-// import { and, eq } from "drizzle-orm";
-// import { membersTable } from "../db/schema/index.js";
+import { and, eq } from "drizzle-orm";
+import { membersTable } from "../db/schema/index.js";
 import { sendOrganizationInvitation } from "./email.js";
 
 export const auth = betterAuth({
@@ -79,42 +78,44 @@ export const auth = betterAuth({
   //   },
   // },
   plugins: [
-    // Temporarily disabled JWT plugin - Zero cache server not reachable
-    // jwt({
-    //   jwt: {
-    //     expirationTime: "1y",
-    //     definePayload: async (data) => {
-    //       const { user, session } = data;
+    jwt({
+      jwt: {
+        expirationTime: "1y",
+        definePayload: async (data) => {
+          const { user, session } = data;
 
-    //       const s = await db.query.membersTable.findFirst({
-    //         where: and(
-    //           eq(membersTable.userId, user.id),
-    //           eq(membersTable.organizationId, session.activeOrganizationId),
-    //         ),
-    //         columns: {
-    //           role: true,
-    //         },
-    //       });
+          // Get role and activeOrganizationId from session (set by organization plugin)
+          const activeOrganizationId = session.activeOrganizationId;
+          
+          let role: "member" | "admin" | "owner" | undefined = undefined;
+          
+          // Only query role if we have an active organization
+          if (activeOrganizationId) {
+            const memberData = await db.query.membersTable.findFirst({
+              where: and(
+                eq(membersTable.userId, user.id),
+                eq(membersTable.organizationId, activeOrganizationId),
+              ),
+              columns: {
+                role: true,
+              },
+            });
+            role = memberData?.role as "member" | "admin" | "owner" | undefined;
+          }
 
-    //       let activeOrganizationId = session.activeOrganizationId;
-
-    //       if (!activeOrganizationId) {
-    //         activeOrganizationId = await getActiveOrganization(user.id);
-    //       }
-
-    //       return {
-    //         id: user.id,
-    //         name: user.name,
-    //         email: user.email,
-    //         sub: user.id,
-    //         image: user.image,
-    //         emailVerified: user.emailVerified,
-    //         role: s?.role,
-    //         activeOrganizationId,
-    //       };
-    //     },
-    //   },
-    // }),
+          return {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            sub: user.id,
+            image: user.image,
+            emailVerified: user.emailVerified,
+            role,
+            activeOrganizationId,
+          };
+        },
+      },
+    }),
     openAPI(),
     organization({
       async sendInvitationEmail(data) {
