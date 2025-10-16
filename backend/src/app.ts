@@ -80,6 +80,6 @@ routes.forEach((route) => {
   app.route("/api/v1", route);
 });
 
-app.route("/auth/*", authRouter);
+app.route("/api", authRouter);
 
 export default app;
