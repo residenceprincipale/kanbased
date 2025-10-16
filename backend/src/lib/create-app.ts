@@ -15,13 +15,13 @@ export default function createApp() {
   appRouter.use(
     "/*",
     cors({
-      // TODO: get this from env later
-      origin: [env.FE_ORIGIN, "https://kanbased.com"],
+      origin: env.FE_ORIGIN ? [env.FE_ORIGIN, "https://kanbased.com"] : ["https://kanbased.com"],
       credentials: true,
     }),
   );
 
-  appRouter.use(csrf({ origin: env.FE_ORIGIN }));
+  // Apply CSRF protection to all routes except /api/auth/* (better-auth handles its own CSRF)
+  appRouter.use("/api/v1/*", csrf({ origin: env.FE_ORIGIN }));
   appRouter.use(pinoLogger());
 
   appRouter.notFound((c) => {
