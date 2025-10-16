@@ -16,13 +16,19 @@ export const auth = async (status: "invalid-token" | undefined) => {
 
 export function ZeroProvider({children}: {children: React.ReactNode}) {
   const authData = useAuthData();
+  
+  const zeroServer = import.meta.env.CLIENT_PUBLIC_SERVER;
+  
+  console.log("[ZERO] Initializing with server:", zeroServer);
+  console.log("[ZERO] User ID:", authData.id);
+  
   return (
     <ZeroProviderComponent
       schema={schema}
       userID={authData.id}
       auth={auth}
       kvStore="idb"
-      server={import.meta.env.CLIENT_PUBLIC_SERVER}
+      server={zeroServer}
     >
       {children}
     </ZeroProviderComponent>

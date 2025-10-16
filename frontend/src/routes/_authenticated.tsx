@@ -160,6 +160,23 @@ function RouteComponent() {
     return null;
   }
 
+  // Check if Zero cache server is configured
+  const zeroServer = import.meta.env.CLIENT_PUBLIC_SERVER;
+  
+  if (!zeroServer || zeroServer === 'undefined') {
+    return (
+      <div className="h-screen flex items-center justify-center p-4">
+        <div className="max-w-md text-center">
+          <h1 className="text-2xl font-bold mb-4">⚠️ Configuration Missing</h1>
+          <p className="mb-4">Zero cache server URL not configured.</p>
+          <p className="text-sm text-muted-foreground">
+            Set <code className="bg-muted px-2 py-1 rounded">CLIENT_PUBLIC_SERVER</code> environment variable.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <ZeroProvider>
       <WorkspaceInitializer>
