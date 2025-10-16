@@ -20,7 +20,7 @@ export const auth = betterAuth({
     enabled: true,
     sendResetPassword: async ({ user, url }) => {
       await resend.emails.send({
-        from: "support@mail.kanbased.com",
+        from: "onboarding@resend.dev", // Resend test domain - change to your verified domain later
         to: user.email,
         subject: "Reset your password",
         html: `<p>Click the link to reset your password: <a href="${url}">${url}</a></p>`,
@@ -28,11 +28,11 @@ export const auth = betterAuth({
     },
   },
   emailVerification: {
-    sendOnSignUp: true,
+    sendOnSignUp: true, // Re-enabled with test domain
     autoSignInAfterVerification: true,
     sendVerificationEmail: async ({ user, url }) => {
       await resend.emails.send({
-        from: "support@mail.kanbased.com",
+        from: "onboarding@resend.dev", // Resend test domain - change to your verified domain later
         to: user.email,
         subject: "Verify your email address",
         html: `<p>Click the link to verify your email: <a href="${url}">${url}</a></p>`,

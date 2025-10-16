@@ -16,7 +16,7 @@ export async function sendOrganizationInvitation({
   inviteLink: string;
 }) {
   await resend.emails.send({
-    from: "kanbased@mail.kanbased.com",
+    from: "onboarding@resend.dev", // Resend test domain - change to your verified domain later
     to: email,
     subject: `You're invited to join ${teamName}`,
     html: `<p>You're invited to join ${teamName} by ${invitedByUsername} from ${invitedByEmail}. Click the link to join the team: <a href="${inviteLink}">${inviteLink}</a></p>`,
