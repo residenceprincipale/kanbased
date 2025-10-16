@@ -1,5 +1,5 @@
 import {ZeroProvider as ZeroProviderComponent} from "@rocicorp/zero/react";
-import {schema} from "../../../backend/zero-schema.gen";
+import {schema} from "./zero-schema.gen"
 import {getAuthData, useAuthData} from "@/queries/session";
 import {queryClient} from "@/lib/query-client";
 import {authQueryOptions} from "@/lib/query-options-factory";

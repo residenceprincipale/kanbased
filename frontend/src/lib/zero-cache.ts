@@ -1,5 +1,5 @@
 import {useZero} from "@rocicorp/zero/react";
-import type {Schema} from "../../../backend/zero-schema.gen";
+import type {Schema} from "./zero-schema.gen";
 
 export function useZ() {
   return useZero<Schema>();
