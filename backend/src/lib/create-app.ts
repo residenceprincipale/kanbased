@@ -20,7 +20,7 @@ export default function createApp() {
     }),
   );
 
-  // Apply CSRF protection to all routes except /api/auth/* (better-auth handles its own CSRF)
+  // Apply CSRF protection to /api/v1/* routes only (better-auth handles its own CSRF for /api/auth/*)
   appRouter.use("/api/v1/*", csrf({ origin: env.FE_ORIGIN }));
   appRouter.use(pinoLogger());
 
